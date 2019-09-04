@@ -1,0 +1,22 @@
+{
+  "employer": [
+    {
+      "firstName": "Vinay ",
+      "lastName": "kumar",
+      "email": "vn@narola.email",
+      "designation": "Jr.HR",
+      "gender": "male",
+      "avatar": "C:\\fakepath\\52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg",
+      "id": 4
+    },
+    {
+      "firstName": "sanju",
+      "lastName": "abc",
+      "email": "sn@gmail.com",
+      "designation": "Jr.HR",
+      "gender": "female",
+      "avatar": "C:\\fakepath\\52eabf633ca6414e60a7677b0b917d92-male-avatar-maker.jpg",
+      "id": 5
+    }
+  ]
+}

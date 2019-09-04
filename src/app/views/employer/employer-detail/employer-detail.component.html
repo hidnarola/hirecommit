@@ -1,0 +1,42 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="card">
+        <div class="card-header">
+          Employer Detail
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>First Name</td>
+                <td>{{employerDetail.firstName}}</td>
+              </tr>
+              <tr>
+                <td>Last Name</td>
+                <td>{{employerDetail.lastName}}</td>
+              </tr>
+              <tr>
+                <td>Email</td>
+                <td>{{employerDetail.email}}</td>
+              </tr>
+              <tr>
+                <td>Dasignation</td>
+                <td>{{employerDetail.designation}}</td>
+              </tr>
+              <tr>
+                <td>Gender</td>
+                <td>{{employerDetail.gender}}</td>
+              </tr>
+              <tr>
+                <td>Avatar</td>
+                <td>{{employerDetail.avatar}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-sm btn-info" style="float: right;" (click)="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
