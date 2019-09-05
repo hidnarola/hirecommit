@@ -45,6 +45,7 @@ import { BussinessDetailComponent } from './views/bussiness-detail/bussiness-det
 import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-detail1.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 
 @NgModule({
   imports: [
@@ -72,8 +73,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     RegisterComponent,
     BussinessDetailComponent,
-    BussinessDetail1Component
+    BussinessDetail1Component,
   
+    ChangepasswordComponent
   ],
   providers: [
     {

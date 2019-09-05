@@ -24,6 +24,7 @@ export class AddEmployerComponent implements OnInit {
       designation: new FormControl(null, [Validators.required]),
       gender: new FormControl('male', [Validators.required]),
       avatar: new FormControl(null),
+      status: new FormControl('unapprove')
     });
   }
 

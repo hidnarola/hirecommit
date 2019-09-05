@@ -28,6 +28,10 @@ export class DefaultLayoutComponent implements OnDestroy {
     this.changes.disconnect();
   }
 
+  changepassword() {
+    this.router.navigate(['/changepassword']);
+  }
+
   logout() {
     localStorage.removeItem('admin');
     localStorage.removeItem('token');

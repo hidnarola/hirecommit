@@ -31,21 +31,24 @@ export interface NavData {
 
 export const navItems: NavData[] = [
   {
-    name: 'Manager Employee',
+    name: 'Manage Employee',
     url: '/employer/view',
     icon: 'icon-user'
-
-      // {
-      //   name: 'Add Employee',
-      //   url: '/employer/add',
-      //   icon: 'icon-user-follow'
-      // }
-
   },
   {
     name: 'Manager Candidate',
-    url: '/candidate/view',
-    icon: 'icon-user'
+    url: '/candidate',
+    icon: 'icon-puzzle',
+    children: [
+     {
+       name: 'Approved Candidate',
+       url: '/candidate/view'
+     },
+     {
+       name: 'New Request',
+       url: '/candidate/newcandidate'
+     }
+    ]
   },
   {
     name: 'Employer Summary',
@@ -56,7 +59,18 @@ export const navItems: NavData[] = [
     //     name: 'Summary',
     //     url: '/employeruser/summary',
     //   }
-    // ]
+    // ] 
+  },
+  {
+    name: 'Manager Offers',
+    url: '/candidateUser',
+    icon: 'icon-puzzle',
+    children: [
+     {
+       name: 'Offer List',
+       url: '/candidateUser/offerlist'
+     }
+    ]
   }
 ];
 

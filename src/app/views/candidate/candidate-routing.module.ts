@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
 import { NewcandidateListComponent } from './newcandidate-list/newcandidate-list.component';
+import { NewcandidateDetailComponent } from './newcandidate-detail/newcandidate-detail.component';
 
 const routes: Routes = [
   {
@@ -27,7 +28,15 @@ const routes: Routes = [
         data: {
           title: 'NewCandidate'
         }
+      },
+      {
+        path: 'newcandidatedetail',
+        component: NewcandidateDetailComponent,
+        data: {
+          title: 'NewCandidateDetail'
+        }
       }
+
     ]
   }
 ];
