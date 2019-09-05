@@ -41,6 +41,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { DataTablesModule } from 'angular-datatables';
+import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 
 @NgModule({
   imports: [
@@ -64,7 +65,8 @@ import { DataTablesModule } from 'angular-datatables';
     P404Component,
     P500Component,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ChangepasswordComponent
   ],
   providers: [
     {

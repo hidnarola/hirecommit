@@ -1,18 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-candidate-list',
-  templateUrl: './candidate-list.component.html',
-  styleUrls: ['./candidate-list.component.scss']
+  selector: 'app-offerlist',
+  templateUrl: './offerlist.component.html',
+  styleUrls: ['./offerlist.component.scss']
 })
-export class CandidateListComponent implements OnInit, OnDestroy {
+export class OfferlistComponent implements OnInit {
 
   constructor() { }
-  // dtOptions: DataTables.Settings = {};
-  // dtTrigger = new Subject();
+
   ngOnInit() {
-    // this.dtTrigger.next();
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
@@ -20,10 +17,6 @@ export class CandidateListComponent implements OnInit, OnDestroy {
           });
       }
     });
-    // this.dtOptions = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 10
-    // };
   }
 
   buttonInRowClick(event: any): void {
@@ -46,7 +39,4 @@ export class CandidateListComponent implements OnInit, OnDestroy {
     // we are calling to API
   }
 
-  ngOnDestroy = () => {
-    // this.dtTrigger.unsubscribe();
-  }
 }

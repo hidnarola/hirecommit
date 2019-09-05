@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class EmployerDetailComponent implements OnInit {
   id: any;
   employerDetail: any = [];
+  approval: boolean =  false;
   constructor(public service: EmployerService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
@@ -23,4 +24,11 @@ export class EmployerDetailComponent implements OnInit {
     this.router.navigate(['/employer/view']);
   }
 
+  approve() {
+    this.approval = true;
+  }
+
+  unapprove() {
+    this.approval = false;
+  }
 }

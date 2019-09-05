@@ -10,6 +10,7 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { AuthGuard } from './shared/gard/auth.guard';
 import { LoginGuard } from './shared/gard/login.guard';
+import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 
 export const routes: Routes = [
   {
@@ -54,13 +55,16 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'base',
-        loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule),
+        path: 'employer',
+        loadChildren: () => import('./views/employer/employer.module').then(m => m.EmployerModule),
         canActivate: [AuthGuard]
       },
       {
-        path: 'employer',
-        loadChildren: () => import('./views/employer/employer.module').then(m => m.EmployerModule),
+        path: 'changepassword',
+        component: ChangepasswordComponent,
+        data: {
+          title: 'changepassword',
+        },
         canActivate: [AuthGuard]
       },
       {
@@ -69,38 +73,8 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'buttons',
-        loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'charts',
-        loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'icons',
-        loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'notifications',
-        loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'theme',
-        loadChildren: () => import('./views/theme/theme.module').then(m => m.ThemeModule),
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'widgets',
-        loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule),
+        path: 'candidateUser',
+        loadChildren: () => import('./views/candidate-user/candidate-user.module').then(m => m.CandidateUserModule),
         canActivate: [AuthGuard]
       }
     ]

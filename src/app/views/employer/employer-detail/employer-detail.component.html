@@ -34,7 +34,13 @@
               </tr>
             </tbody>
           </table>
-          <button type="button" class="btn btn-sm btn-info" style="float: right;" (click)="cancel()">Cancel</button>
+
+          <div style="float: right;">
+          <button type="button" *ngIf="!approval" class="btn btn-sm btn-success" (click)="approve()">Approve</button>
+          <button type="button" *ngIf="approval" class="btn btn-sm btn-danger" (click)="unapprove()">Unapprove</button>
+
+          <button type="button" class="btn btn-sm btn-info" (click)="cancel()">Cancel</button>
+        </div>
         </div>
       </div>
     </div>

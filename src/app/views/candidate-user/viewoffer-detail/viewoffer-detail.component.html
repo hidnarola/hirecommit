@@ -1,0 +1,82 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Detail</strong>
+            <i class="icon-close" style="float: right; font-size: 25px" [routerLink]="['/candidateUser/offerlist']"></i>
+          </div>
+          <div class="card-body">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>Candidate Name</td>
+                  <td>Samppa Nori</td>
+                </tr>
+                <tr>
+                  <td>Candidate Email</td>
+                  <td>vik@narola.email</td>
+                </tr>
+                <tr>
+                  <td>Title</td>
+                  <td>9274512415</td>
+                </tr>
+                <tr>
+                  <td>Salary Bracket</td>
+                  <td>15000-30000</td>
+                </tr>
+                <tr>
+                  <td>Offer Expiry</td>
+                  <td>15-09-2019</td>
+                </tr>
+                <tr>
+                  <td>Joining Date</td>
+                  <td>1-10-2019</td>
+                </tr>
+                <tr>
+                  <td>Custom Field 1</td>
+                  <td>abc</td>
+                </tr>
+                <tr>
+                  <td>Custom Field 2</td>
+                  <td>abc</td>
+                </tr>
+                <tr>
+                  <td>Custom Field 3</td>
+                  <td>abc</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- <div style="float: right;">[formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)" -->
+              <p><strong>Note:</strong> - If you are intrested for this offer, So please select accept and submit.</p>
+                <form class="form-horizontal" [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
+                    <div class="card-body">
+                      <div class="form-group row">
+                          <div class="col-md-4 col-form-label">
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" formControlName="offerstatus" value="accept">
+                              <label class="form-check-label" for="accept">Accept</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" formControlName="offerstatus" value="reject">
+                              <label class="form-check-label" for="reject">Reject</label>
+                            </div><br>
+                            <span *ngIf="!registerForm.get('offerstatus').valid && submitted" class="help-block" style="color: red">Please select one from here then click the submit!</span>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                      <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fa fa-dot-circle-o"></i>
+                        Submit</button>
+                    </div>
+                  </form>
+            <!-- <button type="button" *ngIf="!accepted" class="btn btn-sm btn-success" (click)="accepte()">Accept</button>
+            <button type="button" *ngIf="accepted" class="btn btn-sm btn-danger" (click)="reject()">Reject</button> -->
+          <!-- </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
