@@ -10,6 +10,8 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { AuthGuard } from './shared/gard/auth.guard';
 import { LoginGuard } from './shared/gard/login.guard';
+import { BussinessDetailComponent } from './views/bussiness-detail/bussiness-detail.component';
+import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-detail1.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +48,24 @@ export const routes: Routes = [
       title: 'Register Page'
     }
   },
+
+  {
+    path: 'businessDeatil',
+    component: BussinessDetailComponent,
+    data: {
+      title: 'Business Detail Page'
+    }
+  },
+
+  {
+    path: 'businessDeatil1',
+    component: BussinessDetail1Component,
+    data: {
+      title: 'Business Detail Page'
+    }
+  },
+  
+
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -66,6 +86,11 @@ export const routes: Routes = [
       {
         path: 'candidate',
         loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'employeruser',
+        loadChildren: () => import('./views/employer-user/employer-user.module').then(m => m.EmployerUserModule),
         canActivate: [AuthGuard]
       },
       {

@@ -15,4 +15,8 @@ export class LoginComponent {
       this.router.navigate(['/employer/view']);
   }
 
+  signup(){
+    this.router.navigate(['/register']);
+  }
+
  }

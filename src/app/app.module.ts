@@ -41,6 +41,10 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { DataTablesModule } from 'angular-datatables';
+import { BussinessDetailComponent } from './views/bussiness-detail/bussiness-detail.component';
+import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-detail1.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   imports: [
@@ -56,7 +60,9 @@ import { DataTablesModule } from 'angular-datatables';
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     ChartsModule,
-    DataTablesModule
+    DataTablesModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     AppComponent,
@@ -64,7 +70,10 @@ import { DataTablesModule } from 'angular-datatables';
     P404Component,
     P500Component,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    BussinessDetailComponent,
+    BussinessDetail1Component
+  
   ],
   providers: [
     {

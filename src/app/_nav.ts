@@ -46,5 +46,18 @@ export const navItems: NavData[] = [
     name: 'Manager Candidate',
     url: '/candidate/view',
     icon: 'icon-user'
+  },
+  {
+    name: 'Employer Summary',
+    url: '/employeruser/summary',
+    icon: 'icon-puzzle',
+    // children: [
+    //   {
+    //     name: 'Summary',
+    //     url: '/employeruser/summary',
+    //   }
+    // ]
   }
 ];
+
+

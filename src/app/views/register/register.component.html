@@ -2,49 +2,54 @@
   <main class="main d-flex align-items-center">
     <div class="container">
       <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-4 mx-auto">
           <div class="card mx-4">
             <div class="card-body p-4">
               <form>
-                <h1>Register</h1>
-                <p class="text-muted">Create your account</p>
-                <div class="input-group mb-3">
+                <h1>Signing Up...</h1>
+                <p class="text-muted">Create a password to continue</p>
+
+                <!-- <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="icon-user"></i></span>
                   </div>
                   <input type="text" class="form-control" placeholder="Username" autocomplete="username" required>
-                </div>
+                </div> -->
+                 <label>Your Work Email</label>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text">@</span>
                   </div>
-                  <input type="text" class="form-control" placeholder="Email" autocomplete="email" required>
+                  <input type="text" class="form-control" placeholder="yourname@companyname.com" autocomplete="email" required>
                 </div>
+
+                <label>Create a Password</label>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="icon-lock"></i></span>
                   </div>
-                  <input type="password" class="form-control" placeholder="Password" autocomplete="new-password" required>
+                  <input type="password" class="form-control" placeholder="Min 8 char,1 letter & 1 number" autocomplete="new-password" required>
                 </div>
-                <div class="input-group mb-4">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="icon-lock"></i></span>
-                  </div>
-                  <input type="password" class="form-control" placeholder="Repeat password" autocomplete="new-password" required>
+
+                <div class="input-group mb-3">
+                  <img src="../../../assets/img/avatars/captcha.png" alt="Captcha" height="110px" width="275px"> 
                 </div>
-                <button type="button" class="btn btn-block btn-success">Create Account</button>
+                <p>By signing up you agree to our <a href="#">privacy policy</a> and <a href="#">terms of use</a> </p>
+                <button type="button" class="btn btn-block btn-primary" (click)="onCreatAccount()">Create Account</button>
               </form>
             </div>
-            <div class="card-footer p-4">
-              <div class="row">
-                <div class="col-6">
+             
+
+               
+              <!--<div class="row">
+               <div class="col-6">
                   <button class="btn btn-block btn-facebook" type="button"><span>facebook</span></button>
-                </div>
-                <div class="col-6">
+                </div> -->
+                <!-- <div class="col-6">
                   <button class="btn btn-block btn-twitter" type="button"><span>twitter</span></button>
-                </div>
-              </div>
-            </div>
+                </div> 
+              </div>-->
+        
           </div>
         </div>
       </div>

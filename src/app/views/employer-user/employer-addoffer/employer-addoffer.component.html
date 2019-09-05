@@ -1,0 +1,155 @@
+<div class="animated fadeIn">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <strong style="font-size: 20px;">Add Offer</strong>
+                <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+              </div>
+              <form class="form-horizontal" [formGroup]="addOrderForm" (ngSubmit)="onSubmit(addOrderForm.valid)">
+                <div class="card-body">
+                  
+                  <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="email">Email</label>
+                    <div class="col-md-8">
+                      <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email" formControlName="email" id="email">
+                      <span *ngIf="!addOrderForm.get('email').valid && submitted" class="help-block">Please enter a valid email!</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="name">Name</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Enter Name" autocomplete="name" formControlName="name" id="name">
+                       
+                        <span
+                        *ngIf="!addOrderForm.get('name').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('name').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                    </div>
+      
+                  <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="title">Title</label>
+                    <div class="col-md-2">
+                      <select id="title" name="select1" class="form-control" formControlName="title">
+                        <option value="null">Please select</option>
+                        <option value="Ass.HR">Ass.HR</option>
+                        <option value="Jr.HR">Jr.HR</option>
+                        <option value="Sr.HR">Sr.HR</option>
+                      </select>
+                      <span *ngIf="!addOrderForm.get('title').valid && submitted" class="help-block">Please select title!</span>
+                    </div>
+                  </div>
+      
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="salaryBracket">Salary Bracket</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Enter salaryBracket" autocomplete="salaryBracket" formControlName="salaryBracket" id="salaryBracket">
+                       
+                        <span
+                        *ngIf="!addOrderForm.get('salaryBracket').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('salaryBracket').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                    </div>
+      
+                  <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="expiryDate">Expiry Date</label>
+                    <div class="col-md-9">
+                      <input type="date" formControlName="expiryDate" id="expiryDate">
+                      <span
+                      *ngIf="!addOrderForm.get('expiryDate').valid && submitted"
+                      class="help-block">
+                      <span *ngIf="addOrderForm.get('expiryDate').errors['required']">This field is required!</span>
+                    </span>
+                    </div>
+                  </div>
+      
+                  
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="joiningDate">Joining Date</label>
+                      <div class="col-md-9">
+                        <input type="date" formControlName="joiningDate" id="joiningDate">
+                        <span
+                        *ngIf="!addOrderForm.get('joiningDate').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('joiningDate').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                      
+                    </div>
+
+                    
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="notes">Notes</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Enter notes" autocomplete="notes" formControlName="notes" id="notes">
+                       
+                        <span
+                        *ngIf="!addOrderForm.get('notes').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('notes').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                    </div>
+
+                    
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="customField1">Custom Field 1</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Enter customField1" autocomplete="customField1" formControlName="customField1" id="customField1">
+                       
+                        <span
+                        *ngIf="!addOrderForm.get('customField1').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('customField1').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                    </div>
+
+                    
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="customField2">custom Field 2</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Enter customField2" autocomplete="customField2" formControlName="customField2" id="customField2">
+                       
+                        <span
+                        *ngIf="!addOrderForm.get('customField2').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('customField2').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                    </div>
+
+                    
+                  <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="customField3">Custom Field 3</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Enter customField3" autocomplete="customField3" formControlName="customField3" id="customField3">
+                       
+                        <span
+                        *ngIf="!addOrderForm.get('customField3').valid && submitted"
+                        class="help-block">
+                        <span *ngIf="addOrderForm.get('customField3').errors['required']">This field is required!</span>
+                      </span>
+                      </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="fa fa-dot-circle-o"></i>
+                    Submit</button>
+                  <button type="reset" class="btn btn-sm btn-danger">
+                    <i class="fa fa-ban"></i>
+                    Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
