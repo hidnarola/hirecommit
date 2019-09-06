@@ -15,11 +15,11 @@ export class LoginComponent {
       this.router.navigate(['/employer/view']);
   }
 
-  signup(){
+  signup() {
     this.router.navigate(['/register']);
   }
 
-  Onclick(){
+  Onclick() {
     this.router.navigate(['/forgotpassword']);
   }
 

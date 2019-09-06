@@ -50,7 +50,7 @@ export const routes: Routes = [
       title: 'Register Page'
     }
   },
-  
+
   {
     path: 'businessDeatil',
     component: BussinessDetailComponent,
@@ -66,15 +66,12 @@ export const routes: Routes = [
       title: 'Business Detail Page'
     }
   },
-
   { path: 'forgotpassword',
-  component: ForgotPasswordComponent,
-  data: {
-    title: 'forgotpassword',
-  }
-},
-  
-
+    component: ForgotPasswordComponent,
+    data: {
+      title: 'forgotpassword',
+    }
+  },
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -104,9 +101,6 @@ export const routes: Routes = [
         },
         canActivate: [AuthGuard]
       },
-     
-    
-   
       {
         path: 'candidate',
         loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),
