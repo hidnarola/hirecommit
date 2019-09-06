@@ -46,6 +46,7 @@ import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-d
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
+import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
 
 @NgModule({
   imports: [
@@ -75,7 +76,9 @@ import { ChangepasswordComponent } from './views/changepassword/changepassword.c
     BussinessDetailComponent,
     BussinessDetail1Component,
   
-    ChangepasswordComponent
+    ChangepasswordComponent,
+  
+    ForgotPasswordComponent
   ],
   providers: [
     {
