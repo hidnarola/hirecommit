@@ -49,7 +49,6 @@ export const routes: Routes = [
       title: 'Register Page'
     }
   },
-
   {
     path: 'businessDeatil',
     component: BussinessDetailComponent,
@@ -65,7 +64,6 @@ export const routes: Routes = [
       title: 'Business Detail Page'
     }
   },
-  
 
   {
     path: '',
@@ -89,21 +87,14 @@ export const routes: Routes = [
         loadChildren: () => import('./views/employer-user/employer-user.module').then(m => m.EmployerUserModule),
         canActivate: [AuthGuard]
       },
-      // {
-      //   path: 'buttons',
-      //   loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule),
-      //   canActivate: [AuthGuard]
-      // },
-      // {
-      //   path: 'charts',
-      //   loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule),
-      //   path: 'changepassword',
-      //   component: ChangepasswordComponent,
-      //   data: {
-      //     title: 'changepassword',
-      //   },
-      //   canActivate: [AuthGuard]
-      // },
+      {
+        path: 'changepassword',
+        component: ChangepasswordComponent,
+        data: {
+          title: 'changepassword',
+        },
+        canActivate: [AuthGuard]
+      },
       {
         path: 'candidate',
         loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),

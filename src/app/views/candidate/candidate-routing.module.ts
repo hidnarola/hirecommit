@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
 import { NewcandidateListComponent } from './newcandidate-list/newcandidate-list.component';
 import { NewcandidateDetailComponent } from './newcandidate-detail/newcandidate-detail.component';
+import { CandidatedetailApproveComponent } from './candidatedetail-approve/candidatedetail-approve.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,13 @@ const routes: Routes = [
         component: CandidateListComponent,
         data: {
           title: 'View'
+        }
+      },
+      {
+        path: 'candidatedetail',
+        component: CandidatedetailApproveComponent,
+        data: {
+          title: 'ApproveCandidateDetail'
         }
       },
       {
