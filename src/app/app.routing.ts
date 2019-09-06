@@ -13,6 +13,7 @@ import { LoginGuard } from './shared/gard/login.guard';
 import { BussinessDetailComponent } from './views/bussiness-detail/bussiness-detail.component';
 import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-detail1.component';
 import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
+import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
   {
@@ -49,6 +50,7 @@ export const routes: Routes = [
       title: 'Register Page'
     }
   },
+
   {
     path: 'businessDeatil',
     component: BussinessDetailComponent,
@@ -64,7 +66,12 @@ export const routes: Routes = [
       title: 'Business Detail Page'
     }
   },
-
+  { path: 'forgotpassword',
+    component: ForgotPasswordComponent,
+    data: {
+      title: 'forgotpassword',
+    }
+  },
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -87,8 +94,7 @@ export const routes: Routes = [
         loadChildren: () => import('./views/employer-user/employer-user.module').then(m => m.EmployerUserModule),
         canActivate: [AuthGuard]
       },
-      {
-        path: 'changepassword',
+      { path: 'changepassword',
         component: ChangepasswordComponent,
         data: {
           title: 'changepassword',
