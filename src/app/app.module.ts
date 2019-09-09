@@ -47,6 +47,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
+import { ProfileComponent } from './views/profile/profile.component';
+import { SignUpComponent } from './views/sign-up/sign-up.component';
 
 @NgModule({
   imports: [
@@ -78,7 +80,11 @@ import { ForgotPasswordComponent } from './views/forgot-password/forgot-password
   
     ChangepasswordComponent,
   
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+  
+    ProfileComponent,
+  
+    SignUpComponent
   ],
   providers: [
     {
