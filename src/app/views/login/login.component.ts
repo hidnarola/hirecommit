@@ -19,6 +19,10 @@ export class LoginComponent {
     this.router.navigate(['/register']);
   }
 
+  signup1() {
+    this.router.navigate(['/candidateregister']);
+  }
+
   Onclick() {
     this.router.navigate(['/forgotpassword']);
   }

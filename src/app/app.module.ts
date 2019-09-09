@@ -49,6 +49,8 @@ import { ChangepasswordComponent } from './views/changepassword/changepassword.c
 import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
 import { TimelineComponent } from './views/timeline/timeline.component';
 import { MglTimelineModule } from 'angular-mgl-timeline';
+import { ProfileComponent } from './views/profile/profile.component';
+import { SignUpComponent } from './views/sign-up/sign-up.component';
 
 @NgModule({
   imports: [
@@ -81,7 +83,13 @@ import { MglTimelineModule } from 'angular-mgl-timeline';
     BussinessDetail1Component,
     ChangepasswordComponent,
     ForgotPasswordComponent,
-    TimelineComponent
+    TimelineComponent,
+
+    ForgotPasswordComponent,
+
+    ProfileComponent,
+
+    SignUpComponent
   ],
   providers: [
     {

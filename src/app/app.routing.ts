@@ -10,13 +10,20 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { AuthGuard } from './shared/gard/auth.guard';
 import { LoginGuard } from './shared/gard/login.guard';
-import { BussinessDetailComponent } from './views/bussiness-detail/bussiness-detail.component';
-import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-detail1.component';
+
 import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
 import { TimelineComponent } from './views/timeline/timeline.component';
 
+import { ProfileComponent } from './views/profile/profile.component';
+import { SignUpComponent } from './views/sign-up/sign-up.component';
+class role {
+  admin: string;
+  user: string;
+}
+const  rol = new role();
 export const routes: Routes = [
+
   {
     path: '',
     redirectTo: 'employer/view',
@@ -46,33 +53,28 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    component: RegisterComponent,
+    component: SignUpComponent,
     data: {
       title: 'Register Page'
     }
   },
 
   {
-    path: 'businessDeatil',
-    component: BussinessDetailComponent,
+    path: 'candidateregister',
+
+  component: RegisterComponent,
     data: {
-      title: 'Business Detail Page'
+      title: 'Candidate Registration Page'
     }
   },
 
-  {
-    path: 'businessDeatil1',
-    component: BussinessDetail1Component,
-    data: {
-      title: 'Business Detail Page'
-    }
-  },
   { path: 'forgotpassword',
     component: ForgotPasswordComponent,
     data: {
       title: 'forgotpassword',
     }
   },
+
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -83,22 +85,33 @@ export const routes: Routes = [
       {
         path: 'employer',
         loadChildren: () => import('./views/employer/employer.module').then(m => m.EmployerModule),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {roles: [rol.admin]}
       },
       {
         path: 'candidate',
         loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {roles: [rol.admin]}
       },
       {
         path: 'employeruser',
         loadChildren: () => import('./views/employer-user/employer-user.module').then(m => m.EmployerUserModule),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: {roles: [rol.admin]}
       },
       { path: 'changepassword',
         component: ChangepasswordComponent,
         data: {
           title: 'changepassword',
+        },
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        data: {
+          title: 'profile'
         },
         canActivate: [AuthGuard]
       },
@@ -128,4 +141,6 @@ export const routes: Routes = [
   imports: [ RouterModule.forRoot(routes) ],
   exports: [ RouterModule ]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+
+}

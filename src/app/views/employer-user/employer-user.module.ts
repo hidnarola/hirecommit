@@ -8,11 +8,12 @@ import { EmployerSummaryDetailComponent } from './employer-summary-detail/employ
 import { ReactiveFormsModule } from '@angular/forms';
 
 
+
 @NgModule({
   declarations: [EmployerSummaryComponent, EmployerAddofferComponent, EmployerSummaryDetailComponent],
   imports: [
     CommonModule,
     EmployerUserRoutingModule,
-  ReactiveFormsModule  ]
+  ReactiveFormsModule]
 })
 export class EmployerUserModule { }

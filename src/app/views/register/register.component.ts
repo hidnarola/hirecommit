@@ -10,7 +10,7 @@ export class RegisterComponent {
   constructor(public router: Router) { }
 
   onCreatAccount(){
-     this.router.navigate(['businessDeatil']);
+     this.router.navigate(['/login']);
   }
 
 }

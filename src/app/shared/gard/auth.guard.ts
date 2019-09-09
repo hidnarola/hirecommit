@@ -7,6 +7,18 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) { }
 
+  // canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  //   const url: string = state.url;
+  //   const user = localStorage.getItem('admin');
+  //   if (user != null && user != undefined) {
+  //      if (route.data.roles && route.data.roles.indexOf(user) ) {
+  //       this.router.navigate(['/login']);
+  //       return false;
+  //      }
+  //      return true;
+  //   }okay
+
+
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const url: string = state.url;
     return this.checkLogin(url);
