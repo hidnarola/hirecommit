@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class EmployerSummaryComponent implements OnInit {
 
   constructor(private router: Router) { }
- 
+
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
@@ -41,12 +41,18 @@ export class EmployerSummaryComponent implements OnInit {
     // we are calling to API
   }
 
- 
   detail() {
    this.router.navigate(['/employeruser/summarydetail']);
   }
 
-  onAdd(){
+  edit() {
+
+  }
+
+  delete() {}
+
+  onAdd() {
     this.router.navigate(['/employeruser/addoffer']);
   }
+
 }
