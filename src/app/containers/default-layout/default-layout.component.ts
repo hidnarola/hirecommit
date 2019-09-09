@@ -2,6 +2,8 @@ import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from '../../_nav';
 import { Router } from '@angular/router';
+import { ManageUser } from '../../shared/manageuser';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -12,8 +14,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public sidebarMinimized = true;
   private changes: MutationObserver;
   public element: HTMLElement;
-  constructor(private router: Router, @Inject(DOCUMENT) _document?: any) {
 
+  constructor(private router: Router, @Inject(DOCUMENT) _document?: any, private mn?: ManageUser) {
+    this.mn.dispalyMenu(null,null);
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -43,9 +46,12 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-  //   const app = [];
-  //   console.log("$$$$$$$$$", this.navItems);
-  //   const user =  localStorage.getItem('admin');
+    // const app = [];
+    const user =  localStorage.getItem('user');
+    this.navItems = this.mn.dispalyMenu(this.navItems, user);
+    this.router.navigate([this.navItems[0].url]);
+    // return dispalyMenu (navItems, user);
+    
   //  if (user != null && user !== '' && user != undefined) {
   //    if(user == 'admin') {
   //      for (let index = 0; index < this.navItems.length; index++) {
@@ -55,6 +61,22 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   //        } 
   //      }
   //      this.navItems = app;
+  //    } else if (user == 'employer') {
+  //       for (let index = 0; index < this.navItems.length; index++) {
+  //         if (index == 1 || index ==2 || index == 4  )
+  //         {
+  //           app.push(this.navItems[index]);
+  //         } 
+  //       }
+  //       this.navItems = app;
+  //    } else if (user == 'candidate') {
+  //       for (let index = 0; index < this.navItems.length; index++) {
+  //         if ( index == 3  )
+  //         {
+  //           app.push(this.navItems[index]);
+  //         } 
+  //       }
+  //       this.navItems = app;
   //    }
   //  }
     

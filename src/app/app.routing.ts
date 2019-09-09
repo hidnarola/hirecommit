@@ -17,11 +17,11 @@ import { TimelineComponent } from './views/timeline/timeline.component';
 
 import { ProfileComponent } from './views/profile/profile.component';
 import { SignUpComponent } from './views/sign-up/sign-up.component';
-class role {
-  admin: string;
-  user: string;
-}
-const  rol = new role();
+// class role {
+//   admin: string;
+//   user: string;
+// }
+// const  rol = new role();
 export const routes: Routes = [
 
   {
@@ -86,19 +86,19 @@ export const routes: Routes = [
         path: 'employer',
         loadChildren: () => import('./views/employer/employer.module').then(m => m.EmployerModule),
         canActivate: [AuthGuard],
-        data: {roles: [rol.admin]}
+  
       },
       {
         path: 'candidate',
         loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),
         canActivate: [AuthGuard],
-        data: {roles: [rol.admin]}
+   
       },
       {
         path: 'employeruser',
         loadChildren: () => import('./views/employer-user/employer-user.module').then(m => m.EmployerUserModule),
         canActivate: [AuthGuard],
-        data: {roles: [rol.admin]}
+        
       },
       { path: 'changepassword',
         component: ChangepasswordComponent,

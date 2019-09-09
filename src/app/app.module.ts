@@ -51,6 +51,7 @@ import { TimelineComponent } from './views/timeline/timeline.component';
 import { MglTimelineModule } from 'angular-mgl-timeline';
 import { ProfileComponent } from './views/profile/profile.component';
 import { SignUpComponent } from './views/sign-up/sign-up.component';
+import { ManageUser } from './shared/manageuser';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { SignUpComponent } from './views/sign-up/sign-up.component';
     {
     provide: LocationStrategy,
     useClass: HashLocationStrategy
-  }
+  },
+  ManageUser
 ],
   bootstrap: [ AppComponent ]
 })

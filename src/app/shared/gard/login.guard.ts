@@ -15,7 +15,7 @@ export class LoginGuard implements CanActivate {
 
   checkLogin(url: string): boolean {
     let islogin = false;
-    let loginUser = localStorage.getItem('admin');
+    let loginUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
     try {
       // loginUser = JSON.parse(loginUser);
@@ -29,7 +29,7 @@ export class LoginGuard implements CanActivate {
       islogin = false;
     }
     if (islogin) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/employer/view']);
       return false;
     }
     return true;

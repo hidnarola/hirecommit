@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EmployerService } from '../employer.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -11,7 +11,10 @@ import { Subject } from 'rxjs';
 export class ViewEmployerComponent implements OnInit, OnDestroy  {
   name = 'Angular';
   employer: any = [];
-  constructor(public service: EmployerService, private router: Router) {}
+  constructor(public service: EmployerService, private router: Router, private activeRoute: ActivatedRoute,) {
+    console.log( 'activeRoute', this.activeRoute);
+    
+  }
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
   ngOnInit(): void {
