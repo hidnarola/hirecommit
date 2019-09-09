@@ -31,7 +31,7 @@ export interface NavData {
 
 export const navItems: NavData[] = [
   {
-    name: 'Manage Employee',
+    name: 'Manage Employer',
     url: '/employer/view',
     icon: 'icon-user'
   },
@@ -59,7 +59,7 @@ export const navItems: NavData[] = [
     //     name: 'Summary',
     //     url: '/employeruser/summary',
     //   }
-    // ] 
+    // ]
   },
   {
     name: 'Manager Offers',
@@ -71,7 +71,10 @@ export const navItems: NavData[] = [
        url: '/candidateUser/offerlist'
      }
     ]
-  }
+  },
+  {
+    name: 'Timeline',
+    url: '/timeline',
+    icon: 'icon-user'
+  },
 ];
-
-

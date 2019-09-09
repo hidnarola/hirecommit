@@ -47,6 +47,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
+import { TimelineComponent } from './views/timeline/timeline.component';
+import { MglTimelineModule } from 'angular-mgl-timeline';
 
 @NgModule({
   imports: [
@@ -64,7 +66,9 @@ import { ForgotPasswordComponent } from './views/forgot-password/forgot-password
     ChartsModule,
     DataTablesModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MglTimelineModule,
+
   ],
   declarations: [
     AppComponent,
@@ -75,10 +79,9 @@ import { ForgotPasswordComponent } from './views/forgot-password/forgot-password
     RegisterComponent,
     BussinessDetailComponent,
     BussinessDetail1Component,
-  
     ChangepasswordComponent,
-  
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    TimelineComponent
   ],
   providers: [
     {

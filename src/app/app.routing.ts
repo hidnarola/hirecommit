@@ -14,6 +14,7 @@ import { BussinessDetailComponent } from './views/bussiness-detail/bussiness-det
 import { BussinessDetail1Component } from './views/bussiness-detail1/bussiness-detail1.component';
 import { ChangepasswordComponent } from './views/changepassword/changepassword.component';
 import { ForgotPasswordComponent } from './views/forgot-password/forgot-password.component';
+import { TimelineComponent } from './views/timeline/timeline.component';
 
 export const routes: Routes = [
   {
@@ -109,6 +110,13 @@ export const routes: Routes = [
       {
         path: 'candidateUser',
         loadChildren: () => import('./views/candidate-user/candidate-user.module').then(m => m.CandidateUserModule),
+        canActivate: [AuthGuard]
+      },
+      { path: 'timeline',
+        component: TimelineComponent,
+        data: {
+          title: 'Timeline',
+        },
         canActivate: [AuthGuard]
       }
     ]
