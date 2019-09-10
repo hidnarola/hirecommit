@@ -20,19 +20,19 @@
                   </tr>
                 </thead>
 
-                <tbody >
+                <tbody>
 
-                  <tr *ngFor="let emp of employer">
-                    <td>{{emp.firstName}}</td>
-                    <td>{{emp.lastName}}</td>
-                    <td>{{emp.email}}</td>
-                    <td>{{emp.designation}}</td>
-                    <td>{{emp.gender}}</td>
-                    <td>{{emp.status}}</td>
+                  <tr>
+                    <td>ABC</td>
+                    <td>PQR</td>
+                    <td>ABC@gmail.com</td>
+                    <td>HR</td>
+                    <td>Male</td>
+                    <td>Active</td>
                     <td>
-                      <button type="button" class="btn btn-sm btn-success" (click)="detail(emp.id)"><i class="icon-eye"></i></button>
-                      <button type="button" class="btn btn-sm btn-primary" (click)="edit(emp.id)"><i class="icon-pencil"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete(emp.id)"><i class="icon-trash"></i></button></td>
+                      <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i class="icon-eye"></i></button>
+                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
                   </tr>
                 </tbody>
               </table>

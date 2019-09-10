@@ -70,8 +70,7 @@ import { ManageUser } from './shared/manageuser';
     DataTablesModule,
     FormsModule,
     ReactiveFormsModule,
-    MglTimelineModule,
-
+    MglTimelineModule
   ],
   declarations: [
     AppComponent,
