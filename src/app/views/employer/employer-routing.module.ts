@@ -30,14 +30,14 @@ const routes: Routes = [
         }
       },
       {
-        path: 'detail/:id',
+        path: 'detail',
         component: EmployerDetailComponent,
         data: {
           title: 'Detail'
         }
       },
       {
-        path: 'edit/:id',
+        path: 'edit',
         component: AddEmployerComponent,
         data: {
           title: 'Edit'

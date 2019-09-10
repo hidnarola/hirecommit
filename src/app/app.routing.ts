@@ -86,19 +86,19 @@ export const routes: Routes = [
         path: 'employer',
         loadChildren: () => import('./views/employer/employer.module').then(m => m.EmployerModule),
         canActivate: [AuthGuard],
-  
+
       },
       {
         path: 'candidate',
         loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),
         canActivate: [AuthGuard],
-   
+
       },
       {
         path: 'employeruser',
         loadChildren: () => import('./views/employer-user/employer-user.module').then(m => m.EmployerUserModule),
         canActivate: [AuthGuard],
-        
+
       },
       { path: 'changepassword',
         component: ChangepasswordComponent,

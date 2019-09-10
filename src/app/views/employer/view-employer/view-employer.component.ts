@@ -11,9 +11,9 @@ import { Subject } from 'rxjs';
 export class ViewEmployerComponent implements OnInit, OnDestroy  {
   name = 'Angular';
   employer: any = [];
-  constructor(public service: EmployerService, private router: Router, private activeRoute: ActivatedRoute,) {
+  constructor(public service: EmployerService, private router: Router, private activeRoute: ActivatedRoute, ) {
     console.log( 'activeRoute', this.activeRoute);
-    
+
   }
   dtOptions: DataTables.Settings = {};
   dtTrigger = new Subject();
@@ -57,11 +57,11 @@ export class ViewEmployerComponent implements OnInit, OnDestroy  {
     // we are calling to API
   }
 
-  delete(id) {
-    this.service.delemployer(id).subscribe(res => {
-      console.log('Record Deleted');
-      this.service.checkHere();
-    });
+  delete() {
+    // this.service.delemployer(id).subscribe(res => {
+    //   console.log('Record Deleted');
+    //   this.service.checkHere();
+    // });
   }
   getEmployerlist() {
     this.service.getemployer().subscribe(res => {
@@ -70,12 +70,12 @@ export class ViewEmployerComponent implements OnInit, OnDestroy  {
     });
   }
 
-  detail(id) {
-    this.router.navigate(['/employer/detail/' + id]);
+  detail() {
+    this.router.navigate(['/employer/detail/']);
   }
 
-  edit(id) {
-    this.router.navigate(['/employer/edit/' + id]);
+  edit() {
+    this.router.navigate(['/employer/edit/']);
   }
 
   ngOnDestroy = () => {

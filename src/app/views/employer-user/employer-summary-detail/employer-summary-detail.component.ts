@@ -12,9 +12,13 @@ export class EmployerSummaryDetailComponent implements OnInit {
 
   ngOnInit() {
   }
-  
+
+  edit(){
+    this.router.navigate(['/employeruser/addoffer'])
+  }
+
 cancel(){
   this.router.navigate(['/employeruser/summary']);;;
-}  
- 
+}
+
 }
