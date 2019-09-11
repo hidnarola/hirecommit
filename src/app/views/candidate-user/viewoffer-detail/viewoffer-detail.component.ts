@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ThemeService } from 'ng2-charts';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-viewoffer-detail',
@@ -11,7 +13,7 @@ export class ViewofferDetailComponent implements OnInit {
   accepted: boolean = false;
   submitted = false;
   registerForm: FormGroup;
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.registerForm = new FormGroup({
@@ -55,5 +57,9 @@ export class ViewofferDetailComponent implements OnInit {
       }
     }
     this.registerForm.reset();
+  }
+
+  onclick(){
+    this.router.navigate(['/candidateUser/offerlist'])
   }
 }

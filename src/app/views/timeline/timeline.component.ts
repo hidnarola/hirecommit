@@ -9,7 +9,7 @@ export class TimelineComponent {
   alternate: boolean = true;
   toggle: boolean = true;
   color: boolean = false;
-  size: number = 40;
+  size: number = 35;
   expandEnabled: boolean = true;
   side = 'left';
 

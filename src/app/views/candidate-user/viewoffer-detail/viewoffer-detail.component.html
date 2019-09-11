@@ -4,7 +4,7 @@
         <div class="card">
           <div class="card-header">
             <strong>Detail</strong>
-            <i class="icon-close" style="float: right; font-size: 25px" [routerLink]="['/candidateUser/offerlist']"></i>
+            <i class="icon-close"  [routerLink]="['/candidateUser/offerlist']"></i>
           </div>
           <div class="card-body">
             <table class="table">
@@ -71,15 +71,18 @@
                           </div>
                         </div>
                     </div>
-                    <div class="card-footer text-right">
-                      <button type="submit" class="btn btn-sm btn-primary">
-                        <!-- <i class="fa fa-dot-circle-o"></i> -->
-                        Submit</button>
 
-                        <button type="button" class="btn btn-sm btn-danger">
+                   
+                      
+                        <button type="button" class="btn btn-sm btn-danger" (click)="onclick()" style="float: right;">
                             <!-- <i class="fa fa-ban"></i> -->
                             Cancel</button>
-                    </div>
+                            <button type="submit" class="btn btn-sm btn-primary mr-2" style="float: right;">
+                              <!-- <i class="fa fa-dot-circle-o"></i> -->
+                              Submit</button>
+      
+                  
+
                   </form>
 
           </div>

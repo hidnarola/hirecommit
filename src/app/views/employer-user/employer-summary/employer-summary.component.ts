@@ -46,7 +46,7 @@ export class EmployerSummaryComponent implements OnInit {
   }
 
   edit() {
-
+   this.router.navigate(['/employeruser/addoffer']);
   }
 
   delete() {}

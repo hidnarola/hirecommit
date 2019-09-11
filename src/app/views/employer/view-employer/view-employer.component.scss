@@ -70,3 +70,9 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
