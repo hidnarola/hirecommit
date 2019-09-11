@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-header">
           <i class="fa fa-align-justify"></i> Employer List
-          <i class="icon-plus icon-plus-align-justify" style=" float: right; font-size: 20px;" [routerLink]="['/employer/add']"> Add Employer</i>
+          <i class="icon-plus pull-right"  [routerLink]="['/employer/add']"> Add Employer</i>
         </div>
         <div class="card-body">
             <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" id="example" class="" cellspacing="0" width="100%" >
@@ -28,7 +28,10 @@
                     <td>ABC@gmail.com</td>
                     <td>HR</td>
                     <td>Male</td>
-                    <td>Active</td>
+                    <td><label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                      </label></td>
                     <td>
                       <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i class="icon-eye"></i></button>
                       <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
