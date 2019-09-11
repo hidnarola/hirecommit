@@ -59,11 +59,14 @@
                                                     placeholder="Min 8 char,1 letter & 1 number"
                                                     autocomplete="new-password" required>
                                             </div>
-
-                                            <div class="input-group mb-3">
-                                                <img src="../../../assets/img/avatars/captcha.png" alt="Captcha"
-                                                    height="110px" width="420px">
-                                            </div>
+                                              <div class="input-group mb-3">
+                                                <form [formGroup]="aFormGroup">
+                                                  <ngx-recaptcha2 #captchaElem
+                                                    [siteKey]="siteKey"
+                                                    formControlName="recaptcha">
+                                                  </ngx-recaptcha2>
+                                                </form>
+                                              </div>
                                             <p>By signing up you agree to our <a href="#">privacy policy</a> and <a
                                                     href="#">terms of use</a> </p>
                                             <!-- <button type="button" class="btn btn-block btn-primary" (click)="onCreatAccount()">Create
@@ -95,7 +98,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+
 
                                             <button (click)="next()" class="btn btn-primary">Next</button>
                                         </div>
@@ -121,8 +124,8 @@
                                                 </div>
                                                 <p class="pull-left" style="color: rgb(167, 167, 167); font-size: 100%;">Leave blank if anavailable</p>
                                                 <br><br>
-                                            
-                                          
+
+
 
                                             <h5>Contact Details</h5>
 
@@ -141,7 +144,7 @@
                                                     <span class="input-group-text"><i class="icon-phone"></i></span>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    
+
                                                         <select id="CountryCode" name="CountryCode" class="form-control">
                                                         <option value="+91" selected>+91</option>
                                                         <option value="+92">+92</option>

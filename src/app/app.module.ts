@@ -52,6 +52,7 @@ import { MglTimelineModule } from 'angular-mgl-timeline';
 import { ProfileComponent } from './views/profile/profile.component';
 import { SignUpComponent } from './views/sign-up/sign-up.component';
 import { ManageUser } from './shared/manageuser';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 @NgModule({
   imports: [
@@ -70,7 +71,8 @@ import { ManageUser } from './shared/manageuser';
     DataTablesModule,
     FormsModule,
     ReactiveFormsModule,
-    MglTimelineModule
+    MglTimelineModule,
+    NgxCaptchaModule
   ],
   declarations: [
     AppComponent,

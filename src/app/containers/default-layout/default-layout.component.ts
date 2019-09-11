@@ -4,7 +4,6 @@ import { navItems } from '../../_nav';
 import { Router } from '@angular/router';
 import { ManageUser } from '../../shared/manageuser';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
@@ -16,7 +15,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public element: HTMLElement;
 
   constructor(private router: Router, @Inject(DOCUMENT) _document?: any, private mn?: ManageUser) {
-    this.mn.dispalyMenu(null,null);
+    this.mn.dispalyMenu(null, null);
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -41,7 +40,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
-  ViewProfile(){
+  ViewProfile() {
      this.router.navigate(['/profile']);
   }
 
@@ -51,14 +50,14 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this.navItems = this.mn.dispalyMenu(this.navItems, user);
     this.router.navigate([this.navItems[0].url]);
     // return dispalyMenu (navItems, user);
-    
+
   //  if (user != null && user !== '' && user != undefined) {
   //    if(user == 'admin') {
   //      for (let index = 0; index < this.navItems.length; index++) {
   //        if (index <= 1  )
   //        {
   //          app.push(this.navItems[index]);
-  //        } 
+  //        }
   //      }
   //      this.navItems = app;
   //    } else if (user == 'employer') {
@@ -66,7 +65,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   //         if (index == 1 || index ==2 || index == 4  )
   //         {
   //           app.push(this.navItems[index]);
-  //         } 
+  //         }
   //       }
   //       this.navItems = app;
   //    } else if (user == 'candidate') {
@@ -74,12 +73,12 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   //         if ( index == 3  )
   //         {
   //           app.push(this.navItems[index]);
-  //         } 
+  //         }
   //       }
   //       this.navItems = app;
   //    }
   //  }
-    
+
   }
 
 }

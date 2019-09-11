@@ -36,24 +36,26 @@ export const navItems: NavData[] = [
     icon: 'icon-user'
   },
   {
-    name: 'Manager Candidate',
+    name: 'Manage Candidate',
     url: '/candidate',
-    icon: 'icon-puzzle',
+    icon: 'icon-people',
     children: [
      {
        name: 'Approved Candidate',
-       url: '/candidate/view'
+       url: '/candidate/view',
+       icon: 'icon-check'
      },
      {
        name: 'New Request',
-       url: '/candidate/newcandidate'
+       url: '/candidate/newcandidate',
+       icon: 'icon-user-follow'
      }
     ]
   },
   {
     name: 'Employer Summary',
     url: '/employeruser/summary',
-    icon: 'icon-puzzle',
+    icon: 'icon-grid',
     // children: [
     //   {
     //     name: 'Summary',
@@ -64,17 +66,18 @@ export const navItems: NavData[] = [
   {
     name: 'Manager Offers',
     url: '/candidateUser',
-    icon: 'icon-puzzle',
+    icon: 'icon-tag',
     children: [
      {
        name: 'Offer List',
-       url: '/candidateUser/offerlist'
+       url: '/candidateUser/offerlist',
+       icon: 'icon-calendar'
      }
     ]
   },
   {
     name: 'Timeline',
     url: '/timeline',
-    icon: 'icon-user'
+    icon: 'icon-equalizer'
   },
 ];

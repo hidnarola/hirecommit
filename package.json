@@ -58,6 +58,7 @@
     "ng2-charts": "^2.3.0",
     "ng2-tooltip-directive": "^2.1.9",
     "ngx-bootstrap": "^5.0.0",
+    "ngx-captcha": "^7.0.0",
     "ngx-perfect-scrollbar": "^8.0.0",
     "rxjs": "^6.5.2",
     "simple-line-icons": "^2.4.1",
