@@ -40,20 +40,20 @@ export const navItems: NavData[] = [
     url: '/candidate',
     icon: 'icon-people',
     children: [
-     {
-       name: 'Approved Candidate',
-       url: '/candidate/view',
-       icon: 'icon-check'
-     },
-     {
-       name: 'New Request',
-       url: '/candidate/newcandidate',
-       icon: 'icon-user-follow'
-     }
+      {
+        name: 'Approved Candidate',
+        url: '/candidate/view',
+        icon: 'icon-check'
+      },
+      {
+        name: 'New Request',
+        url: '/candidate/newcandidate',
+        icon: 'icon-user-follow'
+      }
     ]
   },
   {
-    name: 'Employer Summary',
+    name: 'Manage Offer',
     url: '/employeruser/summary',
     icon: 'icon-grid',
     // children: [
@@ -63,21 +63,37 @@ export const navItems: NavData[] = [
     //   }
     // ]
   },
+
   {
-    name: 'Manager Offers',
+    name: 'Manage Offers',
     url: '/candidateUser',
     icon: 'icon-tag',
     children: [
-     {
-       name: 'Offer List',
-       url: '/candidateUser/offerlist',
-       icon: 'icon-calendar'
-     }
+      {
+        name: 'Offer List',
+        url: '/candidateUser/offerlist',
+        icon: 'icon-calendar'
+      }
     ]
   },
   {
     name: 'Timeline',
     url: '/timeline',
     icon: 'icon-equalizer'
+  },
+  {
+    name: 'Manage Sub-accounts',
+    url: '/subaccounts/viewsubaccount',
+    icon: 'icon-calendar',
+  },
+  {
+    name: 'Manage Groups',
+    url: '/groups/viewgroups',
+    icon: 'icon-info',
+  },
+  {
+    name: 'Manage Salary-Brackets',
+    url: '/salary-brackets/viewsalarybracket',
+    icon: 'icon-calendar',
   },
 ];

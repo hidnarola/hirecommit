@@ -1,0 +1,46 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa fa-align-justify"></i> Groups
+            <p class="pull-right"></p>
+            <button type="button" id="add" (click)="onclick()" class="pull-right" style="border: 0px; background-color:#f0f3f5"><i class="pull-right icon-plus"> Add Group</i></button>
+          </div>
+          <div class="card-body">
+            <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
+              <table datatable class="row-border hover table" id="example" class="" cellspacing="0" width="100%" >
+                  <thead>
+                    <tr>
+                      <th>Group Name</th>
+                      <th>Name</th>
+                      <th>Trigger</th>
+                      <th>Days</th>
+                      <th>Message</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody >
+
+                    <tr>
+                      <td [routerLink]="['/groups/addgroup']">Officers</td>
+                     <td>1 Day after offer</td>
+                    <td>After Offer </td>
+                    <td>1</td>
+                    <td>Full HTML email draft with attachment</td>
+                      <td>
+                        <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i class="icon-eye"></i></button>
+                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                    </tr>
+
+                   
+
+                  </tbody>
+                </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

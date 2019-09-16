@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { EmployerService } from './employer.service';
 import { EmployerDetailComponent } from './employer-detail/employer-detail.component';
 import { DataTablesModule } from 'angular-datatables';
+import { manageusercomponent } from '../../shared/manageuser';
 
 @NgModule({
   declarations: [ViewEmployerComponent, AddEmployerComponent, EmployerDetailComponent],
@@ -19,6 +20,6 @@ import { DataTablesModule } from 'angular-datatables';
     HttpClientModule,
     DataTablesModule
   ],
-  providers: [EmployerService]
+  providers: [EmployerService, manageusercomponent]
 })
 export class EmployerModule { }

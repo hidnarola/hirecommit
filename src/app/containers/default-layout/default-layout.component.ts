@@ -2,7 +2,7 @@ import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { navItems } from '../../_nav';
 import { Router } from '@angular/router';
-import { ManageUser } from '../../shared/manageuser';
+import { manageusercomponent } from '../../shared/manageuser';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +14,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   private changes: MutationObserver;
   public element: HTMLElement;
 
-  constructor(private router: Router, @Inject(DOCUMENT) _document?: any, private mn?: ManageUser) {
+  constructor(private router: Router, @Inject(DOCUMENT) _document?: any, private mn?: manageusercomponent) {
     this.mn.dispalyMenu(null, null);
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');

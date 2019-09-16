@@ -51,8 +51,11 @@ import { TimelineComponent } from './views/timeline/timeline.component';
 import { MglTimelineModule } from 'angular-mgl-timeline';
 import { ProfileComponent } from './views/profile/profile.component';
 import { SignUpComponent } from './views/sign-up/sign-up.component';
-import { ManageUser } from './shared/manageuser';
+import { manageusercomponent } from './shared/manageuser';
 import { NgxCaptchaModule } from 'ngx-captcha';
+
+
+
 
 @NgModule({
   imports: [
@@ -91,14 +94,18 @@ import { NgxCaptchaModule } from 'ngx-captcha';
 
     ProfileComponent,
 
-    SignUpComponent
+    SignUpComponent,
+
+
+   
+  
   ],
   providers: [
     {
     provide: LocationStrategy,
     useClass: HashLocationStrategy
   },
-  ManageUser
+  manageusercomponent
 ],
   bootstrap: [ AppComponent ]
 })

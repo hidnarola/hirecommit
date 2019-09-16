@@ -131,7 +131,22 @@ export const routes: Routes = [
           title: 'Timeline',
         },
         canActivate: [AuthGuard]
-      }
+      },
+      {
+        path: 'subaccounts',
+        loadChildren: () => import('./views/sub-accounts/sub-accounts.module').then(m => m.SubAccountsModule),
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'groups',
+        loadChildren: () => import('./views/manage-groups/manage-groups.module').then(m => m.ManageGroupsModule),
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'salary-brackets',
+        loadChildren: () => import('./views/manag-salary-bracket/manag-salary-bracket.module').then(m => m.ManagSalaryBracketModule),
+        canActivate: [AuthGuard]
+      },
     ]
   },
   { path: '**', component: P404Component }
