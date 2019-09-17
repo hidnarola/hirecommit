@@ -1,50 +1,46 @@
-
 <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-header">
-            <i class="fa fa-align-justify"></i> Sub-Accounts
-            <p class="pull-right"></p>
-            <!-- <i class="pull-right icon-plus" [routerLink]="['/salary-brackets/addsalarybracket']"> Add Salary-Bracket</i> -->
-          </div>
-          <div class="card-body">
-            <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
-              <table datatable class="row-border hover table" id="example" class="" cellspacing="0" width="100%" >
-                  <thead>
-                    <tr>
-                     
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Designation</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Sub-Accounts
+          <p class="pull-right"></p>
+          <i class="pull-right icon-plus" [routerLink]="['/subaccounts/addsubaccounts']"> Add Sub-Account</i>
+        </div>
+        <div class="card-body">
+          <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
+          <table datatable class="row-border hover table" id="example" class="" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Designation</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
 
-                  <tbody >
-
-                    <tr>
-                      <td>ABC</td>
-                     <td>ABC@gmail.com</td>
-                    <td>HR </td>
-                    <td><label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                      </label></td>
-                   
-                      <td>
-                        <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i class="icon-eye"></i></button>
-                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
-                    </tr>
-
-                   
-
-                  </tbody>
-                </table>
-          </div>
+            <tbody>
+              <tr>
+                <td>ABC</td>
+                <td>ABC@gmail.com</td>
+                <td>HR </td>
+                <td><label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider round"></span>
+                  </label></td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
+                      class="icon-eye"></i></button>
+                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
+                      class="icon-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
+                      class="icon-trash"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>

@@ -42,7 +42,7 @@ export class ViewGroupsComponent implements OnInit {
     // we are calling to API
   }
   detail() {
-    this.router.navigate(['/groups/summarydetail']);
+    this.router.navigate(['/groups/groupdetails']);
    }
  
    edit() {

@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./view-employer.component.scss']
 })
 export class ViewEmployerComponent implements OnInit, OnDestroy  {
-  name = 'Angular';
+
   employer: any = [];
   constructor(public service: EmployerService, private router: Router, private activeRoute: ActivatedRoute, ) {
     console.log( 'activeRoute', this.activeRoute);

@@ -6,7 +6,8 @@ import { manageusercomponent } from '../../shared/manageuser';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './default-layout.component.html'
+  templateUrl: './default-layout.component.html',
+  styleUrls: ['./default-layout.scss']
 })
 export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public navItems = navItems;

@@ -1,0 +1,57 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Sub-Accounts Detail
+                    <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td>ABC</td>
+                            </tr>
+
+                            <tr>
+                                <td>Email</td>
+                                <td>ABC@gmail.com</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Designation</td>
+                                <td>HR</td>
+                            </tr>
+
+
+                            <tr>
+                                <td>Status</td>
+                                <td><label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                  </label></td>
+                            </tr>
+                            <tr>
+                                <td>Contact Number</td>
+                                <td>+91 1234567895</td>
+                            </tr>
+                           <tr>
+                               <td>Employee Code</td>
+                               <td>369</td>
+                           </tr>
+                            <tr>
+                                <td>Avatar</td>
+                                <td><img src="assets/img/user.png" alt="Avatar"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="button" class="btn btn-sm btn-danger" style="float: right;"
+                    (click)="cancel()">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;" (click)="edit()">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -22,7 +22,7 @@ export class manageusercomponent {
             } else if (user == 'employer') {
               
                 for (let index = 0; index < navItems.length; index++) {
-                if (index == 1 || index ==2 || index == 4 || index == 5 || index== 6 || index ==7)
+                if (index == 1 || index ==2 || index == 4 || index == 5 || index== 6 || index == 7)
                 {
                     this.app.push(navItems[index]);
                 } 

@@ -25,7 +25,7 @@
                           <label class="col-md-1 col-form-label" for="trigger">Trigger</label>
                           <div class="col-md-4">
                             <select id="trigger" name="select1" class="form-control" formControlName="trigger">
-                              <option value="null">Please select</option>
+                              <option value="null" selected="selected">Please select trigger</option>
                               <option value="beforeJoining">Before Joining</option>
                               <option value="afterJoining">After Joining</option>
                               <option value="afterOffer">After Offer</option>
@@ -44,7 +44,7 @@
 
                           <label class="col-md-1 col-form-label" for="message">Message</label>
                           <div class="col-md-4">
-                            <ckeditor [editor]="Editor" formControlName="message" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
+                            <ckeditor [editor]="Editor" formControlName="message" data="Enter message " (ready)="onReady($event)"></ckeditor>
                             <!-- <angular-editor formControlName="message" [config]="editorConfig"></angular-editor> -->
                             <!-- <span
                             *ngIf="!addGroup.get('message').valid && submitted"

@@ -13,7 +13,7 @@ export class AddGroupsComponent implements OnInit {
   // addGroup: FormGroup;
   // submitted  = false;
   // file : any;
-  // constructor( private router: Router) { }
+
 
   // ngOnInit() {
   //   this.addGroup = new FormGroup({
@@ -36,9 +36,9 @@ export class AddGroupsComponent implements OnInit {
   //   }
   // }
 
-  // onClose(){
-  //   this.router.navigate(['/groups/viewgroups'])
-  // }
+  onClose(){
+    this.router.navigate(['/groups/viewgroups'])
+  }
 
 
   public Editor = ClassicEditor;
@@ -48,7 +48,7 @@ export class AddGroupsComponent implements OnInit {
   value = false;
   submitted = false;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder,private router: Router) { }
 
   ngOnInit() {
     this.myForm = this.fb.group({
@@ -79,7 +79,7 @@ export class AddGroupsComponent implements OnInit {
       name: ['', Validators.required],
       trigger: ['', [Validators.required]],
       day: ['', Validators.required],
-      message: ['']
+      message: ['Enter Message']
     })
   }
 

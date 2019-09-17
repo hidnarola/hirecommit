@@ -35,6 +35,12 @@ export const navItems: NavData[] = [
     url: '/employer/view',
     icon: 'icon-user'
   },
+ 
+  {
+    name: 'Manage Offer',
+    url: '/employeruser/summary',
+    icon: 'icon-grid'
+  },
   {
     name: 'Manage Candidate',
     url: '/candidate',
@@ -53,18 +59,6 @@ export const navItems: NavData[] = [
     ]
   },
   {
-    name: 'Manage Offer',
-    url: '/employeruser/summary',
-    icon: 'icon-grid',
-    // children: [
-    //   {
-    //     name: 'Summary',
-    //     url: '/employeruser/summary',
-    //   }
-    // ]
-  },
-
-  {
     name: 'Manage Offers',
     url: '/candidateUser',
     icon: 'icon-tag',
@@ -76,24 +70,25 @@ export const navItems: NavData[] = [
       }
     ]
   },
-  {
-    name: 'Timeline',
-    url: '/timeline',
-    icon: 'icon-equalizer'
-  },
+  
   {
     name: 'Manage Sub-accounts',
     url: '/subaccounts/viewsubaccount',
-    icon: 'icon-calendar',
+    icon: 'icon-puzzle',
   },
   {
     name: 'Manage Groups',
     url: '/groups/viewgroups',
-    icon: 'icon-info',
+    icon: 'icon-people',
   },
   {
     name: 'Manage Salary-Brackets',
     url: '/salary-brackets/viewsalarybracket',
-    icon: 'icon-calendar',
+    icon: 'icon-wallet',
+  },
+  {
+    name: 'Timeline',
+    url: '/timeline',
+    icon: 'icon-equalizer'
   },
 ];

@@ -43,7 +43,7 @@
                         <label class="col-md-3 col-form-label" for="from">From</label>
                         <div class="col-md-4">
                           <input type="text" id="from" name="from" class="form-control" placeholder="Enter minimum Salary" >
-                          <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">Please select country!</span>
+                          <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">Please enter minimum Salary!</span>
                         </div>
                       </div>
 
@@ -52,7 +52,7 @@
                         <label class="col-md-3 col-form-label" for="to">To</label>
                         <div class="col-md-4">
                             <input type="text" id="to" name="to" class="form-control" placeholder="Enter maximum Salary" >
-                            <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">Please select country!</span>
+                            <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">Please enter maximum Salary!</span>
                         </div>
                       </div>
   

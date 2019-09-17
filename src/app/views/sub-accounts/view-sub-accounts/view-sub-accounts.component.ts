@@ -39,11 +39,11 @@ export class ViewSubAccountsComponent implements OnInit {
     // we are calling to API
   }
   detail() {
-    // this.router.navigate(['/groups/summarydetail']);
+    this.router.navigate(['/subaccounts/subaccountdetail']);
    }
  
    edit() {
-    // this.router.navigate(['/groups/addgroup']);
+    this.router.navigate(['/subaccounts/addsubaccounts']);
    }
  
    delete() {}

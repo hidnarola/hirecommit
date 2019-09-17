@@ -7,7 +7,7 @@
   [asideMenuToggler]="'lg'">
 
   <ul class="nav navbar-nav ml-auto">
-    <li class="nav-item dropdown" dropdown placement="bottom right">
+    <li class="nav-item dropdown" dropdown placement="bottom right" >
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
         <img src="assets/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com"/>
       </a>
@@ -20,9 +20,9 @@
     </li>
   </ul>
 </app-header>
-<div class="app-body">
-  <app-sidebar [fixed]="true" [display]="'lg'">
-    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+<div class="app-body" >
+  <app-sidebar [fixed]="true" [display]="'lg'" >
+    <app-sidebar-nav style="width: 250%;" [navItems]="navItems" [perfectScrollbar]  [disabled]="sidebarMinimized"></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>
   <!-- Main content -->
