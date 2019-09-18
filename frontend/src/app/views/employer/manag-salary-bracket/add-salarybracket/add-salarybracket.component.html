@@ -1,0 +1,71 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <strong style="font-size: 20px;">Add Salary-Bracket</strong>
+            <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+          </div>
+          <form class="form-horizontal" [formGroup]="AddSalaryBracket" (ngSubmit)="onSubmit(AddSalaryBracket.valid)">
+            <div class="card-body">
+
+
+
+
+
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="country">Select Country</label>
+                <div class="col-md-2">
+                  <select id="country" name="select1" class="form-control" formControlName="country">
+                    <option value="null">Please select</option>
+                    <option value="India">India</option>
+                    <option value="usa">USA</option>
+                    <option value="africa">Africa</option>
+                    <option value="shriLanka">Shri lanka</option>
+
+                  </select>
+                  <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">Please select country!</span>
+                </div>
+              </div>
+
+
+
+
+                    <div class="form-group row">
+                      <label class="col-md-3 col-form-label" for="currency">Currency</label>
+                      <div class="col-md-3">
+                        <input type="text" id="currency" name="currency" class="form-control" placeholder="Country currency" disabled>
+
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="from">From</label>
+                        <div class="col-md-4">
+                          <input type="text" id="from" name="from" class="form-control" placeholder="Enter minimum Salary" >
+                          <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">Please enter minimum Salary!</span>
+                        </div>
+                      </div>
+
+
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="to">To</label>
+                        <div class="col-md-4">
+                            <input type="text" id="to" name="to" class="form-control" placeholder="Enter maximum Salary" >
+                            <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">Please enter maximum Salary!</span>
+                        </div>
+                      </div>
+            </div>
+            <div class="card-footer text-right">
+              <button type="submit" class="btn btn-sm btn-primary">
+                <!-- <i class="fa fa-dot-circle-o"></i> -->
+                Add</button>
+              <button type="reset" class="btn btn-sm btn-danger">
+                <!-- <i class="fa fa-ban"></i> -->
+                Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

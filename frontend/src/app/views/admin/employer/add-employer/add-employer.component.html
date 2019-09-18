@@ -1,0 +1,85 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Add Employee</strong>
+            <i class="icon-close" [routerLink]="['/admin/employer_manage/view']"></i>
+          </div>
+          <form class="form-horizontal" [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
+            <div class="card-body">
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="firstName">Username</label>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" placeholder="Enter First Name" formControlName="firstName" id="firstName">
+                    <span
+                    *ngIf="!registerForm.get('firstName').valid && submitted"
+                    class="help-block">
+                    <span *ngIf="registerForm.get('firstName').errors['required']">This field is required!</span>
+                  </span>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Enter Last Name" formControlName="lastName"  id="lastName">
+                    <span
+                    *ngIf="!registerForm.get('lastName').valid && submitted"
+                    class="help-block">
+                    <span *ngIf="registerForm.get('lastName').errors['required']">This field is required!</span>
+
+                  </span>
+                  </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="email">Email</label>
+                <div class="col-md-8">
+                  <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email" formControlName="email" id="email">
+                  <span *ngIf="!registerForm.get('email').valid && submitted" class="help-block">Please enter a valid email!</span>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="designation">Designation</label>
+                <div class="col-md-8">
+                  <select id="designation" name="select1" class="form-control" formControlName="designation">
+                    <option value="null">Please select</option>
+                    <option value="Ass.HR">Ass.HR</option>
+                    <option value="Jr.HR">Jr.HR</option>
+                    <option value="Sr.HR">Sr.HR</option>
+                  </select>
+                  <span *ngIf="!registerForm.get('designation').valid && submitted" class="help-block">Please select designation!</span>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-md-3 col-form-label" for="gender">Gender</label>
+                  <div class="col-md-9 col-form-label">
+                    <div class="form-check form-check-inline mr-1" id="gender">
+                      <input class="form-check-input" type="radio" formControlName="gender" value="male">
+                      <label class="form-check-label" for="male">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline mr-1">
+                      <input class="form-check-input" type="radio" formControlName="gender" value="female">
+                      <label class="form-check-label" for="female">Female</label>
+                    </div>
+                    <span *ngIf="!registerForm.get('gender').valid && submitted" class="help-block">Please select Gender!</span>
+                  </div>
+                </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="avatar">Avatar</label>
+                <div class="col-md-9">
+                  <input type="file" formControlName="avatar" id="avatar">
+                </div>
+              </div>
+
+            </div>
+            <div class="card-footer text-right">
+              <button type="submit" class="btn btn-sm btn-primary">
+                Submit</button>
+              <button type="reset" class="btn btn-sm btn-danger">
+                Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

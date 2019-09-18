@@ -1,0 +1,132 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10 mx-auto candidate-signup">
+          <div class="card-group">
+            <div class="card mx-4">
+              <div class="card-body p-4">
+                <form>
+                  <h1>Signing Up</h1>
+                  <div class="row">
+                    <div class="form-group col-md-12">
+                      <label>Your Name</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-user"></i>
+                          </span>
+                        </div>
+
+                        <input type="text" class="form-control" placeholder="Your First Name" autocomplete="name" required="required">
+
+                        <input type="text" class="form-control" placeholder="Your Last Name" autocomplete="name" required="required">
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Your Work Email</label>
+                      <div class="input-group ">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-envelope-letter"></i>
+                          </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Your Email ID" autocomplete="email" required="required">
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Contact Number</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <select id="CountryCode" name="CountryCode" class="form-control">
+                            <option value="+91" selected="selected">+91</option>
+                            <option value="+92">+92</option>
+                            <option value="+44">+44</option>
+                            <option value="+1">+1</option>
+                          </select>
+                        </div>
+                        <input type="text" class="form-control" placeholder="10-digit number" autocomplete="mobilenumber" required="required">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label for="country">Country</label>
+                      <select id="country" name="country" class="form-control">
+                        <option value="0">Please select</option>
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="Shri Lanka">Shri Lanka</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="dType">Document Type</label>
+                      <select id="dType" name="dType" class="form-control">
+                        <option value="0">Please select</option>
+                        <option value="PAN Card">PAN Card</option>
+                        <option value="Aadhar Card">Aadhar Card</option>
+                        <option value="Voter ID">Voter ID</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Document Image</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-doc"></i>
+                          </span>
+                        </div>
+                        <input type="file" class="form-control" placeholder="Select any image file" autocomplete="proof" required="required">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label>Create a Password</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-lock"></i>
+                          </span>
+                        </div>
+                        <input type="password" class="form-control" placeholder="Min 8 char,1 letter & 1 number" autocomplete="new-password" required="required">
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Confirm Password</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-lock"></i>
+                          </span>
+                        </div>
+                        <input type="password" class="form-control" placeholder="same as password" autocomplete="cpassword" required="required">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="custome-checkbox">
+                    <input type="checkbox" id="signing-agree">
+                    <label for="signing-agree">By signing up you agree to our
+                      <a href="#">privacy policy</a>
+                      and
+                      <a href="#">terms of use</a>
+                    </label>
+                  </div>
+                  <div class="btm-btn">
+                    <button type="button" class="btn btn-block btn-primary" (click)="onCreatAccount()">Create Account</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

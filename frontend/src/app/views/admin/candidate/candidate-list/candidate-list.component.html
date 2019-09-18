@@ -1,0 +1,52 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa fa-align-justify"></i> All Approved Candidate List
+            <!-- <i class="icon-plus" style="float: right; font-size: 25px" [routerLink]="['/employer/add']"></i> -->
+          </div>
+          <div class="card-body">
+              <table datatable class="table" id="example" cellspacing="0" width="100%" >
+                  <thead>
+                    <tr>
+                      <th>Candidate Name</th>
+                      <th>Candidate Email</th>
+                      <th>Phone</th>
+                      <th>PAN No</th>
+                      <th>Approve Date</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td>Vishal Kanojiya</td>
+                        <td>vis@gmail.com</td>
+                        <td>7857847578</td>
+                        <td>784xsdxsqa44</td>
+                        <td>06-09-2019</td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-success" [routerLink]="['/admin/candidate_manage/candidate_detail']"><i class="icon-eye"></i></button>
+                          <button type="button" class="btn btn-sm btn-primary"><i class="icon-pencil"></i></button>
+                          <button type="button" class="btn btn-sm btn-danger" ><i class="icon-trash"></i></button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Ajay Kanojiya</td>
+                        <td>ajay@gmail.com</td>
+                        <td>9585747485</td>
+                        <td>784xxsa547a2</td>
+                        <td>09-09-2019</td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-success" [routerLink]="['/admin/candidate_manage/candidate_detail']"><i class="icon-eye"></i></button>
+                          <button type="button" class="btn btn-sm btn-primary"><i class="icon-pencil"></i></button>
+                          <button type="button" class="btn btn-sm btn-danger" ><i class="icon-trash"></i></button>
+                        </td>
+                      </tr>
+                  </tbody>
+                </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
