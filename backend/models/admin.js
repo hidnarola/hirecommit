@@ -9,6 +9,7 @@ var Schema = mongoose.Schema;
 var AdminModelSchema = new Schema({
     email: { type: String, default: null },
     password: { type: String, default: null },
+    flag: { type: Number },
     role:{type:String,default:"admin"},
     is_del: { type: Boolean, default: false },
     formattedToken: { type: String },

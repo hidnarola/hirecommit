@@ -8,6 +8,8 @@ import { SignUpComponent } from './shared/sign-up/sign-up.component';
 // import { AuthGuardService } from './services/auth/auth-guard.service';
 import { RoleGuardService } from './services/auth/role-guard.service';
 import { LoginGuard } from './shared/guard/login.guard';
+import { EmailconfermationComponent } from './shared/emailconfermation/emailconfermation.component';
+import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -15,6 +17,8 @@ export const routes: Routes = [
   {path: 'forgot_password', component: ForgotPasswordComponent },
   {path: 'emp_register', component: SignUpComponent },
   {path: 'candidate_register', component: RegisterComponent },
+  {path: 'confirmation/:id', component: EmailconfermationComponent },
+  {path: 'reset-password/:token', component: ResetPasswordComponent },
   {
     path: 'admin',
     loadChildren: () => import('./views/admin/admin.module').then(m => m.AdminModule),

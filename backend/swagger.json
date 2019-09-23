@@ -2,10 +2,10 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "Neolth - API",
-        "description": "Neolth - API for fronetend web app"
+        "title": "HC - API",
+        "description": "HC - API for fronetend web app"
     },
-    "host": "https://cloud.neolth.com:3000",
+    "host": "https://cloud.HC.com:3000",
     "basePath": "/",
     "securityDefinitions": {
         "jwt": {

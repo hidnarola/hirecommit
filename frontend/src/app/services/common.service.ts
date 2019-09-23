@@ -11,7 +11,7 @@ export class CommonService {
   constructor(private http: HttpClient, private route: Router) { }
 
   employer_signup(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/emp_register', data);
+    return this.http.post<any[]>(`${this.url}` + '/employer_register', data);
   }
 
   candidate_signup(data): Observable<any[]> {
@@ -22,7 +22,13 @@ export class CommonService {
     return this.http.post<any[]>(`${this.url}` + '/login', data);
   }
 
-  
+  forgot_password(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/forgot_password', data);
+  }
+
+  reset_password(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/reset_password', data);
+  }
 
   // myObservableArray: Observable<any[]> = new Observable<any[]>();
   // employer = new BehaviorSubject(null);
