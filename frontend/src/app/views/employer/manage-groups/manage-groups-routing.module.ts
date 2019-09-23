@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AddGroupsComponent } from './add-groups/add-groups.component';
 import { ViewGroupsComponent } from '../manage-groups/view-groups/view-groups.component';
 import { GroupsDetailsComponent } from './groups-details/groups-details.component';
+import { GroupsComponent } from './groups/groups.component';
 
 const routes: Routes = [
  { path: '',
@@ -30,6 +31,13 @@ const routes: Routes = [
     component: GroupsDetailsComponent,
     data: {
       title: 'View Group Detail'
+    }
+  },
+  {
+    path: 'group',
+    component: GroupsComponent,
+    data: {
+      title: 'Add Group'
     }
   }
 ]}

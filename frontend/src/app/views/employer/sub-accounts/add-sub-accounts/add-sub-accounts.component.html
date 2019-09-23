@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="name">Name</label>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" placeholder="Enter Name" autocomplete="name"
                                     formControlName="name" id="name">
 
@@ -23,7 +23,7 @@
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="email">Email</label>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
                                     formControlName="email" id="email">
                                 <span *ngIf="!addAccount.get('email').valid && submitted" class="help-block">Please
@@ -31,9 +31,21 @@
                             </div>
                         </div>
 
-
-
                         <div class="form-group row">
+                                <label class="col-md-3 col-form-label" for="email">Admin Rights?</label>
+                                <div class="col-md-6">
+                                        <label class="switch">
+                                                <input type="checkbox" >
+                                                <span class="slider round"></span>
+                                              </label>
+                                </div>
+                            </div>
+
+
+
+
+
+                        <!-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="desig">Designation</label>
                             <div class="col-md-4">
                                 <select id="desig" name="select1" class="form-control" formControlName="desig">
@@ -79,7 +91,7 @@
                                 <div class="col-md-9">
                                   <input type="file" formControlName="avatar" id="avatar">
                                 </div>
-                              </div>
+                              </div> -->
 
 
 
