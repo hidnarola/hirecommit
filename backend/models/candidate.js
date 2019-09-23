@@ -39,6 +39,14 @@ const CandidateSchema = new Schema({
     type: String,
     required: true
   },
+  isAllow: {
+    type: String,
+    default:false
+  },
+  is_del:{
+    type: Boolean,
+    default: false 
+  },
   role: {
       type: String,
       default:"candidate"

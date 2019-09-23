@@ -20,7 +20,7 @@ export class EmployerService {
   }
 
   getemployer(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/employer');
+    return this.http.get<any[]>(`${this.url}` + '/view_employer');
   }
 
   getemployerDetail(id): Observable<any[]> {

@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-candidate-list',
   templateUrl: './candidate-list.component.html',
@@ -8,7 +10,7 @@ import { Subject } from 'rxjs';
 })
 export class CandidateListComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  constructor(private router: Router) { }
   // dtOptions: DataTables.Settings = {};
   // dtTrigger = new Subject();
   ngOnInit() {
@@ -48,5 +50,8 @@ export class CandidateListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy = () => {
     // this.dtTrigger.unsubscribe();
+  }
+  onDetail(){
+    this.router.navigate(['/admin/candidate_manage/candidate_detail']);
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { EmployerService } from '../employer.service';
 
 @Component({
   selector: 'app-view-employer',
@@ -7,7 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./view-employer.component.scss']
 })
 export class ViewEmployerComponent implements OnInit  {
-  constructor(private router: Router) {}
+  employer: any[];
+  constructor(private router: Router, private service: EmployerService) {}
   ngOnInit(): void {
     // const table = $('#example').DataTable({
     //   drawCallback: () => {
@@ -16,6 +18,12 @@ export class ViewEmployerComponent implements OnInit  {
     //       });
     //   }
     // });
+
+    this.service.getemployer().subscribe(res => {
+      console.log("View Employer",res);
+      
+      this.employer =res;
+    })
   }
 
   buttonInRowClick(event: any): void {

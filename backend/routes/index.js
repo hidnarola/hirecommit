@@ -28,6 +28,7 @@ var Employer = require('./../models/employer');
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 
+
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
     var schema = {
@@ -77,6 +78,7 @@ router.post("/candidate_register", async (req, res) => {
             "password": req.body.password,
             "contactno": req.body.contactno,
             "documenttype": req.body.documenttype,
+            "is_del":false
             // "documentimage": req.body.documentimage
         };
         async.waterfall(
@@ -161,13 +163,40 @@ router.post("/candidate_register", async (req, res) => {
 
 // employer Registration
 router.post("/employer_register", async (req, res) => {
-  var schema = {
-      // "username": {
-      //     notEmpty: true,
-      //     errorMessage: "UserName is required"
-      // },
-
-  };
+    var schema = {
+        "email": {
+            notEmpty: true,
+            errorMessage: "Email is required"
+        },
+        "password":{
+            notEmpty: true,
+            errorMessage: "Password is required"
+        },
+        "country": {
+            notEmpty: true,
+            errorMessage: "Country is required"
+        },
+        "businesstype":{
+            notEmpty: true,
+            errorMessage: "Bussiness Type is required"
+        },
+        "companyname":{
+            notEmpty: true,
+            errorMessage: "Company Name is required"
+        },
+        "username":{
+            notEmpty: true,
+            errorMessage: "User Name is required"
+        },
+        "countrycode":{
+            notEmpty: true,
+            errorMessage: "Country Code is required"
+        },
+        "contactno":{
+            notEmpty: true,
+            errorMessage: "Contact Number is required"
+        }
+    };
   req.checkBody(schema);
 
   var errors = req.validationErrors();
@@ -181,7 +210,9 @@ router.post("/employer_register", async (req, res) => {
           "website": req.body.website,
           "username": req.body.username,
           "countrycode": req.body.countrycode,
-          "contactno": req.body.contactno
+          "contactno": req.body.contactno,
+          "isAllow": false,
+          "is_del": false
       };
       var interest_resp = await common_helper.insert(Employer, reg_obj);
       if (interest_resp.status == 0) {
@@ -216,10 +247,13 @@ router.post('/login', async (req, res) => {
         let admin_resp = await common_helper.findOne(Admin, { "email": req.body.email})
         let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email})
         let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email})
-        if (admin_resp.status === 0 && candidate_resp.status===0) {
+       console.log(employer_resp.status);
+       
+        if (admin_resp.status === 0 && candidate_resp.status === 0 && employer_resp.status === 0) {
             logger.trace("Login checked resp = ", login_resp);
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": login_resp.error });
-        } else if (admin_resp.status === 1 ) {
+        } 
+        else if (admin_resp.status === 1 ) {
             logger.trace("valid token. Generating token");
             if ((bcrypt.compareSync(req.body.password, admin_resp.data.password) && req.body.email.toLowerCase() == admin_resp.data.email) ) {
                 var refreshToken = jwt.sign({ id: admin_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
@@ -260,27 +294,27 @@ router.post('/login', async (req, res) => {
           else {
               res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
           }
-      }
+        }
         else if (employer_resp.status === 1 ) {
             logger.trace("valid token. Generating token");
-                        if ((bcrypt.compareSync(req.body.password, employer_resp.data.password) && req.body.email.toLowerCase() == employer_resp.data.email) ) {
-                            var refreshToken = jwt.sign({ id: employer_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-                            let update_resp = await common_helper.update(Employer, { "_id": employer_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-                            var LoginJson = { id: employer_resp.data._id, email: employer_resp.email, role: "employer" };
-                            var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-                                expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-                            });
-                            delete employer_resp.data.status;
-                            delete employer_resp.data.password;
-                            delete employer_resp.data.refresh_token;
-                            delete employer_resp.data.last_login_date;
-                            delete employer_resp.data.created_at;
-                            logger.info("Token generated");
-                            res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": employer_resp.data, "token": token, "refresh_token": refreshToken });
-                        }
-                        else {
-                            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
-                        }
+            if ((bcrypt.compareSync(req.body.password, employer_resp.data.password) && req.body.email.toLowerCase() == employer_resp.data.email) ) {
+                var refreshToken = jwt.sign({ id: employer_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+                let update_resp = await common_helper.update(Employer, { "_id": employer_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+                var LoginJson = { id: employer_resp.data._id, email: employer_resp.email, role: "employer" };
+                var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
+                    expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
+                });
+                delete employer_resp.data.status;
+                delete employer_resp.data.password;
+                delete employer_resp.data.refresh_token;
+                delete employer_resp.data.last_login_date;
+                delete employer_resp.data.created_at;
+                logger.info("Token generated");
+                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": employer_resp.data, "token": token, "refresh_token": refreshToken });
+            }
+            else {
+                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
+            }
         }
         else {
             res.status(config.BAD_REQUEST).json({ message: "Your email is not registered" });

@@ -22,6 +22,8 @@ export class CommonService {
     return this.http.post<any[]>(`${this.url}` + '/login', data);
   }
 
+  
+
   // myObservableArray: Observable<any[]> = new Observable<any[]>();
   // employer = new BehaviorSubject(null);
   // employerList = this.employer.asObservable();

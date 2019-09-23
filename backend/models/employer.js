@@ -39,13 +39,21 @@ const EmployerSchema = new Schema({
     type: String,
     required: true
   },
-  status: {
-    type: Number,
-    default: 0
+  email_verified: {
+    type: Boolean,
+    default: false
+  },
+  isAllow: {
+    type: Boolean,
+    default: false
   },
   role: {
     type:String,
     default: "employer"
+  },
+  is_del:{
+    type: Boolean,
+    default: false 
   },
   createdate: {
       type: Date,
