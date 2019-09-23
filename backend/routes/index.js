@@ -31,7 +31,6 @@ const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
-
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
   console.log(req);
