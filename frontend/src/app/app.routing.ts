@@ -17,7 +17,7 @@ export const routes: Routes = [
   {path: 'forgot_password', component: ForgotPasswordComponent },
   {path: 'emp_register', component: SignUpComponent },
   {path: 'candidate_register', component: RegisterComponent },
-  {path: 'confirmation/:id', component: EmailconfermationComponent },
+  {path: 'confirmation/:token', component: EmailconfermationComponent },
   {path: 'reset-password/:token', component: ResetPasswordComponent },
   {
     path: 'admin',

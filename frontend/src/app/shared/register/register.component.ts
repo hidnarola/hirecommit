@@ -45,11 +45,11 @@ export class RegisterComponent implements OnInit {
     }
 
     this.service.candidate_signup(this.formData).subscribe(res => {
-      // console.log(res);
+      console.log(res);
       if (res['status'] === 0) {
         this.toastr.error(res['message'], 'Error!', {timeOut: 3000});
       } else if (res['status'] === 1) {
-        this.toastr.success(res['message'], 'Error!', {timeOut: 3000});
+        this.toastr.success(res['message'], 'Success!', {timeOut: 3000});
         this.router.navigate(['/login']);
       }
     }, (err) => {

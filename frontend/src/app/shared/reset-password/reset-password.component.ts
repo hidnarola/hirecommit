@@ -13,6 +13,7 @@ export class ResetPasswordComponent implements OnInit {
   form: FormGroup;
   submitform: FormGroup;
   params_token: any;
+  // tslint:disable-next-line: max-line-length
   constructor(private activatedRoute: ActivatedRoute, private service: CommonService, private toastr: ToastrService, private router: Router) { }
 
   ngOnInit() {
@@ -20,12 +21,12 @@ export class ResetPasswordComponent implements OnInit {
       password: new FormControl(null, [Validators.required]),
       confirmpassword: new FormControl(null , [Validators.required])
     });
-  }
-
-  confirm () {
     this.activatedRoute.params.subscribe((params: Params) => {
       this.params_token = params;
     });
+  }
+
+  confirm () {
     this.submitform = new FormGroup({
       token: new FormControl(this.params_token.token),
       password: new FormControl(this.form.value.password)
