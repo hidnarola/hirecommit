@@ -17,6 +17,10 @@ import { RoleGuardService } from './services/auth/role-guard.service';
 import { AuthGuardService } from './services/auth/auth-guard.service';
 import { AuthService } from './services/auth/auth.service';
 import { JwtHelperService , JwtModule } from '@auth0/angular-jwt';
+import { EmailconfermationComponent } from './shared/emailconfermation/emailconfermation.component';
+import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
+import { NgxCaptchaModule } from 'ngx-captcha';
+import { ToastrModule } from 'ngx-toastr';
 
 export function getToken(): string {
   return localStorage.getItem('token');
@@ -33,6 +37,10 @@ export function getToken(): string {
       config: {
           tokenGetter: getToken
       }
+  }),
+  NgxCaptchaModule,
+  ToastrModule.forRoot({
+    positionClass: 'toast-bottom-right'
   })
   ],
   declarations: [
@@ -42,7 +50,9 @@ export function getToken(): string {
     ForgotPasswordComponent,
     SignUpComponent,
     RegisterComponent,
-    P500Component
+    P500Component,
+    EmailconfermationComponent,
+    ResetPasswordComponent
   ],
   providers: [{
     provide: LocationStrategy,

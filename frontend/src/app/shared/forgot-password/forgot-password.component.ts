@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonService } from '../../services/common.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-forgot-password',
@@ -7,10 +10,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./forgot-password.component.scss']
 })
 export class ForgotPasswordComponent implements OnInit {
-
-  constructor(private router: Router) { }
+  form: FormGroup;
+  constructor(private router: Router, private service: CommonService, private toastr: ToastrService) { }
 
   ngOnInit() {
+    this.form = new FormGroup({
+      email: new FormControl(null, Validators.required)
+    });
   }
 
   Onclick() {
@@ -18,5 +24,13 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   sendMail() {
+    this.service.forgot_password(this.form.value).subscribe(res => {
+      if (res['status'] === 1) {
+        this.toastr.success(res['message'], 'Success!', {timeOut: 3000});
+        this.router.navigate(['/login']);
+      }
+    }, (err) => {
+        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
+      });
   }
 }
