@@ -6,12 +6,12 @@ import { EmployerSummaryComponent } from './employer-summary/employer-summary.co
 import { EmployerAddofferComponent } from './employer-addoffer/employer-addoffer.component';
 import { EmployerSummaryDetailComponent } from './employer-summary-detail/employer-summary-detail.component';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 @NgModule({
   declarations: [EmployerSummaryComponent, EmployerAddofferComponent, EmployerSummaryDetailComponent],
   imports: [
     CommonModule,
     EmployerUserRoutingModule,
-  ReactiveFormsModule]
+  ReactiveFormsModule,NgMultiSelectDropDownModule]
 })
 export class EmployerUserModule { }

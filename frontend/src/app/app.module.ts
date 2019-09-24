@@ -21,6 +21,7 @@ import { EmailconfermationComponent } from './shared/emailconfermation/emailconf
 import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { ToastrModule } from 'ngx-toastr';
+import { ProfileComponent } from './shared/profile/profile.component';
 
 export function getToken(): string {
   return localStorage.getItem('token');
@@ -52,7 +53,7 @@ export function getToken(): string {
     RegisterComponent,
     P500Component,
     EmailconfermationComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,ProfileComponent
   ],
   providers: [{
     provide: LocationStrategy,

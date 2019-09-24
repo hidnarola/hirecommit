@@ -1,0 +1,66 @@
+
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">Add Location</strong>
+                    <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+                </div>
+                <form class="form-horizontal" [formGroup]="addLocation" (ngSubmit)="onSubmit(addLocation.valid)">
+                    <div class="card-body">
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="country">
+                                <h5>Country</h5>
+                            </label>
+                            <!-- <div class="col-md-3"> -->
+                            <div class="col-md-3">
+                                <select id="trigger" name="select1" class="form-control" formControlName="country">
+                                    <option value="null" selected="selected">Please select country</option>
+                                    <option value="India">India</option>
+                                    <option value="USA">USA</option>
+                                    <option value="ShriLanka">Shri Lanka</option>
+                                    <option value="Africa">Africa</option>
+                                    <option value="China">China</option>
+                                    <option value="Japan">Japan</option>
+                                </select>
+                                <!-- <span *ngIf="!myForm.get('trigger').valid && submitted" class="help-block">Please select Trigger!</span> -->
+
+                                <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">
+                                    <span *ngIf="addLocation.get('country').errors['required']">This field is
+                                        required!</span>
+                                    </span>
+                                </div>
+
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="location">
+                                <h5>Location</h5>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" placeholder="Enter location"
+                                    autocomplete="location" formControlName="location" id="location">
+
+                                <span *ngIf="!addLocation.get('location').valid && submitted" class="help-block">
+                                    <span *ngIf="addLocation.get('location').errors['required']">This field is
+                                        required!</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100 card-footer text-right">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <!-- <i class="fa fa-dot-circle-o"></i> -->
+                            Add</button>
+                        <button type="reset" class="btn btn-sm btn-danger">
+                            <!-- <i class="fa fa-ban"></i> -->
+                            Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

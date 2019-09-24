@@ -7,6 +7,7 @@ import { DefaultLayoutModule } from '../../shared/containers/default-layout/defa
 import { TimelineComponent } from './timeline/timeline.component';
 import { MglTimelineModule } from 'angular-mgl-timeline';
 
+
 @NgModule({
   declarations: [TimelineComponent] ,
   imports: [

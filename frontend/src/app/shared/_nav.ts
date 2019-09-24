@@ -89,6 +89,11 @@ export const employer: NavData[] = [
     icon: 'icon-wallet',
   },
   {
+    name: 'Manage Location',
+    url: 'manage_location/view_location',
+    icon: 'icon-location-pin',
+  },
+  {
     name: 'Timeline',
     url: 'timeline',
     icon: 'icon-user'

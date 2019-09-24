@@ -13,11 +13,12 @@
                   <thead>
                     <tr>
                       <th>Group Name</th>
-                      <th>Name</th>
-                      <th>Trigger</th>
-                      <th>Days</th>
-                      <th>Commit Status</th>
-                      <th>Message</th>
+                      <th>High - UnOpened</th>
+                      <th>High - NotReplied</th>
+                      <th>Medium - UnOpened</th>
+                      <th>Medium - NotReplied</th>
+                      <th>Low - UnOpened</th>
+                      <th>Low - NotReplied</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -26,12 +27,13 @@
 
                     <tr>
                       <td [routerLink]="['/employer/manage_group/add_group']">Officers</td>
-                     <td>1 Day after offer</td>
-                    <td>After Offer </td>
-                    <td>1</td>
-                    <td>High</td>
-                    <td>Full HTML email draft with attachment</td>
-                      <td>
+                     <td>2 Days</td>
+                     <td>3 Days</td>
+                     <td>4 days</td>
+                     <td>5 Days</td>
+                     <td>8 Days</td>
+                     <td>9 Days</td>
+                     <td>
                         <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i class="icon-eye"></i></button>
                       <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
                       <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>

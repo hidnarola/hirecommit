@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IDropdownSettings } from 'ng-multiselect-dropdown'
 
 @Component({
   selector: 'app-employer-addoffer',
@@ -8,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./employer-addoffer.component.scss']
 })
 export class EmployerAddofferComponent implements OnInit {
+ 
   addOrderForm: FormGroup;
   submitted = false;
 
@@ -15,6 +17,8 @@ export class EmployerAddofferComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
+
+    
     this.addOrderForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       name: new FormControl(null, [Validators.required]),
@@ -40,8 +44,9 @@ export class EmployerAddofferComponent implements OnInit {
       this.router.navigate(['/employer/manage_offer/created_offerlist']);
     }
   }
-
+ 
   onClose() {
     this.router.navigate(['/employer/manage_offer/created_offerlist']);
   }
+ 
 }
