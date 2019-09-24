@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IDropdownSettings } from 'ng-multiselect-dropdown'
+
 
 @Component({
   selector: 'app-employer-addoffer',
