@@ -60,5 +60,7 @@ typings/
 
 # IDE Config
 .vscode
-
 dist
+
+# log
+log_file.log
