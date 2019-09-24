@@ -154,18 +154,28 @@ router.post("/candidate_register", async (req, res) => {
                     logger.debug("Error = ", interest_resp.error);
                     res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
                 } else {
+                  var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
+                    config.ACCESS_TOKEN_SECRET_KEY, {
+                      expiresIn: 60 * 60 * 24 * 3
+                    }
+                  )).toString('base64');
+
+                  var time = new Date();
+                  time.setMinutes(time.getMinutes() + 20);
+                  time = btoa(time);
+
                   logger.trace("sending mail");
                   let mail_resp = await mail_helper.send("email_confirmation", {
                       "to": interest_resp.data.email,
                       "subject": "HC - Email Confirmation"
                   }, {
                       // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-                      "confirm_url": 'http://localhost:4200/#/confirmation/' + interest_resp.data._id
+                      "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
                   });
                   if (mail_resp.status === 0) {
                       res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                   } else {
-                      res.json({ "message": "Candidate registration successful", "data": interest_resp })
+                      res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_resp })
                   }
                 }
             });
@@ -245,13 +255,23 @@ router.post("/employer_register", async (req, res) => {
                 };
 
                 var interest_resp = await common_helper.insert(Employer, reg_obj);
+                var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
+                  config.ACCESS_TOKEN_SECRET_KEY, {
+                    expiresIn: 60 * 60 * 24 * 3
+                  }
+                )).toString('base64');
+
+                var time = new Date();
+                time.setMinutes(time.getMinutes() + 20);
+                time = btoa(time);
+
                 logger.trace("sending mail");
                 let mail_resp = await mail_helper.send("email_confirmation", {
                     "to": interest_resp.data.email,
                     "subject": "HireCommit - Email Confirmation"
                 }, {
                   // config.website_url + "/email_confirm/" + interest_resp.data._id
-                    "confirm_url": 'http://localhost:4200/#/confirmation/' + interest_resp.data._id
+                    "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
                 });
                 if (mail_resp.status === 0) {
                     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -288,11 +308,11 @@ router.post('/login', async (req, res) => {
         let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email})
         let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email})
        console.log(employer_resp.status);
-       
+
         if (admin_resp.status === 0 && candidate_resp.status === 0 && employer_resp.status === 0) {
             logger.trace("Login checked resp = ", login_resp);
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": login_resp.error });
-        } 
+        }
         else if (admin_resp.status === 1 ) {
             logger.trace("valid token. Generating token");
             if ((bcrypt.compareSync(req.body.password, admin_resp.data.password) && req.body.email.toLowerCase() == admin_resp.data.email) ) {
@@ -375,36 +395,50 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/email_verify/:id', async (req, res) => {
-  var employer_resp = await common_helper.findOne(Employer, { "_id": new ObjectId(req.params.id) }, 1);
-  var candidate_resp = await common_helper.findOne(Candidate, { "_id": new ObjectId(req.params.id) }, 1);
-  console.log(employer_resp.status);
+router.post('/email_verify', async (req, res) => {
+    logger.trace("Verifying JWT");
+    jwt.verify(Buffer.from(req.body.token, 'base64').toString(), config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+              logger.trace("Link has expired");
+              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Link has been expired" });
+          } else {
+              logger.trace("Invalid link");
+              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid token sent" });
+          }
+        } else {
+          console.log(decoded._id);
 
-  if (employer_resp.status === 0 && candidate_resp.status === 0) {
-      logger.error("Error occured while finding user by id - ", req.params.id, employer_resp.error);
-      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error has occured while finding user" });
-  } else if (employer_resp.status === 2 && candidate_resp.status === 2) {
-      logger.trace("User not found in user email verify API");
-      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid token entered" });
-  } else {
-    if (candidate_resp && candidate_resp.status == 1 && candidate_resp.data.email_verified == true) {
-      logger.trace("user already verified");
-      res.status(config.BAD_REQUEST).json({ "message": "Email Already verified" });
-    }
-    else if (employer_resp && employer_resp.status == 1 && employer_resp.data.email_verified == true) {
-      logger.trace("user already verified");
-      res.status(config.BAD_REQUEST).json({ "message": "Email Already verified" });
-    }
-      else {
-          if (employer_resp && employer_resp.status == 1) {
-              var employer_update_resp = await Employer.updateOne({ "_id": new ObjectId(employer_resp.data._id) }, { $set: { "email_verified": true } });
+          var employer_resp = await common_helper.findOne(Employer, { "_id": decoded._id }, 1);
+          var candidate_resp = await common_helper.findOne(Candidate, { "_id": decoded._id }, 1);
+
+          if (employer_resp.status === 0 && candidate_resp.status === 0) {
+              logger.error("Error occured while finding user by id - ", req.params.id, employer_resp.error);
+              res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error has occured while finding user" });
+          } else if (employer_resp.status === 2 && candidate_resp.status === 2) {
+              logger.trace("User not found in user email verify API");
+              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid token entered" });
+          } else {
+            if (candidate_resp && candidate_resp.status == 1 && candidate_resp.data.email_verified == true) {
+              logger.trace("user already verified");
+              res.status(config.BAD_REQUEST).json({ "message": "Email Already verified" });
+            }
+            else if (employer_resp && employer_resp.status == 1 && employer_resp.data.email_verified == true) {
+              logger.trace("user already verified");
+              res.status(config.BAD_REQUEST).json({ "message": "Email Already verified" });
+            }
+              else {
+                  if (employer_resp && employer_resp.status == 1) {
+                      var employer_update_resp = await Employer.updateOne({ "_id": new ObjectId(employer_resp.data._id) }, { $set: { "email_verified": true } });
+                  }
+                  else {
+                      var candidate_update_resp = await Candidate.updateOne({ "_id": new ObjectId(candidate_resp.data._id) }, { $set: { "email_verified": true } });
+                  }
+                  res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
+              }
           }
-          else {
-              var candidate_update_resp = await Candidate.updateOne({ "_id": new ObjectId(candidate_resp.data._id) }, { $set: { "email_verified": true } });
-          }
-          res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
-      }
-  }
+        }
+    });
 });
 
 router.post('/forgot_password', async (req, res) => {

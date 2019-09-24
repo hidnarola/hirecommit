@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 
 @Component({
@@ -11,15 +11,24 @@ import { CommonService } from '../../services/common.service';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  constructor(public router: Router, private service: CommonService) {}
+  public isFormSubmited;
+  public formData: any;
+  constructor(public router: Router, private service: CommonService,  public fb: FormBuilder) {
+    this.formData = {};
+    this.loginForm = this.fb.group({
+      email: new FormControl('', [Validators.required,  Validators.email]),
+      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)]))
+    });
+  }
 
-  onSubmit() {
-      // console.log('hiii', this.loginForm.value);
-      if (this.loginForm.value.email && this.loginForm.value.password) {
+  onSubmit (valid) {
+    // console.log(this.loginForm.controls['email'].errors['required']);
+
+      this.isFormSubmited = true;
+      if (valid) {
         this.service.login(this.loginForm.value).subscribe(res => {
-          console.log(res);
-          console.log(res['data'].role);
-
+          this.isFormSubmited = false;
+          this.formData = {};
           const token = res['token'];
           localStorage.setItem('token', token);
           localStorage.setItem('user', res['data'].role);
@@ -31,26 +40,23 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['candidate']);
           }
         });
-      }
+       }
   }
 
-  signup() {
+  signup () {
     this.router.navigate(['/emp_register']);
   }
 
-  signup1() {
+  signup1 () {
     this.router.navigate(['/candidate_register']);
   }
 
-  Onclick() {
+  Onclick () {
     this.router.navigate(['/forgot_password']);
   }
 
-  ngOnInit() {
-    this.loginForm = new FormGroup({
-      email: new FormControl(null),
-      password: new FormControl(null)
-    });
+  ngOnInit () {
+
   }
 
  }

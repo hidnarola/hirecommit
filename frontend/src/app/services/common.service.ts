@@ -18,6 +18,10 @@ export class CommonService {
     return this.http.post<any[]>(`${this.url}` + '/candidate_register', data);
   }
 
+  verify_email(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/email_verify', data);
+  }
+
   login(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/login', data);
   }

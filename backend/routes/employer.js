@@ -350,6 +350,7 @@ router.post("/add_group", async (req, res) => {
   if (!errors) {
       var reg_obj = {
           "name": req.body.name,
+          "high_unopened":req.body.high_unopened,
           "is_del": false
       };
       var interest_resp = await common_helper.insert(group, reg_obj);
