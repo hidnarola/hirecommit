@@ -20,14 +20,14 @@
                   </div>
                   <div class="line"></div>
                   <div class="step" data-target="#test-l-2">
-                    <button class="step-trigger">
+                    <button class="step-trigger" [disabled]="!step2">
                       <span class="bs-stepper-circle">2</span>
                       <span class="bs-stepper-label">Step</span>
                     </button>
                   </div>
                   <div class="line"></div>
                   <div class="step" data-target="#test-l-3">
-                    <button class="step-trigger">
+                    <button class="step-trigger" [disabled]="!step3">
                       <span class="bs-stepper-circle">3</span>
                       <span class="bs-stepper-label">Step</span>
                     </button>
@@ -66,15 +66,18 @@
                       <div class="input-group mb-3">
                           <ngx-recaptcha2 #captchaElem
                             [siteKey]="siteKey"
-                            formControlName="recaptcha">
+                            formControlName="recaptcha" [(ngModel)]="formData.recaptcha" name="recaptcha" >
                           </ngx-recaptcha2>
+                          <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmited">
+                            <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
+                          </div>
                       </div>
                       <p>By signing up you agree to our
                         <a href="#">privacy policy</a>
                         and
                         <a href="#">terms of use</a>
                       </p>
-                      <button (click)="next()" class="btn btn-primary" [disabled]="!step1">Next</button>
+                      <button (click)="next1()" class="btn btn-primary" >Next</button>
                     </div>
 
                     <div id="test-l-2" class="content">
@@ -108,7 +111,7 @@
                         </div>
                       </div>
 
-                      <button (click)="next()" class="btn btn-primary">Next</button>
+                      <button (click)="next2()" class="btn btn-primary">Next</button>
                     </div>
                     <div id="test-l-3" class="content text-center">
                       <h5>Need Your Bussiness Details</h5>

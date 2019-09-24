@@ -15,7 +15,8 @@ export class SignUpComponent implements OnInit {
   protected aFormGroup: FormGroup;
   public isFormSubmited;
   public formData: any;
-  setp1: false;
+  step2 = false;
+  step3 = false;
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // siteKey = '6LejT5wUAAAAAAGmT0EnG6qh8yMcOlfm5AZ1dE-s';
 
@@ -37,8 +38,24 @@ export class SignUpComponent implements OnInit {
     });
   }
 
-  next() {
-    this.stepper.next();
+  next1() {
+    this.isFormSubmited = true;
+    // console.log(this.registerForm.controls['recaptcha'].valid);
+    // tslint:disable-next-line: max-line-length
+    if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
+      this.isFormSubmited = false;
+      this.step2 = true;
+      this.stepper.next();
+    }
+  }
+  next2() {
+    this.isFormSubmited = true;
+    // tslint:disable-next-line: max-line-length
+    if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
+      this.isFormSubmited = false;
+      this.step3 = true;
+      this.stepper.next();
+    }
   }
 
   onSubmit(valid) {
