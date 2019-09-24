@@ -7,6 +7,30 @@ const GroupSchema = new Schema({
   type: String,
   required: true
  },
+ high_unopened:{
+  type: String,
+  required: true
+ },
+ high_notreplied:{
+  type: String,
+  required: true
+ },
+ medium_unopened:{
+  type: String,
+  required: true
+ },
+ medium_notreplied:{
+  type: String,
+  required: true
+ },
+ low_unopened:{
+  type: String,
+  required: true
+ },
+ low_notreplied:{
+  type: String,
+  required: true
+ },
   is_del: {
     type: Boolean,
     default: false

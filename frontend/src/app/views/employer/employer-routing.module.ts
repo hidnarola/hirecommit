@@ -3,12 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
 import { TimelineComponent } from './timeline/timeline.component';
 
+
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'manage_offer',
     pathMatch: 'full'
   },
+  
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -36,7 +38,12 @@ const routes: Routes = [
         path: 'manage_candidate',
         loadChildren: () => import('../admin/candidate/candidate.module').then(m => m.CandidateModule)
       },
-      { path: 'timeline', component: TimelineComponent }
+      {
+        path: 'manage_location',
+        loadChildren: () => import('./manage-location/manage-location.module').then(m => m.ManageLocationModule)
+      },
+      { path: 'timeline', component: TimelineComponent },
+   
     ]
   }
 ];

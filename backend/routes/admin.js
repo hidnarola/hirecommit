@@ -343,7 +343,7 @@ router.put('/manage_candidate/edit_approved_candidate/:id', async (req, res) => 
 
 router.get('/manage_candidate/new_request', async (req, res) => {
     var candidate_list = await candidate.find();
-    candidate_list = candidate_list.filter(x => x.isAllow === 'false')
+    candidate_list = candidate_list.filter(x => x.isAllow === false)
     if (candidate_list) {
         return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
     }

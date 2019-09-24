@@ -207,18 +207,6 @@ router.post("/add_sub_account", async (req, res) => {
         "email": {
             notEmpty: true,
             errorMessage: "Email is required"
-        },
-        "designation":{
-            notEmpty: true,
-            errorMessage: "Designation Type is required"
-        },
-        "contactnumber":{
-            notEmpty: true,
-            errorMessage: "Contact Numberis required"
-        },
-        "employeecode":{
-            notEmpty: true,
-            errorMessage: "Employee Code is required"
         }
     };
   req.checkBody(schema);
@@ -228,11 +216,7 @@ router.post("/add_sub_account", async (req, res) => {
       var reg_obj = {
           "name": req.body.name,
           "email": req.body.email,
-          "designation": req.body.designation,
-          "contactnumber": req.body.contactnumber,
-          "employeecode": req.body.employeecode,
-          "avatar": req.body.avatar,
-          "status": true,
+          "adminrights": req.body.adminrights,
           "is_del": false
       };
       var interest_resp = await common_helper.insert(sub_account, reg_obj);
@@ -268,30 +252,15 @@ router.put('/edit_sub_account/:id', async (req, res) => {
           "email": {
               notEmpty: true,
               errorMessage: "Email is required"
-          },
-          "designation":{
-              notEmpty: true,
-              errorMessage: "Designation Type is required"
-          },
-          "contactnumber":{
-              notEmpty: true,
-              errorMessage: "Contact Numberis required"
-          },
-          "employeecode":{
-              notEmpty: true,
-              errorMessage: "Employee Code is required"
           }
       };
     req.checkBody(schema);
     var reg_obj = {
         "name": req.body.name,
-          "email": req.body.email,
-          "designation": req.body.designation,
-          "contactnumber": req.body.contactnumber,
-          "employeecode": req.body.employeecode,
-          "avatar": req.body.avatar,
-          "status": true,
-          "is_del": false
+        "email": req.body.email,
+        "adminrights": req.body.adminrights,
+        "is_del": false,
+         
     };
     var id = req.params.id;
     console.log(id);
@@ -349,7 +318,31 @@ router.post("/add_group", async (req, res) => {
       "name":{
           notEmpty:true,
           errorMessage: "Group Name is required"
-      },
+      }, 
+      "high_unopened":{
+        notEmpty:true,
+        errorMessage: "High priority is required"
+       },
+       "high_notreplied":{
+        notEmpty:true,
+        errorMessage: "High priority is required"
+       },
+       "medium_unopened":{
+        notEmpty:true,
+        errorMessage: "Medium priority is required"
+       },
+       "medium_notreplied":{
+        notEmpty:true,
+        errorMessage: "Medium priority is required"
+       },
+       "low_unopened":{
+        notEmpty:true,
+        errorMessage: "Low priority is required"
+       },
+       "low_notreplied":{
+        notEmpty:true,
+        errorMessage: "Low priority is required"
+       }
     };
   req.checkBody(schema);
 
@@ -377,16 +370,20 @@ router.post("/add_group_details", async (req, res) => {
     var schema = {
       "communicationname":{
           notEmpty:true,
-          errorMessage: "Group Name is required"
+          errorMessage: "Communication Name is required"
       },
       "trigger":{
         notEmpty:true,
-        errorMessage: "Group Name is required"
+        errorMessage: "Trigger is required"
     },
     "day":{
         notEmpty:true,
-        errorMessage: "Group Name is required"
+        errorMessage: "Days are required"
     },
+    "priority":{
+        notEmpty:true,
+        errorMessage: "Priority is required"
+    }
     };
   req.checkBody(schema);
 

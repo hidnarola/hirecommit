@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./employer-addoffer.component.scss']
 })
 export class EmployerAddofferComponent implements OnInit {
+
   addOrderForm: FormGroup;
   submitted = false;
 
@@ -15,6 +16,7 @@ export class EmployerAddofferComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
+
     this.addOrderForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       name: new FormControl(null, [Validators.required]),
@@ -44,4 +46,5 @@ export class EmployerAddofferComponent implements OnInit {
   onClose() {
     this.router.navigate(['/employer/manage_offer/created_offerlist']);
   }
+
 }

@@ -1,0 +1,71 @@
+<div class="animated fadeIn">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa fa-align-justify"></i> Location
+            <p class="pull-right"></p>
+            <i class="pull-right icon-plus" [routerLink]="['/employer/manage_location/add_location']"> Add Location</i>
+          </div>
+          <div class="card-body">
+            <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
+              <table datatable class="row-border hover table" id="example" class="" cellspacing="0" width="100%" >
+                  <thead>
+                    <tr>
+
+                      <th>City</th>
+                      <th>Country</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody >
+
+                    <tr>
+                      <td>Mumbai</td>
+                      <td>India</td>
+                      <td>
+                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                    </tr>
+
+                    <tr>
+                      <td>Pune</td>
+                        <td>India</td>
+                        <td>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                      </tr>
+
+                    <tr>
+                      <td>Florida</td>
+                      <td>USA</td>
+                      <td>
+                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                    </tr>
+
+                    <tr>
+                      <td>Matara</td>
+                      <td>Shri Lanka</td>
+                      <td>
+                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                    </tr>
+
+                    <tr>
+                      <td>Colombo</td>
+                        <td>Shri Lanka</td>
+                        <td>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                      </tr>
+  
+
+                  </tbody>
+                </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

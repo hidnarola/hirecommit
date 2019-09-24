@@ -11,21 +11,9 @@ const Sub_Account_Schema = new Schema({
     type:String,
     require: true
   },
-  designation: {
-    type: String,
-    require: true
-  },
-  contactnumber: {
-    type: String,
-    required: true
-  },
-  employeecode: {
-    type: String,
-    // required: true
-  },
-  avatar: {
-    type: String,
-    // required: true
+  adminrights:{
+    type:Boolean,
+    default: false
   },
  
   isActive: {
