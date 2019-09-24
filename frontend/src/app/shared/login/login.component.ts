@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit (valid) {
-    console.log(this.loginForm.controls['email'].errors['required']);
+    // console.log(this.loginForm.controls['email'].errors['required']);
 
       this.isFormSubmited = true;
       if (valid) {

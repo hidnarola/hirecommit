@@ -6,7 +6,7 @@
           <div class="card-group">
             <div class="card mx-4">
               <div class="card-body p-4">
-                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
                   <h1>Signing Up</h1>
                   <div class="row">
                     <div class="form-group col-md-12">
@@ -17,9 +17,15 @@
                             <i class="icon-user"></i>
                           </span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Your First Name" formControlName="firstname" [(ngModel)]="registerData.firstname" required="required">
+                        <input type="text" class="form-control" placeholder="Your First Name" formControlName="firstname" [(ngModel)]="registerData.firstname" name="firstname" required="required">
+                        <div class="error" *ngIf="!registerForm.controls['firstname'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['firstname'].errors.required">First name is required.</span>
+                        </div>
 
-                        <input type="text" class="form-control" placeholder="Your Last Name" formControlName="lastname" [(ngModel)]="registerData.lastname" required="required">
+                        <input type="text" class="form-control" placeholder="Your Last Name" formControlName="lastname" [(ngModel)]="registerData.lastname" name="lastname" required="required">
+                        <div class="error" *ngIf="!registerForm.controls['lastname'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['lastname'].errors.required">Last name is required.</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -32,42 +38,60 @@
                             <i class="icon-envelope-letter"></i>
                           </span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Your Email ID" formControlName="email" [(ngModel)]="registerData.email" required="required">
+                        <input type="text" class="form-control" placeholder="Your Email ID" formControlName="email" [(ngModel)]="registerData.email" name="email" email required="required">
+                        <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['email'].errors.required">Email is required.</span>
+                          <span *ngIf="registerForm.controls['email'].errors.email">Email must be in valid format.</span>
+                        </div>
                       </div>
                     </div>
                     <div class="form-group col-md-6">
                       <label for="contactno">Contact Number</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
-                          <select id="countrycode" name="countrycode" formControlName="countrycode" [(ngModel)]="registerData.countrycode" class="form-control">
+                          <select id="countrycode" name="countrycode" formControlName="countrycode" [(ngModel)]="registerData.countrycode" name="countrycode" class="form-control">
                             <option value="+91" selected="selected">+91</option>
                             <option value="+92">+92</option>
                             <option value="+44">+44</option>
                             <option value="+1">+1</option>
                           </select>
+                          <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
+                            <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country code.</span>
+                          </div>
                         </div>
-                        <input type="text" class="form-control" placeholder="10-digit number" formControlName="contactno" [(ngModel)]="registerData.contactno" required="required">
+                        <input type="text" class="form-control" placeholder="10-digit number" formControlName="contactno" [(ngModel)]="registerData.contactno" name="contactno" required="required">
+                        <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is required.</span>
+                          <span *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter 10 digits of mobile number.</span>
+                          <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers 0-9.</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="form-group col-md-6">
                       <label for="country">Country</label>
-                      <select id="country" name="country" class="form-control" formControlName="country" [(ngModel)]="registerData.country">
+                      <select id="country" name="country" class="form-control" formControlName="country" [(ngModel)]="registerData.country" name="country">
                         <option value="0">Please select</option>
                         <option value="India">India</option>
                         <option value="USA">USA</option>
                         <option value="Shri Lanka">Shri Lanka</option>
                       </select>
+                      <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
+                        <span *ngIf="registerForm.controls['country'].errors['required']">Please select your country.</span>
+                      </div>
                     </div>
                     <div class="form-group col-md-6">
                       <label for="documenttype">Document Type</label>
-                      <select id="documenttype" name="documenttype" class="form-control" formControlName="documenttype" [(ngModel)]="registerData.documenttype">
+                      <select id="documenttype" name="documenttype" class="form-control" formControlName="documenttype" [(ngModel)]="registerData.documenttype" name="documenttype">
                         <option value="0">Please select</option>
                         <option value="PAN Card">PAN Card</option>
                         <option value="Aadhar Card">Aadhar Card</option>
                         <option value="Voter ID">Voter ID</option>
                       </select>
+                      <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmited">
+                        <span *ngIf="registerForm.controls['documenttype'].errors['required']">Please select your country.</span>
+                      </div>
                     </div>
                   </div>
                   <div class="row">
@@ -79,7 +103,10 @@
                             <i class="icon-doc"></i>
                           </span>
                         </div>
-                        <input type="file" class="form-control" placeholder="Select any image file" required="required" (change)="onFileChange($event)">
+                        <input type="file" class="form-control" placeholder="Select any image file"  (change)="onFileChange($event)">
+                        <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmited">
+                          <span>DocumentImage is required.</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -92,7 +119,11 @@
                             <i class="icon-lock"></i>
                           </span>
                         </div>
-                        <input type="password" class="form-control" placeholder="Min 8 char,1 letter & 1 number" formControlName="password" [(ngModel)]="registerData.password" required="required">
+                        <input type="password" class="form-control" placeholder="Min 8 char,1 letter & 1 number" formControlName="password" [(ngModel)]="registerData.password" name="password" required="required">
+                        <div class="error" *ngIf="!registerForm.controls['password'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['password'].errors['required']">Password is required.</span>
+                          <span *ngIf="registerForm.controls['password'].errors['minlength']">Password must be more then 8 characters.</span>
+                        </div>
                       </div>
                     </div>
                     <div class="form-group col-md-6">
@@ -103,12 +134,16 @@
                             <i class="icon-lock"></i>
                           </span>
                         </div>
-                        <input type="password" class="form-control" placeholder="same as password" formControlName="confirmpassword" [(ngModel)]="registerData.confirmpassword" required="required">
+                        <input type="password" class="form-control" placeholder="Same as password" formControlName="confirmpassword" [(ngModel)]="registerData.confirmpassword" name="confirmpassword" required="required">
+                        <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['confirmpassword'].errors['required']">Password is required.</span>
+                          <span *ngIf="registerForm.controls['confirmpassword'].errors['mismatch']">Password and confirm password should be same.</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="custome-checkbox">
-                    <input type="checkbox" id="signing-agree">
+                    <input type="checkbox"  formControlName="isChecked" [(ngModel)]="isChecked" (change)="checkValue($event)" id="signing-agree">
                     <label for="signing-agree">By signing up you agree to our
                       <a href="#">privacy policy</a>
                       and

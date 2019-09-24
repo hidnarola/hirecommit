@@ -13,51 +13,60 @@ import { CommonService } from '../../services/common.service';
 export class SignUpComponent implements OnInit {
   registerForm: FormGroup;
   protected aFormGroup: FormGroup;
+  public isFormSubmited;
+  public formData: any;
+  setp1: false;
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // siteKey = '6LejT5wUAAAAAAGmT0EnG6qh8yMcOlfm5AZ1dE-s';
 
   private stepper: Stepper;
-  constructor(private router: Router,  private formBuilder: FormBuilder, private service: CommonService) {}
+  constructor(private router: Router,  private formBuilder: FormBuilder, private service: CommonService, public fb: FormBuilder) {
+    this.formData = {};
+    this.registerForm = this.fb.group({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
+      country: new FormControl('', [Validators.required]),
+      businesstype: new FormControl('', [Validators.required]),
+      companyname: new FormControl('', [Validators.required]),
+      website: new FormControl(''),
+      username: new FormControl('', [Validators.required]),
+      countrycode: new FormControl('', [Validators.required]),
+      // tslint:disable-next-line: max-line-length
+      contactno: new FormControl('', Validators.compose([Validators.required,  Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
+      recaptcha: new FormControl('', [ Validators.required])
+    });
+  }
 
   next() {
     this.stepper.next();
   }
 
-  onSubmit() {
+  onSubmit(valid) {
     console.log(this.registerForm.value);
-    this.service.employer_signup(this.registerForm.value).subscribe(res => {
-      console.log(res);
-      if (res['status'] === 0) {
-        console.log(res);
-      } else if (res['data'].status === 1) {
-        Swal.fire({
-          type: 'success',
-          text: res['message']
-        });
-        this.router.navigate(['/login']);
-      } else {
-        console.log(res);
-      }
-    });
+    this.isFormSubmited = true;
+    if (valid) {
+      this.service.employer_signup(this.registerForm.value).subscribe(res => {
+        this.isFormSubmited = false;
+        this.formData = {};
+        if (res['status'] === 0) {
+          console.log(res);
+        } else if (res['data'].status === 1) {
+          Swal.fire({
+            type: 'success',
+            text: res['message']
+          });
+          this.router.navigate(['/login']);
+        } else {
+          console.log(res);
+        }
+      });
+    }
   }
 
   ngOnInit() {
     this.stepper = new Stepper(document.querySelector('#stepper1'), {
       linear: false,
       animation: true
-    });
-
-    this.registerForm = new FormGroup({
-      email: new FormControl(null, [Validators.required, Validators.email]),
-      password: new FormControl(null, [Validators.required]),
-      country: new FormControl(null, [Validators.required]),
-      businesstype: new FormControl(null, [Validators.required]),
-      companyname: new FormControl(null, [Validators.required]),
-      website: new FormControl(null),
-      username: new FormControl(null, [Validators.required]),
-      countrycode: new FormControl(null, [Validators.required]),
-      contactno: new FormControl(null, [Validators.required]),
-      recaptcha: new FormControl(null, [ Validators.required])
     });
   }
   onLogin() {
