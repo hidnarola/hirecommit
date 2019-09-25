@@ -59,7 +59,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit(valid) {
-    console.log(this.registerForm.value);
+    console.log(this.registerForm);
     this.isFormSubmited = true;
     if (valid) {
       this.service.employer_signup(this.registerForm.value).subscribe(res => {

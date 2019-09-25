@@ -34,6 +34,10 @@ export class CommonService {
     return this.http.post<any[]>(`${this.url}` + '/reset_password', data);
   }
 
+  change_password(data): Observable<any[]> {
+    return this.http.put<any[]>(`${this.url}` + '/change_password', data);
+  }
+
   // myObservableArray: Observable<any[]> = new Observable<any[]>();
   // employer = new BehaviorSubject(null);
   // employerList = this.employer.asObservable();

@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
 import { TimelineComponent } from './timeline/timeline.component';
-
+import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
+import { ProfileComponent } from '../../shared/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -10,7 +11,6 @@ const routes: Routes = [
     redirectTo: 'manage_offer',
     pathMatch: 'full'
   },
-  
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -43,7 +43,8 @@ const routes: Routes = [
         loadChildren: () => import('./manage-location/manage-location.module').then(m => m.ManageLocationModule)
       },
       { path: 'timeline', component: TimelineComponent },
-   
+      { path: 'change-password', component: ChangepasswordComponent },
+      { path: 'profile', component: ProfileComponent },
     ]
   }
 ];

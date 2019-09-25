@@ -41,7 +41,7 @@ export class ResetPasswordComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 1) {
-          this.toastr.success(res['message'], 'Error!', {timeOut: 3000});
+          this.toastr.success(res['message'], 'Succsess!', {timeOut: 3000});
           this.router.navigate(['/login']);
         }
       }, (err) => {

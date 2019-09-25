@@ -30,7 +30,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   changepassword() {
-    this.router.navigate(['/changepassword']);
+    this.router.navigate(['employer/change-password']);
   }
 
   logout() {
@@ -40,7 +40,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   ViewProfile() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['employer/profile']);
   }
 
   ngOnInit() {

@@ -27,6 +27,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { DataTablesModule } from 'angular-datatables';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
   declarations: [...APP_CONTAINERS],
@@ -43,6 +44,7 @@ import { DataTablesModule } from 'angular-datatables';
     TabsModule.forRoot(),
     ChartsModule,
     DataTablesModule,
+    SharedModule
   ]
 })
 export class DefaultLayoutModule { }
