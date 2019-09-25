@@ -1,3 +1,10 @@
-.app-body {
-  margin-top: 15%;
+
+
+.card-group {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 800px;
+    width: 800px;
 }

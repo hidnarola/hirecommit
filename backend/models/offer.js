@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 // Create Schema
 const OfferSchema = new Schema({
  employer_id:{
-  type: String,
-  required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'employer' 
  },
   title: {
     type: String,
@@ -20,8 +20,8 @@ const OfferSchema = new Schema({
     
   },
   salarybracket: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'salary_bracket' 
   },
   expirydate: {
     type: String,
@@ -41,8 +41,16 @@ const OfferSchema = new Schema({
     required: true
   },
   group: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'group' 
+  },
+  commitstatus:{
+      type: String,
+      require: true
+  },
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'location'
   },
   customfeild1: {
     type: String,
@@ -61,6 +69,7 @@ const OfferSchema = new Schema({
       type: String,
       
   },
+ 
   is_del: {
     type: Boolean,
     default: false
