@@ -1,15 +1,14 @@
 <div class="app-body">
   <main class="main d-flex align-items-center">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-10 mx-auto candidate-signup">
-          <div class="card-group">
+
+        <div class="candidate-signup">
+          <div class="card-group ">
             <div class="card mx-4">
               <div class="card-body p-4">
                 <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
                   <h1>Signing Up</h1>
                   <div class="row">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-6">
                       <label for="firstname">Your Name</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
@@ -17,17 +16,22 @@
                             <i class="icon-user"></i>
                           </span>
                         </div>
+
                         <input type="text" class="form-control" placeholder="Your First Name" formControlName="firstname" [(ngModel)]="registerData.firstname" name="firstname" required="required">
                         <div class="error" *ngIf="!registerForm.controls['firstname'].valid && isFormSubmited">
                           <span *ngIf="registerForm.controls['firstname'].errors.required">First name is required.</span>
                         </div>
-
+                      </div>
+                    </div>
+                        <div class="form-group col-md-6">
+                          <label for="firstname">Last Name</label>
+                        <div class="">
                         <input type="text" class="form-control" placeholder="Your Last Name" formControlName="lastname" [(ngModel)]="registerData.lastname" name="lastname" required="required">
                         <div class="error" *ngIf="!registerForm.controls['lastname'].valid && isFormSubmited">
                           <span *ngIf="registerForm.controls['lastname'].errors.required">Last name is required.</span>
                         </div>
+                        </div>
                       </div>
-                    </div>
                   </div>
                   <div class="row">
                     <div class="form-group col-md-6">
@@ -46,32 +50,9 @@
                       </div>
                     </div>
                     <div class="form-group col-md-6">
-                      <label for="contactno">Contact Number</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <select id="countrycode" name="countrycode" formControlName="countrycode" [(ngModel)]="registerData.countrycode" name="countrycode" class="form-control">
-                            <option value="+91" selected="selected">+91</option>
-                            <option value="+92">+92</option>
-                            <option value="+44">+44</option>
-                            <option value="+1">+1</option>
-                          </select>
-                          <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
-                            <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country code.</span>
-                          </div>
-                        </div>
-                        <input type="text" class="form-control" placeholder="10-digit number" formControlName="contactno" [(ngModel)]="registerData.contactno" name="contactno" required="required">
-                        <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
-                          <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is required.</span>
-                          <span *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter 10 digits of mobile number.</span>
-                          <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers 0-9.</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="form-group col-md-6">
                       <label for="country">Country</label>
-                      <select id="country" name="country" class="form-control" formControlName="country" [(ngModel)]="registerData.country" name="country">
+                      <select id="country" name="country" class="form-control" formControlName="country" [(ngModel)]="registerData.country"
+                        name="country">
                         <option value="0">Please select</option>
                         <option value="India">India</option>
                         <option value="USA">USA</option>
@@ -79,6 +60,46 @@
                       </select>
                       <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
                         <span *ngIf="registerForm.controls['country'].errors['required']">Please select your country.</span>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <label for="contactno">Contact Number</label>
+
+                      <div class="input-group">
+                        <div class="d-flex w-100">
+                          <div class="country-code">
+                            <div class="input-group-prepend">
+                              <select id="countrycode" name="countrycode" formControlName="countrycode"
+                                [(ngModel)]="registerData.countrycode" name="countrycode" class="form-control">
+                                <option value="+91" selected="selected">+91</option>
+                                <option value="+92">+92</option>
+                                <option value="+44">+44</option>
+                                <option value="+1">+1</option>
+                              </select>
+                              <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
+                                <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country code.</span>
+                              </div> -->
+                            </div>
+                          </div>
+                          <div class="contact-number">
+                            <div class="input-group-prepend">
+                              <input type="text" class="form-control" placeholder="10-digit number" formControlName="contactno"
+                                [(ngModel)]="registerData.contactno" name="contactno" required="required">
+                              <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
+                                <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is required.</span>
+                                <span
+                                  *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
+                                  10 digits of mobile number.</span>
+                                <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers 0-9.</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
                       </div>
                     </div>
                     <div class="form-group col-md-6">
@@ -158,7 +179,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
   </main>
 </div>

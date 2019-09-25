@@ -17,7 +17,7 @@ var objectID = require('mongoose').Types.ObjectId;
 
 router.use("/", auth, authorization, index);
 
-
+//employer
 router.get('/view_employer', async (req, res) => {
     var employer_list = await employer.find();
     if (employer_list) {
@@ -249,20 +249,6 @@ router.get('/manage_candidate/candidate_detail/:id', async (req, res) => {
     //     }
 });
 
-// router.delete("/manage_candidate/delete_candidate/:id", async (req, res) => {
-//     var id = req.params.id;
-//     var candidate_delete = await common_helper.delete(candidate, { "_id": id });
-//     if (candidate_delete.status == 0) {
-//         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
-//     }
-//     else if (candidate_delete.status == 1) {
-//         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate Deleted successfully", "data": candidate_delete });
-//     }
-//     //   else {
-//     //     res.status(config.BAD_REQUEST).json({"message": "No data found" });
-//     //   }
-// })
-
 router.put("/deactive_candidate", async (req, res) => {
     var obj = {
         is_del: true
@@ -340,6 +326,8 @@ router.put('/manage_candidate/edit_approved_candidate/:id', async (req, res) => 
         res.status(config.BAD_REQUEST).json({ "message": "No data found" });
     }
 })
+
+//new request
 
 router.get('/manage_candidate/new_request', async (req, res) => {
     var candidate_list = await candidate.find();
@@ -436,18 +424,18 @@ router.put('/manage_candidate/new_request_update/:id', async (req, res) => {
     }
 });
 
-router.delete("/manage_candidate/new_request_delete/:id", async (req, res) => {
-    var id = req.params.id;
-    var candidate_delete = await common_helper.delete(candidate, { "_id": id });
-    if (candidate_delete.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+router.put("/manage_candidate/new_request_deactivate", async (req, res) => {
+    var obj = {
+        is_del: true
     }
-    else if (candidate_delete.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate Deleted successfully", "data": candidate_delete });
+    var resp_data = await common_helper.update(candidate, { "_id": req.body.id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
     }
-    //   else {
-    //     res.status(config.BAD_REQUEST).json({"message": "No data found" });
-    //   }
 })
 
 

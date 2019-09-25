@@ -24,6 +24,24 @@
         box-shadow:none;
       }
     }
+    .country-code{
+      flex: 0 0 23%;
+    }
+    .contact-number{
+      flex: 0 0 77%;
+    }
+  }
+  .card-group {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    max-width: 800px;
+    width: 800px;
+  }
+  .input-group-prepend{
+    position: relative;
   }
 }
 .custome-checkbox{
@@ -75,3 +93,4 @@
     margin:0 auto;
   }
 }
+

@@ -12,8 +12,17 @@
 .dataTables_empty {
     display: none;
   }
-
+ .form-control{
+    height: 38px !important;
+    box-sizing: border-box;
+ }
   .error {
     width: 100%;
     color: red;
+    font-size: 13px;
+    margin-top: 2px;
+    position: absolute;
   }
+  .input-group .error {
+    top: 35px;
+}

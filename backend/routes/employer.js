@@ -12,7 +12,9 @@ var logger = config.logger;
 var sub_account = require('../models/sub-accounts');
 var salary_bracket = require('../models/salary_bracket');
 var group = require('../models/group');
-var group_detail = require('../models/group-detail')
+var GroupDetail = require('../models/group-detail');
+var location = require('../models/location');
+var candidate = require('../models/candidate');
 
 router.use("/employer", auth, authorization, index);
 
@@ -20,11 +22,12 @@ router.use("/employer", auth, authorization, index);
 router.post("/offer/add_offer", async (req, res) => {
     var schema = {
       "employer_id":{
-          notEmpty:true
+          notEmpty:true,
+            errorMessage: "Employer ID is required"
       },
         "title": {
             notEmpty: true,
-            errorMessage: "Country is required"
+            errorMessage: "Title is required"
         },
         "salarytype":{
             notEmpty: true,
@@ -49,6 +52,14 @@ router.post("/offer/add_offer", async (req, res) => {
         "group":{
             notEmpty: true,
             errorMessage: "Group is required"
+        },
+        "commitstatus":{
+            notEmpty: true,
+            errorMessage: "Commit Status is required"
+        },
+        "location":{
+          notEmpty: true,
+          errorMessage:"Location is required"
         }
     };
   req.checkBody(schema);
@@ -66,6 +77,8 @@ router.post("/offer/add_offer", async (req, res) => {
           "status": true,
           "offertype": req.body.offertype,
           "group": req.body.group,
+          "commitstatus": req.body.commitstatus,
+          "location": req.body.location,
           "customfeild1": req.body.customfeild1,
           "customfeild2": req.body.customfeild2,
           "customfeild3": req.body.customfeild3,
@@ -197,40 +210,261 @@ router.get('/offer/offer_detail/:id', async (req, res) => {
     // }
 });
 
+//manage Candidate
+
+router.get('/manage_candidate/approved_candidate', async (req, res) => {
+    var candidate_list = await candidate.find();
+    if (candidate_list) {
+        return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+    }
+});
+
+router.get('/manage_candidate/candidate_detail/:id', async (req, res) => {
+    var id = req.params.id;
+    console.log(id);
+
+    var candidate_detail = await common_helper.findOne(candidate, { "_id": id })
+    console.log(candidate_detail);
+
+    if (candidate_detail.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    }
+    else if (candidate_detail.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
+    }
+    //     else {
+    //       res.status(config.BAD_REQUEST).json({"message": "No data found" });
+    //     }
+});
+
+router.put("/manage_candidate/deactive_candidate", async (req, res) => {
+    var obj = {
+        is_del: true
+    }
+    var resp_data = await common_helper.update(candidate, { "_id": req.body.id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+});
+
+router.put('/manage_candidate/candidate/edit_approved_candidate/:id', async (req, res) => {
+    var schema = {
+        "firstname": {
+            notEmpty: true,
+            errorMessage: "Firstname is required"
+        },
+        "lastname": {
+            notEmpty: true,
+            errorMessage: "Lastname is required"
+        },
+        "email": {
+            notEmpty: true,
+            errorMessage: "email is required"
+        },
+        "countrycode": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "country": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "password": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "contactno": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "contactno": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        }
+    };
+    req.checkBody(schema);
+    var reg_obj = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        countrycode: req.body.countrycode,
+        country: req.body.country,
+        password: req.body.password,
+        contactno: req.body.contactno,
+        documenttype: req.body.documenttype,
+        documentimage: req.body.documentimage,
+        is_del: req.body.is_del
+      
+    };
+    var id = req.params.id;
+    console.log(id);
+
+    var candidate_upadate = await common_helper.update(candidate, { "_id": id }, reg_obj)
+    console.log(candidate_upadate);
+
+    if (candidate_upadate.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
+    }
+    else if (candidate_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate update successfully", "data": candidate_upadate });
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+    }
+})
+
+//new request
+
+router.get('/manage_candidate/new_request', async (req, res) => {
+    var candidate_list = await candidate.find();
+    candidate_list = candidate_list.filter(x => x.isAllow === false)
+    if (candidate_list) {
+        return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+    }
+
+});
+
+router.get('/manage_candidate/new_request_detail/:id', async (req, res) => {
+    var id = req.params.id;
+    console.log(id);
+
+    var candidate_detail = await common_helper.findOne(candidate, { "_id": id })
+
+    console.log(candidate_detail);
+
+    if (candidate_detail.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    }
+    else if (candidate_detail.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
+    }
+    //     else {
+    //       res.status(config.BAD_REQUEST).json({"message": "No data found" });
+    //     }
+});
+
+router.put('/manage_candidate/new_request_update/:id', async (req, res) => {
+    var schema = {
+        "firstname": {
+            notEmpty: true,
+            errorMessage: "Firstname is required"
+        },
+        "lastname": {
+            notEmpty: true,
+            errorMessage: "Lastname is required"
+        },
+        "email": {
+            notEmpty: true,
+            errorMessage: "email is required"
+        },
+        "countrycode": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "country": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "password": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "contactno": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        },
+        "contactno": {
+            notEmpty: true,
+            errorMessage: "countrycode is required"
+        }
+    };
+    req.checkBody(schema);
+    var reg_obj = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        countrycode: req.body.countrycode,
+        country: req.body.country,
+        password: req.body.password,
+        contactno: req.body.contactno,
+        documenttype: req.body.documenttype,
+        documentimage: req.body.documentimage,
+    };
+    var id = req.params.id;
+    console.log(id);
+
+    var candidate_upadate = await common_helper.update(candidate, { "_id": id }, reg_obj)
+    console.log(candidate_upadate);
+
+    if (candidate_upadate.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
+    }
+    else if (candidate_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate update successfully", "data": candidate_upadate });
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+    }
+});
+
+router.put("/manage_candidate/new_request_deactive", async (req, res) => {
+    var obj = {
+        is_del: true
+    }
+    var resp_data = await common_helper.update(candidate, { "_id": req.body.id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+})
+
 //Sub_Accounts
 router.post("/add_sub_account", async (req, res) => {
     var schema = {
-      "name":{
-          notEmpty:true,
-          errorMessage: "name is required"
-      },
+        "name": {
+            notEmpty: true,
+            errorMessage: "Name is required"
+        },
         "email": {
             notEmpty: true,
             errorMessage: "Email is required"
         }
     };
-  req.checkBody(schema);
+    req.checkBody(schema);
 
-  var errors = req.validationErrors();
-  if (!errors) {
-      var reg_obj = {
-          "name": req.body.name,
-          "email": req.body.email,
-          "adminrights": req.body.adminrights,
-          "is_del": false
-      };
-      var interest_resp = await common_helper.insert(sub_account, reg_obj);
-      if (interest_resp.status == 0) {
-          logger.debug("Error = ", interest_resp.error);
-          res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-      } else {
-              res.json({ "message": "Sub-Account Added successfully", "data": interest_resp })
-      }
-  }
-  else {
-      logger.error("Validation Error = ", errors);
-      res.status(config.BAD_REQUEST).json({ message: errors });
-  }
+    var errors = req.validationErrors();
+    if (!errors) {
+        var reg_obj = {
+            "name": req.body.name,
+            "email": req.body.email,
+            "adminrights": req.body.adminrights,
+            "is_del": false
+        };
+        var interest_resp = await common_helper.insert(sub_account, reg_obj);
+        if (interest_resp.status == 0) {
+            logger.debug("Error = ", interest_resp.error);
+            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        } else {
+            res.json({ "message": "Sub-Account Added successfully", "data": interest_resp })
+        }
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
 });
 
 router.get('/view_sub_accounts', async (req, res) => {
@@ -247,7 +481,7 @@ router.put('/edit_sub_account/:id', async (req, res) => {
     var schema = {
         "name":{
             notEmpty:true,
-            errorMessage: "name is required"
+            errorMessage: "Name is required"
         },
           "email": {
               notEmpty: true,
@@ -350,6 +584,12 @@ router.post("/add_group", async (req, res) => {
   if (!errors) {
       var reg_obj = {
           "name": req.body.name,
+          "high_unopened":req.body.high_unopened,
+          "high_notreplied":req.body.high_notreplied,
+          "medium_unopened": req.body.medium_unopened,
+          "medium_notreplied": req.body.medium_notreplied,
+          "low_unopened" :req.body.low_unopened,
+          "low_notreplied":req.body.medium_notreplied,
           "is_del": false
       };
       var interest_resp = await common_helper.insert(group, reg_obj);
@@ -368,36 +608,48 @@ router.post("/add_group", async (req, res) => {
 
 router.post("/add_group_details", async (req, res) => {
     var schema = {
-      "communicationname":{
-          notEmpty:true,
-          errorMessage: "Communication Name is required"
-      },
-      "trigger":{
-        notEmpty:true,
-        errorMessage: "Trigger is required"
-    },
-    "day":{
-        notEmpty:true,
-        errorMessage: "Days are required"
-    },
-    "priority":{
-        notEmpty:true,
-        errorMessage: "Priority is required"
-    }
+        "group_id": {
+            notEmpty: true,
+            errorMessage: "Group id is required"
+        },
+        "communication": [{
+            "communicationname": {
+                notEmpty: true,
+                errorMessage: "Communication Name is required"
+            },
+            "trigger": {
+                notEmpty: true,
+                errorMessage: "Trigger is required"
+            },
+            "day": {
+                notEmpty: true,
+                errorMessage: "Days are required"
+            },
+            "priority": {
+                notEmpty: true,
+                errorMessage: "Priority is required"
+            }
+        },]
     };
   req.checkBody(schema);
 
   var errors = req.validationErrors();
   if (!errors) {
+  
       var reg_obj = {
-          "groupid": req.body.groupid,
-          "communicationname": req.body.communicationname,
-          "trigger": req.body.trigger,
-          "day":req.body.day,
-          "message": req.body.message,
-          "is_del": false
+          "group_id": req.body.group_id,
+          "communication": [{
+              "communicationname": req.body.communicationname,
+              "trigger": req.body.trigger,
+              "day": req.body.day,
+              "priority": req.body.priority,
+              "message": req.body.message,
+              "is_del": false
+          }]
       };
-      var interest_resp = await common_helper.insert(group_detail, reg_obj);
+      console.log(reg_obj);
+      
+      var interest_resp = await common_helper.insert(GroupDetail, reg_obj);
       if (interest_resp.status == 0) {
           logger.debug("Error = ", interest_resp.error);
           res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
@@ -411,24 +663,127 @@ router.post("/add_group_details", async (req, res) => {
   }
 });
 
-router.get('/group_detail/:id', async (req, res) => { 
-    var id = req.params.group_id;
-    console.log(id);
+router.get('/group_detail', async (req, res) => { 
+    // console.log(req.body.id);
+    
+    await GroupDetail.find({ group_id: objectID(req.body.id)}, (err, result)=> {
+        console.log(result);
+        if (err) res.send(JSON.stringify('not found'))
+        if (result !== null && result.length > 0) {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": result });
+        } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        }
+    })
 
-    var group_detail = await common_helper.find(group_detail, { "group_id": id })
-    console.log(group_detail);
 
-    if (group_detail.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
-    }
-    else if (group_detail.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": group_detail });
-    }
+    // var group_detail =  await GroupDetail.find({}).populate(req.body.id).exec(function (err, data) {
+    //     console.log(data);
+        
+    //     if (data) {
+    //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": data });
+    //     } else {
+    //         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    //     }
+    // });
+    // var group_detail = await common_helper.findWithFilterss(GroupDetail, {"group_id": req.body.id});
+    // console.log(group_detail)
+
+    // if (group_detail.status == 0) {
+       
+    // }
+    // else if (group_detail.status == 1) {
+    //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": group_detail });
+    // }
     // else {
     //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
     // }
 });
 
+
+//manage Location
+
+router.post("/add_location", async (req, res) => {
+    var schema = {
+        "country": {
+            notEmpty: true,
+            errorMessage: "Country is required"
+        },
+        "city": {
+            notEmpty: true,
+            errorMessage: "City is required"
+        }
+    };
+    req.checkBody(schema);
+
+    var errors = req.validationErrors();
+    if (!errors) {
+        var reg_obj = {
+            "country": req.body.country,
+            "city": req.body.city,
+            "is_del": false
+        };
+        var interest_resp = await common_helper.insert(location, reg_obj);
+        if (interest_resp.status == 0) {
+            logger.debug("Error = ", interest_resp.error);
+            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        } else {
+            res.json({ "message": "Location Added successfully", "data": interest_resp })
+        }
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
+router.put('/edit_location/:id', async (req, res) => {
+    var schema = {
+        "country": {
+            notEmpty: true,
+            errorMessage: "Country is required"
+        },
+        "city": {
+            notEmpty: true,
+            errorMessage: "City is required"
+        }
+    };
+    req.checkBody(schema);
+    var reg_obj = {
+        "country": req.body.country,
+        "city": req.body.city,
+        "is_del": false,
+    };
+    var id = req.params.id;
+    console.log(id);
+
+    var update_location = await common_helper.update(location, { "_id": id }, reg_obj)
+    console.log(update_location);
+
+    if (update_location.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    }
+    else if (update_location.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Location update successfully", "data": update_location });
+    }
+    // else {
+    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+    // }
+})
+
+router.put("/deactivate_location", async (req, res) => {
+    var obj = {
+        is_del: true
+    }
+    var resp_data = await common_helper.update(location, { "_id": req.body.id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+});
 
 
 
