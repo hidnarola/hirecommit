@@ -68,11 +68,26 @@ router.post("/candidate_register", async (req, res) => {
           errorMessage: "countrycode is required"
         }
     };
+
+  var validate = passwordValidatorSchema
+    .is().min(8)
+    .symbols()	                                 // Minimum length 8
+    .is().max(100)
+    .letters()                                // Maximum length 100
+    // .has().uppercase()                              // Must have uppercase letters
+    .has().lowercase()                              // Must have lowercase letters
+    .has().digits()                                 // Must have digits
+    .has().not().spaces()                       // Should not have spaces
+    .is().not().oneOf(['Password', 'Password123'])
+
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-      let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email.toLowerCase()})
-      if(candidate_resp.status === 1) {
+
+      let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email.toLowerCase()});
+      let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email.toLowerCase()});
+      let admin_resp = await common_helper.findOne(Admin, { "email": req.body.email.toLowerCase()});
+      if(employer_resp.status === 1 || admin_resp.status === 1 || candidate_resp.status === 1) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
       } else {
         var reg_obj = {
@@ -85,100 +100,104 @@ router.post("/candidate_register", async (req, res) => {
             "contactno": req.body.contactno,
             "documenttype": req.body.documenttype
         };
-        async.waterfall(
-            [
-                function (callback) {
-                    //file upload
-                    // console.log("hiiiii", req.body.files);
-                    if (req.files && req.files["documentimage"]) {
-                        var image_path_array = [];
-                        var file = req.files['documentimage'];
-                        var files = [].concat(req.files.documentimage);
-                        var dir = "./upload";
-                        var filename = file.name;
-                        async.eachSeries(
-                            files,
-                            function (file, loop_callback) {
-                                var mimetype = path.extname(file.name);
-                                var mimetype = ["image/jpeg","image/png", 'application/pdf'];
-                                if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
-                                    if (!fs.existsSync(dir)) {
-                                        fs.mkdirSync(dir);
-                                    }
-                                    var filename = file.name;
-                                    file.mv(dir + "/" + filename, function (err) {
-                                        if (err) {
-                                            logger.error("There was an issue in uploading");
-                                            loop_callback({
-                                                status: config.MEDIA_ERROR_STATUS,
-                                                err: "There was an issue in uploading"
-                                            });
-                                        } else {
-                                            logger.trace(
-                                                "image has been uploaded. File name = ",
-                                                filename
-                                            );
-                                            location = filename;
-                                            image_path_array.push(location);
-                                            loop_callback();
-                                        }
-                                    });
-                                } else {
-                                    logger.error(" format is invalid");
-                                    loop_callback({
-                                        status: config.VALIDATION_FAILURE_STATUS,
-                                        err: " format is invalid"
-                                    });
-                                }
-                            },
-                            function (err) {
-                                if (err) {
-                                    res.status(err.status).json(err);
-                                } else {
-                                    callback(null, image_path_array);
-                                }
-                            }
-                        );
-                    } else {
-                        logger.info(
-                            "File not available to upload. Executing next instruction"
-                        );
-                        callback(null, []);
-                    }
-                }
-            ],
-            async (err, image_path_array) => {
-              reg_obj.documentimage = image_path_array;
-                var interest_resp = await common_helper.insert(Candidate, reg_obj);
-                if (interest_resp.status == 0) {
-                    logger.debug("Error = ", interest_resp.error);
-                    res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-                } else {
-                  var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
-                    config.ACCESS_TOKEN_SECRET_KEY, {
-                      expiresIn: 60 * 60 * 24 * 3
-                    }
-                  )).toString('base64');
-
-                  var time = new Date();
-                  time.setMinutes(time.getMinutes() + 20);
-                  time = btoa(time);
-
-                  logger.trace("sending mail");
-                  let mail_resp = await mail_helper.send("email_confirmation", {
-                      "to": interest_resp.data.email,
-                      "subject": "HC - Email Confirmation"
-                  }, {
-                      // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-                      "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
-                  });
-                  if (mail_resp.status === 0) {
-                      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-                  } else {
-                      res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_resp })
+        if (passwordValidatorSchema.validate(req.body.password) == false) {
+          res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
+        } else {
+          async.waterfall(
+              [
+                  function (callback) {
+                      //file upload
+                      // console.log("hiiiii", req.body.files);
+                      if (req.files && req.files["documentimage"]) {
+                          var image_path_array = [];
+                          var file = req.files['documentimage'];
+                          var files = [].concat(req.files.documentimage);
+                          var dir = "./upload";
+                          var filename = file.name;
+                          async.eachSeries(
+                              files,
+                              function (file, loop_callback) {
+                                  var mimetype = path.extname(file.name);
+                                  var mimetype = ["image/jpeg","image/png", 'application/pdf'];
+                                  if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
+                                      if (!fs.existsSync(dir)) {
+                                          fs.mkdirSync(dir);
+                                      }
+                                      var filename = file.name;
+                                      file.mv(dir + "/" + filename, function (err) {
+                                          if (err) {
+                                              logger.error("There was an issue in uploading");
+                                              loop_callback({
+                                                  status: config.MEDIA_ERROR_STATUS,
+                                                  err: "There was an issue in uploading"
+                                              });
+                                          } else {
+                                              logger.trace(
+                                                  "image has been uploaded. File name = ",
+                                                  filename
+                                              );
+                                              location = filename;
+                                              image_path_array.push(location);
+                                              loop_callback();
+                                          }
+                                      });
+                                  } else {
+                                      logger.error(" format is invalid");
+                                      loop_callback({
+                                          status: config.VALIDATION_FAILURE_STATUS,
+                                          err: " format is invalid"
+                                      });
+                                  }
+                              },
+                              function (err) {
+                                  if (err) {
+                                      res.status(err.status).json(err);
+                                  } else {
+                                      callback(null, image_path_array);
+                                  }
+                              }
+                          );
+                      } else {
+                          logger.info(
+                              "File not available to upload. Executing next instruction"
+                          );
+                          callback(null, []);
+                      }
                   }
-                }
-            });
+              ],
+              async (err, image_path_array) => {
+                reg_obj.documentimage = image_path_array;
+                  var interest_resp = await common_helper.insert(Candidate, reg_obj);
+                  if (interest_resp.status == 0) {
+                      logger.debug("Error = ", interest_resp.error);
+                      res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+                  } else {
+                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
+                      config.ACCESS_TOKEN_SECRET_KEY, {
+                        expiresIn: 60 * 60 * 24 * 3
+                      }
+                    )).toString('base64');
+
+                    var time = new Date();
+                    time.setMinutes(time.getMinutes() + 20);
+                    time = btoa(time);
+
+                    logger.trace("sending mail");
+                    let mail_resp = await mail_helper.send("email_confirmation", {
+                        "to": interest_resp.data.email,
+                        "subject": "HC - Email Confirmation"
+                    }, {
+                        // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
+                        "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
+                    });
+                    if (mail_resp.status === 0) {
+                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+                    } else {
+                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_resp })
+                    }
+                  }
+              });
+        }
       }
     }
     else {
@@ -227,6 +246,18 @@ router.post("/employer_register", async (req, res) => {
         errorMessage: "captcha is required"
       }
   };
+
+  var validate = passwordValidatorSchema
+    .is().min(8)
+    .symbols()	                                 // Minimum length 8
+    .is().max(100)
+    .letters()                                // Maximum length 100
+    // .has().uppercase()                              // Must have uppercase letters
+    .has().lowercase()                              // Must have lowercase letters
+    .has().digits()                                 // Must have digits
+    .has().not().spaces()                       // Should not have spaces
+    .is().not().oneOf(['Password', 'Password123'])
+
   req.checkBody(schema);
 
   var errors = req.validationErrors();
@@ -239,7 +270,9 @@ router.post("/employer_register", async (req, res) => {
             }
             else {
               let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email.toLowerCase()})
-              if(employer_resp.status === 1) {
+              let admin_resp = await common_helper.findOne(Admin, { "email": req.body.email.toLowerCase()})
+              let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email.toLowerCase()})
+              if(employer_resp.status === 1 || admin_resp.status === 1 || candidate_resp.status === 1) {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
               } else {
                 var reg_obj = {
@@ -253,30 +286,33 @@ router.post("/employer_register", async (req, res) => {
                   "countrycode": req.body.countrycode,
                   "contactno": req.body.contactno
                 };
-
-                var interest_resp = await common_helper.insert(Employer, reg_obj);
-                var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
-                  config.ACCESS_TOKEN_SECRET_KEY, {
-                    expiresIn: 60 * 60 * 24 * 3
-                  }
-                )).toString('base64');
-
-                var time = new Date();
-                time.setMinutes(time.getMinutes() + 20);
-                time = btoa(time);
-
-                logger.trace("sending mail");
-                let mail_resp = await mail_helper.send("email_confirmation", {
-                    "to": interest_resp.data.email,
-                    "subject": "HireCommit - Email Confirmation"
-                }, {
-                  // config.website_url + "/email_confirm/" + interest_resp.data._id
-                    "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
-                });
-                if (mail_resp.status === 0) {
-                    res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+                if (passwordValidatorSchema.validate(req.body.password) == false) {
+                  res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
                 } else {
-                    res.json({ "message": "Employer registration successful", "data": interest_resp })
+                  var interest_resp = await common_helper.insert(Employer, reg_obj);
+                  var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
+                    config.ACCESS_TOKEN_SECRET_KEY, {
+                      expiresIn: 60 * 60 * 24 * 3
+                    }
+                  )).toString('base64');
+
+                  var time = new Date();
+                  time.setMinutes(time.getMinutes() + 20);
+                  time = btoa(time);
+
+                  logger.trace("sending mail");
+                  let mail_resp = await mail_helper.send("email_confirmation", {
+                      "to": interest_resp.data.email,
+                      "subject": "HireCommit - Email Confirmation"
+                  }, {
+                    // config.website_url + "/email_confirm/" + interest_resp.data._id
+                      "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
+                  });
+                  if (mail_resp.status === 0) {
+                      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+                  } else {
+                      res.json({ "message": "Employer registration successful", "data": interest_resp })
+                  }
                 }
               }
             }
@@ -567,7 +603,7 @@ router.post('/reset_password', async (req, res) => {
       .symbols()	                                 // Minimum length 8
       .is().max(100)
       .letters()                                // Maximum length 100
-      .has().uppercase()                              // Must have uppercase letters
+      // .has().uppercase()                              // Must have uppercase letters
       .has().lowercase()                              // Must have lowercase letters
       .has().digits()                                 // Must have digits
       .has().not().spaces()                       // Should not have spaces
@@ -662,5 +698,106 @@ router.post('/reset_password', async (req, res) => {
       res.status(config.BAD_REQUEST).json({ message: errors });
   }
 });
+
+//change password
+router.put('/change_password', async (req, res) => {
+  var schema = {
+      'token': {
+          notEmpty: true,
+          errorMessage: "Change password token is required."
+      },
+      'oldpassword': {
+          notEmpty: true,
+          errorMessage: "Old password is required."
+      },
+      'newpassword': {
+        notEmpty: true,
+        errorMessage: "New Password is required."
+      }
+  };
+
+  var validate = passwordValidatorSchema
+      .is().min(8)
+      .symbols()	                                 // Minimum length 8
+      .is().max(100)
+      .letters()                                // Maximum length 100
+      // .has().uppercase()                              // Must have uppercase letters
+      .has().lowercase()                              // Must have lowercase letters
+      .has().digits()                                 // Must have digits
+      .has().not().spaces()                       // Should not have spaces
+      .is().not().oneOf(['Password', 'Password123'])
+  req.checkBody(schema);
+  var errors = req.validationErrors();
+
+  if (!errors) {
+      logger.trace("Verifying JWT");
+      jwt.verify(req.body.token, config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
+          if (err) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid Token" });
+          }
+          if (passwordValidatorSchema.validate(req.body.newpassword) == false) {
+              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
+          }
+          else {
+              const admin = await common_helper.findOne(Admin, { "_id": decoded.id }, 1);
+              const candidate = await common_helper.findOne(Candidate, { "_id": decoded.id }, 1);
+              const employer = await common_helper.findOne(Employer, { "_id": decoded.id }, 1);
+
+              if (admin.data && admin.status === 1) {
+                if (bcrypt.compareSync(req.body.oldpassword, admin.data.password)) {
+                  const update_resp = await common_helper.update(Admin, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
+                    if (update_resp.status === 1) {
+                        logger.trace("Password has been changed - ", decoded.id);
+                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed"});
+                    }
+                    else {
+                        res.status(config.BAD_REQUEST).json({ "message": "Error occured while change password of admin" });
+                    }
+                } else {
+                  res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Old password does not match." });
+                }
+              }
+              else if (employer.data && employer.status === 1) {
+                if (bcrypt.compareSync(req.body.oldpassword, employer.data.password)) {
+                  const update_resp = await common_helper.update(Employer, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
+                    if (update_resp.status === 1) {
+                        logger.trace("Password has been changed - ", decoded.id);
+                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed"});
+                    }
+                    else {
+                        res.status(config.BAD_REQUEST).json({ "message": "Error occured while change password of employer" });
+                    }
+                } else {
+                  res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Old password does not match." });
+                }
+              }
+              else if (candidate.data && candidate.status === 1) {
+                if (bcrypt.compareSync(req.body.oldpassword, candidate.data.password)) {
+                  const update_resp = await common_helper.update(Candidate, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
+                    if (update_resp.status === 1) {
+                        logger.trace("Password has been changed - ", decoded.id);
+                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed"});
+                    }
+                    else {
+                        res.status(config.BAD_REQUEST).json({ "message": "Error occured while change password of candidate" });
+                    }
+                } else {
+                  res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Old password does not match." });
+                }
+              }
+              else if ( admin.status === 0 && employer.status === 0 &&  candidate.status === 0) {
+                logger.trace("Change password checked resp = ", admin);
+                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": admin.error });
+              }
+              else {
+                res.status(config.NOT_FOUND).json({ "status": 2, "message": "NOT_FOUND" });
+              }
+          }
+      } )
+  }
+  else {
+      res.status(config.BAD_REQUEST).json({ message: errors });
+  }
+})
 
 module.exports = router;
