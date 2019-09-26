@@ -14,7 +14,7 @@ export class LoginGuard implements CanActivate {
 
   checkLogin(url: string): boolean {
     let islogin = false;
-    let loginUser = localStorage.getItem('usertype');
+    let loginUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
     try {
       // loginUser = JSON.parse(loginUser);

@@ -30,30 +30,32 @@ export class AddGroupsComponent implements OnInit {
   }
 
   public onReady( editor ) {
-    editor.ui.getEditableElement().parentElement.insertBefore(
-        editor.ui.view.toolbar.element,
-        editor.ui.getEditableElement()
-    );
-}
-  // get f() { return this.myForm.controls.arr['controls']}
+      editor.ui.getEditableElement().parentElement.insertBefore(
+          editor.ui.view.toolbar.element,
+          editor.ui.getEditableElement()
+      );
+  }
 
   onSubmit() {
     this.submitted = true;
-    if (this.myForm.invalid) {
-      console.log(this.myForm.controls.arr['controls'][0]);
-      return;
-  }
     console.log(this.myForm.value);
+    if (this.myForm.invalid) {
+        // console.log(this.myForm.controls.arr['controls'][0]);
+        return;
+    }
   }
 
   createItem() {
     return this.fb.group({
-      name: ['', Validators.required],
+      communicationname: ['', Validators.required],
       trigger: ['', [Validators.required]],
+      priority: ['', [Validators.required]],
       day: ['', Validators.required],
-      message: ['Enter Message']
+      message: ['']
     });
   }
+
+  get f() { return this.myForm.controls.arr['controls']; }
 
   addItem(i) {
     this.arr = this.myForm.get('arr') as FormArray;

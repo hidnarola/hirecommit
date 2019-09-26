@@ -54,10 +54,7 @@ export function getToken(): string {
     EmailconfermationComponent,
     ResetPasswordComponent
   ],
-  providers: [{
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy
-  }, AuthService, AuthGuardService, RoleGuardService, JwtHelperService ],
+  providers: [ AuthService, AuthGuardService, RoleGuardService, JwtHelperService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
