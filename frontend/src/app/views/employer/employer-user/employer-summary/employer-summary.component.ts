@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { EmployerService } from '../../employer.service';
+
 @Component({
   selector: 'app-employer-summary',
   templateUrl: './employer-summary.component.html',
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit {
-
-  constructor(private router: Router) { }
+offers: any[];
+  constructor(private router: Router, private service: EmployerService) { }
 
   ngOnInit() {
     const table = $('#example').DataTable({
@@ -18,6 +20,12 @@ export class EmployerSummaryComponent implements OnInit {
           });
       }
     });
+
+  this.service.view_offer()
+  .subscribe(res => {
+    console.log("Offers",res);
+    this.offers = res[('data')];
+  })
 
   }
 

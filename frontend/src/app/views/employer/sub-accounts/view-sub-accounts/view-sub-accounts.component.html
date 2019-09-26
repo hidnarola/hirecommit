@@ -20,9 +20,9 @@
             </thead>
 
             <tbody>
-              <tr>
-                <td>ABC</td>
-                <td>ABC@gmail.com</td>
+              <tr *ngFor= "let acc of sub_accounts">
+                <td>{{acc.name}}</td>
+                <td>{{acc.email}}</td>
                 
                 <td><label class="switch">
                     <input type="checkbox" checked>

@@ -29,25 +29,23 @@
 
             <tbody>
 
-              <tr>
-                <td>02/03/2019</td>
-
+              <tr *ngFor="let offer of offers">
                 <td>ABC</td>
 
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
+                <td>{{offer.title}}</td>
+                 <td>{{offer.salarytype}}</td>
+                <td>{{offer.salaryduration}}</td>
+                <td>{{offer.expirydate}}</td>
+                <td>{{offer.joiningdate}}</td>
                 <td><label class="switch">
                     <input type="checkbox" checked>
                     <span class="slider round"></span>
                   </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
+                <td>{{offer.offertype}}</td>
+                <td>{{offer.group}}</td>
+                 <td>{{offer.commitstatus}}</td>
                 
-                <td>Custom Field 1</td>
+                <td>{{offer.customfeild1}}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
                       class="icon-eye"></i></button>
@@ -57,262 +55,7 @@
                       class="icon-trash"></i></button></td>
               </tr>
 
-              <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-              
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-            
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>   <tr>
-                <td>02/03/2019</td>
-
-                <td>ABC</td>
-
-
-                <td>Annual</td>
-                <td>15000-20000(INR)</td>
-                <td>22/09/2020</td>
-                <td>22/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>
-
-              <tr>
-                <td>06/04/2019</td>
-
-                <td>PQR</td>
-
-                <td>Hourly</td>
-                <td>15000-20000(INR)</td>
-                <td>09/09/2020</td>
-                <td>09/09/2015</td>
-                <td><label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                  </label></td>
-
-                <td>Candidate Commit</td>
-                <td>Officers</td>
-                 <td>High</td>
-                <td>Custom Field 1</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                      class="icon-eye"></i></button>
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                      class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
-                      class="icon-trash"></i></button></td>
-              </tr>
-
+             
             </tbody>
           </table>
         </div>
