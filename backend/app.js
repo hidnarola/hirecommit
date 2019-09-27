@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var dotenv = require('dotenv').config();
 var fileUpload = require('express-fileupload');
 var expressValidator = require('express-validator');
+var cors = require('cors');
 //var cron_jobs = require('./crons/index');
 
 var swaggerUi = require('swagger-ui-express'),
@@ -27,6 +28,7 @@ var dbConnect = require('./database/mongoDbConnection');
 
 var app = express();
 app.use(fileUpload());
+app.use(cors());
 app.set('view engine', 'ejs');
 app.set('view options', {
   layout: false
@@ -118,9 +120,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-
 
 //cron_jobs.init();
 
