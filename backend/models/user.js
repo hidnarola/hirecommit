@@ -3,37 +3,10 @@ var bcrypt = require('bcryptjs');
 var SALT_WORK_FACTOR = 10;
 
 const Schema = mongoose.Schema;
+
 // Create Schema
-const CandidateSchema = new Schema({
-  firstname: {
-    type: String,
-    required: true
-  },
-  lastname: {
-    type: String,
-    required: true
-  },
+const UserSchema = new Schema({
   email: {
-    type: String,
-    required: true
-  },
-  countrycode:{
-    type:String,
-    require: true
-  },
-  contactno: {
-    type: String,
-    required: true
-  },
-  country: {
-    type: String,
-    required: true
-  },
-  documentimage: {
-    type: String,
-    // required: true
-  },
-  documenttype: {
     type: String,
     required: true
   },
@@ -41,21 +14,21 @@ const CandidateSchema = new Schema({
     type: String,
     required: true
   },
-  email_verified: {
+  role_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'role'
+  },
+  admin_rights: {
     type: Boolean,
     default: false
   },
-  document_verified: {
+  email_verified: {
     type: Boolean,
     default: false
   },
   isAllow: {
     type: Boolean,
     default: false
-  },
-  role: {
-      type: String,
-      default:"candidate"
   },
   is_del: {
     type: Boolean,
@@ -65,13 +38,13 @@ const CandidateSchema = new Schema({
     type: Number,
     default: 1
   },
-  createdAt: {
+  createdate: {
       type: Date,
       default: Date.now
   }
 });
 
-CandidateSchema.pre('save', function (next) {
+UserSchema.pre('save', function (next) {
   var user = this;
   // only hash the password if it has been modified (or is new)
   if (!user.isModified('password')) return next();
@@ -88,4 +61,4 @@ CandidateSchema.pre('save', function (next) {
   });
 });
 
-module.exports = mongoose.model('candidate', CandidateSchema,'candidate');
+module.exports = mongoose.model('user', UserSchema,'user');

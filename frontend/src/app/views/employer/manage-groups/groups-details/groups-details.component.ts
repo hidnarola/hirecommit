@@ -21,4 +21,8 @@ export class GroupsDetailsComponent implements OnInit {
     this.router.navigate(['/employer/manage_group/add_group']);
   }
 
+  onclick() {
+
+  }
+
 }

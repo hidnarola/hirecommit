@@ -9,8 +9,6 @@ var logger = config.logger;
 var mail_helper = require('./../helpers/mail_helper');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var employer = require('../models/employer');
-var candidate = require('../models/candidate');
 var index = require('./admin/index');
 
 var objectID = require('mongoose').Types.ObjectId;
@@ -185,7 +183,6 @@ router.put('/edit_employer/:id', async (req, res) => {
 //     //     res.status(config.BAD_REQUEST).json({"message": "No data found" });
 //     //   }
 // })
-
 
 router.put("/deactive_employer", async (req, res) => {
     var obj = {
@@ -437,8 +434,5 @@ router.put("/manage_candidate/new_request_deactivate", async (req, res) => {
         res.status(config.OK_STATUS).json(resp_data);
     }
 })
-
-
-
 
 module.exports = router;

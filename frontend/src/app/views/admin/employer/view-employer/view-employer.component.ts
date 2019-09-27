@@ -19,11 +19,11 @@ export class ViewEmployerComponent implements OnInit  {
     //   }
     // });
 
-    this.service.getemployer().subscribe(res => {
-      console.log("View Employer",res);
-      
-      this.employer =res;
-    })
+    // this.service.getemployer().subscribe(res => {
+    //   console.log("View Employer",res);
+
+    //   this.employer =res;
+    // })
   }
 
   buttonInRowClick(event: any): void {

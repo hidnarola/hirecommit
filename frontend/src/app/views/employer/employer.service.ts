@@ -25,4 +25,8 @@ export class EmployerService {
     view_sub_account(): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/view_sub_accounts');
     }
+
+    add_communication(data, id): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}` + '/add_group_details/' + id, {data});
+    }
 }

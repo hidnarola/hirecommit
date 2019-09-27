@@ -8,12 +8,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { GroupsDetailsComponent } from './groups-details/groups-details.component';
 import { GroupsComponent } from './groups/groups.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [ViewGroupsComponent, AddGroupsComponent, GroupsDetailsComponent, GroupsComponent],
   imports: [
     CommonModule,
-    ManageGroupsRoutingModule, ReactiveFormsModule, CKEditorModule
-  ]
+    ManageGroupsRoutingModule,
+    ReactiveFormsModule,
+    CKEditorModule,
+    HttpClientModule,
+  ],
+  providers: [  ]
 })
 export class ManageGroupsModule { }
