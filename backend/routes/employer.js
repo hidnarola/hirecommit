@@ -14,7 +14,7 @@ var salary_bracket = require('../models/salary_bracket');
 var group = require('../models/group');
 var GroupDetail = require('../models/group-detail');
 var location = require('../models/location');
-var candidate = require('../models/candidate');
+var candidate = require('../models/candidate_detail');
 
 router.use("/employer", auth, authorization, index);
 
@@ -178,11 +178,13 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
     // }
 })
 
-router.put("/offer/deactive_offer", async (req, res) => {
+router.put("/offer/deactive_offer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(offer, { "_id": req.body.id }, obj);
+    var id = req.params.id;
+    console.log('hey',id)
+    var resp_data = await common_helper.update(offer, { "_id": id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
@@ -832,6 +834,8 @@ router.post("/add_salary_bracket", async (req, res) => {
 
 router.get('/view_salary_bracket', async (req, res) => {
     var salary_bracket_list = await salary_bracket.find();
+    console.log(this.salary_bracket_list);
+    
     if (salary_bracket_list) {
         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
     }
@@ -881,11 +885,12 @@ router.put('/edit_salary_bracket/:id', async (req, res) => {
     // }
 })
 
-router.put("/deactive_salary_bracket", async (req, res) => {
+router.put("/deactive_salary_bracket/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(salary_bracket, { "_id": req.body.id }, obj);
+    var id= req.params.id;
+    var resp_data = await common_helper.update(salary_bracket, { "_id": id}, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SalaryBracketService } from '../manag-salary-bracket.service';
 
 @Component({
   selector: 'app-view-salarybracket',
@@ -7,15 +8,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./view-salarybracket.component.scss']
 })
 export class ViewSalarybracketComponent implements OnInit {
-  constructor(private router: Router) { }
+  salary_brcakets: any;
+  deactive: any;
+  constructor(private router: Router, private service: SalaryBracketService) { }
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
-            this.nextButtonClickEvent();
-          });
+          this.nextButtonClickEvent();
+        });
       }
     });
+this.bind();
 
   }
 
@@ -40,15 +44,39 @@ export class ViewSalarybracketComponent implements OnInit {
   }
   detail() {
     // this.router.navigate(['/groups/summarydetail']);
-   }
+  }
 
-   edit() {
+  edit() {
     this.router.navigate(['/employer/manage_salarybracket/add_salarybracket']);
-   }
+  }
 
-   delete() {}
+  delete(id) {
 
-   onAdd() {
+    this.service.deactivate_salary_brcaket(id).subscribe(res => {
+         res= id;
+      this.deactive = res;
+      console.log(this.deactive);
+     
+      console.log("salary delete",res);
+      this.bind();
+       
+    })
+  }
+
+  onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
-   }
+  }
+
+  public bind(){
+    this.service.view_salary_brcaket().subscribe(res => {
+      this.salary_brcakets = res['data'];
+      this.salary_brcakets = this.salary_brcakets.filter(x => x.is_del === false )
+      console.log("salary", this.salary_brcakets);
+
+
+     
+
+    })
+
+  }
 }

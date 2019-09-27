@@ -24,8 +24,8 @@ var jwt = require('jsonwebtoken');
 var async = require('async');
 var mail_helper = require('./../helpers/mail_helper');
 var Admin = require('./../models/admin');
-var Candidate = require('./../models/candidate');
-var Employer = require('./../models/employer');
+var Candidate = require('./../models/candidate_detail');
+var Employer = require('./../models/employer_detail');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')

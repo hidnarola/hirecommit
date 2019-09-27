@@ -28,9 +28,16 @@ const routes: Routes = [
         data: {
           title: 'AddOffer'
         }
+      },
+       {
+         path: 'editoffer/:id',
+        component: EmployerAddofferComponent,
+        data: {
+          title: 'editOffer'
+        }
       }
       , {
-        path: 'offerdetail',
+        path: 'offerdetail/:id',
         component: EmployerSummaryDetailComponent,
         data: {
           title: 'offerDetail'

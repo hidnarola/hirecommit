@@ -8,6 +8,7 @@
                 <div class="card-body">
                     <table class="table">
                         <tbody>
+                          ABC{{details.title}}
                             <tr>
                                 <td>Date</td>
                                 <td>02/03/2019</td>
@@ -15,38 +16,38 @@
                             <tr>
                                 <td>Email</td>
                                 <td>ABC@gmail.com</td>
-                            </tr>
-                            <tr>
+                            </tr> 
+                       <tr>
                                 <td>Name</td>
                                 <td>ABC</td>
                             </tr>
                             <tr>
                                 <td>Title</td>
-                                <td>HR</td>
+                                <td>{{details.title}}</td>
                             </tr>
 
 
                             <tr>
-                                <td>Salary Type</td>
-                                <td>Hourly</td>
+                                <td>Slary Type</td>
+                                <td>{{details.salarytype}}</td>
                             </tr>
 
                             <tr>
                                 <td>Salary Duration</td>
-                                <td>2 Week</td>
+                                <td>{{details.salaryduration}}</td>
                             </tr>
 
                             <tr>
                                 <td>Salary Bracket</td>
-                                <td>15000 - 20000(INR)</td>
+                                <td>{{details.salarybracket}}</td>
                             </tr>
                             <tr>
                                 <td>Expiry Date</td>
-                                <td>22/09/2020</td>
+                                <td>{{details.expirydate}}</td>
                             </tr>
                             <tr>
                                 <td>Joining Date</td>
-                                <td>22/09/2015</td>
+                                <td>{{details.joiningdate}}</td>
                             </tr>
                             <tr>
                                 <td>Status</td>
@@ -58,42 +59,43 @@
 
                             <tr>
                                 <td>Offer Type</td>
-                                <td>Candidate Commit</td>
+                                <td>{{details.offertype}}</td>
                             </tr>
                              
                             
                             <tr>
                                 <td>Group</td>
-                                <td>Officer<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
+                                <td>{{details.group}}<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
                                 
                             </tr>
 
                             <tr>
                                 <td>Commit Status</td>
-                                <td>High</td>
+                                <td>{{details.commitstatus}}</td>
                             </tr>
 
                             <tr>
                                 <td>Location</td>
-                                <td>India</td>
+                                <td>{{details.location}}</td>
                             </tr>
 
                             <tr>
                                 <td>Custom Field 1</td>
-                                <td>Custom Feild</td>
+                                <td>{{details.customfeild1}}</td>
                             </tr>
                             <tr>
                                 <td>Custom Field 2</td>
-                                <td>Custom Feild</td>
+                                <td>{{details.customfeild2}}</td>
                             </tr>
                             <tr>
                                 <td>Custom Field 3</td>
-                                <td>Custom Feild</td>
+                                <td>{{details.customfeild3}}</td>
                             </tr>
                             <tr>
                                 <td>Notes</td>
-                                <td>Nothing</td>
+                                <td>{{details.notes}}</td>
                             </tr>
+                           
                         </tbody>
                     </table>
 

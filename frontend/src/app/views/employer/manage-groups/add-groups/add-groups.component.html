@@ -11,8 +11,8 @@
               <div [formGroupName]="i" style="margin-bottom: 10px;">
                 <div class="col-md-12 mt-3">
                   <div class="card">
-                    <h5 class="card-title">Basic layout - {{i+1}}</h5>
-                    <div class="card-header">
+                    
+                    <div class="card-header h6">Basic layout - {{i+1}}
                         <span class="input-group-text pull-right" *ngIf="i < 1" (click)="addItem(i)"><i class="icon-plus"></i></span>
                         <span class="input-group-text pull-right" *ngIf="i > 0"  (click)="removeItem(i)"><i class="icon-minus"></i></span>
                     </div>

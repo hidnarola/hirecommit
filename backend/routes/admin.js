@@ -9,9 +9,10 @@ var logger = config.logger;
 var mail_helper = require('./../helpers/mail_helper');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var employer = require('../models/employer');
-var candidate = require('../models/candidate');
+var employer = require('../models/employer_detail');
+var candidate = require('../models/candidate_detail');
 var index = require('./admin/index');
+
 
 var objectID = require('mongoose').Types.ObjectId;
 
