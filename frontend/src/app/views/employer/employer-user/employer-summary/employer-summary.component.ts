@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { OfferService } from '../offer.service';
 
-
+import { EmployerService } from '../../employer.service';
 
 @Component({
   selector: 'app-employer-summary',
@@ -10,20 +9,23 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit {
-  deactive: any;
-  offers: any[];
-  constructor(private router: Router, private service: OfferService) { }
+offers: any[];
+  constructor(private router: Router, private service: EmployerService) { }
 
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
-          this.nextButtonClickEvent();
-        });
+            this.nextButtonClickEvent();
+          });
       }
     });
 
-   this.bind();
+  this.service.view_offer()
+  .subscribe(res => {
+    console.log("Offers",res);
+    this.offers = res[('data')];
+  })
 
   }
 
@@ -47,39 +49,18 @@ export class EmployerSummaryComponent implements OnInit {
     // we are calling to API
   }
 
-  detail(id) {
-    console.log("ID", id);this.router.navigate(['/employer/manage_offer/offerdetail/' + id]);
+  detail() {
+   this.router.navigate(['/employer/manage_offer/offerdetail']);
   }
 
-  edit(id) {
-    console.log("edit ID", id);
-    this.router.navigate(['/employer/manage_offer/editoffer/' + id]);
+  edit() {
+   this.router.navigate(['/employer/manage_offer/addoffer']);
   }
 
-  delete(id) {
-    console.log('deleet',id);
-    
-    this.service.deactivate_offer(id).subscribe(res => {
-      res= id;
-      this.deactive = res;
-      console.log(this.deactive);
-      this.bind();})
-  }
+  delete() {}
 
   onAdd() {
     this.router.navigate(['/employeruser/addoffer']);
-  }
-
-  public bind(){
-    this.service.view_offer()
-      .subscribe(res => {
-        
-        console.log("deactivate", res);
-        this.offers = res['data'];
-        this.offers = this.offers.filter(x => x.is_del === false);
-        console.log('deactivate', this.offers);
-
-      })
   }
 
 }

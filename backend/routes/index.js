@@ -23,13 +23,35 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var async = require('async');
 var mail_helper = require('./../helpers/mail_helper');
-var Admin = require('./../models/admin');
-var Candidate = require('./../models/candidate_detail');
-var Employer = require('./../models/employer_detail');
+var Role = require('./../models/role');
+var User = require('./../models/user');
+var Candidate_Detail = require('./../models/candidate-detail');
+var Employer_Detail = require('./../models/employer-detail');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+
+// Add role Registration
+// router.post("/add_role", async (req, res) => {
+//   try {
+//     var reg_obj = {
+//       "role": req.body.role
+//     }
+
+//     var response = await common_helper.insert(Role, reg_obj);
+//     if(response.status === 0){
+//       throw new Error('Error occured while inserting data');
+//     }
+//     res.status(config.OK_STATUS).json(response);
+//   } catch (error) {
+//     const response = {
+//       success: false,
+//       message: error.message
+//     }
+//     res.status(config.BAD_REQUEST).send(response);
+//   }
+//   });
 
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
@@ -57,7 +79,7 @@ router.post("/candidate_register", async (req, res) => {
         },
         "password": {
           notEmpty: true,
-          errorMessage: "countrycode is required"
+          errorMessage: "Password is required"
         },
         "contactno": {
           notEmpty: true,
@@ -84,30 +106,37 @@ router.post("/candidate_register", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
 
-      let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email.toLowerCase()});
-      let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email.toLowerCase()});
-      let admin_resp = await common_helper.findOne(Admin, { "email": req.body.email.toLowerCase()});
-      if(employer_resp.status === 1 || admin_resp.status === 1 || candidate_resp.status === 1) {
+      let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase()});
+      if(user_resp.status === 1) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
       } else {
-        var reg_obj = {
-             "firstname": req.body.firstname,
-            "lastname": req.body.lastname,
-            "email": req.body.email.toLowerCase(),
-            "countrycode": req.body.countrycode,
-            "country": req.body.country,
-            "password": req.body.password,
-            "contactno": req.body.contactno,
-            "documenttype": req.body.documenttype
-        };
+        let role =  await common_helper.findOne(Role, { 'role': 'candidate' }, 1)
+        var user_reg_obg = {
+          "email": req.body.email.toLowerCase(),
+          "password": req.body.password,
+          "role_id": new ObjectId(role.data._id)
+        }
+
         if (passwordValidatorSchema.validate(req.body.password) == false) {
           res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
-        } else {
-          async.waterfall(
+        }
+        else {
+          var interest_user_resp = await common_helper.insert(User, user_reg_obg);
+          // console.log(interest_resp.status);
+          if (interest_user_resp.status === 1) {
+            var reg_obj = {
+                 "firstname": req.body.firstname,
+                "lastname": req.body.lastname,
+                "countrycode": req.body.countrycode,
+                "country": req.body.country,
+                "contactno": req.body.contactno,
+                "documenttype": req.body.documenttype,
+                "user_id": new ObjectId(interest_user_resp.data._id)
+            };
+
+            async.waterfall(
               [
                   function (callback) {
-                      //file upload
-                      // console.log("hiiiii", req.body.files);
                       if (req.files && req.files["documentimage"]) {
                           var image_path_array = [];
                           var file = req.files['documentimage'];
@@ -167,12 +196,12 @@ router.post("/candidate_register", async (req, res) => {
               ],
               async (err, image_path_array) => {
                 reg_obj.documentimage = image_path_array;
-                  var interest_resp = await common_helper.insert(Candidate, reg_obj);
+                  var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
                   if (interest_resp.status == 0) {
                       logger.debug("Error = ", interest_resp.error);
                       res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
                   } else {
-                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
+                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
                       config.ACCESS_TOKEN_SECRET_KEY, {
                         expiresIn: 60 * 60 * 24 * 3
                       }
@@ -184,19 +213,22 @@ router.post("/candidate_register", async (req, res) => {
 
                     logger.trace("sending mail");
                     let mail_resp = await mail_helper.send("email_confirmation", {
-                        "to": interest_resp.data.email,
+                        "to": interest_user_resp.data.email,
                         "subject": "HC - Email Confirmation"
                     }, {
                         // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-                        "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
+                        "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
                     });
                     if (mail_resp.status === 0) {
                         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                     } else {
-                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_resp })
+                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp  })
                     }
                   }
               });
+          } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
+          }
         }
       }
     }
@@ -269,50 +301,61 @@ router.post("/employer_register", async (req, res) => {
                 res.json({ "status": 0, "responseError": "Failed captcha verification" });
             }
             else {
-              let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email.toLowerCase()})
-              let admin_resp = await common_helper.findOne(Admin, { "email": req.body.email.toLowerCase()})
-              let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email.toLowerCase()})
-              if(employer_resp.status === 1 || admin_resp.status === 1 || candidate_resp.status === 1) {
+              let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase()})
+              if(user_resp.status === 1) {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
               } else {
-                var reg_obj = {
+                let role =  await common_helper.findOne(Role, { 'role': 'employer' }, 1)
+                var user_reg_obj = {
                   "email": req.body.email.toLowerCase(),
                   "password": req.body.password,
-                  "country": req.body.country,
-                  "businesstype": req.body.businesstype,
-                  "companyname": req.body.companyname,
-                  "website": req.body.website,
-                  "username": req.body.username,
-                  "countrycode": req.body.countrycode,
-                  "contactno": req.body.contactno
-                };
+                  "role_id": new ObjectId(role.data._id)
+                }
+
                 if (passwordValidatorSchema.validate(req.body.password) == false) {
                   res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
                 } else {
-                  var interest_resp = await common_helper.insert(Employer, reg_obj);
-                  var reset_token = Buffer.from(jwt.sign({ "_id": interest_resp.data._id },
-                    config.ACCESS_TOKEN_SECRET_KEY, {
-                      expiresIn: 60 * 60 * 24 * 3
+
+                  var interest_user_resp = await common_helper.insert(User, user_reg_obj);
+                  if (interest_user_resp.status === 1) {
+                    var reg_obj = {
+                      "country": req.body.country,
+                      "businesstype": req.body.businesstype,
+                      "companyname": req.body.companyname,
+                      "website": req.body.website,
+                      "username": req.body.username,
+                      "countrycode": req.body.countrycode,
+                      "contactno": req.body.contactno,
+                      "user_id": new ObjectId(interest_user_resp.data.id)
+                    };
+                    var interest_resp = await common_helper.insert(Employer_Detail, reg_obj);
+                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                      config.ACCESS_TOKEN_SECRET_KEY, {
+                        expiresIn: 60 * 60 * 24 * 3
+                      }
+                    )).toString('base64');
+
+                    var time = new Date();
+                    time.setMinutes(time.getMinutes() + 20);
+                    time = btoa(time);
+
+                    logger.trace("sending mail");
+                    let mail_resp = await mail_helper.send("email_confirmation", {
+                        "to": interest_user_resp.data.email,
+                        "subject": "HireCommit - Email Confirmation"
+                    }, {
+                      // config.website_url + "/email_confirm/" + interest_resp.data._id
+                        "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+                    });
+                    if (mail_resp.status === 0) {
+                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+                    } else {
+                        res.json({ "message": "Employer registration successful", "data": interest_user_resp + interest_resp })
                     }
-                  )).toString('base64');
-
-                  var time = new Date();
-                  time.setMinutes(time.getMinutes() + 20);
-                  time = btoa(time);
-
-                  logger.trace("sending mail");
-                  let mail_resp = await mail_helper.send("email_confirmation", {
-                      "to": interest_resp.data.email,
-                      "subject": "HireCommit - Email Confirmation"
-                  }, {
-                    // config.website_url + "/email_confirm/" + interest_resp.data._id
-                      "confirm_url": 'http://localhost:4200/#/confirmation/' + reset_token
-                  });
-                  if (mail_resp.status === 0) {
-                      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                   } else {
-                      res.json({ "message": "Employer registration successful", "data": interest_resp })
+                    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
                   }
+
                 }
               }
             }
@@ -340,79 +383,33 @@ router.post('/login', async (req, res) => {
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-        let admin_resp = await common_helper.findOne(Admin, { "email": req.body.email})
-        let employer_resp = await common_helper.findOne(Employer, { "email": req.body.email})
-        let candidate_resp = await common_helper.findOne(Candidate, { "email": req.body.email})
-       console.log(employer_resp.status);
+        let user_resp = await common_helper.findOne(User, { "email": req.body.email})
+       console.log(user_resp.status);
 
-        if (admin_resp.status === 0 && candidate_resp.status === 0 && employer_resp.status === 0) {
+        if (user_resp.status === 0) {
             logger.trace("Login checked resp = ", login_resp);
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": login_resp.error });
         }
-        else if (admin_resp.status === 1 ) {
+        else if (user_resp.status === 1 ) {
+          if (user_resp.data.email_verified) {
             logger.trace("valid token. Generating token");
-            if ((bcrypt.compareSync(req.body.password, admin_resp.data.password) && req.body.email.toLowerCase() == admin_resp.data.email) ) {
-                var refreshToken = jwt.sign({ id: admin_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-                let update_resp = await common_helper.update(Admin, { "_id": admin_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-                var LoginJson = { id: admin_resp.data._id, email: admin_resp.email, role: "admin" };
+            if ((bcrypt.compareSync(req.body.password, user_resp.data.password) && req.body.email.toLowerCase() == user_resp.data.email) ) {
+                var refreshToken = jwt.sign({ id: user_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+                let update_resp = await common_helper.update(User, { "_id": user_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+                let role = await common_helper.findOne(Role, { "_id": user_resp.data.role_id});
+                // console.log(role.data.role);return false;
+
+                var LoginJson = { id: user_resp.data._id, email: user_resp.email, role: role.data.role};
                 var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
                     expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
                 });
-                delete admin_resp.data.status;
-                delete admin_resp.data.password;
-                delete admin_resp.data.refresh_token;
-                delete admin_resp.data.last_login_date;
-                delete admin_resp.data.created_at;
+                delete user_resp.data.status;
+                delete user_resp.data.password;
+                delete user_resp.data.refresh_token;
+                delete user_resp.data.last_login_date;
+                delete user_resp.data.created_at;
                 logger.info("Token generated");
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": admin_resp.data, "token": token, "refresh_token": refreshToken });
-            }
-            else {
-                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
-            }
-        }
-        else if (candidate_resp.status === 1 ) {
-          if (candidate_resp.data.email_verified) {
-              logger.trace("valid token. Generating token");
-            if ((bcrypt.compareSync(req.body.password, candidate_resp.data.password) && req.body.email.toLowerCase() == candidate_resp.data.email) ) {
-                var refreshToken = jwt.sign({ id: candidate_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-                let update_resp = await common_helper.update(Candidate, { "_id": candidate_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-                var LoginJson = { id: candidate_resp.data._id, email: candidate_resp.email, role: "candidate" };
-                var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-                    expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-                });
-                delete candidate_resp.data.status;
-                delete candidate_resp.data.password;
-                delete candidate_resp.data.refresh_token;
-                delete candidate_resp.data.last_login_date;
-                delete candidate_resp.data.created_at;
-                logger.info("Token generated");
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": candidate_resp.data, "token": token, "refresh_token": refreshToken });
-            }
-            else {
-                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
-            }
-          }
-          else {
-            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified." });
-          }
-      }
-        else if (employer_resp.status === 1) {
-          if (employer_resp.data.email_verified) {
-            logger.trace("valid token. Generating token");
-            if ((bcrypt.compareSync(req.body.password, employer_resp.data.password) && req.body.email.toLowerCase() == employer_resp.data.email) ) {
-                var refreshToken = jwt.sign({ id: employer_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-                let update_resp = await common_helper.update(Employer, { "_id": employer_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-                var LoginJson = { id: employer_resp.data._id, email: employer_resp.email, role: "employer" };
-                var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-                    expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-                });
-                delete employer_resp.data.status;
-                delete employer_resp.data.password;
-                delete employer_resp.data.refresh_token;
-                delete employer_resp.data.last_login_date;
-                delete employer_resp.data.created_at;
-                logger.info("Token generated");
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": employer_resp.data, "token": token, "refresh_token": refreshToken });
+                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken , "role": role.data.role });
             }
             else {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
@@ -443,35 +440,24 @@ router.post('/email_verify', async (req, res) => {
               res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid token sent" });
           }
         } else {
-          console.log(decoded._id);
-
-          var employer_resp = await common_helper.findOne(Employer, { "_id": decoded._id }, 1);
-          var candidate_resp = await common_helper.findOne(Candidate, { "_id": decoded._id }, 1);
-
-          if (employer_resp.status === 0 && candidate_resp.status === 0) {
-              logger.error("Error occured while finding user by id - ", req.params.id, employer_resp.error);
+          var user_resp = await common_helper.findOne(User, { "_id": decoded._id }, 1);
+          if (user_resp.status === 0 ) {
+              logger.error("Error occured while finding user by id - ", req.params.id, user_resp.error);
               res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error has occured while finding user" });
-          } else if (employer_resp.status === 2 && candidate_resp.status === 2) {
+          } else if (user_resp.status === 2) {
               logger.trace("User not found in user email verify API");
               res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid token entered" });
           } else {
-            if (candidate_resp && candidate_resp.status == 1 && candidate_resp.data.email_verified == true) {
+            if (user_resp && user_resp.status == 1 && user_resp.data.email_verified == true) {
               logger.trace("user already verified");
               res.status(config.BAD_REQUEST).json({ "message": "Email Already verified" });
             }
-            else if (employer_resp && employer_resp.status == 1 && employer_resp.data.email_verified == true) {
-              logger.trace("user already verified");
-              res.status(config.BAD_REQUEST).json({ "message": "Email Already verified" });
+            else {
+                if (user_resp && user_resp.status == 1) {
+                    var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
+                }
+                res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
             }
-              else {
-                  if (employer_resp && employer_resp.status == 1) {
-                      var employer_update_resp = await Employer.updateOne({ "_id": new ObjectId(employer_resp.data._id) }, { $set: { "email_verified": true } });
-                  }
-                  else {
-                      var candidate_update_resp = await Candidate.updateOne({ "_id": new ObjectId(candidate_resp.data._id) }, { $set: { "email_verified": true } });
-                  }
-                  res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
-              }
           }
         }
     });
@@ -488,97 +474,38 @@ router.post('/forgot_password', async (req, res) => {
   req.checkBody(schema);
   var errors = req.validationErrors();
   if (!errors) {
-    var admin = await common_helper.findOne(Admin, { "email": req.body.email.toLowerCase() }, 1)
-    var employer = await common_helper.findOne(Employer, { "email": req.body.email.toLowerCase() }, 1)
-    var candidate = await common_helper.findOne(Candidate, { "email": req.body.email.toLowerCase() }, 1)
-    if (admin.status === 0 && employer.status === 0 && candidate.status === 0) {
+    var user = await common_helper.findOne(User, { "email": req.body.email.toLowerCase() }, 1)
+    if (user.status === 0 ) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while finding email" });
-    } else if (admin.status === 2 && employer.status === 2 && candidate.status === 2) {
+    } else if (user.status === 2) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No user available with given email" });
-    } else if (admin.status === 1 || employer.status === 1 || candidate.status === 1) {
-        if (candidate.status === 1) {
-            if (candidate.data.is_del == false) {
-                    var reset_token = Buffer.from(jwt.sign({ "_id": candidate.data._id }, config.ACCESS_TOKEN_SECRET_KEY, {
-                        expiresIn: 60 * 60 * 24 * 3
-                    })).toString('base64');
-                    var time = new Date();
-                    time.setMinutes(time.getMinutes() + 20);
-                    time = btoa(time);
-                    var up = {
-                        "flag": 0
-                    }
-                    var resp_data = await common_helper.update(Candidate, { "_id": candidate.data._id }, up);
-                    let mail_resp = await mail_helper.send("reset_password", {
-                        "to": candidate.data.email,
-                        "subject": "HireCommit - Reset Password"
-                    }, {
-                        "reset_link": "http://localhost:4200/#" + "/reset-password/" + reset_token
-                    });
-                    if (mail_resp.status === 0) {
-                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending mail", "error": mail_resp.error });
-                    } else {
-                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Reset link was sent to your email address" });
-                    }
-            }
-            else {
-                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Your email doesn't exists" });
-            }
-        }
-        else if (employer.status === 1) {
-            if (employer.data.is_del == false) {
-                    var reset_token = Buffer.from(jwt.sign({ "_id": employer.data._id }, config.ACCESS_TOKEN_SECRET_KEY, {
-                        expiresIn: 60 * 60 * 24 * 3
-                    })).toString('base64');
-                    var time = new Date();
-                    time.setMinutes(time.getMinutes() + 20);
-                    time = btoa(time);
-                    var up = {
-                        "flag": 0
-                    }
-                    var resp_data = await common_helper.update(Employer, { "_id": employer.data._id }, up);
-                    let mail_resp = await mail_helper.send("reset_password", {
-                        "to": employer.data.email,
-                        "subject": "HireCommit - Reset Password"
-                    }, {
-                        // "user": "",
-                        "reset_link": "http://localhost:4200/#" + "/reset-password/" + reset_token
-                    });
-
-                    if (mail_resp.status === 0) {
-                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending mail", "error": mail_resp.error });
-                    } else {
-                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Reset link was sent to your email address" });
-                    }
-            }
-            else {
-                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Your email doesn't exists" });
-            }
-        }
-        else if (admin.status === 1) {
-            var reset_token = Buffer.from(jwt.sign({ "_id": admin.data._id }, config.ACCESS_TOKEN_SECRET_KEY, {
-                expiresIn: 60 * 60 * 24 * 3
-            })).toString('base64');
-            var time = new Date();
-            time.setMinutes(time.getMinutes() + 20);
-            time = btoa(time);
-            var up = {
-                "flag": 0
-            }
-            var resp_data = await common_helper.update(Admin, { "_id": admin.data._id }, up);
-            let mail_resp = await mail_helper.send("reset_password", {
-                "to": admin.data.email,
-                "subject": "Reset password"
-            }, {
-                "user": "",
-                "reset_link": "http://localhost:4200/#" + "/reset-password/" + reset_token
-            });
-
-            if (mail_resp.status === 0) {
-                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending mail", "error": mail_resp.error });
-            } else {
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Reset link was sent to your email address" });
-            }
-        }
+    } else if (user.status === 1) {
+      if (user.data.is_del == false) {
+              var reset_token = Buffer.from(jwt.sign({ "_id": user.data._id }, config.ACCESS_TOKEN_SECRET_KEY, {
+                  expiresIn: 60 * 60 * 24 * 3
+              })).toString('base64');
+              var time = new Date();
+              time.setMinutes(time.getMinutes() + 20);
+              time = btoa(time);
+              var up = {
+                  "flag": 0
+              }
+              var resp_data = await common_helper.update(User, { "_id": user.data._id }, up);
+              let mail_resp = await mail_helper.send("reset_password", {
+                  "to": user.data.email,
+                  "subject": "HireCommit - Reset Password"
+              }, {
+                  "reset_link": "http://localhost:4200" + "/reset-password/" + reset_token
+              });
+              if (mail_resp.status === 0) {
+                  res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending mail", "error": mail_resp.error });
+              } else {
+                  res.status(config.OK_STATUS).json({ "status": 1, "message": "Reset link was sent to your email address" });
+              }
+      }
+      else {
+          res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Your email doesn't exists" });
+      }
     }
   }
   else {
@@ -627,13 +554,11 @@ router.post('/reset_password', async (req, res) => {
                   res.json({ "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
               }
           } else {
-              var reset_candidate = await common_helper.findOne(Candidate, { "_id": decoded._id }, 1);
-              var reset_employer = await common_helper.findOne(Employer, { "_id": decoded._id }, 1);
-              var reset_admin = await common_helper.findOne(Admin, { "_id": decoded._id }, 1);
-              if (reset_candidate.data && reset_candidate.status === 1) {
-                  if (reset_candidate.data.flag == 0) {
+              var reset_user = await common_helper.findOne(User, { "_id": decoded._id }, 1);
+              if (reset_user.data && reset_user.status === 1) {
+                  if (reset_user.data.flag == 0) {
                       if (decoded._id) {
-                          var update_resp = await common_helper.update(Candidate, { "_id": decoded._id }, { "password": bcrypt.hashSync(req.body.password, saltRounds), "flag": 1 });
+                          var update_resp = await common_helper.update(User, { "_id": decoded._id }, { "password": bcrypt.hashSync(req.body.password, saltRounds), "flag": 1 });
                           if (update_resp.status === 0) {
                               logger.trace("Error occured while updating : ", update_resp.error);
                               res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while verifying user's email" });
@@ -648,48 +573,6 @@ router.post('/reset_password', async (req, res) => {
                   }
                   else {
                       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Link has been expired" });
-                  }
-              } else if (reset_employer.data && reset_employer.status === 1) {
-                  if (reset_employer.data.flag == 0) {
-                      if (decoded._id) {
-                          var update_resp = await common_helper.update(Employer, { "_id": decoded._id }, { "password": bcrypt.hashSync(req.body.password, saltRounds), "flag": 1 });
-                          if (update_resp.status === 0) {
-                              logger.trace("Error occured while updating : ", update_resp.error);
-                              res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while verifying user's email" });
-                          } else if (update_resp.status === 2) {
-                              logger.trace("not updated");
-                              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Error occured while reseting password of user" });
-                          } else {
-                              logger.trace("Password has been changed - ", decoded._id);
-                              res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
-                          }
-                      }
-                  }
-                  else {
-                      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Link has expired" });
-                  }
-              }
-              else if (reset_admin.data && reset_admin.status === 1) {
-                console.log(reset_admin.data.flag);
-
-                  if (reset_admin.data.flag == 0) {
-                      if (decoded._id) {
-                          var update_resp = await common_helper.update(Admin, { "_id": decoded._id }, { "password": bcrypt.hashSync(req.body.password, saltRounds), "flag": 1 });
-                          if (update_resp.status === 0) {
-                              logger.trace("Error occured while updating : ", update_resp.error);
-                              res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while verifying user's email" });
-                          } else if (update_resp.status === 2) {
-                              logger.trace("not updated");
-                              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Error occured while reseting password of user" });
-                          } else {
-                              logger.trace("Password has been changed - ", decoded._id);
-                              res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
-                          }
-                      }
-                  }
-                  else {
-                      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Link has expired" });
-
                   }
               }
           }
@@ -739,13 +622,10 @@ router.put('/change_password', async (req, res) => {
               res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
           }
           else {
-              const admin = await common_helper.findOne(Admin, { "_id": decoded.id }, 1);
-              const candidate = await common_helper.findOne(Candidate, { "_id": decoded.id }, 1);
-              const employer = await common_helper.findOne(Employer, { "_id": decoded.id }, 1);
-
-              if (admin.data && admin.status === 1) {
-                if (bcrypt.compareSync(req.body.oldpassword, admin.data.password)) {
-                  const update_resp = await common_helper.update(Admin, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
+              const user = await common_helper.findOne(User, { "_id": decoded.id }, 1);
+              if (user.data && user.status === 1) {
+                if (bcrypt.compareSync(req.body.oldpassword, user.data.password)) {
+                  const update_resp = await common_helper.update(User, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
                     if (update_resp.status === 1) {
                         logger.trace("Password has been changed - ", decoded.id);
                         res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed"});
@@ -757,37 +637,9 @@ router.put('/change_password', async (req, res) => {
                   res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Old password does not match." });
                 }
               }
-              else if (employer.data && employer.status === 1) {
-                if (bcrypt.compareSync(req.body.oldpassword, employer.data.password)) {
-                  const update_resp = await common_helper.update(Employer, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
-                    if (update_resp.status === 1) {
-                        logger.trace("Password has been changed - ", decoded.id);
-                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed"});
-                    }
-                    else {
-                        res.status(config.BAD_REQUEST).json({ "message": "Error occured while change password of employer" });
-                    }
-                } else {
-                  res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Old password does not match." });
-                }
-              }
-              else if (candidate.data && candidate.status === 1) {
-                if (bcrypt.compareSync(req.body.oldpassword, candidate.data.password)) {
-                  const update_resp = await common_helper.update(Candidate, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
-                    if (update_resp.status === 1) {
-                        logger.trace("Password has been changed - ", decoded.id);
-                        res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed"});
-                    }
-                    else {
-                        res.status(config.BAD_REQUEST).json({ "message": "Error occured while change password of candidate" });
-                    }
-                } else {
-                  res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Old password does not match." });
-                }
-              }
-              else if ( admin.status === 0 && employer.status === 0 &&  candidate.status === 0) {
-                logger.trace("Change password checked resp = ", admin);
-                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": admin.error });
+              else if ( user.status === 0 ) {
+                logger.trace("Change password checked resp = ", user);
+                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": user.error });
               }
               else {
                 res.status(config.NOT_FOUND).json({ "status": 2, "message": "NOT_FOUND" });

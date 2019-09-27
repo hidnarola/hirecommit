@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { OfferService } from '../offer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employer-summary-detail',
@@ -9,24 +7,10 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary-detail.component.scss']
 })
 export class EmployerSummaryDetailComponent implements OnInit {
-  form = FormGroup;
-  data: any;
-  details: any = [];
-  id: number;
-  all_details: any = [];
-  constructor(private router: Router ,private route: ActivatedRoute,private service: OfferService) { }
+
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    let sub = this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
-      console.log(this.id);
-    })
-
-    this.service.offer_detail(this.id).subscribe(res => {
-      // console.log(res);
-      this.details = res['data'];
-      console.log("details",this.details);
-    })
   }
 
   edit() {

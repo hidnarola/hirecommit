@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { SubAccountService } from '../sub-accounts.service';
+import { EmployerService } from '../../employer.service';
 
 @Component({
   selector: 'app-view-sub-accounts',
@@ -10,7 +9,7 @@ import { SubAccountService } from '../sub-accounts.service';
 })
 export class ViewSubAccountsComponent implements OnInit {
 sub_accounts: any;
-  constructor(private router: Router, private service: SubAccountService) { }
+  constructor(private router: Router,private service: EmployerService) { }
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {

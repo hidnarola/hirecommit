@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import jwt_decode from 'jwt-decode';
 @Injectable()
 export class RoleGuardService implements CanActivate {
+  debugger;
   constructor(public auth: AuthService, public router: Router) {}
   canActivate(route: ActivatedRouteSnapshot): boolean {
     // this will be passed from the route config

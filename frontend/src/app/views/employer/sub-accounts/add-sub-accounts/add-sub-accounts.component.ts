@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormControl, FormControlName } from '@angular/forms';
-import { SubAccountService } from '../sub-accounts.service';
-import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-add-sub-accounts',
@@ -12,46 +11,28 @@ import Swal from 'sweetalert2';
 export class AddSubAccountsComponent implements OnInit {
   addAccount: FormGroup;
   submitted = false;
-  public formData: any;
-  public isFormSubmited;
-  constructor(private router: Router, private service: SubAccountService) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
 
     this.addAccount = new FormGroup({
       name: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      adminrights: new FormControl(null)
-    
+      desig: new FormControl(null, [Validators.required]),
+      ecode: new FormControl(null, [Validators.required])
     });
   }
 
   get f() {return  this.addAccount.controls;}
 
-  onSubmit(valid) {
-    console.log(this.addAccount);
-    this.isFormSubmited = true;
-    if (valid) {
-      this.service.add_sub_account(this.addAccount.value).subscribe(res => {
-        this.isFormSubmited = false;
-        this.formData = {};
-        if (res['status'] === 0) {
-          console.log(res);
-        } else if (res['data'].status === 1) {
-          Swal.fire({
-            type: 'success',
-            text: res['message'],
-          });
-          this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
-          // this.router.navigate(['/login']);
-        } else {
-          console.log(res);
-        }
-      });
-    }
-  
+  onSubmit(flag: boolean) {
+    this.submitted = !flag;
+    console.log(this.addAccount.value);
+
+  if (flag) {
     this.addAccount.reset();
-  
+    this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
+  }
   }
 
   onClose() {

@@ -14,7 +14,6 @@ var salary_bracket = require('../models/salary_bracket');
 var group = require('../models/group');
 var GroupDetail = require('../models/group-detail');
 var location = require('../models/location');
-var candidate = require('../models/candidate_detail');
 
 router.use("/employer", auth, authorization, index);
 
@@ -178,13 +177,11 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
     // }
 })
 
-router.put("/offer/deactive_offer/:id", async (req, res) => {
+router.put("/offer/deactive_offer", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var id = req.params.id;
-    console.log('hey',id)
-    var resp_data = await common_helper.update(offer, { "_id": id }, obj);
+    var resp_data = await common_helper.update(offer, { "_id": req.body.id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
@@ -303,7 +300,7 @@ router.put('/manage_candidate/candidate/edit_approved_candidate/:id', async (req
         documenttype: req.body.documenttype,
         documentimage: req.body.documentimage,
         is_del: req.body.is_del
-      
+
     };
     var id = req.params.id;
     console.log(id);
@@ -496,7 +493,7 @@ router.put('/edit_sub_account/:id', async (req, res) => {
         "email": req.body.email,
         "adminrights": req.body.adminrights,
         "is_del": false,
-         
+
     };
     var id = req.params.id;
     console.log(id);
@@ -554,7 +551,7 @@ router.post("/add_group", async (req, res) => {
       "name":{
           notEmpty:true,
           errorMessage: "Group Name is required"
-      }, 
+      },
       "high_unopened":{
         notEmpty:true,
         errorMessage: "High priority is required"
@@ -608,66 +605,108 @@ router.post("/add_group", async (req, res) => {
   }
 });
 
-router.post("/add_group_details", async (req, res) => {
-    var schema = {
-        "group_id": {
-            notEmpty: true,
-            errorMessage: "Group id is required"
-        },
-        "communication": [{
-            "communicationname": {
-                notEmpty: true,
-                errorMessage: "Communication Name is required"
-            },
-            "trigger": {
-                notEmpty: true,
-                errorMessage: "Trigger is required"
-            },
-            "day": {
-                notEmpty: true,
-                errorMessage: "Days are required"
-            },
-            "priority": {
-                notEmpty: true,
-                errorMessage: "Priority is required"
-            }
-        },]
-    };
-  req.checkBody(schema);
+router.post("/add_group_details/:id", async (req, res) => {
+      var schema =
+           [{
+              "communicationname": {
+                  notEmpty: true,
+                  errorMessage: "Communication Name is required"
+              },
+              "trigger": {
+                  notEmpty: true,
+                  errorMessage: "Trigger is required"
+              },
+              "day": {
+                  notEmpty: true,
+                  errorMessage: "Days are required"
+              },
+              "priority": {
+                  notEmpty: true,
+                  errorMessage: "Priority is required"
+              }
+          }];
 
-  var errors = req.validationErrors();
-  if (!errors) {
-  
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+    if (!errors) {
+      const reqData = req.body.data;
+      console.log("data==>", reqData);
+      const grp_data = {
+        group_id: req.params.id,
+        communication: reqData
+      };
+      var response = await common_helper.insert(GroupDetail, grp_data);
+      if(response.status === 0){
+        throw new Error('Error occured while inserting data');
+      }
+      res.status(config.OK_STATUS).json(response);
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+  });
+
+router.post("/add_group_detailssss/:id", async (req, res) => {
+  //   var schema = {
+  //       "communication": [{
+  //           "communicationname": {
+  //               notEmpty: true,
+  //               errorMessage: "Communication Name is required"
+  //           },
+  //           "trigger": {
+  //               notEmpty: true,
+  //               errorMessage: "Trigger is required"
+  //           },
+  //           "day": {
+  //               notEmpty: true,
+  //               errorMessage: "Days are required"
+  //           },
+  //           "priority": {
+  //               notEmpty: true,
+  //               errorMessage: "Priority is required"
+  //           }
+  //       },]
+  //   };
+  // req.checkBody(schema);
+
+  // var errors = req.validationErrors();
+  // if (!errors) {
+    // console.log(JSON.stringify(req.query));
+
+    console.log(req.body);
+
+    communication_obj = {
+        "communicationname": req.body.communicationname,
+        "trigger": req.body.trigger,
+        "day": req.body.day,
+        "priority": req.body.priority,
+        "message": req.body.message,
+        "is_del": false
+      }
       var reg_obj = {
-          "group_id": req.body.group_id,
-          "communication": [{
-              "communicationname": req.body.communicationname,
-              "trigger": req.body.trigger,
-              "day": req.body.day,
-              "priority": req.body.priority,
-              "message": req.body.message,
-              "is_del": false
-          }]
+          "group_id": new objectID(req.query.id),
+          "communication": [{ comunication_obj }]
       };
       console.log(reg_obj);
-      
+
       var interest_resp = await common_helper.insert(GroupDetail, reg_obj);
       if (interest_resp.status == 0) {
           logger.debug("Error = ", interest_resp.error);
           res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
       } else {
-              res.json({ "message": "Group detail successfully", "data": interest_resp })
+              res.status(config.OK_STATUS).json({ "message": "Group detail successfully", "data": interest_resp })
       }
-  }
-  else {
-      logger.error("Validation Error = ", errors);
-      res.status(config.BAD_REQUEST).json({ message: errors });
-  }
+  // }
+  // else {
+  //     logger.error("Validation Error = ", errors);
+  //     res.status(config.BAD_REQUEST).json({ message: errors });
+  // }
 });
 
-router.get('/group_detail', async (req, res) => { 
+router.get('/group_detail', async (req, res) => {
     // console.log(req.body.id);
-    
+
     await GroupDetail.find({ group_id: objectID(req.body.id)}, (err, result)=> {
         console.log(result);
         if (err) res.send(JSON.stringify('not found'))
@@ -678,10 +717,9 @@ router.get('/group_detail', async (req, res) => {
         }
     })
 
-
     // var group_detail =  await GroupDetail.find({}).populate(req.body.id).exec(function (err, data) {
     //     console.log(data);
-        
+
     //     if (data) {
     //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": data });
     //     } else {
@@ -692,7 +730,7 @@ router.get('/group_detail', async (req, res) => {
     // console.log(group_detail)
 
     // if (group_detail.status == 0) {
-       
+
     // }
     // else if (group_detail.status == 1) {
     //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": group_detail });
@@ -701,7 +739,6 @@ router.get('/group_detail', async (req, res) => {
     //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
     // }
 });
-
 
 //manage Location
 
@@ -787,9 +824,6 @@ router.put("/deactivate_location", async (req, res) => {
     }
 });
 
-
-
-
 //salary-bracket
 
 router.post("/add_salary_bracket", async (req, res) => {
@@ -834,8 +868,6 @@ router.post("/add_salary_bracket", async (req, res) => {
 
 router.get('/view_salary_bracket', async (req, res) => {
     var salary_bracket_list = await salary_bracket.find();
-    console.log(this.salary_bracket_list);
-    
     if (salary_bracket_list) {
         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
     }
@@ -859,7 +891,7 @@ router.put('/edit_salary_bracket/:id', async (req, res) => {
               errorMessage: "maximum salary is required"
           }
       };
-  
+
     req.checkBody(schema);
     var reg_obj = {
         "country": req.body.country,
@@ -885,12 +917,11 @@ router.put('/edit_salary_bracket/:id', async (req, res) => {
     // }
 })
 
-router.put("/deactive_salary_bracket/:id", async (req, res) => {
+router.put("/deactive_salary_bracket", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var id= req.params.id;
-    var resp_data = await common_helper.update(salary_bracket, { "_id": id}, obj);
+    var resp_data = await common_helper.update(salary_bracket, { "_id": req.body.id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
@@ -917,7 +948,5 @@ router.get('/salary_brcaket_detail/:id', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "message": "No data found" });
     }
 });
-
-
 
 module.exports = router;
