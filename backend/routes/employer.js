@@ -647,6 +647,23 @@ router.post("/add_group", async (req, res) => {
   }
 });
 
+router.get('/view_groups', async (req, res) => {
+  var group_list = await common_helper.find(group, {});
+
+  // var sub_account_list = await group.find();
+  console.log("groupss",group_list);
+  if (group_list.status === 1) {
+      return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
+  }
+  else if (group_list.status === 2) {
+      return res.status(config.OK_STATUS).json({ 'message': "No data found", "status": 2 });
+  }
+  else {
+      return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
+  }
+
+});
+
 router.post("/add_group_details/:id", async (req, res) => {
       var schema =
            [{
@@ -671,6 +688,7 @@ router.post("/add_group_details/:id", async (req, res) => {
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
+      // console.log(req.body);
       const reqData = req.body.data;
       console.log("data==>", reqData);
       const grp_data = {

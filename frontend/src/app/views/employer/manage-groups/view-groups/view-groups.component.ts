@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { GroupService } from '../manage-groups.service';
 
 @Component({
   selector: 'app-view-groups',
@@ -9,8 +10,9 @@ import Swal from 'sweetalert2';
   styleUrls: ['./view-groups.component.scss']
 })
 export class ViewGroupsComponent implements OnInit {
+  groups: any;
   viewInfo: FormGroup;
-  constructor(private router: Router) { }
+  constructor(private router: Router, private service: GroupService) { }
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
@@ -19,7 +21,8 @@ export class ViewGroupsComponent implements OnInit {
           });
       }
     });
-  }
+
+    this.bind();  }
 
   buttonInRowClick(event: any): void {
     event.stopPropagation();
@@ -58,41 +61,19 @@ export class ViewGroupsComponent implements OnInit {
 
 this.router.navigate(['/employer/manage_group/group']);
 
-  //     Swal.fire({
-  //       title: 'Enter Group Name',
-  //       input: 'text',
-  //       inputAttributes: {
-  //         autocapitalize: 'off'
-  //       },
-  //       showCancelButton: true,
-  //       confirmButtonText: 'Add',
-  //      confirmButtonClass: '/groups/addgroup',
-  //       showLoaderOnConfirm: true,
-  //       // preConfirm: (login) => {
-  //       //   return fetch(`//api.github.com/users/${login}`)
-  //       //     .then(response => {
-  //       //       if (!response.ok) {
-  //       //         throw new Error(response.statusText)
-  //       //       }
-  //       //       return response.json()
-  //       //     })
-  //       //     .catch(error => {
-  //       //       Swal.showValidationMessage(
-  //       //         `Request failed: ${error}`
-  //       //       )
-  //       //     })
-  //       // },
-  // //       allowOutsideClick: () => !Swal.isLoading()
-  // //     }).then((result) => {
-  // //       if (result.value) {
-  // //         Swal.fire({
-  // //           title: `${result.value.login}'s avatar`,
-  // //           imageUrl: result.value.avatar_url
-  // //         })
-  // //       }
-  // //     });
-  // //  }
-      //  } ); }
    }
+
+   onaddDetails(id) {
+    this.router.navigate(['/employer/manage_group/add_group/' + id]);
+   }
+
+    public bind() {
+      this.service.view_groups().subscribe(res => {
+        // console.log(res);return false;
+        
+        this.groups = res['data']['data'];
+        console.log('groups', this.groups);
+      });
+    }
 
 }

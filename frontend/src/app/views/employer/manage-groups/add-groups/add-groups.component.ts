@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { EmployerService } from '../../employer.service';
+import { GroupService } from '../manage-groups.service';
 // import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
   selector: 'app-add-groups',
@@ -11,12 +12,12 @@ import { EmployerService } from '../../employer.service';
 })
 export class AddGroupsComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private router: Router, private service: EmployerService) { }
+  constructor(private fb: FormBuilder, private router: Router, private service: GroupService, private route: ActivatedRoute) { }
 
   public Editor = ClassicEditor;
   myForm: FormGroup;
   arr: FormArray;
-
+   id: any;
   value = false;
   submitted = false;
 
@@ -25,7 +26,12 @@ export class AddGroupsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.myForm = this.fb.group({
+    const sub = this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+      console.log(this.id);
+    });
+
+this.myForm = this.fb.group({
       arr: this.fb.array([this.createItem()])
     });
   }
@@ -39,15 +45,13 @@ export class AddGroupsComponent implements OnInit {
 
   onSubmit(valid) {
     this.submitted = true;
-    const id = '5d89fb9601881f47c02cb63c' ;
+
     if (valid) {
-      this.service.add_communication(this.myForm.controls.arr.value, id).subscribe(res => {
-        // this.submitted = true;
+      this.service.add_communication(this.myForm.controls.arr.value, this.id).subscribe(res => {
+        this.submitted = false;
         this.router.navigate(['/employer/manage_group/view_group']);
       });
     }
-    console.log(this.myForm.value);
-
   }
 
   createItem() {

@@ -72,8 +72,9 @@ export class EmployerSummaryComponent implements OnInit {
   public bind() {
     this.service.view_offer()
       .subscribe(res => {
-        // this.offers = res['data'];
-        this.offers = res['data'].filter(x => x.is_del === false);
+        this.offers = res['data']['data'];
+        this.offers = this.offers.filter(x => x.is_del === false);
+
         this.offers.filter(x => {
           this.date = x.createdAt.split("T");
         });
