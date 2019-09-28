@@ -9,6 +9,12 @@ export class GroupService {
     private url = 'http://localhost:3000/employer';
     constructor(private http: HttpClient, private route: Router) { }
 
+    add_communication(data, id): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}` + '/add_group_details/' + id, {data});
+    }
 
+    view_groups() {
+      return this.http.get(`${this.url}` + '/view_groups');
+    }
 
 }

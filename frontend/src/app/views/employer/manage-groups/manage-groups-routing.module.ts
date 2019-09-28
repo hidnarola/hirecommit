@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   children: [
   {
-    path: 'add_group',
+    path: 'add_group/:id',
     component: AddGroupsComponent,
     data: {
       title: 'Add Group'

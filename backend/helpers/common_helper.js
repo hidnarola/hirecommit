@@ -32,7 +32,7 @@ common_helper.find = async (collection, data = {}, type = 2, start, length, filt
             var data = await collection.find(data).skip(start).limit(length).sort({});
         }
         if (data || (data && data.length > 0)) {
-            filteredrecords = filteredrecords.recordsTotal;
+            // filteredrecords = filteredrecords.recordsTotal;
             return {
                 status: 1,
                 message: "data found",
