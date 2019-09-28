@@ -30,7 +30,7 @@ const routes: Routes = [
         }
       }
       , {
-        path: 'offerdetail',
+        path: 'offerdetail/:id',
         component: EmployerSummaryDetailComponent,
         data: {
           title: 'offerDetail'

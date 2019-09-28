@@ -22,7 +22,8 @@ export class OfferService {
     }
 
     deactivate_offer(id) {
-        return this.http.put(`${this.url}` + '/offer/deactive_offer/' + id,null)
+        
+        return this.http.put(`${this.url}` + '/offer/deactive_offer/'+ id, null)
     }
 
     edit_offer(data) {

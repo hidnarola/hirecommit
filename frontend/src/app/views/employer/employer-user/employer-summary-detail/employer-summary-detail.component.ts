@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { OfferService } from '../offer.service';
 
 @Component({
   selector: 'app-employer-summary-detail',
@@ -7,10 +8,22 @@ import { Router } from '@angular/router';
   styleUrls: ['./employer-summary-detail.component.scss']
 })
 export class EmployerSummaryDetailComponent implements OnInit {
-
-  constructor(private router: Router) { }
+ id : any;
+  offers: any;
+  constructor(private router: Router,private service: OfferService,private route: ActivatedRoute
+             ) { }
 
   ngOnInit() {
+    let sub = this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+      console.log(this.id);
+    })
+
+    this.service.offer_detail(this.id).subscribe(res => {
+
+      this.offers = res['data']['data'];
+      console.log("detail",this.offers);
+    })
   }
 
   edit() {

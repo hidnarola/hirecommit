@@ -10,43 +10,48 @@
                         <tbody>
                             <tr>
                                 <td>Date</td>
-                                <td>02/03/2019</td>
-                            </tr>
-                            <tr>
-                                <td>Email</td>
-                                <td>ABC@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>Name</td>
                                 <td>ABC</td>
                             </tr>
                             <tr>
+                                <td>Email</td>
+                                <td>{{offers.email}}</td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td>{{offers.name}}</td>
+                            </tr>
+                            <tr>
                                 <td>Title</td>
-                                <td>HR</td>
+                                <td>{{offers.title}}</td>
                             </tr>
 
 
                             <tr>
                                 <td>Salary Type</td>
-                                <td>Hourly</td>
+                                <td>{{offers.salarytype}}</td>
                             </tr>
 
                             <tr>
                                 <td>Salary Duration</td>
-                                <td>2 Week</td>
+                                <td>{{offers.salaryduration}}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Currency Type</td>
+                                <td>{{offers.currencytype}}</td>
                             </tr>
 
                             <tr>
                                 <td>Salary Bracket</td>
-                                <td>15000 - 20000(INR)</td>
+                                <td>{{offers.salarybracket}}</td>
                             </tr>
                             <tr>
                                 <td>Expiry Date</td>
-                                <td>22/09/2020</td>
+                                <td>{{offers.expirydate}}</td>
                             </tr>
                             <tr>
                                 <td>Joining Date</td>
-                                <td>22/09/2015</td>
+                                <td>{{offers.joiningdate}}</td>
                             </tr>
                             <tr>
                                 <td>Status</td>
@@ -58,41 +63,41 @@
 
                             <tr>
                                 <td>Offer Type</td>
-                                <td>Candidate Commit</td>
+                                <td>{{offers.offertype}}</td>
                             </tr>
                              
                             
                             <tr>
                                 <td>Group</td>
-                                <td>Officer<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
+                                <td>{{offers.group}}<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
                                 
                             </tr>
 
                             <tr>
                                 <td>Commit Status</td>
-                                <td>High</td>
+                                <td>{{offers.commitstatus}}</td>
                             </tr>
 
                             <tr>
                                 <td>Location</td>
-                                <td>India</td>
+                                <td>{{offers.location}}</td>
                             </tr>
 
                             <tr>
                                 <td>Custom Field 1</td>
-                                <td>Custom Feild</td>
+                                <td>{{offers.customfeild1}}</td>
                             </tr>
                             <tr>
                                 <td>Custom Field 2</td>
-                                <td>Custom Feild</td>
+                                <td>{{offers.customfeild2}}</td>
                             </tr>
                             <tr>
                                 <td>Custom Field 3</td>
-                                <td>Custom Feild</td>
+                                <td>{{offers.customfeild3}}</td>
                             </tr>
                             <tr>
                                 <td>Notes</td>
-                                <td>Nothing</td>
+                                <td>{{offers.notes}}</td>
                             </tr>
                         </tbody>
                     </table>

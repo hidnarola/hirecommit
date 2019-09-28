@@ -30,7 +30,7 @@
             <tbody>
 
               <tr *ngFor="let offer of offers">
-                <td>ABC</td>
+                <td>{{date[0]}}</td>
 
                 <td>{{offer.title}}</td>
                  <td>{{offer.salarytype}}</td>
@@ -47,11 +47,11 @@
                 
                 <td>{{offer.customfeild1}}</td>
                 <td>
-                  <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
+                  <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
                       class="icon-eye"></i></button>
                   <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
                       class="icon-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
+                  <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
                       class="icon-trash"></i></button></td>
               </tr>
 

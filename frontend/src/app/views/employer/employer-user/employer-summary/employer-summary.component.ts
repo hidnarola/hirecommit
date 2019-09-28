@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { EmployerService } from '../../employer.service';
+import { OfferService } from '../offer.service';
 
 @Component({
   selector: 'app-employer-summary',
@@ -9,23 +10,20 @@ import { EmployerService } from '../../employer.service';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit {
-offers: any[];
-  constructor(private router: Router, private service: EmployerService) { }
+  offers: any[];
+  date: any;
+  constructor(private router: Router, private service: OfferService) { }
 
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
-            this.nextButtonClickEvent();
-          });
+          this.nextButtonClickEvent();
+        });
       }
     });
 
-  this.service.view_offer()
-  .subscribe(res => {
-    console.log("Offers",res);
-    this.offers = res[('data')];
-  })
+    this.bind();
 
   }
 
@@ -49,18 +47,38 @@ offers: any[];
     // we are calling to API
   }
 
-  detail() {
-   this.router.navigate(['/employer/manage_offer/offerdetail']);
+  detail(id) {
+    this.router.navigate(['/employer/manage_offer/offerdetail/' + id]);
   }
 
   edit() {
-   this.router.navigate(['/employer/manage_offer/addoffer']);
+    this.router.navigate(['/employer/manage_offer/addoffer']);
   }
 
-  delete() {}
+  delete(id) {
+    this.service.deactivate_offer(id).subscribe(res => {
+        // this.offers = res['data'];
+        console.log('res',res);
+        
+        // console.log("deactivate",this.offers);
+        this.bind();
+    })
+   }
 
   onAdd() {
     this.router.navigate(['/employeruser/addoffer']);
+  }
+
+  public bind() {
+    this.service.view_offer()
+      .subscribe(res => {
+        // this.offers = res['data'];
+        this.offers = res['data'].filter(x => x.is_del === false);
+        this.offers.filter(x => {
+          this.date = x.createdAt.split("T");
+        });
+        
+      })
   }
 
 }

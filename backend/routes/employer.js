@@ -20,10 +20,14 @@ router.use("/employer", auth, authorization, index);
 //Offer
 router.post("/offer/add_offer", async (req, res) => {
     var schema = {
-      "employer_id":{
+      "email":{
           notEmpty:true,
-            errorMessage: "Employer ID is required"
+            errorMessage: "Email is required"
       },
+        "email": {
+            notEmpty: true,
+            errorMessage: "Name is required"
+        },
         "title": {
             notEmpty: true,
             errorMessage: "Title is required"
@@ -31,10 +35,14 @@ router.post("/offer/add_offer", async (req, res) => {
         "salarytype":{
             notEmpty: true,
             errorMessage: "Salary Type is required"
+        }, 
+        "currencytype": {
+            notEmpty: true,
+            errorMessage: "Currency Type is required"
         },
         "salarybracket":{
             notEmpty: true,
-            errorMessage: "Salary Bracket Name is required"
+            errorMessage: "Salary Bracket is required"
         },
         "expirydate":{
             notEmpty: true,
@@ -66,10 +74,12 @@ router.post("/offer/add_offer", async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
       var reg_obj = {
-          "employer_id": req.body.employer_id,
+          "email": req.body.email,
+          "name": req.body.name,
           "title": req.body.title,
           "salarytype": req.body.salarytype,
           "salaryduration": req.body.salaryduration,
+          "currencytype": req.body.currencytype,
           "salarybracket": req.body.salarybracket,
           "expirydate": req.body.expirydate,
           "joiningdate": req.body.joiningdate,
@@ -99,66 +109,91 @@ router.post("/offer/add_offer", async (req, res) => {
 });
 
 router.get('/offer/view_offer', async (req, res) => {
-    var offer_list = await offer.find();
-    if (offer_list) {
+    var offer_list = await common_helper.find(offer, {});
+    // var offer_list = await offer.find();
+    if (offer_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Offer List", "status": 1, data: offer_list });
     }
+    else if (offer_list.status === 2) {
+        return res.status(config.BAD_REQUEST).json({ 'message': "No data found", "status": 2 });
+    }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
     }
 });
 
 router.put('/offer/edit_offer/:id', async (req, res) => {
     var schema = {
-        "employer_id":{
-            notEmpty:true
+        "email": {
+            notEmpty: true,
+            errorMessage: "Email is required"
         },
-          "title": {
-              notEmpty: true,
-              errorMessage: "Country is required"
-          },
-          "salarytype":{
-              notEmpty: true,
-              errorMessage: "Salary Type is required"
-          },
-          "salarybracket":{
-              notEmpty: true,
-              errorMessage: "Salary Bracket Name is required"
-          },
-          "expirydate":{
-              notEmpty: true,
-              errorMessage: "Expiry Date Code is required"
-          },
-          "joiningdate":{
-              notEmpty: true,
-              errorMessage: "Joining Date is required"
-          },
-          "offertype":{
-              notEmpty: true,
-              errorMessage: "Offer Type  is required"
-          },
-          "group":{
-              notEmpty: true,
-              errorMessage: "Group is required"
-          }
-      };
+        "email": {
+            notEmpty: true,
+            errorMessage: "Name is required"
+        },
+        "title": {
+            notEmpty: true,
+            errorMessage: "Title is required"
+        },
+        "salarytype": {
+            notEmpty: true,
+            errorMessage: "Salary Type is required"
+        },
+        "currencytype": {
+            notEmpty: true,
+            errorMessage: "Currency Type is required"
+        },
+        "salarybracket": {
+            notEmpty: true,
+            errorMessage: "Salary Bracket is required"
+        },
+        "expirydate": {
+            notEmpty: true,
+            errorMessage: "Expiry Date Code is required"
+        },
+        "joiningdate": {
+            notEmpty: true,
+            errorMessage: "Joining Date is required"
+        },
+        "offertype": {
+            notEmpty: true,
+            errorMessage: "Offer Type  is required"
+        },
+        "group": {
+            notEmpty: true,
+            errorMessage: "Group is required"
+        },
+        "commitstatus": {
+            notEmpty: true,
+            errorMessage: "Commit Status is required"
+        },
+        "location": {
+            notEmpty: true,
+            errorMessage: "Location is required"
+        }
+    };
     req.checkBody(schema);
     var reg_obj = {
-        // "employer_id": req.body.employer_id,
+        "email": req.body.email,
+        "name": req.body.name,
         "title": req.body.title,
         "salarytype": req.body.salarytype,
         "salaryduration": req.body.salaryduration,
+        "currencytype": req.body.currencytype,
         "salarybracket": req.body.salarybracket,
         "expirydate": req.body.expirydate,
         "joiningdate": req.body.joiningdate,
-        "status": req.body.status,
+        "status": true,
         "offertype": req.body.offertype,
         "group": req.body.group,
+        "commitstatus": req.body.commitstatus,
+        "location": req.body.location,
         "customfeild1": req.body.customfeild1,
         "customfeild2": req.body.customfeild2,
         "customfeild3": req.body.customfeild3,
         "notes": req.body.notes,
-        // "is_del": false
+        "is_del": false
     };
     var id = req.params.id;
     console.log(id);
@@ -177,11 +212,12 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
     // }
 })
 
-router.put("/offer/deactive_offer", async (req, res) => {
+router.put("/offer/deactive_offer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(offer, { "_id": req.body.id }, obj);
+    var id = req.params.id;
+    var resp_data = await common_helper.update(offer, { "_id": id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
@@ -467,12 +503,18 @@ router.post("/add_sub_account", async (req, res) => {
 });
 
 router.get('/view_sub_accounts', async (req, res) => {
-    var sub_account_list = await sub_account.find();
-    if (sub_account_list) {
+    var sub_account_list = await common_helper.find(sub_account, {});
+    console.log(sub_account_list);
+    
+    // var sub_account_list = await sub_account.find();
+    if (sub_account_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: sub_account_list });
     }
+    else if (sub_account_list.status === 2) {
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 2 });
+    }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
     }
 });
 
@@ -705,43 +747,29 @@ router.post("/add_group_detailssss/:id", async (req, res) => {
 });
 
 router.get('/group_detail', async (req, res) => {
-    // console.log(req.body.id);
-
-    await GroupDetail.find({ group_id: objectID(req.body.id)}, (err, result)=> {
-        console.log(result);
-        if (err) res.send(JSON.stringify('not found'))
-        if (result !== null && result.length > 0) {
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": result });
-        } else {
-            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-        }
-    })
-
-    // var group_detail =  await GroupDetail.find({}).populate(req.body.id).exec(function (err, data) {
-    //     console.log(data);
-
-    //     if (data) {
-    //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": data });
+    var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.body.id)}); 
+    if (group_detail.status === 1) {
+        return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
+    }
+    else if (group_detail.status === 2) {
+        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    }
+    // await GroupDetail.find({ group_id: objectID(req.body.id)}, (err, result)=> {
+    //     console.log(result);
+    //     if (err) res.send(JSON.stringify('not found'))
+    //     if (result !== null && result.length > 0) {
+    //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": result });
     //     } else {
-    //         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    //         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     //     }
-    // });
-    // var group_detail = await common_helper.findWithFilterss(GroupDetail, {"group_id": req.body.id});
-    // console.log(group_detail)
-
-    // if (group_detail.status == 0) {
-
-    // }
-    // else if (group_detail.status == 1) {
-    //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": group_detail });
-    // }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
+    // })
 });
 
-//manage Location
 
+//manage Location
 router.post("/add_location", async (req, res) => {
     var schema = {
         "country": {
@@ -867,12 +895,18 @@ router.post("/add_salary_bracket", async (req, res) => {
 });
 
 router.get('/view_salary_bracket', async (req, res) => {
-    var salary_bracket_list = await salary_bracket.find();
-    if (salary_bracket_list) {
+    var salary_bracket_list = await common_helper.find(salary_bracket, {});
+    // var salary_bracket_list = await salary_bracket.find();
+    console.log(salary_bracket_list);
+    
+    if (salary_bracket_list.status === 1  ) {
         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
     }
+    else if (salary_bracket_list.status === 2) {
+        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+    }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
     }
 });
 
