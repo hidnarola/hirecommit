@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { countries } from '../../../../shared/countries';
+import { Currency } from '../../../../shared/currency';
+import { OfferService } from '../offer.service';
 
 @Component({
   selector: 'app-employer-addoffer',
@@ -8,43 +11,239 @@ import { Router } from '@angular/router';
   styleUrls: ['./employer-addoffer.component.scss']
 })
 export class EmployerAddofferComponent implements OnInit {
-
-  addOrderForm: FormGroup;
+  offer: any;
+  addOfferForm: FormGroup;
   submitted = false;
-
   file: any;
-  constructor(private router: Router) { }
+  flag = true;
+  location: any;
+  location1: any;
+  locationEdit:any = [];
+  grp:any=[];
+  Country: any = [];
+  currency: any = [];
+  groups: any;
+  salary: any;
+  unique: any = [];
+  _country: any = [];
+  detail: any ;
+  panelTitle: string;
+  buttonTitle: string;
+  id: any;
+  constructor(private router: Router, private service: OfferService, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+      console.log(this.id);
+    })
 
-    this.addOrderForm = new FormGroup({
+    this.getDetail(this.id);
+   
+
+    this.addOfferForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       name: new FormControl(null, [Validators.required]),
       title: new FormControl(null, [Validators.required]),
-      salaryBracket: new FormControl(null, [Validators.required]),
-      expiryDate: new FormControl(null, [Validators.required]),
-      joiningDate: new FormControl(null, [Validators.required]),
-      notes: new FormControl(null, [Validators.required]),
-      customField1: new FormControl(null, [Validators.required]),
-      customField2: new FormControl(null, [Validators.required]),
-      customField3: new FormControl(null, [Validators.required]),
+      salarytype: new FormControl(null, [Validators.required]),
+      salaryduration: new FormControl({ value: '', disabled: this.flag }),
+      country: new FormControl(null, [Validators.required]),
+      location: new FormControl(null, [Validators.required]),
+      currenct_type: new FormControl(),
+      salarybracket: new FormControl(null, [Validators.required]),
+      expirydate: new FormControl(null, [Validators.required]),
+      joiningdate: new FormControl(null, [Validators.required]),
+      offertype: new FormControl(null, [Validators.required]),
+      group: new FormControl(null, [Validators.required]),
+      commitstatus: new FormControl(null, [Validators.required]),
+      customfeild1: new FormControl(null),
+      customfeild2: new FormControl(null),
+      customfeild3: new FormControl(null),
+      notes: new FormControl(null),
+      employer_id: new FormControl(null)
     });
+
+    this.Country = countries;
+    var obj = [];
+
+    for (let [key, value] of Object.entries(countries)) {
+      obj.push({ 'code': key, 'name': value });
+    }
+    this.Country = obj;
+    console.log(this.Country);
+
+    this.service.get_location().subscribe(res => {
+      this.location = res['data']['data'];
+
+      // console.log(this.location);
+      this.location.forEach(element => {
+        let fetch_country = element.country;
+        this.unique = this.Country.filter(x => x.code === fetch_country);
+        this._country.push(this.unique[0]);
+      });
+      this._country = this._country.filter(this.onlyUnique);
+    })
+
+    //get groups
+    this.service.get_groups().subscribe(res => {
+      this.groups = res['data']['data'];
+      // console.log('group', this.groups);
+    })
   }
 
-  get f() { return this.addOrderForm.controls; }
 
-  onSubmit(flag: boolean) {
-    this.submitted = !flag;
-      console.log(this.addOrderForm.value);
+  getDetail(id: string) {
+    if (id === '0') {
+      this.detail =
+        {
+          _id: null,
+          email: null,
+          name: null,
+          title: null,
+          salarytype: null,
+          salaryduration: null,
+          country: null,
+          location: null,
+          currenct_type: null,
+          salarybracket: null,
+          expirydate: null,
+          joiningdate: null,
+          offertype: null,
+          group: null,
+          commitstatus: null,
+        customfeild1:null,
+          customfeild2: null,
+          customfeild3: null,
+          notes: null,
+        };
+      this.panelTitle = 'Add Offer';
+      this.buttonTitle = "Add";
+      this.addOfferForm.reset();
+    }
+    else {
+      this.panelTitle = 'Edit Offer';
+      this.buttonTitle = "Edit";
+      this.service.offer_detail(id).subscribe(res => {
+        this.detail = res['data']['data']
 
-    if (flag) {
-      this.addOrderForm.reset();
-      this.router.navigate(['/employer/manage_offer/created_offerlist']);
+        this.addOfferForm.controls.email.setValue(this.detail.email);
+        this.addOfferForm.controls.name.setValue(this.detail.name);
+        this.addOfferForm.controls.title.setValue(this.detail.title);
+        this.addOfferForm.controls.salarytype.setValue(this.detail.salarytype);
+        this.addOfferForm.controls.salaryduration.setValue(this.detail.salaryduration);
+        this.addOfferForm.controls.country.setValue(this.detail.country);
+        
+        this.addOfferForm.controls.currenct_type.setValue(this.detail.currenct_type);
+        this.addOfferForm.controls.salarybracket.setValue(this.detail.salarybracket);
+        this.addOfferForm.controls.expirydate.setValue(this.detail.expirydate);
+        this.addOfferForm.controls.joiningdate.setValue(this.detail.joiningdate);
+        this.addOfferForm.controls.offertype.setValue(this.detail.offertype);
+        this.addOfferForm.controls.group.setValue(this.detail.group);
+        this.addOfferForm.controls.commitstatus.setValue(this.detail.commitstatus);
+        this.addOfferForm.controls.customfeild1.setValue(this.detail.customfeild1);
+        this.addOfferForm.controls.customfeild2.setValue(this.detail.customfeild2);
+        this.addOfferForm.controls.customfeild3.setValue(this.detail.customfeild3);
+        this.addOfferForm.controls.notes.setValue(this.detail.notes);
+
+
+
+
+        this.onChange(this.detail.country);
+        setTimeout(() => {
+          this.GetLocation(this.detail.location);
+        }, 300);
+   
+        console.log("subscribed!", this.detail);
+      });
+      //location
+
+      // console.log('incoming salary', this.detail);
     }
   }
 
+  GetLocation(val) {
+    this.service.get_location().subscribe(res => {
+      this.location1 = res['data']['data'];
+      this.location1 = this.location1.filter(x => x._id === val);
+      this.addOfferForm.controls.location.setValue(this.location1[0].city);
+      console.log("subscribed loc!", this.location1);
+    })
+  }
+
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  onChange(e) {
+    console.log(e);
+
+    //location
+    this.service.get_location().subscribe(res => {
+      this.location1 = res['data']['data'];
+      this.location1 = this.location1.filter(x => x.is_del === false);
+      this.location1 = this.location1.filter(x => x.country === e);
+    })
+    // currencysalary
+    this.currency = Currency;
+    var obj = [];
+    for (let [key, value] of Object.entries(this.currency)) {
+      obj.push({ 'code': key, 'currency': value });
+    }
+    this.currency = obj;
+    this.currency = this.currency.find(x => x.code === e);
+    this.addOfferForm.controls.currenct_type.setValue(this.currency.currency);
+
+
+    //salary_brcaket
+
+    this.service.get_salary_brcaket().subscribe(res => {
+      this.salary = res['data']['data'];
+      console.log('salary', this.salary);
+      this.salary = this.salary.filter(x => x.is_del === false);
+      this.salary = this.salary.filter(x => x.country === e);
+
+    })
+  }
+
+  showdrop(val) {
+    // this.addOfferForm.controls.salaryduration.enable();
+    val == 'hourly' ? this.addOfferForm.controls.salaryduration.enable() : this.addOfferForm.controls.salaryduration.disable();
+  }
+
+  get f() { return this.addOfferForm.controls; }
+
+
+  onSubmit(flag: boolean,id) {
+    this.submitted = !flag;
+    console.log("Offer edited1", this.addOfferForm.value);
+    if(id != 0){
+      this.addOfferForm.controls.location.setValue(this.location1[0]._id);
+      
+      
+      this.service.edit_offer(this.id,this.addOfferForm.value).subscribe(res => {
+
+        console.log("Offer edited", this.addOfferForm.value);
+        this.router.navigate(['/employer/manage_offer/created_offerlist']);
+      })
+    }
+    else{
+      this.addOfferForm.controls.employer_id.setValue(id)
+      this.service.add_offer(this.addOfferForm.value).subscribe(res => {
+
+        this.offer = res;
+        this.router.navigate(['/employer/manage_offer/created_offerlist']);
+
+      })
+      if (flag) {
+
+        this.addOfferForm.reset();
+        this.router.navigate(['/employer/manage_offer/created_offerlist']);
+      }
+
+    }
+   
+  }
   onClose() {
     this.router.navigate(['/employer/manage_offer/created_offerlist']);
   }
-
 }

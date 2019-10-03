@@ -15,12 +15,19 @@ var logger = config.logger;
 router.use("/candidate", auth, authorization, index);
 
 router.get('/view_offer', async (req, res) => {
-    var offer_list = await offer.find();
-    if (offer_list) {
-        return res.status(config.OK_STATUS).json({ 'message': "Offer List", "status": 1, data: offer_list });
+   
+    var offer_list = await common_helper.find(offer, {});
+    
+    console.log("candidate offer", offer_list);
+
+    if (offer_list.status === 1) {
+        return res.status(config.OK_STATUS).json({ 'message': "offer List", "status": 1, data: offer_list });
+    }
+    else if (offer_list.status === 2) {
+        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
     }
 });
 
@@ -42,11 +49,12 @@ router.get('/offer_detail/:id', async (req, res) => {
     // }
 });
  
-router.put("/deactive_offer", async (req, res) => {
+router.put("/deactive_offer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(offer, { "_id": req.body.id }, obj);
+    var id= req.params.id;
+    var resp_data = await common_helper.update(offer, { "_id": id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);

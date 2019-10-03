@@ -7,19 +7,28 @@ import { Observable } from 'rxjs';
 })
 export class LocationService {
     private url = 'http://localhost:3000/employer';
+
     constructor(private http: HttpClient, private route: Router) { }
 
-
-
-    // candidate
-
-    view_approved_candidate(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/manage_candidate/approved_candidate');
+    view_location(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/view_location');
     }
 
-    // Sub-Accounts
+    deactivate_location(id): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/deactivate_location/' + id, null);
+    }
 
-    view_sub_account(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_sub_accounts');
+    add_location(data): Observable<any[]> {
+        console.log('service add location', data);
+
+        return this.http.post<any[]>(`${this.url}` + '/add_location' , data);
+    }
+
+    get_location(id): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/location_detail/' + id);
+    }
+
+    edit_location(id, data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/edit_location/' + id, data);
     }
 }

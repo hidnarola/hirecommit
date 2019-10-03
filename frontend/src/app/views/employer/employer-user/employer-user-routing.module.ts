@@ -23,7 +23,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'addoffer',
+        path: 'addoffer/:id',
         component: EmployerAddofferComponent,
         data: {
           title: 'AddOffer'

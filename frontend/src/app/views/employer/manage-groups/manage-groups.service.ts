@@ -16,5 +16,6 @@ export class GroupService {
     view_groups(): Observable<any[]> {
       return this.http.get<any[]>(`${this.url}` + '/view_groups');
     }
+    
 
 }

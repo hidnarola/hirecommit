@@ -20,16 +20,16 @@
                     </tr>
                   </thead>
                   <tbody>
-                      <tr>
+                      <tr *ngFor="let data of offerList">
                         <td>Vishal Kanojiya</td>
-                        <td>Angular Developer</td>
-                        <td>15000 - 20000(INR)</td>
-                        <td>Hourly</td>
-                        <td>09-09-2019</td>
-                        <td>06-09-2019</td>
+                        <td>{{data.title}}</td>
+                        <td>{{data.salarybracket}}</td>
+                        <td>{{data.salarytype}}</td>
+                        <td>{{data.expirydate}}</td>
+                        <td>{{data.joiningdate}}</td>
                         <td>
                           <button type="button" class="btn btn-sm btn-success" [routerLink]="['/candidate/offers/offerdetail']"><i class="icon-eye"></i></button>
-                          <button type="button" class="btn btn-sm btn-danger" ><i class="icon-trash"></i></button>
+                          <button type="button" class="btn btn-sm btn-danger" (click)="onDelete(data._id)"><i class="icon-trash"></i></button>
                           <span tooltip="Accept" placement="top" show-delay="500"><button type="button" class="btn btn-sm btn-success"><i class="icon-check"></i></button></span>
                           <!-- <button type="button" class="btn btn-sm btn-danger"><i class="icon-trash"></i></button> -->
                         </td>

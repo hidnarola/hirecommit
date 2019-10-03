@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const OfferSchema = new Schema({
+  employer_id:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user' 
+  },
  email:{
     type:String,
     required: true 
@@ -22,9 +26,16 @@ const OfferSchema = new Schema({
   salaryduration: {
     type: String
   },
-  currencytype:{
-    type: String,
-    require: true
+  country:{
+    type:String,
+    required: true
+  }, 
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'location'
+  },
+  currenct_type:{
+    type: String
   },
   salarybracket: {
     type: mongoose.Schema.Types.ObjectId,
@@ -54,10 +65,7 @@ const OfferSchema = new Schema({
       type: String,
       require: true
   },
-  location: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'location'
-  },
+ 
   customfeild1: {
     type: String
   },

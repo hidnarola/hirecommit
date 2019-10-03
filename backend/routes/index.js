@@ -409,7 +409,7 @@ router.post('/login', async (req, res) => {
                 delete user_resp.data.last_login_date;
                 delete user_resp.data.created_at;
                 logger.info("Token generated");
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken , "role": role.data.role });
+                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken , "role": role.data.role,id: user_resp.data._id});
             }
             else {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });

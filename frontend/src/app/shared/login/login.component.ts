@@ -28,12 +28,14 @@ export class LoginComponent implements OnInit {
       if (valid) {
         this.service.login(this.loginForm.value).subscribe(res => {
           this.isFormSubmited = false;
+        
           this.formData = {};
           // console.log(res['token']);
 
           const token = res['token'];
           localStorage.setItem('token', token);
           localStorage.setItem('user', res['role']);
+          localStorage.setItem('userid', res['id']);
           if (res['role'] === 'admin') {
             this.router.navigate(['admin']);
           } else if (res['role'] === 'employer') {
