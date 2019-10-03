@@ -10,8 +10,10 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit {
-  offers: any[];
+  offers: any=[];
   date: any;
+  group:any;
+  salary: any;
   constructor(private router: Router, private service: OfferService) { }
 
   ngOnInit() {
@@ -23,6 +25,23 @@ export class EmployerSummaryComponent implements OnInit {
       }
     });
 
+    //group
+
+    this.service.get_groups().subscribe(res => {
+      this.group = res['data']['data'];
+
+      this.group = this.group.filter(x => x._id === this.offers.group);
+      console.log(this.group);
+    })
+
+    //salary
+
+    this.service.get_salary_brcaket().subscribe(res => {
+      this.salary = res['data']['data'];
+      this.salary = this.salary.filter(x => x._id === this.offers.salarybracket);
+      console.log(this.salary);
+
+    })
     this.bind();
 
   }
@@ -42,6 +61,7 @@ export class EmployerSummaryComponent implements OnInit {
 
     console.log('next clicked');
   }
+  
   previousButtonClickEvent(): void {
     // do previous particular the records like  0 - 100 rows.
     // we are calling to API
@@ -51,8 +71,8 @@ export class EmployerSummaryComponent implements OnInit {
     this.router.navigate(['/employer/manage_offer/offerdetail/' + id]);
   }
 
-  edit() {
-    this.router.navigate(['/employer/manage_offer/addoffer']);
+  edit(id) {
+    this.router.navigate(['/employer/manage_offer/addoffer/' + id]);
   }
 
   delete(id) {
@@ -66,7 +86,10 @@ export class EmployerSummaryComponent implements OnInit {
    }
 
   onAdd() {
-    this.router.navigate(['/employeruser/addoffer']);
+   var user_id = localStorage.getItem('userid')
+    console.log("user_id",user_id);
+    
+    this.router.navigate(['/employer/manage_offer/addoffer/' + user_id]);
   }
 
   public bind() {

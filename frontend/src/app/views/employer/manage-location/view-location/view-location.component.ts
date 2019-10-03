@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocationService } from '../manage-location.service';
+import { countries } from '../../../../shared/countries';
+import { timeout } from 'q';
 
 @Component({
   selector: 'app-view-location',
@@ -7,8 +10,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./view-location.component.scss']
 })
 export class ViewLocationComponent implements OnInit {
-
-  constructor(private router: Router) { }
+country: any = [];
+  locations: any;
+loc: any;
+  _country:any;
+unique:any;
+  constructor(private router: Router, private service: LocationService) { }
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
@@ -17,8 +24,15 @@ export class ViewLocationComponent implements OnInit {
           });
       }
     });
+    setTimeout(() => {
+      
+      this.bind();
+    }, 100);
+    this.country = countries;
 
   }
+
+  
 
   buttonInRowClick(event: any): void {
     event.stopPropagation();
@@ -43,14 +57,30 @@ export class ViewLocationComponent implements OnInit {
     // this.router.navigate(['/groups/summarydetail']);
    }
 
-   edit() {
-    this.router.navigate(['/employer/manage_location/add_location']);
+   edit(id) {
+    this.router.navigate(['/employer/manage_location/add_location/' + id]);
    }
 
-   delete() {}
+   delete(id) {
+     this.service.deactivate_location(id).subscribe(res => {
+       console.log("deactivate location",res);
+       this.bind();
+     })
+   }
 
    onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
    }
 
+ 
+ 
+   public bind(){
+
+     this.service.view_location().subscribe(res => {
+        this.locations = res['data']['data'];
+        console.log("location",this.locations);
+          this.locations = this.locations.filter(x => x.is_del === false);
+    
+     })
+   }
 }

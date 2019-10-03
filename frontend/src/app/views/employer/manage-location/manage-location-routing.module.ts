@@ -12,7 +12,7 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'add_location',
+        path: 'add_location/:id',
         component: AddLocationComponent,
         data: {
           title: 'Add Location'

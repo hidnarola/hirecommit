@@ -12,6 +12,8 @@ export class OfferService {
     // offer
 
     add_offer(data){
+        console.log('service add', data);
+        
         return this.http.post(`${this.url}` + '/offer/add_offer',data)
     }
     
@@ -27,7 +29,18 @@ export class OfferService {
         return this.http.put<any[]>(`${this.url}` + '/offer/deactive_offer/'+ id, null)
     }
 
-    edit_offer(data): Observable <any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/offer/edit_offer/'+ data._id,data)
+    edit_offer(id,data): Observable <any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/offer/edit_offer/'+ id,data)
+    }
+
+    get_location(): Observable <any[]>{
+        return this.http.get<any[]>(`${this.url}` + '/view_location');
+    }
+    get_groups(): Observable <any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/view_groups')
+    }
+
+    get_salary_brcaket(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/view_salary_bracket')
     }
 }

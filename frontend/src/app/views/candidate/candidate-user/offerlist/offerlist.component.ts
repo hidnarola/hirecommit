@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { OfferListService } from '../offerList.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-offerlist',
@@ -7,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OfferlistComponent implements OnInit {
 
-  constructor() { }
+  offerList: any;
+
+  constructor(private service:OfferListService,private route: Router) { }
 
   ngOnInit() {
     const table = $('#example').DataTable({
@@ -17,6 +21,8 @@ export class OfferlistComponent implements OnInit {
           });
       }
     });
+
+    this.bind();
   }
 
   buttonInRowClick(event: any): void {
@@ -37,6 +43,22 @@ export class OfferlistComponent implements OnInit {
   previousButtonClickEvent(): void {
     // do previous particular the records like  0 - 100 rows.
     // we are calling to API
+  }
+
+
+  onDelete(id){
+    this.service.deactivate_offer(id).subscribe(res => {
+      console.log("deactivate offer",res);
+      this.bind();
+    })
+  }
+
+  public bind(){
+         this.service.view_offerList().subscribe(res => {
+           this.offerList = res['data']['data'];
+           console.log("candidate offer list", this.offerList);
+           this.offerList = this.offerList.filter(x => x.is_del === false);
+         })
   }
 
 }

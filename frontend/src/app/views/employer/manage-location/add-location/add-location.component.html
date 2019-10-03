@@ -4,57 +4,44 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong style="font-size: 20px;">Add Location</strong>
+                    <strong style="font-size: 20px;">{{panelTitle}}</strong>
                     <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
                 </div>
-                <form class="form-horizontal" [formGroup]="addLocation" (ngSubmit)="onSubmit(addLocation.valid)">
+                <form class="form-horizontal" [formGroup]="addLocation" (ngSubmit)="onSubmit(addLocation.valid,id)">
                     <div class="card-body">
 
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="country">
-                                <h5>Country</h5>
-                            </label>
-                            <!-- <div class="col-md-3"> -->
-                            <div class="col-md-3">
-                                <select id="trigger" name="select1" class="form-control" formControlName="country">
-                                    <option value="null" selected="selected">Please select country</option>
-                                    <option value="India">India</option>
-                                    <option value="USA">USA</option>
-                                    <option value="ShriLanka">Shri Lanka</option>
-                                    <option value="Africa">Africa</option>
-                                    <option value="China">China</option>
-                                    <option value="Japan">Japan</option>
-                                </select>
-                                <!-- <span *ngIf="!myForm.get('trigger').valid && submitted" class="help-block">Please select Trigger!</span> -->
-
-                                <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">
-                                    <span *ngIf="addLocation.get('country').errors['required']">This field is
-                                        required!</span>
-                                    </span>
+                                <div class="form-group row">
+                                    <label multiple class="col-md-3 col-form-label" for="country">Country</label>
+                                    <div class="col-md-4">
+                                        <select class='select-option form-control' formControlName="country" [(ngModel)]="detail.country">
+                                            <option class='option' *ngFor='let option of Country' [value]="option.code">{{option.name}}</option>
+                                        </select>
+                                        <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->
+                                        <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">Please select
+                                            Country!</span>
+                                    </div>
                                 </div>
 
-                        </div>
-
 
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="location">
-                                <h5>Location</h5>
+                            <label class="col-md-3 col-form-label" for="city">
+                                Location
                             </label>
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter location"
-                                    autocomplete="location" formControlName="location" id="location">
+                                    autocomplete="city" [(ngModel)]="detail.city" formControlName="city" id="city">
 
-                                <span *ngIf="!addLocation.get('location').valid && submitted" class="help-block">
-                                    <span *ngIf="addLocation.get('location').errors['required']">This field is
+                                <span *ngIf="!addLocation.get('city').valid && submitted" class="help-block">
+                                    <span *ngIf="addLocation.get('city').errors['required']">This field is
                                         required!</span>
                                 </span>
                             </div>
                         </div>
                     </div>
                     <div class="w-100 card-footer text-right">
-                        <button type="submit" class="btn btn-sm btn-primary">
+                        <button type="submit" class="btn btn-sm btn-primary" >
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
-                            Add</button>
+                            {{buttonTitle}}</button>
                         <button type="reset" class="btn btn-sm btn-danger">
                             <!-- <i class="fa fa-ban"></i> -->
                             Reset</button>

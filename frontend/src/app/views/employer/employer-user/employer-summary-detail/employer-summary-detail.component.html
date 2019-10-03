@@ -5,12 +5,12 @@
                 <div class="card-header">
                     Employer Detail
                 </div>
-                <div class="card-body">
+                <div class="card-body" *ngIf="displayForm">
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td>Date</td>
-                                <td>ABC</td>
+                                <td>{{offers.createdAt}}</td>
                             </tr>
                             <tr>
                                 <td>Email</td>
@@ -35,15 +35,24 @@
                                 <td>Salary Duration</td>
                                 <td>{{offers.salaryduration}}</td>
                             </tr>
+                            <tr>
+                                <td>Country</td>
+                                <td>{{loc[0].country}}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Location</td>
+                                <td>{{loc[0].city}}</td>
+                            </tr>
 
                             <tr>
                                 <td>Currency Type</td>
-                                <td>{{offers.currencytype}}</td>
+                                <td>{{offers.currenct_type}}</td>
                             </tr>
 
                             <tr>
                                 <td>Salary Bracket</td>
-                                <td>{{offers.salarybracket}}</td>
+                                <td>{{salary[0].from}} to {{salary[0].to}} {{offers.currencytype}}</td>
                             </tr>
                             <tr>
                                 <td>Expiry Date</td>
@@ -69,7 +78,7 @@
                             
                             <tr>
                                 <td>Group</td>
-                                <td>{{offers.group}}<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
+                                <td>{{group[0].name}}<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
                                 
                             </tr>
 
@@ -78,10 +87,7 @@
                                 <td>{{offers.commitstatus}}</td>
                             </tr>
 
-                            <tr>
-                                <td>Location</td>
-                                <td>{{offers.location}}</td>
-                            </tr>
+                            
 
                             <tr>
                                 <td>Custom Field 1</td>

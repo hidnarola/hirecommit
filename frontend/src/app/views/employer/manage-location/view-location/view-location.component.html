@@ -5,7 +5,7 @@
           <div class="card-header">
             <i class="fa fa-align-justify"></i> Location
             <p class="pull-right"></p>
-            <i class="pull-right icon-plus" [routerLink]="['/employer/manage_location/add_location']"> Add Location</i>
+            <i class="pull-right icon-plus" [routerLink]="['/employer/manage_location/add_location/0']"> Add Location</i>
           </div>
           <div class="card-body">
             <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
@@ -21,46 +21,14 @@
 
                   <tbody >
 
-                    <tr>
-                      <td>Mumbai</td>
-                      <td>India</td>
+                    <tr *ngFor = "let data of locations">
+                      <td>{{data.city}}</td>
+                      <td>{{data.country}}</td>
                       <td>
-                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
+                      <button type="button" class="btn btn-sm btn-primary" (click)="edit(data._id)"><i class="icon-pencil"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete(data._id)"><i class="icon-trash"></i></button></td>
                     </tr>
 
-                    <tr>
-                      <td>Pune</td>
-                        <td>India</td>
-                        <td>
-                        <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                        <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
-                      </tr>
-
-                    <tr>
-                      <td>Florida</td>
-                      <td>USA</td>
-                      <td>
-                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
-                    </tr>
-
-                    <tr>
-                      <td>Matara</td>
-                      <td>Shri Lanka</td>
-                      <td>
-                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
-                    </tr>
-
-                    <tr>
-                      <td>Colombo</td>
-                        <td>Shri Lanka</td>
-                        <td>
-                        <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                        <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i class="icon-trash"></i></button></td>
-                      </tr>
-  
 
                   </tbody>
                 </table>
