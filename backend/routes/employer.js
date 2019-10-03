@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+var btoa = require('btoa');
 
 var auth = require("../middlewares/auth");
 var authorization = require("../middlewares/authorization");
@@ -8,10 +9,18 @@ var index = require('./employer/index');
 var offer = require('../models/offer');
 var objectID = require('mongoose').Types.ObjectId;
 var common_helper = require('../helpers/common_helper');
+
 var logger = config.logger;
-var sub_account = require('../models/sub-accounts');
+// var sub_account = require('../models/sub-accounts');
 var salary_bracket = require('../models/salary_bracket');
 var group = require('../models/group');
+var User = require('../models/user');
+var Role = require('../models/role');
+var jwt = require('jsonwebtoken');
+var async = require('async');
+var mail_helper = require('./../helpers/mail_helper');
+var Sub_Employer_Detail = require('../models/sub-employer-detail');
+
 var GroupDetail = require('../models/group-detail');
 var location = require('../models/location');
 
@@ -35,7 +44,7 @@ router.post("/offer/add_offer", async (req, res) => {
         "salarytype":{
             notEmpty: true,
             errorMessage: "Salary Type is required"
-        }, 
+        },
         "currencytype": {
             notEmpty: true,
             errorMessage: "Currency Type is required"
@@ -110,7 +119,6 @@ router.post("/offer/add_offer", async (req, res) => {
 
 router.get('/offer/view_offer', async (req, res) => {
     var offer_list = await common_helper.find(offer, {});
-    // var offer_list = await offer.find();
     if (offer_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Offer List", "status": 1, data: offer_list });
     }
@@ -118,7 +126,7 @@ router.get('/offer/view_offer', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': "No data found", "status": 2 });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
+        return res.status(config.INTERNAL_SERVER_ERROR).json({ 'message': "Error while fatching data.", "status": 0 });
     }
 });
 
@@ -196,20 +204,16 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
         "is_del": false
     };
     var id = req.params.id;
-    console.log(id);
-
     var offer_upadate = await common_helper.update(offer, { "_id": id }, reg_obj)
-    console.log(offer_upadate);
-
     if (offer_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (offer_upadate.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": offer_upadate });
     }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
+    }
 })
 
 router.put("/offer/deactive_offer/:id", async (req, res) => {
@@ -221,32 +225,30 @@ router.put("/offer/deactive_offer/:id", async (req, res) => {
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else {
+    } else if (resp_data.status == 1)  {
         logger.trace("User got successfully = ", resp_data);
         res.status(config.OK_STATUS).json(resp_data);
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
     }
 });
 
 router.get('/offer/offer_detail/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(id);
-
     var offer_detail = await common_helper.findOne(offer, { "_id": id })
-    console.log(offer_detail);
-
     if (offer_detail.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No Data Found" });
     }
     else if (offer_detail.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": offer_detail });
     }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
+    }
 });
 
 //manage Candidate
-
 router.get('/manage_candidate/approved_candidate', async (req, res) => {
     var candidate_list = await candidate.find();
     if (candidate_list) {
@@ -259,20 +261,16 @@ router.get('/manage_candidate/approved_candidate', async (req, res) => {
 
 router.get('/manage_candidate/candidate_detail/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(id);
-
     var candidate_detail = await common_helper.findOne(candidate, { "_id": id })
-    console.log(candidate_detail);
-
     if (candidate_detail.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (candidate_detail.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
     }
-    //     else {
-    //       res.status(config.BAD_REQUEST).json({"message": "No data found" });
-    //     }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
+    }
 });
 
 router.put("/manage_candidate/deactive_candidate", async (req, res) => {
@@ -283,9 +281,12 @@ router.put("/manage_candidate/deactive_candidate", async (req, res) => {
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else {
+    } else if (resp_data.status == 1)  {
         logger.trace("User got successfully = ", resp_data);
         res.status(config.OK_STATUS).json(resp_data);
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data."});
     }
 });
 
@@ -339,11 +340,7 @@ router.put('/manage_candidate/candidate/edit_approved_candidate/:id', async (req
 
     };
     var id = req.params.id;
-    console.log(id);
-
     var candidate_upadate = await common_helper.update(candidate, { "_id": id }, reg_obj)
-    console.log(candidate_upadate);
-
     if (candidate_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
     }
@@ -351,12 +348,11 @@ router.put('/manage_candidate/candidate/edit_approved_candidate/:id', async (req
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate update successfully", "data": candidate_upadate });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+        res.status(config.BAD_REQUEST).json({ "status": 1, "message": "Error while updating data." });
     }
 })
 
 //new request
-
 router.get('/manage_candidate/new_request', async (req, res) => {
     var candidate_list = await candidate.find();
     candidate_list = candidate_list.filter(x => x.isAllow === false)
@@ -371,21 +367,16 @@ router.get('/manage_candidate/new_request', async (req, res) => {
 
 router.get('/manage_candidate/new_request_detail/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(id);
-
     var candidate_detail = await common_helper.findOne(candidate, { "_id": id })
-
-    console.log(candidate_detail);
-
     if (candidate_detail.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (candidate_detail.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
     }
-    //     else {
-    //       res.status(config.BAD_REQUEST).json({"message": "No data found" });
-    //     }
+    else {
+        res.status(config.BAD_REQUEST).json({"status": 2, "message": "Error while featching data." });
+    }
 });
 
 router.put('/manage_candidate/new_request_update/:id', async (req, res) => {
@@ -436,11 +427,7 @@ router.put('/manage_candidate/new_request_update/:id', async (req, res) => {
         documentimage: req.body.documentimage,
     };
     var id = req.params.id;
-    console.log(id);
-
     var candidate_upadate = await common_helper.update(candidate, { "_id": id }, reg_obj)
-    console.log(candidate_upadate);
-
     if (candidate_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
     }
@@ -448,7 +435,7 @@ router.put('/manage_candidate/new_request_update/:id', async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate update successfully", "data": candidate_upadate });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+        res.status(config.BAD_REQUEST).json({ "message": "Error while updating data." });
     }
 });
 
@@ -460,9 +447,12 @@ router.put("/manage_candidate/new_request_deactive", async (req, res) => {
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else {
+    } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
         res.status(config.OK_STATUS).json(resp_data);
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "message": "Error while deleting data." });
     }
 })
 
@@ -503,20 +493,29 @@ router.post("/add_sub_account", async (req, res) => {
 });
 
 router.get('/view_sub_accounts', async (req, res) => {
-    var sub_account_list = await common_helper.find(sub_account, {});
-    console.log(sub_account_list);
-    
-    // var sub_account_list = await sub_account.find();
-    if (sub_account_list.status === 1) {
-        return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: sub_account_list });
-    }
-    else if (sub_account_list.status === 2) {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 2 });
-    }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
-    }
+try {
+  const sub_account_list = await Sub_Employer_Detail.find({ is_del: false })
+  .populate('user_id')
+  .lean();
+  return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: sub_account_list });
+} catch (error) {
+  return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+}
+
 });
+
+router.get('/user/:id', async (req, res) => {
+  let sub_account_detail = await common_helper.findOne(User, {'_id': objectID(req.params.id)});
+  if (sub_account_detail.status === 1) {
+    return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: sub_account_detail });
+  }
+  else if (sub_account_detail.status === 2) {
+    return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 2 });
+  }
+  else {
+    return res.status(config.INTERNAL_SERVER_ERROR).json({ 'message': "Error while fatching data.", "status": 0 });
+  }
+})
 
 router.put('/edit_sub_account/:id', async (req, res) => {
     var schema = {
@@ -538,56 +537,55 @@ router.put('/edit_sub_account/:id', async (req, res) => {
 
     };
     var id = req.params.id;
-    console.log(id);
-
     var sub_account_upadate = await common_helper.update(sub_account, { "_id": id }, reg_obj)
-    console.log(sub_account_upadate);
-
     if (sub_account_upadate.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": sub_account_upadate });
     }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    }
 })
 
-router.put("/deactive_sub_account", async (req, res) => {
+router.put("/deactive_sub_account/:id", async (req, res) => {
+    // console.log('dsfdsfds');return false;
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(sub_account, { "_id": req.body.id }, obj);
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else {
-        logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
+     var id = req.params.id;
+    //  console.log("IDDDIDIDIDID", id);return false;
+
+    var resp_user_data = await common_helper.update(User, { "_id": id }, obj);
+    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": id }, obj);
+    // console.log(resp_Detail_data.status);return false;
+    if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_user_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json({"status": 0, "message": "Error while deleting data."});
+    } else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
+        res.status(config.OK_STATUS).json({"status": 1,  "message": "Record deleted successfully."});
+    }
+    else {
+      res.status(config.BAD_REQUEST).json({"status": 2,  "message": "No data found"});
     }
 });
 
 router.get('/sub_account_detail/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(id);
-
     var sub_account_detail = await common_helper.findOne(sub_account, { "_id": id })
-    console.log(sub_account_detail);
-
     if (sub_account_detail.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_detail.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
     }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    }
 });
 
 //groups
-
 router.post("/add_group", async (req, res) => {
     var schema = {
       "name":{
@@ -649,9 +647,6 @@ router.post("/add_group", async (req, res) => {
 
 router.get('/view_groups', async (req, res) => {
   var group_list = await common_helper.find(group, {});
-
-  // var sub_account_list = await group.find();
-  console.log("groupss",group_list);
   if (group_list.status === 1) {
       return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
   }
@@ -661,7 +656,6 @@ router.get('/view_groups', async (req, res) => {
   else {
       return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
   }
-
 });
 
 router.post("/add_group_details/:id", async (req, res) => {
@@ -688,9 +682,7 @@ router.post("/add_group_details/:id", async (req, res) => {
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-      // console.log(req.body);
       const reqData = req.body.data;
-      console.log("data==>", reqData);
       const grp_data = {
         group_id: req.params.id,
         communication: reqData
@@ -707,65 +699,8 @@ router.post("/add_group_details/:id", async (req, res) => {
     }
   });
 
-router.post("/add_group_detailssss/:id", async (req, res) => {
-  //   var schema = {
-  //       "communication": [{
-  //           "communicationname": {
-  //               notEmpty: true,
-  //               errorMessage: "Communication Name is required"
-  //           },
-  //           "trigger": {
-  //               notEmpty: true,
-  //               errorMessage: "Trigger is required"
-  //           },
-  //           "day": {
-  //               notEmpty: true,
-  //               errorMessage: "Days are required"
-  //           },
-  //           "priority": {
-  //               notEmpty: true,
-  //               errorMessage: "Priority is required"
-  //           }
-  //       },]
-  //   };
-  // req.checkBody(schema);
-
-  // var errors = req.validationErrors();
-  // if (!errors) {
-    // console.log(JSON.stringify(req.query));
-
-    console.log(req.body);
-
-    communication_obj = {
-        "communicationname": req.body.communicationname,
-        "trigger": req.body.trigger,
-        "day": req.body.day,
-        "priority": req.body.priority,
-        "message": req.body.message,
-        "is_del": false
-      }
-      var reg_obj = {
-          "group_id": new objectID(req.query.id),
-          "communication": [{ comunication_obj }]
-      };
-      console.log(reg_obj);
-
-      var interest_resp = await common_helper.insert(GroupDetail, reg_obj);
-      if (interest_resp.status == 0) {
-          logger.debug("Error = ", interest_resp.error);
-          res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-      } else {
-              res.status(config.OK_STATUS).json({ "message": "Group detail successfully", "data": interest_resp })
-      }
-  // }
-  // else {
-  //     logger.error("Validation Error = ", errors);
-  //     res.status(config.BAD_REQUEST).json({ message: errors });
-  // }
-});
-
 router.get('/group_detail', async (req, res) => {
-    var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.body.id)}); 
+    var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.body.id)});
     if (group_detail.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
     }
@@ -775,17 +710,7 @@ router.get('/group_detail', async (req, res) => {
     else {
         return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
     }
-    // await GroupDetail.find({ group_id: objectID(req.body.id)}, (err, result)=> {
-    //     console.log(result);
-    //     if (err) res.send(JSON.stringify('not found'))
-    //     if (result !== null && result.length > 0) {
-    //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Group detail fetched successfully", "data": result });
-    //     } else {
-    //         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-    //     }
-    // })
 });
-
 
 //manage Location
 router.post("/add_location", async (req, res) => {
@@ -840,20 +765,16 @@ router.put('/edit_location/:id', async (req, res) => {
         "is_del": false,
     };
     var id = req.params.id;
-    console.log(id);
-
     var update_location = await common_helper.update(location, { "_id": id }, reg_obj)
-    console.log(update_location);
-
     if (update_location.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (update_location.status == 1) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Location update successfully", "data": update_location });
     }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "No data found" });
+    }
 })
 
 router.put("/deactivate_location", async (req, res) => {
@@ -914,9 +835,6 @@ router.post("/add_salary_bracket", async (req, res) => {
 
 router.get('/view_salary_bracket', async (req, res) => {
     var salary_bracket_list = await common_helper.find(salary_bracket, {});
-    // var salary_bracket_list = await salary_bracket.find();
-    console.log(salary_bracket_list);
-    
     if (salary_bracket_list.status === 1  ) {
         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
     }
@@ -953,11 +871,7 @@ router.put('/edit_salary_bracket/:id', async (req, res) => {
         "is_del": false
     };
     var id = req.params.id;
-    console.log(id);
-
     var salary_bracket_upadate = await common_helper.update(salary_bracket, { "_id": id }, reg_obj)
-    console.log(salary_bracket_upadate);
-
     if (salary_bracket_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
@@ -985,11 +899,7 @@ router.put("/deactive_salary_bracket", async (req, res) => {
 
 router.get('/salary_brcaket_detail/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(id);
-
     var salary_brcaket_detail = await common_helper.findOne(salary_bracket, { "_id": id })
-    console.log(salary_brcaket_detail);
-
     if (salary_brcaket_detail.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
     }
@@ -998,6 +908,87 @@ router.get('/salary_brcaket_detail/:id', async (req, res) => {
     }
     else {
         res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+    }
+});
+
+router.post("/add_subaccount", async (req, res) => {
+    var schema = {
+      "name": {
+        notEmpty: true,
+        errorMessage: "name is required"
+      },
+      "email": {
+        notEmpty: true,
+        errorMessage: "email is required"
+      }
+    };
+
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+    if (!errors) {
+      let password = req.body.name.substring(0, 3) + '@password123';
+      let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase()});
+      if(user_resp.status === 1) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
+      }
+      else {
+        let role =  await common_helper.findOne(Role, { 'role': 'sub-employer' }, 1)
+        var user_reg_obg = {
+          "email": req.body.email.toLowerCase(),
+          "password": password,
+          "role_id": new objectID(role.data._id),
+          "admin_rights": req.body.admin_rights
+        }
+
+          var interest_user_resp = await common_helper.insert(User, user_reg_obg);
+          if (interest_user_resp.status === 1) {
+            var reg_obj = {
+                "username": req.body.name,
+                "user_id": new objectID(interest_user_resp.data._id),
+                "country": null,
+                companyname: null,
+                countrycode: null,
+                contactno: null
+            };
+
+            var interest_resp = await common_helper.insert(Sub_Employer_Detail, reg_obj);
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+              var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                config.ACCESS_TOKEN_SECRET_KEY, {
+                  expiresIn: 60 * 60 * 24 * 3
+                }
+              )).toString('base64');
+
+              var time = new Date();
+              time.setMinutes(time.getMinutes() + 20);
+              time = btoa(time);
+
+              logger.trace("sending mail");
+              let mail_resp = await mail_helper.send("email_confirmation", {
+                  "to": interest_user_resp.data.email,
+                  "subject": "HC - Email Confirmation"
+              }, {
+                  "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+                  // "message": "Dear Employer you are login after confirm your email whith your email and password "+ password.
+              });
+              if (mail_resp.status === 0) {
+                  res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+              } else {
+                  res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp  })
+              }
+            }
+          } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
+          }
+
+      }
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
 

@@ -32,69 +32,14 @@
                         </div>
 
                         <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="email">Admin Rights?</label>
+                                <label class="col-md-3 col-form-label" for="admin_rights">Admin Rights?</label>
                                 <div class="col-md-6">
-                                        <label class="switch">
-                                                <input type="checkbox" >
-                                                <span class="slider round"></span>
-                                              </label>
+                                  <label class="switch">
+                                    <input type="checkbox" formControlName="admin_rights" [(ngModel)]="admin_rights" (change)="checkValue($event)">
+                                    <span class="slider round"></span>
+                                  </label>
                                 </div>
                             </div>
-
-
-
-
-
-                        <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="desig">Designation</label>
-                            <div class="col-md-4">
-                                <select id="desig" name="select1" class="form-control" formControlName="desig">
-                                    <option value="null">Please select</option>
-                                    <option value="Ass.HR">Ass.HR</option>
-                                    <option value="Jr.HR">Jr.HR</option>
-                                    <option value="Sr.HR">Sr.HR</option>
-                                </select>
-                                <span *ngIf="!addAccount.get('desig').valid && submitted" class="help-block">Please
-                                    select Designation!</span>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="contactNumber">Contact Number</label>
-                            <div class="col-md-1.5 ml-3">
-                                    <select id="CountryCode" name="CountryCode" class="form-control">
-                                            <option value="+91" selected="selected">+91</option>
-                                            <option value="+92">+92</option>
-                                            <option value="+44">+44</option>
-                                            <option value="+1">+1</option>
-                                          </select>
-                            </div>
-                            <div class="col-md-5">
-                                    <input type="text" class="form-control" placeholder="10-digit number" autocomplete="mobilenumber" required="required">
-
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="ecode">Employee Code</label>
-                                <div class="col-md-6">
-                                    <input type="ecode" class="form-control" placeholder="Enter employee code" autocomplete="ecode"
-                                        formControlName="ecode" id="ecode">
-                                    <span *ngIf="!addAccount.get('ecode').valid && submitted" class="help-block">
-                                        Employee code is neccessary!</span>
-                                </div>
-                            </div>
-
-
-                        <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="avatar">Avatar</label>
-                                <div class="col-md-9">
-                                  <input type="file" formControlName="avatar" id="avatar">
-                                </div>
-                              </div> -->
-
-
-
                     </div>
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-sm btn-primary">

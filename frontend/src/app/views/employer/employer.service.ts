@@ -22,9 +22,9 @@ export class EmployerService {
 
     // Sub-Accounts
 
-    view_sub_account(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_sub_accounts');
-    }
+    // view_sub_account(): Observable<any[]> {
+    //     return this.http.get<any[]>(`${this.url}` + '/view_sub_accounts');
+    // }
 
 
 }

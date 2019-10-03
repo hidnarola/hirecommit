@@ -18,7 +18,6 @@ mail_helper.send = async (template_name, options, data) => {
     var template_sender = transporter.templateSender(new EmailTemplate('emails/' + template_name), {
         from: "demo.narola@gmail.com"
     });
-
     return template_sender({
         to: options.to,
         subject: options.subject,

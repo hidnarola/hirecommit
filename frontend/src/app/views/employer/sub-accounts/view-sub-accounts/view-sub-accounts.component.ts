@@ -1,51 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmployerService } from '../../employer.service';
+import { SubAccountService } from '../sub-accounts.service';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-view-sub-accounts',
   templateUrl: './view-sub-accounts.component.html',
   styleUrls: ['./view-sub-accounts.component.scss']
 })
-export class ViewSubAccountsComponent implements OnInit {
-sub_accounts: any;
-  constructor(private router: Router,private service: EmployerService) { }
-  ngOnInit() {
-    const table = $('#example').DataTable({
-      drawCallback: () => {
-        $('.paginate_button.next').on('click', () => {
-            this.nextButtonClickEvent();
-          });
-      }
-    });
+export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewInit {
+  // @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  sub_accounts: any = [];
+  data: any[];
+  admin_rights = true;
+  dtTrigger: Subject<any> = new Subject();
 
+  constructor(private router: Router, private service: SubAccountService) {}
+  ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 2,
+      destroy: true,
+      search: true,
+    };
+    this.get_SubEmployer();
+    // this.dtTrigger.next();
+  }
+
+  get_SubEmployer () {
     this.service.view_sub_account().subscribe(res => {
-      console.log(res);
-      this.sub_accounts = res[('data')];
-      
-    })
-
+      this.data = res['data'];
+      // this.dtTrigger.next();
+    });
   }
 
-  buttonInRowClick(event: any): void {
-    event.stopPropagation();
-    console.log('Button in the row clicked.');
+  checkValue(e) {
+    this.admin_rights = e.target.checked;
   }
 
-  wholeRowClick(): void {
-    console.log('Whole row clicked.');
-  }
-
-  nextButtonClickEvent(): void {
-    // do next particular records like  101 - 200 rows.
-    // we are calling to api
-
-    console.log('next clicked');
-  }
-  previousButtonClickEvent(): void {
-    // do previous particular the records like  0 - 100 rows.
-    // we are calling to API
-  }
   detail() {
     this.router.navigate(['/employer/manage_subaccount/sub_accountdetail']);
    }
@@ -54,9 +49,42 @@ sub_accounts: any;
     this.router.navigate(['/employer/manage_subaccount/add_subaccounts']);
    }
 
-   delete() {}
+   delete(id) {
+     this.service.decativate_sub_account(id).subscribe(res => {
+      if (res['status'] === 1) {
+        console.log(res);
+        this.rerender();
+      }
+     });
+   }
 
    onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
    }
+
+   ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+   ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // dtInstance.draw();
+      // this.data = [];
+      this.service.view_sub_account().subscribe((res) => {
+        if (res['status'] === 1) {
+          dtInstance.destroy();
+          this.data = res['data'];
+          setTimeout(() => {
+            this.dtTrigger.next();
+          });
+          // this.dtTrigger.next();
+        }
+      });
+    });
+  }
 }
