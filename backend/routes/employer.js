@@ -9,6 +9,7 @@ var index = require('./employer/index');
 var offer = require('../models/offer');
 var objectID = require('mongoose').Types.ObjectId;
 var common_helper = require('../helpers/common_helper');
+var user_helper = require('../helpers/user_helper');
 
 var logger = config.logger;
 // var sub_account = require('../models/sub-accounts');
@@ -524,16 +525,117 @@ router.post("/add_sub_account", async (req, res) => {
     }
 });
 
-router.get('/view_sub_accounts', async (req, res) => {
-try {
-  const sub_account_list = await Sub_Employer_Detail.find({ is_del: false })
-  .populate('user_id')
-  .lean();
-  return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: sub_account_list });
-} catch (error) {
-  return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
-}
+// router.post('/view_sub_accounts', async (req, res) => {
+//   try {
+//     const aggregate = [];
+//     const params = req.body;
+//     console.log(req.body);
 
+//     let search = {
+//       is_del: false
+//     };
+//     if(params.search.value != ""){
+//       console.log(params.search.value);
+//       searchRE = { $regex: new RegExp(`${params.search.value}`, 'gi') };
+//       search = {
+//         ...search,
+//         $or: [
+//           {'username': searchRE},
+//           {'user_id.email': searchRE}
+//         ]
+//      }
+//     }
+//       var filter = {};
+//       // var totalMatchingCountRecords = await Sub_Employer_Detail.countDocuments(
+//       //   search
+//       // );
+//       var totalMatchingCountRecords = await User.countDocuments(
+//         search
+//       );
+
+//       console.log('totalMatchingCountRecords', search, totalMatchingCountRecords);
+//       var sortOrderColumnIndex = req.body.order[0].column;
+//       let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
+//       let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+//       let sortingObject = {
+//           [sortOrderColumn]: sortOrder
+//       }
+
+//       var resp_data = await common_helper.findWithFilter(Sub_Employer_Detail, search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, [
+//         {
+//           path: 'user_id'
+//         }
+//       ] );
+//       console.log(resp_data);
+//       if (resp_data.status == 0) {
+//           logger.error("Error occurred while fetching Lenders = ", resp_data);
+//           res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+//       } else {
+//           logger.trace("Sub_Employer_Detail got successfully = ", resp_data);
+//           res.status(config.OK_STATUS).json(resp_data);
+//       }
+//   } catch (error) {
+//     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+//   }
+// });
+
+router.post('/view_sub_accounts', async (req, res) => {
+
+  var schema = {
+    // "page_no": {
+    //   notEmpty: true,
+    //   errorMessage: "page_no is required"
+    // },
+    // "page_size": {
+    //   notEmpty: true,
+    //   errorMessage: "page_size is required"
+    // }
+  };
+  req.checkBody(schema);
+  var errors = req.validationErrors();
+
+  if (!errors) {
+    var sortOrderColumnIndex = req.body.order[0].column;
+          let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
+          let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+          let sortingObject = {
+              [sortOrderColumn]: sortOrder
+          }
+
+      var  aggregate= [
+        {
+          $match:{
+            "is_del":false
+          }
+        }
+      ]
+        // if (req.body.search !== ''){
+          const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+          aggregate.push({
+              "$match":
+                  { $or: [{ "username": RE }, { "user_id.email": RE}]}
+          });
+      // }
+
+      console.log('aggregate==>', aggregate);
+
+      let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
+      console.log("totalMatchingCountRecords",totalMatchingCountRecords);
+      totalMatchingCountRecords = totalMatchingCountRecords.length;
+      console.log("totalMatchingCountRecords",totalMatchingCountRecords);
+
+    // var search={};
+    console.log(req.body.search)
+      var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords);
+    if (resp_data.status == 1) {
+      res.status(config.OK_STATUS).json(resp_data);
+    } else {
+      res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    }
+  } else {
+    logger.error("Validation Error = ", errors);
+    res.status(config.BAD_REQUEST).json({ message: errors });
+  }
 });
 
 router.get('/user/:id', async (req, res) => {

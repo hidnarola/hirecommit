@@ -7,13 +7,20 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 export class SubAccountService {
     private url = 'http://localhost:3000/employer';
-
+    // myObservableArray: Observable<any[]> = new Observable<any[]>();
+    // data = new BehaviorSubject(null);
+    // dataList = this.data.asObservable();
     constructor(private http: HttpClient, private route: Router) { }
 
     // Sub-Accounts
+    // checkHere() {
+    //   console.log('here', this.data);
+    //   console.log(this.data);
+    //   return this.data.next({});
+    // }
 
-    view_sub_account(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_sub_accounts');
+    view_sub_account(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/view_sub_accounts', {...params});
     }
 
     add_sub_account(data): Observable<any[]> {

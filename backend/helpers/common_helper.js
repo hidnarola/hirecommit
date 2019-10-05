@@ -52,30 +52,36 @@ common_helper.find = async (collection, data = {}, type = 2, start, length, filt
     }
 }
 
-common_helper.findWithFilter = async (collection, data = {}, start, limit, filteredrecords, sort = false) => {
-    try {
-        //var data = await collection.find(data).collation({ locale: "en" }).skip(start).limit(limit).sort(sort);
-        var data = await collection.find(data).skip(start).limit(limit).sort(sort);
-        if (data || (data && data.length > 0)) {
-            filteredrecords = filteredrecords.recordsTotal;
-            return {
-                status: 1,
-                message: "data found",
-                data: data,
-                filteredrecords: data.length,
-                recordsTotal: filteredrecords
-            };
-        } else {
-            return { status: 2, message: "No data found" };
-        }
-    } catch (err) {
-        return {
-            status: 0,
-            message: "Error occured while fetching data",
-            error: err
-        };
-    }
-}
+// common_helper.findWithFilter = async (collection, data = {}, start, limit, filteredrecords, sort = false, populate = []) => {
+//     try {
+//         var data = await collection.find(data)
+//         .populate(populate)
+//         .skip(start).limit(limit).sort(sort);
+
+//         // var data = await collection.find({is_del: false})
+//         // .populate(populate).where({'user_id.email': 'abc@gmail.com'})
+//         // .skip(start).limit(limit).sort(sort);
+//         // console.log(data); return false;
+
+//         if (data || (data && data.length > 0)) {
+//             return {
+//                 status: 1,
+//                 message: "data found",
+//                 data: data,
+//                 filteredrecords: data.length,
+//                 recordsTotal: filteredrecords
+//             };
+//         } else {
+//             return { status: 2, message: "No data found" };
+//         }
+//     } catch (err) {
+//         return {
+//             status: 0,
+//             message: "Error occured while fetching data",
+//             error: err
+//         };
+//     }
+// }
 
 common_helper.findWithFilterss = async (collection, data = {}, type, start, limit, filteredrecords, sort = false, populate1, populate2) => {
     try {
