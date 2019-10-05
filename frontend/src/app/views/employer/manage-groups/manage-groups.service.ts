@@ -16,6 +16,13 @@ export class GroupService {
     view_groups(): Observable<any[]> {
       return this.http.get<any[]>(`${this.url}` + '/view_groups');
     }
+    get_detail(id):Observable<any[]>
+    {
+      return this.http.get<any[]>(`${this.url}` + '/group_detail/' +id);
+    }
+    get_communication_detail(id):Observable<any[]>{
+      return this.http.get<any[]>(`${this.url}` + '/group_communication_detail/' +id);
+    }
     
 
 }

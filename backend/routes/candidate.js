@@ -6,6 +6,7 @@ var authorization = require("../middlewares/authorization");
 var config = require('../config')
 var index = require('./employer/index');
 var offer = require('../models/offer');
+var user = require('../models/user');
 var objectID = require('mongoose').Types.ObjectId;
 var common_helper = require('../helpers/common_helper');
 var logger = config.logger;
@@ -64,4 +65,22 @@ router.put("/deactive_offer/:id", async (req, res) => {
     }
 });
 
+
+router.get('/get_employer/:id', async (req, res) => {
+    var id = req.params.id;
+    console.log(id);
+
+    var employer_list = await common_helper.findOne(user, { "_id": id })
+    console.log(employer_list);
+
+    if (employer_list.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    }
+    else if (employer_list.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "offer fetched successfully", "data": employer_list });
+    }
+    // else {
+    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+    // }
+})
 module.exports = router;

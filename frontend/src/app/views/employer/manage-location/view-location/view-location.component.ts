@@ -10,29 +10,38 @@ import { timeout } from 'q';
   styleUrls: ['./view-location.component.scss']
 })
 export class ViewLocationComponent implements OnInit {
-country: any = [];
+  country: any = [];
   locations: any;
-loc: any;
-  _country:any;
-unique:any;
+  loc: any;
+  salary: any = [];
+  _country: any =[];
+  unique: any;
+  Country: any;
+
+  location: any;
+ 
+  c_name: any = [];
+  sal: any = [];
+  salnew: any = [];
+
   constructor(private router: Router, private service: LocationService) { }
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
-            this.nextButtonClickEvent();
-          });
+          this.nextButtonClickEvent();
+        });
       }
     });
     setTimeout(() => {
-      
+
       this.bind();
     }, 100);
     this.country = countries;
 
   }
 
-  
+
 
   buttonInRowClick(event: any): void {
     event.stopPropagation();
@@ -55,32 +64,69 @@ unique:any;
   }
   detail() {
     // this.router.navigate(['/groups/summarydetail']);
-   }
+  }
 
-   edit(id) {
+  edit(id) {
     this.router.navigate(['/employer/manage_location/add_location/' + id]);
-   }
+  }
 
-   delete(id) {
-     this.service.deactivate_location(id).subscribe(res => {
-       console.log("deactivate location",res);
-       this.bind();
-     })
-   }
+  delete(id) {
+    this.service.deactivate_location(id).subscribe(res => {
+      console.log("deactivate location", res);
+      this.bind();
+    })
+  }
 
-   onAdd() {
+  onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
-   }
+  }
 
- 
- 
-   public bind(){
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
 
-     this.service.view_location().subscribe(res => {
-        this.locations = res['data']['data'];
-        console.log("location",this.locations);
-          this.locations = this.locations.filter(x => x.is_del === false);
-    
-     })
-   }
+
+  public bind() {
+
+    // this.service.view_location().subscribe(res => {
+    //   this.locations = res['data']['data'];
+    //   console.log("location", this.locations);
+    //   this.locations = this.locations.filter(x => x.is_del === false);
+
+    // })
+    //
+    this.service.view_location().subscribe(res => {
+      this.locations = res['data']['data'];
+      console.log("location", this.locations);
+      this.locations = this.locations.filter(x => x.is_del === false);
+
+      this.Country = countries;
+      var obj = [];
+
+      for (let [key, value] of Object.entries(countries)) {
+        obj.push({ 'code': key, 'name': value });
+      }
+      this.Country = obj;
+
+      console.log('cnt', this.Country);
+
+      this.locations.forEach(element => {
+        let fetch_country = element.country;
+        console.log('fetch', fetch_country);
+
+        this.unique = this.Country.filter(x => x.code === fetch_country);
+        console.log('unique', this.unique[0]);
+
+        this._country.push(this.unique[0]);
+        console.log('_cnt', this._country);
+      });
+      this._country = this._country.filter(this.onlyUnique);
+      console.log('_cnt---------', this._country);
+    })
+  }
+  public GetCountry(country) {
+    this.c_name = this._country.filter(x => x.code === country);
+    this.c_name = this.c_name[0].name;
+    return this.c_name
+  }
 }

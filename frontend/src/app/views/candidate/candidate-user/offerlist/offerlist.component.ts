@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./offerlist.component.scss']
 })
 export class OfferlistComponent implements OnInit {
-
+employer: any;
   offerList: any;
 
   constructor(private service:OfferListService,private route: Router) { }
@@ -58,7 +58,16 @@ export class OfferlistComponent implements OnInit {
            this.offerList = res['data']['data'];
            console.log("candidate offer list", this.offerList);
            this.offerList = this.offerList.filter(x => x.is_del === false);
+
+           console.log('eid', this.offerList.employer_id);
+
+           this.service.get_employer(this.offerList.employer_id).subscribe(res => {
+             this.employer = res['data']['data'];
+             console.log('emp data', this.employer);
+
+           })
          })
+
   }
 
 }

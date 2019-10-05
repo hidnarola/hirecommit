@@ -13,7 +13,6 @@ export class OfferService {
 
     add_offer(data){
         console.log('service add', data);
-        
         return this.http.post(`${this.url}` + '/offer/add_offer',data)
     }
     

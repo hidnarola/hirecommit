@@ -28,7 +28,7 @@ export class AddLocationComponent implements OnInit {
 
     });
 
-    let sub = this.route.params.subscribe((params: Params) => {
+    this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       // console.log(this.id);
     })

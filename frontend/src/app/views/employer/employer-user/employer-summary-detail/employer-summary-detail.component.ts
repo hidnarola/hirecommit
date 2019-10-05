@@ -28,7 +28,7 @@ export class EmployerSummaryDetailComponent implements OnInit {
 
       this.offers = res['data']['data'];
      
-      console.log("detail duration", this.offers.email);
+      console.log("detail duration", this.offers);
 
       //location
       this.service.get_location().subscribe(res => {

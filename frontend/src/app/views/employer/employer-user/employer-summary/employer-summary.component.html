@@ -33,7 +33,7 @@
                 <td>{{date[0]}}</td>
                 <td>{{offer.title}}</td>
                  <td>{{offer.salarytype}}</td>
-                <td>{{salary.from}} to {{salary.to}}</td>
+                <td *ngIf = 'GetSalary(offer.salarybracket)'>{{_from}} to {{_to}}</td>
                 <td>{{offer.expirydate}}</td>
                 <td>{{offer.joiningdate}}</td>
                 <td><label class="switch">
@@ -41,7 +41,7 @@
                     <span class="slider round"></span>
                   </label></td>
                 <td>{{offer.offertype}}</td>
-                <td>{{group.name}}</td>
+                <td *ngIf="GetGroup(offer.group)">{{_grp_name}}</td>
                  <td>{{offer.commitstatus}}</td>
                 
                 <td>{{offer.customfeild1}}</td>

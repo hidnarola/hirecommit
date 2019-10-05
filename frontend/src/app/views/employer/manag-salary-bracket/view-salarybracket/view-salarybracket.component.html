@@ -22,9 +22,8 @@
                       </thead>
 
                       <tbody >
-
                         <tr *ngFor = "let data of salary">
-                          <td>{{data.country}}</td>
+                        <td *ngIf = 'GetCountry(data.country)' >{{c_name}}</td>
                          <td>{{data.currency}}</td>
                         <td>{{data.from}} </td>
                         <td>{{data.to}}</td>

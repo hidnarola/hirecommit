@@ -43,8 +43,8 @@ export class ViewGroupsComponent implements OnInit {
     // do previous particular the records like  0 - 100 rows.
     // we are calling to API
   }
-  detail() {
-    this.router.navigate(['/employer/manage_group/group_details']);
+  detail(id) {
+    this.router.navigate(['/employer/manage_group/group_details/' +id]);
    }
 
    edit() {
@@ -64,7 +64,7 @@ this.router.navigate(['/employer/manage_group/group']);
    }
 
    onaddDetails(id) {
-    this.router.navigate(['/employer/manage_group/add_group/' + id]);
+    this.router.navigate(['/employer/manage_group/add_group/' + id ]);
    }
 
     public bind() {

@@ -34,7 +34,7 @@ const OfferSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'location'
   },
-  currenct_type:{
+  currency_type:{
     type: String
   },
   salarybracket: {

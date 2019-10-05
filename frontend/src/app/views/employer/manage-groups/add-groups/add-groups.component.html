@@ -3,7 +3,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <strong style="font-size: 20px;">Add Communication</strong>
+            <strong style="font-size: 20px;">Add Communication : {{_name[0].name}}</strong>
             <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
           </div>
           <form class="form-horizontal" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm.valid)">

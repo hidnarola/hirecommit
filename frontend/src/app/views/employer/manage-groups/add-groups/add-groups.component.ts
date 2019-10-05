@@ -20,16 +20,23 @@ export class AddGroupsComponent implements OnInit {
    id: any;
   value = false;
   submitted = false;
-
+  _name:any;
+  title: string;
   onClose() {
     this.router.navigate(['/employer/manage_group/view_group']);
   }
 
   ngOnInit() {
-    const sub = this.route.params.subscribe((params: Params) => {
+    this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(this.id);
     });
+
+    this.service.get_detail(this.id).subscribe(res => {
+    this._name = res['data']['data'];
+      console.log('name',this._name);
+    
+    })
 
 this.myForm = this.fb.group({
       arr: this.fb.array([this.createItem()])

@@ -14,10 +14,15 @@ export class EmployerSummaryComponent implements OnInit {
   date: any;
   group:any;
   salary: any;
+  unique: any = [];
+  _sal: any = [];
+  _from:any;
+  _to:any;
+  _grp_name:any;
   constructor(private router: Router, private service: OfferService) { }
 
   ngOnInit() {
-    const table = $('#example').DataTable({
+     $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
           this.nextButtonClickEvent();
@@ -27,21 +32,11 @@ export class EmployerSummaryComponent implements OnInit {
 
     //group
 
-    this.service.get_groups().subscribe(res => {
-      this.group = res['data']['data'];
-
-      this.group = this.group.filter(x => x._id === this.offers.group);
-      console.log(this.group);
-    })
+   
 
     //salary
 
-    this.service.get_salary_brcaket().subscribe(res => {
-      this.salary = res['data']['data'];
-      this.salary = this.salary.filter(x => x._id === this.offers.salarybracket);
-      console.log(this.salary);
-
-    })
+   
     this.bind();
 
   }
@@ -86,13 +81,31 @@ export class EmployerSummaryComponent implements OnInit {
    }
 
   onAdd() {
-   var user_id = localStorage.getItem('userid')
-    console.log("user_id",user_id);
+  //  var user_id = localStorage.getItem('userid')
+  //   console.log("user_id",user_id);
     
-    this.router.navigate(['/employer/manage_offer/addoffer/' + user_id]);
+    this.router.navigate(['/employer/manage_offer/addoffer/0']);
+  }
+
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
   }
 
   public bind() {
+    this.service.get_salary_brcaket().subscribe(res => {
+      this.salary = res['data']['data'];
+      this.salary = this.salary.filter(x => x.is_del === false);
+      console.log(this.salary);
+
+    })
+
+    this.service.get_groups().subscribe(res => {
+      this.group = res['data']['data'];
+
+      // this.group = this.group.filter(x => x._id === this.offers.group);
+      console.log(this.group);
+    })
+
     this.service.view_offer()
       .subscribe(res => {
         this.offers = res['data']['data'];
@@ -101,8 +114,35 @@ export class EmployerSummaryComponent implements OnInit {
         this.offers.filter(x => {
           this.date = x.createdAt.split("T");
         });
+
+      
         
+      //   this.salary.forEach(element => {
+      //     let fetch_salary = element._id;
+      //     console.log('fetch', fetch_salary);
+
+      //     this.unique = this.salary.filter(x => x._id === fetch_salary);
+      //     console.log('unique', this.unique);
+
+      //     this._sal.push(this.unique[0]);
+      //     console.log('_cnt', this._sal);
+      //   });
+      //   this._sal = this._sal.filter(this.onlyUnique);
       })
   }
 
+  public GetSalary(from) {
+
+    this._from = this.salary.filter(x => x._id === from);
+    this._from = this._from[0].from;
+    this._to = this.salary.filter(x => x._id === from);
+    this._to = this._to[0].to;
+    return this._from ,this._to
+  }
+
+  public GetGroup(group_name){
+    this._grp_name = this.group.filter(x => x._id === group_name);
+    this._grp_name = this._grp_name[0].name;
+    return  this._grp_name
+  }
 }

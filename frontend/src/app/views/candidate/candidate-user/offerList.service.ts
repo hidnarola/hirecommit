@@ -17,4 +17,7 @@ export class OfferListService {
     deactivate_offer(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/deactive_offer/' + id, null);
     }
+    get_employer(id):Observable<any[]>{
+        return this.http.get<any[]>(`${this.url}` + '/get_employer/' + id);
+    }
 }

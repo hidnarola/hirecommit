@@ -49,7 +49,7 @@ export class EmployerAddofferComponent implements OnInit {
       salaryduration: new FormControl({ value: '', disabled: this.flag }),
       country: new FormControl(null, [Validators.required]),
       location: new FormControl(null, [Validators.required]),
-      currenct_type: new FormControl(),
+      currency_type: new FormControl(),
       salarybracket: new FormControl(null, [Validators.required]),
       expirydate: new FormControl(null, [Validators.required]),
       joiningdate: new FormControl(null, [Validators.required]),
@@ -104,7 +104,7 @@ export class EmployerAddofferComponent implements OnInit {
           salaryduration: null,
           country: null,
           location: null,
-          currenct_type: null,
+          currency_type: null,
           salarybracket: null,
           expirydate: null,
           joiningdate: null,
@@ -118,7 +118,7 @@ export class EmployerAddofferComponent implements OnInit {
         };
       this.panelTitle = 'Add Offer';
       this.buttonTitle = "Add";
-      this.addOfferForm.reset();
+    //  this.addOfferForm.reset();
     }
     else {
       this.panelTitle = 'Edit Offer';
@@ -133,7 +133,7 @@ export class EmployerAddofferComponent implements OnInit {
         this.addOfferForm.controls.salaryduration.setValue(this.detail.salaryduration);
         this.addOfferForm.controls.country.setValue(this.detail.country);
         
-        this.addOfferForm.controls.currenct_type.setValue(this.detail.currenct_type);
+        this.addOfferForm.controls.currency_type.setValue(this.detail.currency_type);
         this.addOfferForm.controls.salarybracket.setValue(this.detail.salarybracket);
         this.addOfferForm.controls.expirydate.setValue(this.detail.expirydate);
         this.addOfferForm.controls.joiningdate.setValue(this.detail.joiningdate);
@@ -191,7 +191,7 @@ export class EmployerAddofferComponent implements OnInit {
     }
     this.currency = obj;
     this.currency = this.currency.find(x => x.code === e);
-    this.addOfferForm.controls.currenct_type.setValue(this.currency.currency);
+    this.addOfferForm.controls.currency_type.setValue(this.currency.currency);
 
 
     //salary_brcaket
@@ -218,7 +218,7 @@ export class EmployerAddofferComponent implements OnInit {
     console.log("Offer edited1", this.addOfferForm.value);
     if(id != 0){
       this.addOfferForm.controls.location.setValue(this.location1[0]._id);
-      
+      // console.log();
       
       this.service.edit_offer(this.id,this.addOfferForm.value).subscribe(res => {
 
@@ -227,8 +227,10 @@ export class EmployerAddofferComponent implements OnInit {
       })
     }
     else{
-      this.addOfferForm.controls.employer_id.setValue(id)
+      const uid = localStorage.getItem('userid');
+      this.addOfferForm.controls.employer_id.setValue(uid)
       this.service.add_offer(this.addOfferForm.value).subscribe(res => {
+        console.log(this.addOfferForm.value);
 
         this.offer = res;
         this.router.navigate(['/employer/manage_offer/created_offerlist']);

@@ -28,6 +28,8 @@ router.use("/employer", auth, authorization, index);
 
 //Offer
 router.post("/offer/add_offer", async (req, res) => {
+    console.log('hi',req.body);
+    
     var schema = {
         "email": {
             notEmpty: true,
@@ -91,7 +93,7 @@ router.post("/offer/add_offer", async (req, res) => {
             "salaryduration": req.body.salaryduration,
             "country": req.body.country,
             "location": req.body.location,
-            "currenct_type":req.body.currenct_type,
+            "currency_type": req.body.currency_type,
             "salarybracket": req.body.salarybracket,
             "expirydate": req.body.expirydate,
             "joiningdate": req.body.joiningdate,
@@ -105,6 +107,8 @@ router.post("/offer/add_offer", async (req, res) => {
             "notes": req.body.notes,
             "is_del": false
         };
+        console.log('add offer',reg_obj);
+        
         var interest_resp = await common_helper.insert(offer, reg_obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -727,8 +731,22 @@ router.post("/add_group_details/:id", async (req, res) => {
     }
 });
 
-router.get('/group_detail', async (req, res) => {
-    var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.body.id)});
+router.get('/group_detail/:id', async (req, res) => {
+    var group_detail = await common_helper.find(group, { _id: objectID(req.params.id)});
+    if (group_detail.status === 1) {
+        return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
+    }
+    else if (group_detail.status === 2) {
+        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    }
+});
+router.get('/group_communication_detail/:id', async (req, res) => {
+    var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.params.id) });
+    console.log("group detail",group_detail);
+    
     if (group_detail.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
     }
