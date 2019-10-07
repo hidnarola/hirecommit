@@ -201,7 +201,7 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
         "salarybracket": req.body.salarybracket,
         "expirydate": req.body.expirydate,
         "joiningdate": req.body.joiningdate,
-        "status": true,
+        "status": req.body.status,
         "offertype": req.body.offertype,
         "group": req.body.group,
         "commitstatus": req.body.commitstatus,

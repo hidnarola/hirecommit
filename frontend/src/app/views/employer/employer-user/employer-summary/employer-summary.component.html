@@ -32,18 +32,24 @@
               <tr *ngFor="let offer of offers">
                 <td>{{date[0]}}</td>
                 <td>{{offer.title}}</td>
-                 <td>{{offer.salarytype}}</td>
-                <td *ngIf = 'GetSalary(offer.salarybracket)'>{{_from}} to {{_to}}</td>
+                <td>{{offer.salarytype}}</td>
+                <td *ngIf='GetSalary(offer.salarybracket)'>{{_from}} to {{_to}}</td>
                 <td>{{offer.expirydate}}</td>
                 <td>{{offer.joiningdate}}</td>
-                <td><label class="switch">
+                <td>
+                  <label class="switch">
+                    <input [checked]="offer.status" type="checkbox" (change)="checkValue($event)">
+                    <span class="slider round"></span>
+                  </label>
+                </td>
+                <!-- <td><label class="switch">
                     <input type="checkbox" checked>
                     <span class="slider round"></span>
-                  </label></td>
+                  </label></td> -->
                 <td>{{offer.offertype}}</td>
                 <td *ngIf="GetGroup(offer.group)">{{_grp_name}}</td>
-                 <td>{{offer.commitstatus}}</td>
-                
+                <td>{{offer.commitstatus}}</td>
+
                 <td>{{offer.customfeild1}}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
@@ -54,7 +60,7 @@
                       class="icon-trash"></i></button></td>
               </tr>
 
-             
+
             </tbody>
           </table>
         </div>

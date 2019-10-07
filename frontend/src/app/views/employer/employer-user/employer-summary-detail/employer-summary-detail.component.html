@@ -31,7 +31,7 @@
                                 <td>{{offers.salarytype}}</td>
                             </tr>
 
-                            <tr>
+                            <tr *ngIf="offers.salarytype === 'hourly'" disabled>
                                 <td>Salary Duration</td>
                                 <td>{{offers.salaryduration}}</td>
                             </tr>
@@ -47,7 +47,7 @@
 
                             <tr>
                                 <td>Currency Type</td>
-                                <td>{{offers.currenct_type}}</td>
+                                <td>{{offers.currency_type}}</td>
                             </tr>
 
                             <tr>
@@ -65,9 +65,9 @@
                             <tr>
                                 <td>Status</td>
                                 <td><label class="switch">
-                                    <input type="checkbox" checked>
+                                    <input [checked]="offers.status" type="checkbox" (change)="checkValue($event)">
                                     <span class="slider round"></span>
-                                  </label></td>
+                                </label></td>
                             </tr>
 
                             <tr>
@@ -78,7 +78,7 @@
                             
                             <tr>
                                 <td>Group</td>
-                                <td>{{group[0].name}}<button class="btn btn-primary pull-right" type="button" [routerLink]="['/employer/manage_group/group_details']">View Communication</button></td>
+                                <td>{{group[0].name}}<button class="btn btn-primary pull-right" type="button"  (click)="details(offers.group)">View Communication</button></td>
                                 
                             </tr>
 
@@ -110,7 +110,7 @@
 
                     <button type="button" class="btn btn-sm btn-danger" style="float: right;"
                     (click)="cancel()">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;" (click)="edit()">Edit</button>
+                    <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;" (click)="edit(offers._id)">Edit</button>
                 </div>
             </div>
         </div>

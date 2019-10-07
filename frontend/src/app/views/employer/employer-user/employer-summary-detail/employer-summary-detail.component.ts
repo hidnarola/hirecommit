@@ -59,11 +59,14 @@ export class EmployerSummaryDetailComponent implements OnInit {
   }
 
 
-  edit() {
-    this.router.navigate(['/employer/manage_offer/addoffer']);
+  edit(id) {
+    this.router.navigate(['/employer/manage_offer/addoffer/' + id]);
   }
   cancel( ) {
     this.router.navigate(['/employer/manage_offer/created_offerlist']) ;
+  }
+  details(gid){
+    this.router.navigate(['/employer/manage_group/group_details/' + gid]);
   }
 
 }
