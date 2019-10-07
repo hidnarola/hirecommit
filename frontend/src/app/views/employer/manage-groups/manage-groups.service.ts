@@ -13,8 +13,8 @@ export class GroupService {
       return this.http.post<any[]>(`${this.url}` + '/add_group_details/' + id, {data});
     }
 
-    view_groups(): Observable<any[]> {
-      return this.http.get<any[]>(`${this.url}` + '/view_groups');
+    view_groups(params): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}` + '/view_groups', {...params});
     }
 
     get_detail(id): Observable<any[]> {

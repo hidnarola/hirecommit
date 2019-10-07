@@ -14,7 +14,7 @@ export class OfferService {
     add_offer(data){
         return this.http.post(`${this.url}` + '/offer/add_offer',data)
     }
-    
+
     view_offer(): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/offer/view_offer');
     }
@@ -34,6 +34,7 @@ export class OfferService {
     get_location(): Observable <any[]>{
         return this.http.get<any[]>(`${this.url}` + '/view_location');
     }
+
     get_groups(): Observable <any[]> {
         return this.http.get<any[]>(`${this.url}` + '/view_groups')
     }

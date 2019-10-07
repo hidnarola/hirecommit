@@ -65,11 +65,49 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
    }
 
     public bind() {
-      this.service.view_groups().subscribe(res => {
-        this.groups = res['data']['data'];
-        // console.log('groups', this.groups);
-        this.dtTrigger.next();
-      });
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 5,
+        serverSide: true,
+        processing: true,
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+          console.log('dataTablesParameters', dataTablesParameters);
+          this.service.view_groups(dataTablesParameters).subscribe(res => {
+            if (res['status']) {
+              this.groups = res['groups'];
+              console.log('data==>', res);
+              callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            }
+          }, err => {
+            callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          });
+        },
+        columns: [
+          {
+            data: 'name'
+          }, {
+            data: 'high_unopened'
+          }, {
+            data: 'high_notreplied'
+          },
+          {
+            data: 'medium_unopened'
+          },
+          {
+            data: 'medium_notreplied'
+          },
+          {
+            data: 'low_unopened'
+          },
+          {
+            data: 'low_notreplied'
+          },
+          {
+            data: 'actions'
+          }
+        ]
+      };
     }
 
     ngAfterViewInit(): void {
