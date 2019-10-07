@@ -49,9 +49,9 @@ AfterViewInit {
         {
           data: 'username'
         }, {
-          data: 'user_id.email'
+          data: 'user.email'
         }, {
-          data: 'user_id.admin_rights'
+          data: 'user.admin_rights'
         }, {
           data: 'actions'
         }

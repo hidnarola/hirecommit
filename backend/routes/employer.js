@@ -10,6 +10,7 @@ var offer = require('../models/offer');
 var objectID = require('mongoose').Types.ObjectId;
 var common_helper = require('../helpers/common_helper');
 var user_helper = require('../helpers/user_helper');
+var groups_helper = require('../helpers/groups_helper');
 
 var logger = config.logger;
 // var sub_account = require('../models/sub-accounts');
@@ -542,37 +543,29 @@ router.post('/view_sub_accounts', async (req, res) => {
 
   if (!errors) {
     var sortOrderColumnIndex = req.body.order[0].column;
-          let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
-          let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-          let sortingObject = {
-              [sortOrderColumn]: sortOrder
-          }
-
-      var  aggregate= [
-        {
-          $match:{
-            "is_del":false
-          }
+    let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
+    let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+    let sortingObject = {
+        [sortOrderColumn]: sortOrder
+    }
+    var  aggregate= [
+    {
+        $match:{
+        "is_del":false
         }
-      ]
-        // if (req.body.search !== ''){
-          const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-          aggregate.push({
-              "$match":
-                  { $or: [{ "username": RE }, { "user_id.email": RE}]}
-          });
-      // }
+    }
+    ]
 
-      console.log('aggregate==>', aggregate);
+    const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+    aggregate.push({
+        "$match":
+            { $or: [{ "username": RE }, { "user_id.email": RE}]}
+    });
 
-      let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
-      console.log("totalMatchingCountRecords",totalMatchingCountRecords);
-      totalMatchingCountRecords = totalMatchingCountRecords.length;
-      console.log("totalMatchingCountRecords",totalMatchingCountRecords);
+    let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
+    totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-    // var search={};
-    console.log(req.body.search)
-      var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords);
+    var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
     if (resp_data.status == 1) {
       res.status(config.OK_STATUS).json(resp_data);
     } else {
@@ -712,17 +705,58 @@ router.post("/add_group", async (req, res) => {
     }
 });
 
-router.get('/view_groups', async (req, res) => {
-  var group_list = await common_helper.find(group, {is_del: false});
-  if (group_list.status === 1) {
-      return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
-  }
-  else if (group_list.status === 2) {
-      return res.status(config.OK_STATUS).json({ 'message': "No data found", "status": 2 });
-  }
-  else {
-      return res.status(config.BAD_REQUEST).json({ 'message': "Error while fatching data.", "status": 0 });
-  }
+router.post('/view_groups', async (req, res) => {
+    var schema = {
+        // "page_no": {
+        //   notEmpty: true,
+        //   errorMessage: "page_no is required"
+        // },
+        // "page_size": {
+        //   notEmpty: true,
+        //   errorMessage: "page_size is required"
+        // }
+      };
+      req.checkBody(schema);
+      var errors = req.validationErrors();
+
+      if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+              let sortOrderColumn = sortOrderColumnIndex == 0 ? 'name' : req.body.columns[sortOrderColumnIndex].data;
+
+              let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+              let sortingObject = {
+                  [sortOrderColumn]: sortOrder
+                }
+          var  aggregate= [
+            {
+              $match:{
+                "is_del":false
+              }
+            }
+          ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        aggregate.push({
+            "$match":
+                { $or: [{ "name": RE }, { "high_unopened": RE},{ "high_notreplied": RE},{ "medium_unopened": RE},{ "medium_notreplied": RE},{ "low_unopened": RE},{ "low_notreplied": RE}]}
+        });
+
+          let totalMatchingCountRecords = await group.aggregate(aggregate);
+          totalMatchingCountRecords = totalMatchingCountRecords.length;
+        // var search={};
+        console.log(req.body.search)
+          var resp_data = await groups_helper.get_all_groups(group,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+          console.log(resp_data);
+
+        if (resp_data.status == 1) {
+          res.status(config.OK_STATUS).json(resp_data);
+        } else {
+          res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+      } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+      }
 });
 
 router.post("/add_group_details/:id", async (req, res) => {

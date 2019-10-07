@@ -11,16 +11,16 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit {
-  offers: any=[];
+  offers: any = [];
   date: any;
-  group:any;
+  group: any;
   salary: any;
   unique: any = [];
   _sal: any = [];
-  _from:any;
-  _to:any;
-  _grp_name:any;
-  status= true;
+  _from: any;
+  _to: any;
+  _grp_name: any;
+  status = true;
   constructor(private router: Router, private service: OfferService) { }
 
   ngOnInit() {
@@ -31,12 +31,12 @@ export class EmployerSummaryComponent implements OnInit {
         });
       }
     });
-   
+
     setTimeout(() => {
-      
+
       this.bind();
     }, 100);
-    
+
   }
 
   buttonInRowClick(event: any): void {
@@ -54,7 +54,7 @@ export class EmployerSummaryComponent implements OnInit {
 
     console.log('next clicked');
   }
-  
+
   previousButtonClickEvent(): void {
     // do previous particular the records like  0 - 100 rows.
     // we are calling to API
@@ -71,11 +71,11 @@ export class EmployerSummaryComponent implements OnInit {
   delete(id) {
     this.service.deactivate_offer(id).subscribe(res => {
         // this.offers = res['data'];
-        console.log('res',res);
-        
+        console.log('res', res);
+
         // console.log("deactivate",this.offers);
         this.bind();
-    })
+    });
    }
   checkValue(e) {
       this.status = e.target.checked;
@@ -84,7 +84,7 @@ export class EmployerSummaryComponent implements OnInit {
    onAdd() {
   //  var user_id = localStorage.getItem('userid')
   //   console.log("user_id",user_id);
-    
+
     this.router.navigate(['/employer/manage_offer/addoffer/0']);
   }
 
@@ -98,25 +98,25 @@ export class EmployerSummaryComponent implements OnInit {
       this.salary = this.salary.filter(x => x.is_del === false);
       console.log(this.salary);
 
-    })
+    });
 
     this.service.get_groups().subscribe(res => {
       this.group = res['data']['data'];
 
       // this.group = this.group.filter(x => x._id === this.offers.group);
       console.log(this.group);
-    })
+    });
 
     this.service.view_offer()
       .subscribe(res => {
         this.offers = res['data']['data'];
         this.offers = this.offers.filter(x => x.is_del === false);
-        console.log("jd", this.offers);
-           
+        console.log('jd', this.offers);
+
         this.offers.filter(x => {
-          this.date = x.createdAt.split("T");
+          this.date = x.createdAt.split('T');
         });
-      })
+      });
   }
 
   public GetSalary(from) {
@@ -125,12 +125,12 @@ export class EmployerSummaryComponent implements OnInit {
     this._from = this._from[0].from;
     this._to = this.salary.filter(x => x._id === from);
     this._to = this._to[0].to;
-    return this._from ,this._to
+    return this._from , this._to;
   }
 
-  public GetGroup(group_name){
+  public GetGroup(group_name) {
     this._grp_name = this.group.filter(x => x._id === group_name);
     this._grp_name = this._grp_name[0].name;
-    return  this._grp_name
+    return  this._grp_name;
   }
 }

@@ -1,7 +1,7 @@
 var ObjectId = require('mongodb').ObjectID;
 
 var user_helper = {};
-user_helper.get_all_sub_user = async (collection,search,start,length, recordsTotal) => {
+user_helper.get_all_sub_user = async (collection,search,start,length, recordsTotal, sort) => {
 
   try {
 
@@ -33,6 +33,11 @@ user_helper.get_all_sub_user = async (collection,search,start,length, recordsTot
                   { "user.email": RE}] }
           });
       // }
+      if(sort){
+        aggregate.push({
+          "$sort":sort
+      });
+      }
 
       if(start){
         aggregate.push({
