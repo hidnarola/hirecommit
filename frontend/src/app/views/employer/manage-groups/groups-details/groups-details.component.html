@@ -3,7 +3,7 @@
             <div class="col-sm-12 col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        Group Detail  
+                        Group Detail
 
                         <button type="button" id="add" (click)="onclick()" class="b pull-right"><i class="pull-right icon-close"></i></button>
                     </div>
@@ -30,7 +30,7 @@
                                 </tr>
                                 <tr>
                                     <td>Message</td>
-                                    <td>{{data.message}}</td>
+                                    <td [innerHTML]=data.message></td>
                                 </tr>
 
                             </tbody>

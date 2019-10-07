@@ -9,6 +9,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { GroupsDetailsComponent } from './groups-details/groups-details.component';
 import { GroupsComponent } from './groups/groups.component';
 import { HttpClientModule } from '@angular/common/http';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [ViewGroupsComponent, AddGroupsComponent, GroupsDetailsComponent, GroupsComponent],
@@ -18,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     CKEditorModule,
     HttpClientModule,
+    DataTablesModule
   ],
   providers: [  ]
 })

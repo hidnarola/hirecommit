@@ -30,7 +30,7 @@ router.use("/employer", auth, authorization, index);
 //Offer
 router.post("/offer/add_offer", async (req, res) => {
     console.log('hi',req.body);
-    
+
     var schema = {
         "email": {
             notEmpty: true,
@@ -109,7 +109,7 @@ router.post("/offer/add_offer", async (req, res) => {
             "is_del": false
         };
         console.log('add offer',reg_obj);
-        
+
         var interest_resp = await common_helper.insert(offer, reg_obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -525,60 +525,6 @@ router.post("/add_sub_account", async (req, res) => {
     }
 });
 
-// router.post('/view_sub_accounts', async (req, res) => {
-//   try {
-//     const aggregate = [];
-//     const params = req.body;
-//     console.log(req.body);
-
-//     let search = {
-//       is_del: false
-//     };
-//     if(params.search.value != ""){
-//       console.log(params.search.value);
-//       searchRE = { $regex: new RegExp(`${params.search.value}`, 'gi') };
-//       search = {
-//         ...search,
-//         $or: [
-//           {'username': searchRE},
-//           {'user_id.email': searchRE}
-//         ]
-//      }
-//     }
-//       var filter = {};
-//       // var totalMatchingCountRecords = await Sub_Employer_Detail.countDocuments(
-//       //   search
-//       // );
-//       var totalMatchingCountRecords = await User.countDocuments(
-//         search
-//       );
-
-//       console.log('totalMatchingCountRecords', search, totalMatchingCountRecords);
-//       var sortOrderColumnIndex = req.body.order[0].column;
-//       let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
-//       let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-//       let sortingObject = {
-//           [sortOrderColumn]: sortOrder
-//       }
-
-//       var resp_data = await common_helper.findWithFilter(Sub_Employer_Detail, search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, [
-//         {
-//           path: 'user_id'
-//         }
-//       ] );
-//       console.log(resp_data);
-//       if (resp_data.status == 0) {
-//           logger.error("Error occurred while fetching Lenders = ", resp_data);
-//           res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-//       } else {
-//           logger.trace("Sub_Employer_Detail got successfully = ", resp_data);
-//           res.status(config.OK_STATUS).json(resp_data);
-//       }
-//   } catch (error) {
-//     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
-//   }
-// });
-
 router.post('/view_sub_accounts', async (req, res) => {
 
   var schema = {
@@ -637,19 +583,6 @@ router.post('/view_sub_accounts', async (req, res) => {
     res.status(config.BAD_REQUEST).json({ message: errors });
   }
 });
-
-router.get('/user/:id', async (req, res) => {
-  let sub_account_detail = await common_helper.findOne(User, {'_id': objectID(req.params.id)});
-  if (sub_account_detail.status === 1) {
-    return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: sub_account_detail });
-  }
-  else if (sub_account_detail.status === 2) {
-    return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 2 });
-  }
-  else {
-    return res.status(config.INTERNAL_SERVER_ERROR).json({ 'message': "Error while fatching data.", "status": 0 });
-  }
-})
 
 router.put('/edit_sub_account/:id', async (req, res) => {
     var schema = {
@@ -770,7 +703,7 @@ router.post("/add_group", async (req, res) => {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            res.json({ "message": "Group Added successfully", "data": interest_resp })
+            res.json({"message": "Group Added successfully", "data": interest_resp })
         }
     }
     else {
@@ -780,7 +713,7 @@ router.post("/add_group", async (req, res) => {
 });
 
 router.get('/view_groups', async (req, res) => {
-  var group_list = await common_helper.find(group, {});
+  var group_list = await common_helper.find(group, {is_del: false});
   if (group_list.status === 1) {
       return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
   }
@@ -845,10 +778,11 @@ router.get('/group_detail/:id', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
     }
 });
+
 router.get('/group_communication_detail/:id', async (req, res) => {
     var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.params.id) });
     console.log("group detail",group_detail);
-    
+
     if (group_detail.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
     }
@@ -857,6 +791,31 @@ router.get('/group_communication_detail/:id', async (req, res) => {
     }
     else {
         return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    }
+});
+
+router.put("/deactivate_group/:id", async (req, res) => {
+    var obj = {
+        is_del: true
+    }
+    var id = req.params.id;
+    var resp_group_data = await common_helper.update(group, { "_id": id }, obj);
+    console.log(resp_group_data.status);
+
+    var resp_groupdetail_data = await common_helper.update(GroupDetail, { "group_id": id }, obj);
+    console.log(resp_groupdetail_data.status);
+
+    if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0 ) {
+        logger.error("Error occured while fetching User = ", resp_group_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json({"status": 0, "message": "Error while featching data.", "data": resp_group_data});
+    }
+    else if (resp_group_data.status == 1 || resp_groupdetail_data.status == 1 ) {
+        logger.trace("User got successfully = ", resp_groupdetail_data);
+        res.status(config.OK_STATUS).json({"status": 1, "message": "Record Deleted Sucessfully", resp_group_data});
+    }
+    else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2 ) {
+        logger.trace("User got successfully = ", resp_group_dataresp_group_data);
+        res.status(config.BAD_REQUEST).json({"status": 2, "message": "No Data Found."});
     }
 });
 

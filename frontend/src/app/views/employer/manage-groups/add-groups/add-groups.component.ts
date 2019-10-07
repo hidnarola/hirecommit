@@ -20,8 +20,9 @@ export class AddGroupsComponent implements OnInit {
    id: any;
   value = false;
   submitted = false;
-  _name:any;
+  _name: any;
   title: string;
+
   onClose() {
     this.router.navigate(['/employer/manage_group/view_group']);
   }
@@ -34,11 +35,10 @@ export class AddGroupsComponent implements OnInit {
 
     this.service.get_detail(this.id).subscribe(res => {
     this._name = res['data']['data'];
-      console.log('name',this._name);
-    
-    })
+      console.log('name', this._name);
+    });
 
-this.myForm = this.fb.group({
+    this.myForm = this.fb.group({
       arr: this.fb.array([this.createItem()])
     });
   }

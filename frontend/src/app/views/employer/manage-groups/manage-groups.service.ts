@@ -16,13 +16,21 @@ export class GroupService {
     view_groups(): Observable<any[]> {
       return this.http.get<any[]>(`${this.url}` + '/view_groups');
     }
-    get_detail(id):Observable<any[]>
-    {
-      return this.http.get<any[]>(`${this.url}` + '/group_detail/' +id);
+
+    get_detail(id): Observable<any[]> {
+      return this.http.get<any[]>(`${this.url}` + '/group_detail/' + id);
     }
-    get_communication_detail(id):Observable<any[]>{
-      return this.http.get<any[]>(`${this.url}` + '/group_communication_detail/' +id);
+
+    get_communication_detail(id): Observable<any[]> {
+      return this.http.get<any[]>(`${this.url}` + '/group_communication_detail/' + id);
     }
-    
+
+    deleteGroup(id): Observable<any[]> {
+      return this.http.put<any[]>(`${this.url}` + '/deactivate_group/' + id, null);
+    }
+
+    addGroup(data): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}` + '/add_group', data);
+    }
 
 }
