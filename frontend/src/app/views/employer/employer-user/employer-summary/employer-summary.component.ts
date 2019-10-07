@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { EmployerService } from '../../employer.service';
 import { OfferService } from '../offer.service';
 
+
 @Component({
   selector: 'app-employer-summary',
   templateUrl: './employer-summary.component.html',
@@ -19,6 +20,7 @@ export class EmployerSummaryComponent implements OnInit {
   _from:any;
   _to:any;
   _grp_name:any;
+  status= true;
   constructor(private router: Router, private service: OfferService) { }
 
   ngOnInit() {
@@ -29,16 +31,12 @@ export class EmployerSummaryComponent implements OnInit {
         });
       }
     });
-
-    //group
-
    
-
-    //salary
-
-   
-    this.bind();
-
+    setTimeout(() => {
+      
+      this.bind();
+    }, 100);
+    
   }
 
   buttonInRowClick(event: any): void {
@@ -79,8 +77,11 @@ export class EmployerSummaryComponent implements OnInit {
         this.bind();
     })
    }
+  checkValue(e) {
+      this.status = e.target.checked;
+  }
 
-  onAdd() {
+   onAdd() {
   //  var user_id = localStorage.getItem('userid')
   //   console.log("user_id",user_id);
     
@@ -110,24 +111,11 @@ export class EmployerSummaryComponent implements OnInit {
       .subscribe(res => {
         this.offers = res['data']['data'];
         this.offers = this.offers.filter(x => x.is_del === false);
-
+        console.log("jd", this.offers);
+           
         this.offers.filter(x => {
           this.date = x.createdAt.split("T");
         });
-
-      
-        
-      //   this.salary.forEach(element => {
-      //     let fetch_salary = element._id;
-      //     console.log('fetch', fetch_salary);
-
-      //     this.unique = this.salary.filter(x => x._id === fetch_salary);
-      //     console.log('unique', this.unique);
-
-      //     this._sal.push(this.unique[0]);
-      //     console.log('_cnt', this._sal);
-      //   });
-      //   this._sal = this._sal.filter(this.onlyUnique);
       })
   }
 

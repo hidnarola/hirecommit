@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, ControlContainer } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { countries } from '../../../../shared/countries';
 import { Currency } from '../../../../shared/currency';
@@ -18,15 +18,15 @@ export class EmployerAddofferComponent implements OnInit {
   flag = true;
   location: any;
   location1: any;
-  locationEdit:any = [];
-  grp:any=[];
+  locationEdit: any = [];
+  grp: any = [];
   Country: any = [];
   currency: any = [];
   groups: any;
   salary: any;
   unique: any = [];
   _country: any = [];
-  detail: any ;
+  detail: any;
   panelTitle: string;
   buttonTitle: string;
   id: any;
@@ -39,7 +39,7 @@ export class EmployerAddofferComponent implements OnInit {
     })
 
     this.getDetail(this.id);
-   
+
 
     this.addOfferForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
@@ -53,6 +53,7 @@ export class EmployerAddofferComponent implements OnInit {
       salarybracket: new FormControl(null, [Validators.required]),
       expirydate: new FormControl(null, [Validators.required]),
       joiningdate: new FormControl(null, [Validators.required]),
+      status: new FormControl(),
       offertype: new FormControl(null, [Validators.required]),
       group: new FormControl(null, [Validators.required]),
       commitstatus: new FormControl(null, [Validators.required]),
@@ -111,14 +112,14 @@ export class EmployerAddofferComponent implements OnInit {
           offertype: null,
           group: null,
           commitstatus: null,
-        customfeild1:null,
+          customfeild1: null,
           customfeild2: null,
           customfeild3: null,
           notes: null,
         };
       this.panelTitle = 'Add Offer';
       this.buttonTitle = "Add";
-    //  this.addOfferForm.reset();
+      //  this.addOfferForm.reset();
     }
     else {
       this.panelTitle = 'Edit Offer';
@@ -132,11 +133,12 @@ export class EmployerAddofferComponent implements OnInit {
         this.addOfferForm.controls.salarytype.setValue(this.detail.salarytype);
         this.addOfferForm.controls.salaryduration.setValue(this.detail.salaryduration);
         this.addOfferForm.controls.country.setValue(this.detail.country);
-        
+
         this.addOfferForm.controls.currency_type.setValue(this.detail.currency_type);
         this.addOfferForm.controls.salarybracket.setValue(this.detail.salarybracket);
         this.addOfferForm.controls.expirydate.setValue(this.detail.expirydate);
         this.addOfferForm.controls.joiningdate.setValue(this.detail.joiningdate);
+        this.addOfferForm.controls.status.setValue(this.detail.status);
         this.addOfferForm.controls.offertype.setValue(this.detail.offertype);
         this.addOfferForm.controls.group.setValue(this.detail.group);
         this.addOfferForm.controls.commitstatus.setValue(this.detail.commitstatus);
@@ -152,7 +154,7 @@ export class EmployerAddofferComponent implements OnInit {
         setTimeout(() => {
           this.GetLocation(this.detail.location);
         }, 300);
-   
+
         console.log("subscribed!", this.detail);
       });
       //location
@@ -172,6 +174,17 @@ export class EmployerAddofferComponent implements OnInit {
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
+  }
+  check(p){
+     console.log("panel title",p);
+    if (this.panelTitle === 'Edit Offer'){
+      this.addOfferForm.controls.status.enable;
+      
+    }
+    else{
+      this.addOfferForm.controls.status;
+    }
+     
   }
 
   onChange(e) {
@@ -213,20 +226,20 @@ export class EmployerAddofferComponent implements OnInit {
   get f() { return this.addOfferForm.controls; }
 
 
-  onSubmit(flag: boolean,id) {
+  onSubmit(flag: boolean, id) {
     this.submitted = !flag;
     console.log("Offer edited1", this.addOfferForm.value);
-    if(id != 0){
+    if (id != 0) {
       this.addOfferForm.controls.location.setValue(this.location1[0]._id);
       // console.log();
-      
-      this.service.edit_offer(this.id,this.addOfferForm.value).subscribe(res => {
+
+      this.service.edit_offer(this.id, this.addOfferForm.value).subscribe(res => {
 
         console.log("Offer edited", this.addOfferForm.value);
         this.router.navigate(['/employer/manage_offer/created_offerlist']);
       })
     }
-    else{
+    else {
       const uid = localStorage.getItem('userid');
       this.addOfferForm.controls.employer_id.setValue(uid)
       this.service.add_offer(this.addOfferForm.value).subscribe(res => {
@@ -239,11 +252,14 @@ export class EmployerAddofferComponent implements OnInit {
       if (flag) {
 
         this.addOfferForm.reset();
-        this.router.navigate(['/employer/manage_offer/created_offerlist']);
+        setTimeout(() => {
+          
+          this.router.navigate(['/employer/manage_offer/created_offerlist']);
+        }, 300);
       }
 
     }
-   
+
   }
   onClose() {
     this.router.navigate(['/employer/manage_offer/created_offerlist']);
