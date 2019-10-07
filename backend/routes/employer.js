@@ -246,6 +246,26 @@ router.put("/offer/deactive_offer/:id", async (req, res) => {
     }
 });
 
+router.put("/offer/status_change/:id", async (req, res) => {
+    var obj = {
+        "status": req.body.status
+    }
+    console.log(req.body);
+    
+    var id = req.params.id;
+    var resp_data = await common_helper.update(offer, { "_id": id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else if (resp_data.status == 1) {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+    }
+});
+
 router.get('/offer/offer_detail/:id', async (req, res) => {
     var id = req.params.id;
     // console.log(id);

@@ -59,9 +59,9 @@ employer: any;
            console.log("candidate offer list", this.offerList);
            this.offerList = this.offerList.filter(x => x.is_del === false);
 
-           console.log('eid', this.offerList.employer_id);
+           console.log('eid', this.offerList[0].employer_id);
 
-           this.service.get_employer(this.offerList.employer_id).subscribe(res => {
+           this.service.get_employer(this.offerList[0].employer_id).subscribe(res => {
              this.employer = res['data']['data'];
              console.log('emp data', this.employer);
 

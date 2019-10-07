@@ -10,7 +10,7 @@
               <table datatable class="table" id="example" cellspacing="0" width="100%" >
                   <thead>
                     <tr>
-                    
+                      <td>Employer Name</td>
                       <th>Title</th>
                       <th>Salary Bracket</th>
                       <th>Salary Type</th>
@@ -21,7 +21,7 @@
                   </thead>
                   <tbody>
                       <tr *ngFor="let data of offerList">
-                      
+                        <td>{{employer.username}}</td>
                         <td>{{data.title}}</td>
                         <td>{{data.salarybracket}}</td>
                         <td>{{data.salarytype}}</td>

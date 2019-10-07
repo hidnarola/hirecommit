@@ -10,6 +10,7 @@ var user = require('../models/user');
 var objectID = require('mongoose').Types.ObjectId;
 var common_helper = require('../helpers/common_helper');
 var logger = config.logger;
+var employer_detail=require('../models/employer-detail');
 
 
 
@@ -70,7 +71,7 @@ router.get('/get_employer/:id', async (req, res) => {
     var id = req.params.id;
     console.log(id);
 
-    var employer_list = await common_helper.findOne(user, { "_id": id })
+    var employer_list = await common_helper.findOne(employer_detail, { "user_id": id })
     console.log(employer_list);
 
     if (employer_list.status == 0) {

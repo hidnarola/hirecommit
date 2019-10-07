@@ -12,7 +12,6 @@ export class OfferService {
     // offer
 
     add_offer(data){
-        console.log('service add', data);
         return this.http.post(`${this.url}` + '/offer/add_offer',data)
     }
     
@@ -41,5 +40,10 @@ export class OfferService {
 
     get_salary_brcaket(): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/view_salary_bracket')
+    }
+
+    change_status(id,data):Observable<any[]> {
+        const body = {status:data}
+        return this.http.put<any[]>(`${this.url}` + '/offer/status_change/' + id, body)
     }
 }

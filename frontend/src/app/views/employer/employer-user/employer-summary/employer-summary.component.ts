@@ -77,8 +77,12 @@ export class EmployerSummaryComponent implements OnInit {
         this.bind();
     })
    }
-  checkValue(e) {
+  checkValue(id,e) {
       this.status = e.target.checked;
+      console.log("updated",this.status);
+     this.service.change_status(id,this.status).subscribe(res => {
+       console.log("updated12", this.status);
+     })
   }
 
    onAdd() {
@@ -104,14 +108,15 @@ export class EmployerSummaryComponent implements OnInit {
       this.group = res['data']['data'];
 
       // this.group = this.group.filter(x => x._id === this.offers.group);
-      console.log(this.group);
+      console.log('grou[ps',this.group);
     })
 
     this.service.view_offer()
       .subscribe(res => {
         this.offers = res['data']['data'];
         this.offers = this.offers.filter(x => x.is_del === false);
-        console.log("jd", this.offers);
+       console.log(this.offers);
+       
            
         this.offers.filter(x => {
           this.date = x.createdAt.split("T");
@@ -130,7 +135,12 @@ export class EmployerSummaryComponent implements OnInit {
 
   public GetGroup(group_name){
     this._grp_name = this.group.filter(x => x._id === group_name);
-    this._grp_name = this._grp_name[0].name;
+    if(this._grp_name.length == 0){
+      this._grp_name = "Not Available";
+    }
+    else{
+      this._grp_name = this._grp_name[0].name;
+    }
     return  this._grp_name
   }
 }

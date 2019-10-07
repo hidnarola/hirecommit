@@ -33,13 +33,8 @@
 
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="title">Title</label>
-              <div class="col-md-2">
-                <select id="title"  class="form-control" formControlName="title">
-                  <option value="null">Please select</option>
-                  <option value="Ass.HR">Ass.HR</option>
-                  <option value="Jr.HR">Jr.HR</option>
-                  <option value="Sr.HR">Sr.HR</option>
-                </select>
+              <div class="col-md-4">
+                  <input type="text" class="form-control" placeholder="Enter Title" autocomplete="title" formControlName="title" id="title">
                 <span *ngIf="!addOfferForm.get('title').valid && submitted" class="help-block">Please select
                   title!</span>
               </div>
@@ -73,7 +68,7 @@
                   <option value="0">Please select</option>
                   <option value="1week">1 week</option>
                   <option value="2week">2 week</option>
-                  <option value="3week">3 week</option>
+                 
                 </select>
                 <!-- <span *ngIf="!addOfferForm.get('title').valid && submitted" class="help-block">Please select
                   title!</span> -->
