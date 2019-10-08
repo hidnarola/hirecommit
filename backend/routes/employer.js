@@ -126,16 +126,35 @@ router.post("/offer/add_offer", async (req, res) => {
 });
 
 router.get('/offer/view_offer', async (req, res) => {
-    var offer_list = await common_helper.find(offer, {});
-    if (offer_list.status === 1) {
-        return res.status(config.OK_STATUS).json({ 'message': "Offer List", "status": 1, data: offer_list });
-    }
-    else if (offer_list.status === 2) {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No data found", "status": 2 });
-    }
-    else {
-        return res.status(config.INTERNAL_SERVER_ERROR).json({ 'message': "Error while fatching data.", "status": 0 });
-    }
+    try {
+        // const offer_list = await offer.find({ is_del: false })
+        // .populate('employer_id')
+        // .populate('location')
+        // User.find({})
+        // .populate('address')
+        // .populate('city')
+
+        const offer_list = await offer.find({is_del: false})
+        .populate([
+        { path: 'employer_id'},
+        { path: 'salarybracket'},
+        { path: 'group'},
+        ])
+        .lean();
+        return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
+      } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+      }
+    // var offer_list = await common_helper.find(offer, {});
+    // if (offer_list.status === 1) {
+    //     return res.status(config.OK_STATUS).json({ 'message': "Offer List", "status": 1, data: offer_list });
+    // }
+    // else if (offer_list.status === 2) {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': "No data found", "status": 2 });
+    // }
+    // else {
+    //     return res.status(config.INTERNAL_SERVER_ERROR).json({ 'message': "Error while fatching data.", "status": 0 });
+    // }
 });
 
 router.put('/offer/edit_offer/:id', async (req, res) => {
@@ -252,7 +271,7 @@ router.put("/offer/status_change/:id", async (req, res) => {
         "status": req.body.status
     }
     console.log(req.body);
-    
+
     var id = req.params.id;
     var resp_data = await common_helper.update(offer, { "_id": id }, obj);
     if (resp_data.status == 0) {

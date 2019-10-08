@@ -8,54 +8,54 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary-detail.component.scss']
 })
 export class EmployerSummaryDetailComponent implements OnInit {
-  location:any;
-  loc:any;
- id : any;
+  location: any;
+  loc: any;
+ id: any;
  group: any;
  salary: any;
   offers: any;
   displayForm = false;
-  constructor(private router: Router,private service: OfferService,private route: ActivatedRoute
+  constructor(private router: Router, private service: OfferService, private route: ActivatedRoute
              ) { }
 
   ngOnInit() {
      this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(this.id);
-    })
+    });
 
     this.service.offer_detail(this.id).subscribe(res => {
 
       this.offers = res['data']['data'];
-     
-      console.log("detail duration", this.offers);
 
-      //location
+      console.log('detail duration', this.offers);
+
+      // location
       this.service.get_location().subscribe(res => {
         this.location = res['data']['data'];
         this.loc = this.location.filter(x => x._id === this.offers.location);
-      })
+      });
 
-      //group
+      // group
 
       this.service.get_groups().subscribe(res => {
-          this.group =res['data']['data'];
-          
+          this.group = res['data']['data'];
+
           this.group = this.group.filter(x => x._id === this.offers.group);
           console.log(this.group);
-      })
+      });
 
-      //salary
+      // salary
 
       this.service.get_salary_brcaket().subscribe(res => {
         this.salary = res['data']['data'];
         this.displayForm = true;
         this.salary = this.salary.filter(x => x._id === this.offers.salarybracket);
         console.log(this.salary);
-        
-      })
 
-    })
+      });
+
+    });
   }
 
 
@@ -65,7 +65,7 @@ export class EmployerSummaryDetailComponent implements OnInit {
   cancel( ) {
     this.router.navigate(['/employer/manage_offer/created_offerlist']) ;
   }
-  details(gid){
+  details(gid) {
     this.router.navigate(['/employer/manage_group/group_details/' + gid]);
   }
 

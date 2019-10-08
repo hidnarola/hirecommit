@@ -77,18 +77,16 @@ export class EmployerSummaryComponent implements OnInit {
         this.bind();
     });
    }
-  checkValue(id,e) {
+
+  checkValue(id, e) {
       this.status = e.target.checked;
-      console.log("updated",this.status);
-     this.service.change_status(id,this.status).subscribe(res => {
-       console.log("updated12", this.status);
-     })
+      console.log('updated', this.status);
+     this.service.change_status(id, this.status).subscribe(res => {
+       console.log('updated12', this.status);
+     });
   }
 
    onAdd() {
-  //  var user_id = localStorage.getItem('userid')
-  //   console.log("user_id",user_id);
-
     this.router.navigate(['/employer/manage_offer/addoffer/0']);
   }
 
@@ -97,50 +95,46 @@ export class EmployerSummaryComponent implements OnInit {
   }
 
   public bind() {
-    this.service.get_salary_brcaket().subscribe(res => {
-      this.salary = res['data']['data'];
-      this.salary = this.salary.filter(x => x.is_del === false);
-      console.log(this.salary);
-
+    this.service.view_offer().subscribe(res => {
+      console.log(res['data']);
+      this.offers = res['data'];
     });
 
-    this.service.get_groups().subscribe(res => {
-      this.group = res['data']['data'];
+    // this.service.get_groups().subscribe(res => {
+    //   this.group = res['data']['data'];
 
-      // this.group = this.group.filter(x => x._id === this.offers.group);
-      console.log('grou[ps',this.group);
-    })
+    //   // this.group = this.group.filter(x => x._id === this.offers.group);
+    //   console.log('grou[ps', this.group);
+    // });
 
-    this.service.view_offer()
-      .subscribe(res => {
-        this.offers = res['data']['data'];
-        this.offers = this.offers.filter(x => x.is_del === false);
-       console.log(this.offers);
-       
-           
-        this.offers.filter(x => {
-          this.date = x.createdAt.split('T');
-        });
-      });
+    // this.service.view_offer()
+    //   .subscribe(res => {
+    //     this.offers = res['data']['data'];
+    //     this.offers = this.offers.filter(x => x.is_del === false);
+    //    console.log(this.offers);
+
+
+    //     this.offers.filter(x => {
+    //       this.date = x.createdAt.split('T');
+    //     });
+    //   });
   }
 
   public GetSalary(from) {
-
-    this._from = this.salary.filter(x => x._id === from);
-    this._from = this._from[0].from;
-    this._to = this.salary.filter(x => x._id === from);
-    this._to = this._to[0].to;
-    return this._from , this._to;
+    // this._from = this.salary.filter(x => x._id === from);
+    // this._from = this._from[0].from;
+    // this._to = this.salary.filter(x => x._id === from);
+    // this._to = this._to[0].to;
+    // return this._from , this._to;
   }
 
   public GetGroup(group_name) {
-    this._grp_name = this.group.filter(x => x._id === group_name);
-    if(this._grp_name.length == 0){
-      this._grp_name = "Not Available";
-    }
-    else{
-      this._grp_name = this._grp_name[0].name;
-    }
-    return  this._grp_name
+    // this._grp_name = this.group.filter(x => x._id === group_name);
+    // if (this._grp_name.length === 0) {
+    //   this._grp_name = 'Not Available';
+    // } else {
+    //   this._grp_name = this._grp_name[0].name;
+    // }
+    // return  this._grp_name;
   }
 }
