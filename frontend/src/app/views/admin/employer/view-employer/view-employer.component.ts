@@ -9,6 +9,7 @@ import { EmployerService } from '../employer.service';
 })
 export class ViewEmployerComponent implements OnInit  {
   employer: any[];
+  name:any;
   constructor(private router: Router, private service: EmployerService) {}
   ngOnInit(): void {
     // const table = $('#example').DataTable({
@@ -19,11 +20,14 @@ export class ViewEmployerComponent implements OnInit  {
     //   }
     // });
 
-    // this.service.getemployer().subscribe(res => {
-    //   console.log("View Employer",res);
-
-    //   this.employer =res;
-    // })
+  this.service.getemployer().subscribe(res => {
+    this.employer = res['data'];
+    console.log("emp data",this.employer);
+    this.employer.filter(x => {
+          this.name = x.username.split(' ');
+        });
+    
+  })
   }
 
   buttonInRowClick(event: any): void {

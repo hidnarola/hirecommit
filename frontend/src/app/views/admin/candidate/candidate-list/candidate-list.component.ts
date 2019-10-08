@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { Router } from '@angular/router';
+import { CandidateService } from '../candidate.service';
 
 @Component({
   selector: 'app-candidate-list',
@@ -9,8 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./candidate-list.component.scss']
 })
 export class CandidateListComponent implements OnInit, OnDestroy {
-
-  constructor(private router: Router) { }
+  candidates:any;
+  constructor(private router: Router,private service : CandidateService) { }
   // dtOptions: DataTables.Settings = {};
   // dtTrigger = new Subject();
   ngOnInit() {
@@ -22,10 +23,14 @@ export class CandidateListComponent implements OnInit, OnDestroy {
           });
       }
     });
+
+    this.bind();
     // this.dtOptions = {
     //   pagingType: 'full_numbers',
     //   pageLength: 10
     // };
+
+
   }
 
   buttonInRowClick(event: any): void {
@@ -54,4 +59,13 @@ export class CandidateListComponent implements OnInit, OnDestroy {
   onDetail(){
     this.router.navigate(['/admin/candidate_manage/candidate_detail']);
   }
+
+   public bind(){
+     this.service.get_candidate().subscribe(res => {
+            this.candidates = res['data'];
+            console.log(this.candidates);
+            
+     })
+   }
 }
+

@@ -7,7 +7,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class EmployerService {
-  private url = 'http://localhost:3000';
+  private url = 'http://localhost:3000/admin';
   constructor(private http: HttpClient, private route: Router) { }
 
   myObservableArray: Observable<any[]> = new Observable<any[]>();
@@ -20,6 +20,7 @@ export class EmployerService {
   }
 
   getemployer(): Observable<any[]> {
+
     return this.http.get<any[]>(`${this.url}` + '/view_employer');
   }
 
