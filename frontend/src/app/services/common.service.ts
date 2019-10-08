@@ -2,40 +2,43 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
+import * as env from '../../environments/environment.prod';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
-  private url = 'http://localhost:3000';
+  // private url = 'http://localhost:3000';
+  private url = env.environment.API_URL ;
   constructor(private http: HttpClient, private route: Router) { }
 
   employer_signup(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/employer_register', data);
+    return this.http.post<any[]>(`${this.url}` + 'employer_register', data);
   }
 
   candidate_signup(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/candidate_register', data);
+    return this.http.post<any[]>(`${this.url}` + 'candidate_register', data);
   }
 
   verify_email(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/email_verify', data);
+    return this.http.post<any[]>(`${this.url}` + 'email_verify', data);
   }
 
   login(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/login', data);
+    return this.http.post<any[]>(`${this.url}` + 'login', data);
   }
 
   forgot_password(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/forgot_password', data);
+    return this.http.post<any[]>(`${this.url}` + 'forgot_password', data);
   }
 
   reset_password(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/reset_password', data);
+    return this.http.post<any[]>(`${this.url}` + 'reset_password', data);
   }
 
   change_password(data): Observable<any[]> {
-    return this.http.put<any[]>(`${this.url}` + '/change_password', data);
+    return this.http.put<any[]>(`${this.url}` + 'change_password', data);
   }
 
   

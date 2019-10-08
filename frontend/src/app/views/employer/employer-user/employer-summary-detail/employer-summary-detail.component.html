@@ -5,7 +5,7 @@
                 <div class="card-header">
                     Employer Detail
                 </div>
-                <div class="card-body" *ngIf="displayForm">
+                <div class="card-body">
                     <table class="table">
                         <tbody>
                             <tr>
@@ -37,12 +37,11 @@
                             </tr>
                             <tr>
                                 <td>Country</td>
-                                <td>{{loc[0].country}}</td>
+                                <td>{{offers['location'].country}}</td>
                             </tr>
-
                             <tr>
                                 <td>Location</td>
-                                <td>{{loc[0].city}}</td>
+                                <td>{{offers['location'].city}}</td>
                             </tr>
 
                             <tr>
@@ -52,7 +51,7 @@
 
                             <tr>
                                 <td>Salary Bracket</td>
-                                <td>{{salary[0].from}} to {{salary[0].to}} </td>
+                                <td>{{offers['salarybracket'].from}} to {{offers['salarybracket'].to}} </td>
                             </tr>
                             <tr>
                                 <td>Expiry Date</td>
@@ -74,12 +73,11 @@
                                 <td>Offer Type</td>
                                 <td>{{offers.offertype}}</td>
                             </tr>
-                             
-                            
+
+
                             <tr>
                                 <td>Group</td>
-                                <td>{{group[0].name}}<button class="btn btn-primary pull-right" type="button"  (click)="details(offers.group)">View Communication</button></td>
-                                
+                                <td>{{offers['group'].name}}<button class="btn btn-primary pull-right" type="button"  (click)="details(offers['group']._id)">View Communication</button></td>
                             </tr>
 
                             <tr>
@@ -87,7 +85,7 @@
                                 <td>{{offers.commitstatus}}</td>
                             </tr>
 
-                            
+
 
                             <tr>
                                 <td>Custom Field 1</td>

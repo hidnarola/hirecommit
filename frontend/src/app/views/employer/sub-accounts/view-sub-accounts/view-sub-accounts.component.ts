@@ -19,14 +19,6 @@ AfterViewInit {
 
   constructor(private router: Router, private service: SubAccountService) {}
   ngOnInit(): void {
-    // this.dtOptions = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 2,
-    //   destroy: true,
-    //   search: true,
-    // };
-    // this.get_SubEmployer();
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 2,

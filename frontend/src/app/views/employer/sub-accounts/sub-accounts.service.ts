@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
+import * as env from '../../../../environments/environment.prod';
+
 @Injectable({
     providedIn: 'root'
 })
 export class SubAccountService {
-    private url = 'http://localhost:3000/employer';
+    private url = env.environment.API_URL + 'employer';
+    // private url = 'http://localhost:3000/employer';
     // myObservableArray: Observable<any[]> = new Observable<any[]>();
     // data = new BehaviorSubject(null);
     // dataList = this.data.asObservable();

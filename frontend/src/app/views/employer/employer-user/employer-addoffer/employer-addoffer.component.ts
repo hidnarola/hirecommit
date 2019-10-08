@@ -36,7 +36,7 @@ export class EmployerAddofferComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(this.id);
-    })
+    });
 
     this.getDetail(this.id);
 
@@ -65,9 +65,9 @@ export class EmployerAddofferComponent implements OnInit {
     });
 
     this.Country = countries;
-    var obj = [];
+    const obj = [];
 
-    for (let [key, value] of Object.entries(countries)) {
+    for (const [key, value] of Object.entries(countries)) {
       obj.push({ 'code': key, 'name': value });
     }
     this.Country = obj;
@@ -78,25 +78,24 @@ export class EmployerAddofferComponent implements OnInit {
 
       // console.log(this.location);
       this.location.forEach(element => {
-        let fetch_country = element.country;
+        const fetch_country = element.country;
         this.unique = this.Country.filter(x => x.code === fetch_country);
         this._country.push(this.unique[0]);
       });
       this._country = this._country.filter(this.onlyUnique);
-    })
+    });
 
-    //get groups
+    // get groups
     this.service.get_groups().subscribe(res => {
       this.groups = res['data']['data'];
-      // console.log('group', this.groups);
-    })
+      // console.log('hiiiiiiii', this.groups);
+    });
   }
 
 
   getDetail(id: string) {
     if (id === '0') {
-      this.detail =
-        {
+      this.detail = {
           _id: null,
           email: null,
           name: null,
@@ -118,14 +117,13 @@ export class EmployerAddofferComponent implements OnInit {
           notes: null,
         };
       this.panelTitle = 'Add Offer';
-      this.buttonTitle = "Add";
+      this.buttonTitle = 'Add';
       //  this.addOfferForm.reset();
-    }
-    else {
+    } else {
       this.panelTitle = 'Edit Offer';
-      this.buttonTitle = "Edit";
+      this.buttonTitle = 'Edit';
       this.service.offer_detail(id).subscribe(res => {
-        this.detail = res['data']['data']
+        this.detail = res['data']['data'];
 
         this.addOfferForm.controls.email.setValue(this.detail.email);
         this.addOfferForm.controls.name.setValue(this.detail.name);
@@ -155,9 +153,9 @@ export class EmployerAddofferComponent implements OnInit {
           this.GetLocation(this.detail.location);
         }, 300);
 
-        console.log("subscribed!", this.detail);
+        console.log('subscribed!', this.detail);
       });
-      //location
+      // location
 
       // console.log('incoming salary', this.detail);
     }
@@ -168,38 +166,37 @@ export class EmployerAddofferComponent implements OnInit {
       this.location1 = res['data']['data'];
       this.location1 = this.location1.filter(x => x._id === val);
       this.addOfferForm.controls.location.setValue(this.location1[0].city);
-      console.log("subscribed loc!", this.location1);
-    })
+      console.log('subscribed loc!', this.location1);
+    });
   }
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
-  check(p){
-     console.log("panel title",p);
-    if (this.panelTitle === 'Edit Offer'){
+  check(p) {
+     console.log('panel title', p);
+    if (this.panelTitle === 'Edit Offer') {
       this.addOfferForm.controls.status.enable;
-      
-    }
-    else{
+
+    } else {
       this.addOfferForm.controls.status;
     }
-     
+
   }
 
   onChange(e) {
     console.log(e);
 
-    //location
+    // location
     this.service.get_location().subscribe(res => {
       this.location1 = res['data']['data'];
       this.location1 = this.location1.filter(x => x.is_del === false);
       this.location1 = this.location1.filter(x => x.country === e);
-    })
+    });
     // currencysalary
     this.currency = Currency;
-    var obj = [];
-    for (let [key, value] of Object.entries(this.currency)) {
+    const obj = [];
+    for (const [key, value] of Object.entries(this.currency)) {
       obj.push({ 'code': key, 'currency': value });
     }
     this.currency = obj;
@@ -207,7 +204,7 @@ export class EmployerAddofferComponent implements OnInit {
     this.addOfferForm.controls.currency_type.setValue(this.currency.currency);
 
 
-    //salary_brcaket
+    // salary_brcaket
 
     this.service.get_salary_brcaket().subscribe(res => {
       this.salary = res['data']['data'];
@@ -215,7 +212,7 @@ export class EmployerAddofferComponent implements OnInit {
       this.salary = this.salary.filter(x => x.is_del === false);
       this.salary = this.salary.filter(x => x.country === e);
 
-    })
+    });
   }
 
   showdrop(val) {
@@ -228,32 +225,31 @@ export class EmployerAddofferComponent implements OnInit {
 
   onSubmit(flag: boolean, id) {
     this.submitted = !flag;
-    console.log("Offer edited1", this.addOfferForm.value);
+    console.log('Offer edited1', this.addOfferForm.value);
     if (id != 0) {
       this.addOfferForm.controls.location.setValue(this.location1[0]._id);
       // console.log();
 
       this.service.edit_offer(this.id, this.addOfferForm.value).subscribe(res => {
 
-        console.log("Offer edited", this.addOfferForm.value);
+        console.log('Offer edited', this.addOfferForm.value);
         this.router.navigate(['/employer/manage_offer/created_offerlist']);
-      })
-    }
-    else {
+      });
+    } else {
       const uid = localStorage.getItem('userid');
-      this.addOfferForm.controls.employer_id.setValue(uid)
+      this.addOfferForm.controls.employer_id.setValue(uid);
       this.service.add_offer(this.addOfferForm.value).subscribe(res => {
         console.log(this.addOfferForm.value);
 
         this.offer = res;
         this.router.navigate(['/employer/manage_offer/created_offerlist']);
 
-      })
+      });
       if (flag) {
 
         this.addOfferForm.reset();
         setTimeout(() => {
-          
+
           this.router.navigate(['/employer/manage_offer/created_offerlist']);
         }, 300);
       }
