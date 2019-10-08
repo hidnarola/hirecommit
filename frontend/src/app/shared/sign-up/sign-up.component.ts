@@ -17,8 +17,8 @@ export class SignUpComponent implements OnInit {
   public formData: any;
   step2 = false;
   step3 = false;
-  siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
-  // siteKey = '6LejT5wUAAAAAAGmT0EnG6qh8yMcOlfm5AZ1dE-s';
+  // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
+  siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
 
   private stepper: Stepper;
   constructor(private router: Router,  private formBuilder: FormBuilder, private service: CommonService, public fb: FormBuilder) {

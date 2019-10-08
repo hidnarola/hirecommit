@@ -5,7 +5,7 @@
                 <div class="card-header">
                     Employer Detail
                 </div>
-                <div class="card-body">
+                <div class="card-body" *ngIf = 'display'>
                     <table class="table">
                         <tbody>
                             <tr>
@@ -31,7 +31,7 @@
                                 <td>{{offers.salarytype}}</td>
                             </tr>
 
-                            <tr *ngIf="offers.salarytype === 'hourly'" disabled>
+                            <tr *ngIf ="!Disable">
                                 <td>Salary Duration</td>
                                 <td>{{offers.salaryduration}}</td>
                             </tr>

@@ -8,15 +8,11 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary-detail.component.scss']
 })
 export class EmployerSummaryDetailComponent implements OnInit {
-  location: any;
-  loc: any;
  id: any;
- group: any;
- salary: any;
-  offers: any;
-  displayForm = false;
-  constructor(private router: Router, private service: OfferService, private route: ActivatedRoute
-             ) { }
+offers: any;
+Disable = true;
+display = false;
+  constructor(private router: Router, private service: OfferService, private route: ActivatedRoute) { }
 
   ngOnInit() {
      this.route.params.subscribe((params: Params) => {
@@ -25,6 +21,11 @@ export class EmployerSummaryDetailComponent implements OnInit {
 
     this.service.offer_detail(this.id).subscribe(res => {
       this.offers = res['data'];
+      this.display = true;
+      console.log(this.offers);
+      if (this.offers['salarytype'] === 'hourly') {
+        this.Disable = false;
+      }
     });
   }
 
@@ -41,5 +42,7 @@ export class EmployerSummaryDetailComponent implements OnInit {
   details(gid) {
     this.router.navigate(['/employer/manage_group/group_details/' + gid]);
   }
+
+
 
 }
