@@ -127,13 +127,6 @@ router.post("/offer/add_offer", async (req, res) => {
 
 router.get('/offer/view_offer', async (req, res) => {
     try {
-        // const offer_list = await offer.find({ is_del: false })
-        // .populate('employer_id')
-        // .populate('location')
-        // User.find({})
-        // .populate('address')
-        // .populate('city')
-
         const offer_list = await offer.find({is_del: false})
         .populate([
         { path: 'employer_id'},
