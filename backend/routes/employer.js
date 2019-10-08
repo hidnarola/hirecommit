@@ -11,6 +11,7 @@ var objectID = require('mongoose').Types.ObjectId;
 var common_helper = require('../helpers/common_helper');
 var user_helper = require('../helpers/user_helper');
 var groups_helper = require('../helpers/groups_helper');
+var offer_helper = require('../helpers/offer_helper');
 
 var logger = config.logger;
 // var sub_account = require('../models/sub-accounts');
@@ -125,29 +126,77 @@ router.post("/offer/add_offer", async (req, res) => {
     }
 });
 
-router.get('/offer/view_offer', async (req, res) => {
-    try {
-        const offer_list = await offer.find({is_del: false})
-        .populate([
-        { path: 'employer_id'},
-        { path: 'salarybracket'},
-        { path: 'group'},
-        ])
-        .lean();
-        return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
-      } catch (error) {
-        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+router.get("/groups_list", async (req, res) => {
+    var group_list = await common_helper.find(group, {is_del: false});
+    if (group_list.status === 1) {
+        return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+    }
+})
+
+router.post('/offer/view_offer', async (req, res) => {
+    // try {
+    //     const offer_list = await offer.find({is_del: false})
+    //     .populate([
+    //     { path: 'employer_id'},
+    //     { path: 'salarybracket'},
+    //     { path: 'group'},
+    //     ])
+    //     .lean();
+    //     return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
+    //   } catch (error) {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+    //   }
+
+    var schema = {
+        // "page_no": {
+        //   notEmpty: true,
+        //   errorMessage: "page_no is required"
+        // },
+        // "page_size": {
+        //   notEmpty: true,
+        //   errorMessage: "page_size is required"
+        // }
+      };
+      req.checkBody(schema);
+      var errors = req.validationErrors();
+
+      if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        var  aggregate= [
+        {
+            $match:{
+            "is_del":false
+            }
+        }
+        ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        aggregate.push({
+            "$match":
+                { $or: [{ "createdAt": RE }, { "title": RE}, { "salarytype": RE}, { "salarybracket.from": RE}, { "expirydate": RE}, { "joiningdate": RE}, { "status": RE}, { "offertype": RE}, { "group.name": RE}, { "commitstatus": RE}, { "customfeild1": RE}]}
+        });
+
+        let totalMatchingCountRecords = await offer.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
+
+        var resp_data = await offer_helper.get_all_offer(offer,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        if (resp_data.status == 1) {
+          res.status(config.OK_STATUS).json(resp_data);
+        } else {
+          res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+      } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
       }
-    // var offer_list = await common_helper.find(offer, {});
-    // if (offer_list.status === 1) {
-    //     return res.status(config.OK_STATUS).json({ 'message': "Offer List", "status": 1, data: offer_list });
-    // }
-    // else if (offer_list.status === 2) {
-    //     return res.status(config.BAD_REQUEST).json({ 'message': "No data found", "status": 2 });
-    // }
-    // else {
-    //     return res.status(config.INTERNAL_SERVER_ERROR).json({ 'message': "Error while fatching data.", "status": 0 });
-    // }
 });
 
 router.put('/offer/edit_offer/:id', async (req, res) => {
@@ -264,7 +313,6 @@ router.put("/offer/status_change/:id", async (req, res) => {
         "status": req.body.status
     }
     console.log(req.body);
-
     var id = req.params.id;
     var resp_data = await common_helper.update(offer, { "_id": id }, obj);
     if (resp_data.status == 0) {
@@ -281,20 +329,23 @@ router.put("/offer/status_change/:id", async (req, res) => {
 
 router.get('/offer/offer_detail/:id', async (req, res) => {
     var id = req.params.id;
-    // console.log(id);
+    try {
+        console.log(id);
 
-    var offer_detail = await common_helper.findOne(offer, { "_id": id })
-    // console.log(offer_detail);
+        const offer_detail = await offer.findOne({_id: id })
+        .populate([
+        { path: 'employer_id'},
+        { path: 'salarybracket'},
+        { path: 'location'},
+        { path: 'group'},
+        ])
+        .lean();
+        console.log(offer_detail);
 
-    if (offer_detail.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No Data Found" });
-    }
-    else if (offer_detail.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": offer_detail });
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
-    }
+        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
+      } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+      }
 });
 
 //manage Candidate

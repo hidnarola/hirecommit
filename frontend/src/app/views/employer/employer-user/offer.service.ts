@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import * as env from '../../../../environments/environment.prod';
 @Injectable({
     providedIn: 'root'
 })
 export class OfferService {
-    private url = 'http://localhost:3000/employer';
+    // private url = 'http://localhost:3000/employer';
+    // private url = 'http://13.235.235.178:3000/employer';
+    private url = env.environment.API_URL + 'employer';
     constructor(private http: HttpClient, private route: Router) { }
 
     // offer
@@ -15,8 +18,8 @@ export class OfferService {
         return this.http.post(`${this.url}` + '/offer/add_offer', data);
     }
 
-    view_offer(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/offer/view_offer');
+    view_offer(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/offer/view_offer', {...params});
     }
 
     offer_detail(id): Observable<any[]> {
@@ -36,7 +39,7 @@ export class OfferService {
     }
 
     get_groups(): Observable <any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_groups');
+        return this.http.get<any[]>(`${this.url}` + '/groups_list');
     }
 
     get_salary_brcaket(): Observable<any[]> {
