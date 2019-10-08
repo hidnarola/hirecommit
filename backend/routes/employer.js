@@ -31,7 +31,7 @@ router.use("/employer", auth, authorization, index);
 
 //Offer
 router.post("/offer/add_offer", async (req, res) => {
-    console.log('hi',req.body);
+    console.log('hi', req.body);
 
     var schema = {
         "email": {
@@ -110,7 +110,7 @@ router.post("/offer/add_offer", async (req, res) => {
             "notes": req.body.notes,
             "is_del": false
         };
-        console.log('add offer',reg_obj);
+        console.log('add offer', reg_obj);
 
         var interest_resp = await common_helper.insert(offer, reg_obj);
         if (interest_resp.status == 0) {
@@ -259,7 +259,7 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
         "salaryduration": req.body.salaryduration,
         "country": req.body.country,
         "location": req.body.location,
-        "currenct_type":req.body.currenct_type,
+        "currenct_type": req.body.currenct_type,
         "salarybracket": req.body.salarybracket,
         "expirydate": req.body.expirydate,
         "joiningdate": req.body.joiningdate,
@@ -274,7 +274,7 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
         "is_del": false
     };
     var id = req.params.id;
-    console.log("object:",reg_obj);
+    console.log("object:", reg_obj);
 
     var offer_upadate = await common_helper.update(offer, { "_id": objectID(id) }, reg_obj)
     console.log(offer_upadate);
@@ -286,7 +286,7 @@ router.put('/offer/edit_offer/:id', async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": offer_upadate });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
     }
 })
 
@@ -299,12 +299,12 @@ router.put("/offer/deactive_offer/:id", async (req, res) => {
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else if (resp_data.status == 1)  {
+    } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
         res.status(config.OK_STATUS).json(resp_data);
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
     }
 });
 
@@ -373,7 +373,7 @@ router.get('/manage_candidate/candidate_detail/:id', async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data."});
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
     }
 });
 
@@ -385,12 +385,12 @@ router.put("/manage_candidate/deactive_candidate", async (req, res) => {
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else if (resp_data.status == 1)  {
+    } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
         res.status(config.OK_STATUS).json(resp_data);
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data."});
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
     }
 });
 
@@ -488,7 +488,7 @@ router.get('/manage_candidate/new_request_detail/:id', async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
     }
     else {
-        res.status(config.BAD_REQUEST).json({"status": 2, "message": "Error while featching data." });
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
     }
 });
 
@@ -611,53 +611,53 @@ router.post("/add_sub_account", async (req, res) => {
 
 router.post('/view_sub_accounts', async (req, res) => {
 
-  var schema = {
-    // "page_no": {
-    //   notEmpty: true,
-    //   errorMessage: "page_no is required"
-    // },
-    // "page_size": {
-    //   notEmpty: true,
-    //   errorMessage: "page_size is required"
-    // }
-  };
-  req.checkBody(schema);
-  var errors = req.validationErrors();
+    var schema = {
+        // "page_no": {
+        //   notEmpty: true,
+        //   errorMessage: "page_no is required"
+        // },
+        // "page_size": {
+        //   notEmpty: true,
+        //   errorMessage: "page_size is required"
+        // }
+    };
+    req.checkBody(schema);
+    var errors = req.validationErrors();
 
-  if (!errors) {
-    var sortOrderColumnIndex = req.body.order[0].column;
-    let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
-    let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-    let sortingObject = {
-        [sortOrderColumn]: sortOrder
-    }
-    var  aggregate= [
-    {
-        $match:{
-        "is_del":false
+    if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
         }
-    }
-    ]
+        var aggregate = [
+            {
+                $match: {
+                    "is_del": false
+                }
+            }
+        ]
 
-    const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-    aggregate.push({
-        "$match":
-            { $or: [{ "username": RE }, { "user_id.email": RE}]}
-    });
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        aggregate.push({
+            "$match":
+                { $or: [{ "username": RE }, { "user_id.email": RE }] }
+        });
 
-    let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
-    totalMatchingCountRecords = totalMatchingCountRecords.length;
+        let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-    var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-    if (resp_data.status == 1) {
-      res.status(config.OK_STATUS).json(resp_data);
+        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        if (resp_data.status == 1) {
+            res.status(config.OK_STATUS).json(resp_data);
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
     } else {
-      res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
     }
-  } else {
-    logger.error("Validation Error = ", errors);
-    res.status(config.BAD_REQUEST).json({ message: errors });
-  }
 });
 
 router.put('/edit_sub_account/:id', async (req, res) => {
@@ -697,7 +697,7 @@ router.put("/deactive_sub_account/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-     var id = req.params.id;
+    var id = req.params.id;
     //  console.log("IDDDIDIDIDID", id);return false;
 
     var resp_user_data = await common_helper.update(User, { "_id": id }, obj);
@@ -705,12 +705,12 @@ router.put("/deactive_sub_account/:id", async (req, res) => {
     // console.log(resp_Detail_data.status);return false;
     if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_user_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json({"status": 0, "message": "Error while deleting data."});
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
     } else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
-        res.status(config.OK_STATUS).json({"status": 1,  "message": "Record deleted successfully."});
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record deleted successfully." });
     }
     else {
-      res.status(config.BAD_REQUEST).json({"status": 2,  "message": "No data found"});
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
     }
 });
 
@@ -779,7 +779,7 @@ router.post("/add_group", async (req, res) => {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            res.json({"message": "Group Added successfully", "data": interest_resp })
+            res.json({ "message": "Group Added successfully", "data": interest_resp })
         }
     }
     else {
@@ -798,48 +798,48 @@ router.post('/view_groups', async (req, res) => {
         //   notEmpty: true,
         //   errorMessage: "page_size is required"
         // }
-      };
-      req.checkBody(schema);
-      var errors = req.validationErrors();
+    };
+    req.checkBody(schema);
+    var errors = req.validationErrors();
 
-      if (!errors) {
+    if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
-              let sortOrderColumn = sortOrderColumnIndex == 0 ? 'name' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'name' : req.body.columns[sortOrderColumnIndex].data;
 
-              let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-              let sortingObject = {
-                  [sortOrderColumn]: sortOrder
-                }
-          var  aggregate= [
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        var aggregate = [
             {
-              $match:{
-                "is_del":false
-              }
+                $match: {
+                    "is_del": false
+                }
             }
-          ]
+        ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
         aggregate.push({
             "$match":
-                { $or: [{ "name": RE }, { "high_unopened": RE},{ "high_notreplied": RE},{ "medium_unopened": RE},{ "medium_notreplied": RE},{ "low_unopened": RE},{ "low_notreplied": RE}]}
+                { $or: [{ "name": RE }, { "high_unopened": RE }, { "high_notreplied": RE }, { "medium_unopened": RE }, { "medium_notreplied": RE }, { "low_unopened": RE }, { "low_notreplied": RE }] }
         });
 
-          let totalMatchingCountRecords = await group.aggregate(aggregate);
-          totalMatchingCountRecords = totalMatchingCountRecords.length;
+        let totalMatchingCountRecords = await group.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
         // var search={};
         console.log(req.body.search)
-          var resp_data = await groups_helper.get_all_groups(group,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-          console.log(resp_data);
+        var resp_data = await groups_helper.get_all_groups(group, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        console.log(resp_data);
 
         if (resp_data.status == 1) {
-          res.status(config.OK_STATUS).json(resp_data);
+            res.status(config.OK_STATUS).json(resp_data);
         } else {
-          res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
         }
-      } else {
+    } else {
         logger.error("Validation Error = ", errors);
         res.status(config.BAD_REQUEST).json({ message: errors });
-      }
+    }
 });
 
 router.post("/add_group_details/:id", async (req, res) => {
@@ -866,16 +866,16 @@ router.post("/add_group_details/:id", async (req, res) => {
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-      const reqData = req.body.data;
-      const grp_data = {
-        group_id: req.params.id,
-        communication: reqData
-      };
-      var response = await common_helper.insert(GroupDetail, grp_data);
-      if(response.status === 0){
-        throw new Error('Error occured while inserting data');
-      }
-      res.status(config.OK_STATUS).json(response);
+        const reqData = req.body.data;
+        const grp_data = {
+            group_id: req.params.id,
+            communication: reqData
+        };
+        var response = await common_helper.insert(GroupDetail, grp_data);
+        if (response.status === 0) {
+            throw new Error('Error occured while inserting data');
+        }
+        res.status(config.OK_STATUS).json(response);
     }
     else {
         logger.error("Validation Error = ", errors);
@@ -884,7 +884,7 @@ router.post("/add_group_details/:id", async (req, res) => {
 });
 
 router.get('/group_detail/:id', async (req, res) => {
-    var group_detail = await common_helper.find(group, { _id: objectID(req.params.id)});
+    var group_detail = await common_helper.find(group, { _id: objectID(req.params.id) });
     if (group_detail.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
     }
@@ -898,7 +898,7 @@ router.get('/group_detail/:id', async (req, res) => {
 
 router.get('/group_communication_detail/:id', async (req, res) => {
     var group_detail = await common_helper.find(GroupDetail, { group_id: objectID(req.params.id) });
-    console.log("group detail",group_detail);
+    console.log("group detail", group_detail);
 
     if (group_detail.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
@@ -922,17 +922,17 @@ router.put("/deactivate_group/:id", async (req, res) => {
     var resp_groupdetail_data = await common_helper.update(GroupDetail, { "group_id": id }, obj);
     console.log(resp_groupdetail_data.status);
 
-    if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0 ) {
+    if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_group_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json({"status": 0, "message": "Error while featching data.", "data": resp_group_data});
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while featching data.", "data": resp_group_data });
     }
-    else if (resp_group_data.status == 1 || resp_groupdetail_data.status == 1 ) {
+    else if (resp_group_data.status == 1 || resp_groupdetail_data.status == 1) {
         logger.trace("User got successfully = ", resp_groupdetail_data);
-        res.status(config.OK_STATUS).json({"status": 1, "message": "Record Deleted Sucessfully", resp_group_data});
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
     }
-    else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2 ) {
+    else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2) {
         logger.trace("User got successfully = ", resp_group_dataresp_group_data);
-        res.status(config.BAD_REQUEST).json({"status": 2, "message": "No Data Found."});
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No Data Found." });
     }
 });
 
@@ -1055,7 +1055,7 @@ router.get('/location_detail/:id', async (req, res) => {
 });
 
 //salary-bracket
-
+    
 router.post("/add_salary_bracket", async (req, res) => {
     var schema = {
         "country": {
@@ -1100,6 +1100,7 @@ router.get('/view_salary_bracket', async (req, res) => {
     var salary_bracket_list = await common_helper.find(salary_bracket, {});
     // var salary_bracket_list = await salary_bracket.find();
     // console.log("salary", salary_bracket_list);
+console.log("salary list",this.salary_bracket_list);
 
     if (salary_bracket_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
@@ -1172,7 +1173,7 @@ router.get('/salary_brcaket_detail/:id', async (req, res) => {
     var id = req.params.id;
     // console.log('Edited',id);
 
-    var salary_brcaket_detail = await common_helper.findOne(salary_bracket, { "_id": objectID(id)  })
+    var salary_brcaket_detail = await common_helper.findOne(salary_bracket, { "_id": objectID(id) })
     // console.log("salary detail from backend",salary_brcaket_detail);
 
     if (salary_brcaket_detail.status == 0) {
@@ -1188,78 +1189,78 @@ router.get('/salary_brcaket_detail/:id', async (req, res) => {
 
 router.post("/add_subaccount", async (req, res) => {
     var schema = {
-      "name": {
-        notEmpty: true,
-        errorMessage: "name is required"
-      },
-      "email": {
-        notEmpty: true,
-        errorMessage: "email is required"
-      }
+        "name": {
+            notEmpty: true,
+            errorMessage: "name is required"
+        },
+        "email": {
+            notEmpty: true,
+            errorMessage: "email is required"
+        }
     };
 
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-      let password = req.body.name.substring(0, 3) + '@password123';
-      let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase()});
-      if(user_resp.status === 1) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
-      }
-      else {
-        let role =  await common_helper.findOne(Role, { 'role': 'sub-employer' }, 1)
-        var user_reg_obg = {
-          "email": req.body.email.toLowerCase(),
-          "password": password,
-          "role_id": new objectID(role.data._id),
-          "admin_rights": req.body.admin_rights
+        let password = req.body.name.substring(0, 3) + '@password123';
+        let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase() });
+        if (user_resp.status === 1) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
         }
-
-          var interest_user_resp = await common_helper.insert(User, user_reg_obg);
-          if (interest_user_resp.status === 1) {
-            var reg_obj = {
-                "username": req.body.name,
-                "user_id": new objectID(interest_user_resp.data._id),
-                "country": null,
-                companyname: null,
-                countrycode: null,
-                contactno: null
-            };
-
-            var interest_resp = await common_helper.insert(Sub_Employer_Detail, reg_obj);
-            if (interest_resp.status == 0) {
-                logger.debug("Error = ", interest_resp.error);
-                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-            } else {
-              var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
-                config.ACCESS_TOKEN_SECRET_KEY, {
-                  expiresIn: 60 * 60 * 24 * 3
-                }
-              )).toString('base64');
-
-              var time = new Date();
-              time.setMinutes(time.getMinutes() + 20);
-              time = btoa(time);
-
-              logger.trace("sending mail");
-              let mail_resp = await mail_helper.send("email_confirmation", {
-                  "to": interest_user_resp.data.email,
-                  "subject": "HC - Email Confirmation"
-              }, {
-                  "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
-                  // "message": "Dear Employer you are login after confirm your email whith your email and password "+ password.
-              });
-              if (mail_resp.status === 0) {
-                  res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-              } else {
-                  res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp  })
-              }
+        else {
+            let role = await common_helper.findOne(Role, { 'role': 'sub-employer' }, 1)
+            var user_reg_obg = {
+                "email": req.body.email.toLowerCase(),
+                "password": password,
+                "role_id": new objectID(role.data._id),
+                "admin_rights": req.body.admin_rights
             }
-          } else {
-            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
-          }
 
-      }
+            var interest_user_resp = await common_helper.insert(User, user_reg_obg);
+            if (interest_user_resp.status === 1) {
+                var reg_obj = {
+                    "username": req.body.name,
+                    "user_id": new objectID(interest_user_resp.data._id),
+                    "country": null,
+                    companyname: null,
+                    countrycode: null,
+                    contactno: null
+                };
+
+                var interest_resp = await common_helper.insert(Sub_Employer_Detail, reg_obj);
+                if (interest_resp.status == 0) {
+                    logger.debug("Error = ", interest_resp.error);
+                    res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+                } else {
+                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                        config.ACCESS_TOKEN_SECRET_KEY, {
+                        expiresIn: 60 * 60 * 24 * 3
+                    }
+                    )).toString('base64');
+
+                    var time = new Date();
+                    time.setMinutes(time.getMinutes() + 20);
+                    time = btoa(time);
+
+                    logger.trace("sending mail");
+                    let mail_resp = await mail_helper.send("email_confirmation", {
+                        "to": interest_user_resp.data.email,
+                        "subject": "HC - Email Confirmation"
+                    }, {
+                        "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+                        // "message": "Dear Employer you are login after confirm your email whith your email and password "+ password.
+                    });
+                    if (mail_resp.status === 0) {
+                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+                    } else {
+                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp })
+                    }
+                }
+            } else {
+                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
+            }
+
+        }
     }
     else {
         logger.error("Validation Error = ", errors);

@@ -10,19 +10,34 @@ var mail_helper = require('./../helpers/mail_helper');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var index = require('./admin/index');
-
+var candidate_detail = require('../models/candidate-detail');
+var employer_detail = require('../models/employer-detail');
 var objectID = require('mongoose').Types.ObjectId;
 
-router.use("/", auth, authorization, index);
+router.use("/admin", auth, authorization, index);
 
 //employer
 router.get('/view_employer', async (req, res) => {
-    var employer_list = await employer.find();
-    if (employer_list) {
-        return res.status(config.OK_STATUS).json({ 'message': "Emlpoyer List", "status": 1, data: employer_list });
-    }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+//     var employer_list = await employer.find();
+//     if (employer_list) {
+//         return res.status(config.OK_STATUS).json({ 'message': "Emlpoyer List", "status": 1, data: employer_list });
+//     }
+//     else {
+//         return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+//     }
+// });
+    console.log("hello");
+    try {
+        const Employer_list = await employer_detail.find({ is_del: false })
+            .populate([
+                { path: 'user_id' }
+            ])
+            .lean();
+            console.log("hello");
+            
+        return res.status(config.OK_STATUS).json({ 'message': "Employer List", "status": 1, data: Employer_list });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
@@ -219,12 +234,26 @@ router.get('/employer_detail/:id', async (req, res) => {
 //candidate
 
 router.get('/manage_candidate/approved_candidate', async (req, res) => {
-    var candidate_list = await candidate.find();
-    if (candidate_list) {
-        return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
-    }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+    // var candidate_list = await candidate.find();
+    // if (candidate_list) {
+    //     return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
+    // }
+    // else {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+    // }
+
+    console.log("hello");
+    try {
+        const Candidate_list = await candidate_detail.find({ is_del: false })
+            .populate([
+                { path: 'user_id' }
+            ])
+            .lean();
+        console.log("hello");
+
+        return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: Candidate_list });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 

@@ -8,8 +8,8 @@ import * as env from '../../../../environments/environment.prod';
   providedIn: 'root'
 })
 export class EmployerService {
-  // private url = 'http://localhost:3000';
-  private url = env.environment.API_URL ;
+  // private url = 'http://localhost:3000/admin';
+  private url = env.environment.API_URL + 'admin';
   constructor(private http: HttpClient, private route: Router) { }
 
   myObservableArray: Observable<any[]> = new Observable<any[]>();
@@ -22,7 +22,8 @@ export class EmployerService {
   }
 
   getemployer(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + 'view_employer');
+
+    return this.http.get<any[]>(`${this.url}` + '/view_employer');
   }
 
   getemployerDetail(id): Observable<any[]> {

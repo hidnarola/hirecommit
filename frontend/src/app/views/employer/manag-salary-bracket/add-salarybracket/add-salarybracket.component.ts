@@ -22,6 +22,8 @@ export class AddSalarybracketComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
+  error= false;
+  error_msg ="can't be less then minimum salary!";
   constructor(private router: Router, private service: SalaryBracketService, private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -63,6 +65,20 @@ export class AddSalarybracketComponent implements OnInit {
   }
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
+  }
+
+  onBlurMethod(from,to){
+      if(from > to ){
+        this.error =true;
+        this.error_msg = "can't be less then minimum salary!";
+      }
+    else if (from >= to) {
+      this.error = true;
+      this.error_msg = "Can't be same!";
+    }
+      else{
+        this.error = false;
+      }
   }
 
   getDetail(id: string) {
