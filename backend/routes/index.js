@@ -435,8 +435,8 @@ router.post('/login', async (req, res) => {
        console.log(user_resp.status);
 
         if (user_resp.status === 0) {
-            logger.trace("Login checked resp = ", login_resp);
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": login_resp.error });
+            logger.trace("Login checked resp = ", user_resp);
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": user_resp.error });
         }
         else if (user_resp.status === 1 ) {
           if (user_resp.data.email_verified) {
