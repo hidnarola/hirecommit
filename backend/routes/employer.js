@@ -1055,7 +1055,7 @@ router.get('/location_detail/:id', async (req, res) => {
 });
 
 //salary-bracket
-    
+
 router.post("/add_salary_bracket", async (req, res) => {
     var schema = {
         "country": {
