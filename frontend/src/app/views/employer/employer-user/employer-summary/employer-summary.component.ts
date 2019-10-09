@@ -123,7 +123,7 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
    onAdd() {
-    this.router.navigate(['/employer/manage_offer/addoffer/0']);
+    this.router.navigate(['/employer/manage_offer/addoffer']);
   }
 
   onlyUnique(value, index, self) {

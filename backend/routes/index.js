@@ -101,8 +101,6 @@ router.post("/add_role", async (req, res) => {
     }
   });
 
-
-
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
   console.log(req);
