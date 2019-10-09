@@ -30,28 +30,76 @@ var Employer_Detail = require('./../models/employer-detail');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
-var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+// var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+
+//get user
+router.get("/user", async (req, res) => {
+  var response = await common_helper.find(User);
+  res.status(config.OK_STATUS).send(response);
+});
 
 // Add role Registration
-// router.post("/add_role", async (req, res) => {
-//   try {
-//     var reg_obj = {
-//       "role": req.body.role
-//     }
+router.post("/add_role", async (req, res) => {
+  try {
+    var reg_obj = {
+      "role": req.body.role
+    }
 
-//     var response = await common_helper.insert(Role, reg_obj);
-//     if(response.status === 0){
-//       throw new Error('Error occured while inserting data');
-//     }
-//     res.status(config.OK_STATUS).json(response);
-//   } catch (error) {
-//     const response = {
-//       success: false,
-//       message: error.message
-//     }
-//     res.status(config.BAD_REQUEST).send(response);
-//   }
-//   });
+    var response = await common_helper.insert(Role, reg_obj);
+    if(response.status === 0){
+      throw new Error('Error occured while inserting data');
+    }
+    res.status(config.OK_STATUS).json(response);
+  } catch (error) {
+    const response = {
+      success: false,
+      message: error.message
+    }
+    res.status(config.BAD_REQUEST).send(response);
+  }
+  });
+
+  //Admin register
+  router.post("/admin_register", async (req, res) => {
+    var schema = {
+        "email": {
+            notEmpty: true,
+            errorMessage: "Email is required"
+        },
+        "password": {
+          notEmpty: true,
+          errorMessage: "Password is required"
+      }
+    };
+    req.checkBody(schema);
+
+    var errors = req.validationErrors();
+    if (!errors) {
+      let role =  await common_helper.findOne(Role, { 'role': 'admin' }, 1)
+        var reg_obj = {
+            "email": req.body.email,
+            "password": req.body.password,
+            "role": new ObjectId(role.data._id),
+            "admin_rights" : true,
+            "email_verified" : true,
+            "isAllow" : true,
+            "is_del" : false,
+            "flag" : 0
+        };
+        var interest_resp = await common_helper.insert(User, reg_obj);
+        if (interest_resp.status == 0) {
+            logger.debug("Error = ", interest_resp.error);
+            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        } else {
+            res.json({ "message": "Admin Added successfully", "data": interest_resp })
+        }
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+  });
 
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
@@ -350,7 +398,7 @@ router.post("/employer_register", async (req, res) => {
                     if (mail_resp.status === 0) {
                         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                     } else {
-                        res.json({ "message": "Employer registration successful", "data": interest_user_resp + interest_resp })
+                        res.json({ "message": "Employer registration successful", "data": interest_user_resp })
                     }
                   } else {
                     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
@@ -387,8 +435,8 @@ router.post('/login', async (req, res) => {
        console.log(user_resp.status);
 
         if (user_resp.status === 0) {
-            logger.trace("Login checked resp = ", login_resp);
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": login_resp.error });
+            logger.trace("Login checked resp = ", user_resp);
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": user_resp.error });
         }
         else if (user_resp.status === 1 ) {
           if (user_resp.data.email_verified) {
