@@ -75,7 +75,6 @@ export class EmployerAddofferComponent implements OnInit {
 
     this.service.get_location().subscribe(res => {
       this.location = res['data']['data'];
-
       // console.log(this.location);
       this.location.forEach(element => {
         const fetch_country = element.country;
