@@ -5,13 +5,15 @@ import { ManagSalaryBracketRoutingModule } from './manag-salary-bracket-routing.
 import { ViewSalarybracketComponent } from './view-salarybracket/view-salarybracket.component';
 import { AddSalarybracketComponent } from './add-salarybracket/add-salarybracket.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DataTablesModule } from 'angular-datatables';
 
 
 @NgModule({
   declarations: [ViewSalarybracketComponent, AddSalarybracketComponent],
   imports: [
     CommonModule,
-    ManagSalaryBracketRoutingModule,ReactiveFormsModule
+    DataTablesModule,
+    ManagSalaryBracketRoutingModule, ReactiveFormsModule
   ]
 })
 export class ManagSalaryBracketModule { }

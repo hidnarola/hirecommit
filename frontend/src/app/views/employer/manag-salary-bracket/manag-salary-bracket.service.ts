@@ -15,8 +15,8 @@ export class SalaryBracketService {
         console.log(env.environment);
       }
 
-    view_salary_brcaket(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_salary_bracket');
+    view_salary_brcaket(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/view_salary_bracket', {...params});
     }
 
     deactivate_salary_brcaket(id): Observable<any[]> {
