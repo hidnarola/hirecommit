@@ -6,7 +6,6 @@ import { OfferService } from '../offer.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
-
 @Component({
   selector: 'app-employer-summary',
   templateUrl: './employer-summary.component.html',
@@ -116,9 +115,9 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   checkValue(id, e) {
       this.status = e.target.checked;
-      console.log('updated', this.status);
+      // console.log('updated', this.status);
      this.service.change_status(id, this.status).subscribe(res => {
-       console.log('updated12', this.status);
+      //  console.log('updated12', this.status);
      });
   }
 

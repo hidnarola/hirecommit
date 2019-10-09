@@ -12,6 +12,7 @@ var bcrypt = require('bcryptjs');
 var index = require('./admin/index');
 var candidate_detail = require('../models/candidate-detail');
 var employer_detail = require('../models/employer-detail');
+var user = require('../models/user');
 var objectID = require('mongoose').Types.ObjectId;
 
 router.use("/admin", auth, authorization, index);
@@ -26,14 +27,14 @@ router.get('/view_employer', async (req, res) => {
 //         return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
 //     }
 // });
-    console.log("hello");
+   
     try {
         const Employer_list = await employer_detail.find({ is_del: false })
             .populate([
                 { path: 'user_id' }
             ])
             .lean();
-            console.log("hello");
+         
             
         return res.status(config.OK_STATUS).json({ 'message': "Employer List", "status": 1, data: Employer_list });
     } catch (error) {
@@ -199,48 +200,70 @@ router.put('/edit_employer/:id', async (req, res) => {
 //     //   }
 // })
 
-router.put("/deactive_employer", async (req, res) => {
+router.put("/deactive_employer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(employer, { "_id": req.body.id }, obj);
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else {
-        logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
+    var id = req.params.id;
+     console.log("IDDDIDIDIDID", id);
+
+    var resp_user_data = await common_helper.update(user, { "_id": id }, obj);
+    var resp_Detail_data = await common_helper.update(employer_detail, { "user_id": id }, obj);
+    // console.log(resp_Detail_data.status);return false;
+    if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_user_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
+    } else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record deleted successfully." });
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
+    }
+});
+
+router.put("/approved_employer/:id", async (req, res) => {
+    var obj = {
+        isAllow: true
+    }
+    var id = req.params.id;
+    //  console.log("IDDDIDIDIDID", id);return false;
+
+    var resp_user_data = await common_helper.update(user, { "_id": id }, obj);
+    var resp_Detail_data = await common_helper.update(employer_detail, { "user_id": id }, obj);
+    // console.log(resp_Detail_data.status);return false;
+    if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_user_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
+    } else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record deleted successfully." });
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
     }
 });
 
 router.get('/employer_detail/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(id);
+    try {
+        console.log(id);
 
-    var employer_detail = await common_helper.findOne(employer, { "_id": id })
-    console.log(employer_detail);
+        const employer_detail1 = await employer_detail.findOne({ _id: id })
+            .populate([
+                { path: 'user_id' }
+            ])
+            .lean();
+        console.log(employer_detail1);
 
-    if (employer_detail.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No Data Found" });
+        return res.status(config.OK_STATUS).json({ 'message': "Employer detail", "status": 1, data: employer_detail1 });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    else if (employer_detail.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": employer_detail });
-    }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "message": "No data found" });
-    // }
 });
 
 //candidate
 
 router.get('/manage_candidate/approved_candidate', async (req, res) => {
-    // var candidate_list = await candidate.find();
-    // if (candidate_list) {
-    //     return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
-    // }
-    // else {
-    //     return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
-    // }
+   
 
     console.log("hello");
     try {

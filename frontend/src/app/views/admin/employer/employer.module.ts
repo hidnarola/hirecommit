@@ -8,9 +8,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { EmployerDetailComponent } from './employer-detail/employer-detail.component';
 import { DataTablesModule } from 'angular-datatables';
+import { RequestedEmployerComponent } from './requested-employer/requested-employer.component';
 
 @NgModule({
-  declarations: [ViewEmployerComponent, AddEmployerComponent, EmployerDetailComponent],
+  declarations: [ViewEmployerComponent, AddEmployerComponent, EmployerDetailComponent, RequestedEmployerComponent],
   imports: [
     CommonModule,
     EmployerRoutingModule,

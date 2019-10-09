@@ -33,21 +33,32 @@ export const admin: NavData[] = [
   {
     name: 'Manage Employer',
     url: 'employer_manage/view',
-    icon: 'icon-user'
+    icon: 'icon-user',
+    children:[
+      {
+        name:'New Request',
+        url: 'employer_manage/new_employer'
+    },
+      {
+        name: 'Approved Request',
+        url: 'employer_manage/view'
+      }
+    ]
   },
   {
     name: 'Manage Candidate',
     url: 'candidate_manage',
     icon: 'icon-people',
     children: [
-     {
-       name: 'Approved Candidate',
-       url: 'candidate_manage/approve_candidate'
-     },
+    
      {
        name: 'New Request',
        url: 'candidate_manage/new_candidate'
-     }
+     },
+      {
+        name: 'Approved Candidate',
+        url: 'candidate_manage/approve_candidate'
+      }
     ]
   }
 ];

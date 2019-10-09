@@ -27,17 +27,21 @@ export class EmployerService {
   }
 
   getemployerDetail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + 'employer/' + id);
+    return this.http.get<any[]>(`${this.url}` + '/employer_detail/' + id);
   }
 
   addemployer(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + 'employer', data);
   }
 
-  delemployer(id): Observable<any[]> {
-    return this.http.delete<any[]>(`${this.url}` + 'employer/' + id);
+  deactivate_employer(id): Observable<any[]> {
+    console.log('service id',id);
+    
+    return this.http.put<any[]>(`${this.url}` + '/deactive_employer/' + id,null);
   }
-
+  aprroved_employer(id):Observable<any[]>{
+    return this.http.put<any[]>(`${this.url}` + '/approved_employer/' +id,null);
+  }
   // delemployer(id): Observable<any[]> {
   //   return this.http.delete<any[]>(`${this.url}` + '/employer/' + id);
   // }

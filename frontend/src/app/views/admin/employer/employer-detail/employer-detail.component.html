@@ -1,7 +1,7 @@
 <div class="animated fadeIn">
-    <div class="row">
+    <div class="row" *ngIf="form">
       <div class="col-sm-12 col-md-12">
-        <div class="card">
+        <div class="card" >
           <div class="card-header">
             Employer Detail
             <i class="icon-close" [routerLink]="['/admin/employer_manage/view']"></i>
@@ -11,24 +11,39 @@
               <tbody>
                 <tr>
                   <td>First Name</td>
-                  <td>abc</td>
+                  <td>{{name[0]}}</td>
                 </tr>
                 <tr>
                   <td>Last Name</td>
-                  <td>pqr</td>
+                  <td>{{name[1]}}</td>
                 </tr>
                 <tr>
                   <td>Email</td>
-                  <td>abc@gmail.com</td>
+                  <td>{{employer_detail.user_id.email}}</td>
                 </tr>
                 <tr>
-                  <td>Dasignation</td>
-                  <td>ass.HR</td>
+                  <td>Country</td>
+                  <td>{{employer_detail.country}}</td>
                 </tr>
 
                 <tr>
-                  <td>Avatar</td>
-                  <td><img src="assets/img/220px-User_icon_2.svg.png" style="height: 80px"></td>
+                  <td>Contact Number</td>
+                  <td>{{employer_detail.countrycode}} {{employer_detail.contactno}}</td>
+                </tr>
+
+                <tr>
+                  <td>Company</td>
+                  <td>{{employer_detail.companyname}}</td>
+                </tr>
+
+                <tr>
+                  <td>Website</td>
+                  <td>{{employer_detail.website}}</td>
+                </tr>
+
+                <tr>
+                  <td>Bussiness Type</td>
+                  <td>{{employer_detail.businesstype}}</td>
                 </tr>
               </tbody>
             </table>
