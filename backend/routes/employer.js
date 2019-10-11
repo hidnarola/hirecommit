@@ -12,6 +12,7 @@ var common_helper = require('../helpers/common_helper');
 var user_helper = require('../helpers/user_helper');
 var groups_helper = require('../helpers/groups_helper');
 var offer_helper = require('../helpers/offer_helper');
+var salary_helper = require('../helpers/salary_helper');
 
 var logger = config.logger;
 // var sub_account = require('../models/sub-accounts');
@@ -1096,21 +1097,68 @@ router.post("/add_salary_bracket", async (req, res) => {
     }
 });
 
-router.get('/view_salary_bracket', async (req, res) => {
-    var salary_bracket_list = await common_helper.find(salary_bracket, {});
-    // var salary_bracket_list = await salary_bracket.find();
-    // console.log("salary", salary_bracket_list);
-console.log("salary list",this.salary_bracket_list);
+router.post('/view_salary_bracket', async (req, res) => {
+    var schema = {
+        // "page_no": {
+        //   notEmpty: true,
+        //   errorMessage: "page_no is required"
+        // },
+        // "page_size": {
+        //   notEmpty: true,
+        //   errorMessage: "page_size is required"
+        // }
+    };
+    req.checkBody(schema);
+    var errors = req.validationErrors();
 
-    if (salary_bracket_list.status === 1) {
-        return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
+    if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'country' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        var aggregate = [
+            {
+                $match: {
+                    "is_del": false
+                }
+            }
+        ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        aggregate.push({
+            "$match":
+                { $or: [{ "country": RE }, { "currency": RE }, { "from": RE }, { "to": RE }] }
+        });
+
+        let totalMatchingCountRecords = await salary_bracket.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
+
+        var resp_data = await salary_helper.get_all_salary_bracket(salary_bracket, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        if (resp_data.status == 1) {
+            res.status(config.OK_STATUS).json(resp_data);
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+    } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
     }
-    else if (salary_bracket_list.status === 2) {
-        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
-    }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
-    }
+
+    // var salary_bracket_list = await common_helper.find(salary_bracket, {});
+
+    // console.log("salary list",this.salary_bracket_list);
+
+    // if (salary_bracket_list.status === 1) {
+    //     return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
+    // }
+    // else if (salary_bracket_list.status === 2) {
+    //     return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+    // }
+    // else {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    // }
 });
 
 router.put('/edit_salary_bracket/:id', async (req, res) => {

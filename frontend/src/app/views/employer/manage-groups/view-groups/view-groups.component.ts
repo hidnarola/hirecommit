@@ -23,12 +23,6 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private router: Router, private service: GroupService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 5,
-      processing: true,
-      destroy: true
-    };
     this.bind();
   }
 
