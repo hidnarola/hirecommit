@@ -138,65 +138,17 @@ router.get("/groups_list", async (req, res) => {
 })
 
 router.post('/offer/view_offer', async (req, res) => {
-    // try {
-    //     const offer_list = await offer.find({is_del: false})
-    //     .populate([
-    //     { path: 'employer_id'},
-    //     { path: 'salarybracket'},
-    //     { path: 'group'},
-    //     ])
-    //     .lean();
-    //     return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
-    //   } catch (error) {
-    //     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
-    //   }
-
-    var schema = {
-        // "page_no": {
-        //   notEmpty: true,
-        //   errorMessage: "page_no is required"
-        // },
-        // "page_size": {
-        //   notEmpty: true,
-        //   errorMessage: "page_size is required"
-        // }
-      };
-      req.checkBody(schema);
-      var errors = req.validationErrors();
-
-      if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        var  aggregate= [
-        {
-            $match:{
-            "is_del":false
-            }
-        }
-        ]
-
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        aggregate.push({
-            "$match":
-                { $or: [{ "createdAt": RE }, { "title": RE}, { "salarytype": RE}, { "salarybracket.from": RE}, { "expirydate": RE}, { "joiningdate": RE}, { "status": RE}, { "offertype": RE}, { "group.name": RE}, { "commitstatus": RE}, { "customfeild1": RE}]}
-        });
-
-        let totalMatchingCountRecords = await offer.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
-
-        var resp_data = await offer_helper.get_all_offer(offer,req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        if (resp_data.status == 1) {
-          res.status(config.OK_STATUS).json(resp_data);
-        } else {
-          res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-        }
-      } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    try {
+        const offer_list = await offer.find({is_del: false})
+        .populate([
+        { path: 'employer_id'},
+        { path: 'salarybracket'},
+        { path: 'group'},
+        ])
+        .lean();
+        return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
+      } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
       }
 });
 
