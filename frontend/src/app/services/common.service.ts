@@ -41,6 +41,15 @@ export class CommonService {
     return this.http.put<any[]>(`${this.url}` + 'change_password', data);
   }
 
+  //  To get country data
+  country_data(id = 0): Observable<any[]> {
+    if (id) {
+      return this.http.get<any[]>(`${this.url}country/${id}`);
+    } else {
+      return this.http.get<any[]>(`${this.url}country`);
+    }
+  }
+
 
 
   // myObservableArray: Observable<any[]> = new Observable<any[]>();

@@ -4,12 +4,13 @@ import { countries } from '../../../../shared/countries';
 import { OfferService } from '../offer.service';
 import { Currency } from '../../../../shared/currency';
 import { cc, bb, aa } from '../../../../shared/countries2';
+import { CommonService } from '../../../../services/common.service';
 @Component({
   selector: 'app-employer-addoffer',
   templateUrl: './employer-addoffer.component.html',
   styleUrls: ['./employer-addoffer.component.scss']
 })
-export class EmployerAddofferComponent implements OnInit, AfterViewInit {
+export class EmployerAddofferComponent implements OnInit {
   form: FormGroup;
   form_validation = false;
   offer_data: any = {};
@@ -29,21 +30,8 @@ export class EmployerAddofferComponent implements OnInit, AfterViewInit {
   ];
   contryList: any;
 
-  ngAfterViewInit(): void {
-    const arr1 = [];
-   for (const c of this.arr) {
-    let o = {};
-      aa.forEach(a => {
-      if (c.country === a.country) {
-        o = { ...c, ...a };
-      }
-     });
-    arr1.push(o);
-   }
-   this.countryArr = [ ...arr1];
-  }
   constructor(
-    private fb: FormBuilder, private service: OfferService
+    private fb: FormBuilder, private service: OfferService, private commonService: CommonService
     ) {
        // Form Controls
        this.form = this.fb.group({
@@ -68,7 +56,18 @@ export class EmployerAddofferComponent implements OnInit, AfterViewInit {
         notes: new FormControl(''),
         employer_id: new FormControl('')
        });
+
+      //  To Get all country data
+       this.getCountryData();
    }
+
+   getCountryData()  {
+    this.commonService.country_data().subscribe(res => {
+      this.countryArr = res[`data`];
+      console.log('getCountryData : res ==> ', res);
+    });
+   }
+
    findCities = () => {
     this.service.get_location(this.offer_data.country).subscribe(res => {
       this.location = res['data']['data'];
@@ -96,29 +95,7 @@ export class EmployerAddofferComponent implements OnInit, AfterViewInit {
    }
 
   ngOnInit() {
-    const obj = [];
-    // for (const [key, value] of Object.entries(countries)) {
-    //   obj.push({ 'value': key, 'label': value });
-    // }
-    this.contryList = obj;
-    // console.log('init : contries ==> ', this.contryList);
-
-
-for (const c of cc) {
-     let o = {};
-     bb.forEach(b => {
-       if (c.alpha2Code === b.abbreviation) {
-         o = { ...c, ...b };
-       }
-     });
-    this.arr.push(o);
    }
-// console.log(' : arr1 ==> ', arr1);
-   }
-
-  onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
 
   // submit form
   onSubmit(flag) {
