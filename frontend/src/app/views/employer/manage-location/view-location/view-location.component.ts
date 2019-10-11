@@ -1,67 +1,92 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationService } from '../manage-location.service';
 import { countries } from '../../../../shared/countries';
 import { timeout } from 'q';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-view-location',
   templateUrl: './view-location.component.html',
   styleUrls: ['./view-location.component.scss']
 })
-export class ViewLocationComponent implements OnInit {
+export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger:  Subject<any> = new Subject();
   country: any = [];
-  locations: any;
+  locations: any[];
   loc: any;
   salary: any = [];
-  _country: any =[];
+  _country: any = [];
   unique: any;
   Country: any;
-
   location: any;
- 
   c_name: any = [];
   sal: any = [];
   salnew: any = [];
 
   constructor(private router: Router, private service: LocationService) { }
   ngOnInit() {
-    const table = $('#example').DataTable({
-      drawCallback: () => {
-        $('.paginate_button.next').on('click', () => {
-          this.nextButtonClickEvent();
-        });
-      }
-    });
-    setTimeout(() => {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 5,
+      serverSide: true,
+      processing: true,
+      destroy: true,
+      ajax: (dataTablesParameters: any, callback) => {
+        this.service.view_location(dataTablesParameters).subscribe(res => {
+          if (res['status'] === 1) {
+            this.locations = res['location'];
+            console.log('data==>', res);
 
-      this.bind();
-    }, 100);
+          this.locations = this.locations.filter(x => x.is_del === false);
+          this.Country = countries;
+          const obj = [];
+          for (const [key, value] of Object.entries(countries)) {
+            obj.push({ 'code': key, 'name': value });
+          }
+          this.Country = obj;
+          this.locations.forEach(element => {
+            const fetch_country = element.country;
+            this.unique = this.Country.filter(x => x.code === fetch_country);
+            this._country.push(this.unique[0]);
+          });
+          this._country = this._country.filter(this.onlyUnique);
+            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+          }
+        }, err => {
+          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+        });
+      },
+      columns: [
+        {
+          data: 'city'
+        }, {
+          data: 'country'
+        }, {
+          data: 'action'
+        }
+      ]
+    };
+
+    // setTimeout(() => {
+    //   this.bind();
+    // }, 100);
     this.country = countries;
 
   }
 
 
 
-  buttonInRowClick(event: any): void {
-    event.stopPropagation();
-    console.log('Button in the row clicked.');
-  }
 
-  wholeRowClick(): void {
-    console.log('Whole row clicked.');
-  }
 
-  nextButtonClickEvent(): void {
-    // do next particular records like  101 - 200 rows.
-    // we are calling to api
 
-    console.log('next clicked');
-  }
-  previousButtonClickEvent(): void {
-    // do previous particular the records like  0 - 100 rows.
-    // we are calling to API
-  }
+
+
+
   detail() {
     // this.router.navigate(['/groups/summarydetail']);
   }
@@ -72,14 +97,11 @@ export class ViewLocationComponent implements OnInit {
 
   delete(id) {
     this.service.deactivate_location(id).subscribe(res => {
-      console.log("deactivate location", res);
-      this.bind();
-    })
+      console.log('deactivate location', res);
+      // this.bind();
+    });
   }
 
-  onAdd() {
-    //  this.router.navigate(['/groups/addgroup']);
-  }
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
@@ -87,46 +109,46 @@ export class ViewLocationComponent implements OnInit {
 
 
   public bind() {
-
     // this.service.view_location().subscribe(res => {
     //   this.locations = res['data']['data'];
-    //   console.log("location", this.locations);
     //   this.locations = this.locations.filter(x => x.is_del === false);
-
-    // })
-    //
-    this.service.view_location().subscribe(res => {
-      this.locations = res['data']['data'];
-      console.log("location", this.locations);
-      this.locations = this.locations.filter(x => x.is_del === false);
-
-      this.Country = countries;
-      var obj = [];
-
-      for (let [key, value] of Object.entries(countries)) {
-        obj.push({ 'code': key, 'name': value });
-      }
-      this.Country = obj;
-
-      console.log('cnt', this.Country);
-
-      this.locations.forEach(element => {
-        let fetch_country = element.country;
-        console.log('fetch', fetch_country);
-
-        this.unique = this.Country.filter(x => x.code === fetch_country);
-        console.log('unique', this.unique[0]);
-
-        this._country.push(this.unique[0]);
-        console.log('_cnt', this._country);
-      });
-      this._country = this._country.filter(this.onlyUnique);
-      console.log('_cnt---------', this._country);
-    })
+    //   this.Country = countries;
+    //   const obj = [];
+    //   for (const [key, value] of Object.entries(countries)) {
+    //     obj.push({ 'code': key, 'name': value });
+    //   }
+    //   this.Country = obj;
+    //   this.locations.forEach(element => {
+    //     const fetch_country = element.country;
+    //     this.unique = this.Country.filter(x => x.code === fetch_country);
+    //     this._country.push(this.unique[0]);
+    //   });
+    //   this._country = this._country.filter(this.onlyUnique);
+    // });
   }
+
   public GetCountry(country) {
     this.c_name = this._country.filter(x => x.code === country);
     this.c_name = this.c_name[0].name;
-    return this.c_name
+    return this.c_name;
   }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
 }

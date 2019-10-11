@@ -21,12 +21,12 @@ salary_helper.get_all_salary_bracket = async (collection,search,start,length, re
                   { $or: [{ "country": RE}, { "currency": RE}, { "from": RE}, { "to": RE}] }
           });
           // console.log(aggregate);
-
       if(sort){
         aggregate.push({
           "$sort":sort
       });
       }
+
 
       if(start){
         aggregate.push({

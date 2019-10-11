@@ -7,13 +7,17 @@ import { EmployerAddofferComponent } from './employer-addoffer/employer-addoffer
 import { EmployerSummaryDetailComponent } from './employer-summary-detail/employer-summary-detail.component';
 import { DataTablesModule } from 'angular-datatables';
 import { ReactiveFormsModule } from '@angular/forms';
+import {DropdownModule} from 'primeng/dropdown';
+
 
 @NgModule({
   declarations: [EmployerSummaryComponent, EmployerAddofferComponent, EmployerSummaryDetailComponent],
   imports: [
-    CommonModule,
-    EmployerUserRoutingModule,
-    DataTablesModule,
-  ReactiveFormsModule]
+  CommonModule,
+  EmployerUserRoutingModule,
+  DataTablesModule,
+  ReactiveFormsModule,
+  DropdownModule
+]
 })
 export class EmployerUserModule { }

@@ -3,264 +3,154 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <strong style="font-size: 20px;">{{panelTitle}}</strong>
+          <strong style="font-size: 20px;">{{panelTitle}} Offer</strong>
           <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
         </div>
-        <form class="form-horizontal" [formGroup]="addOfferForm" (ngSubmit)="onSubmit(addOfferForm.valid,id)">
+        <form class="form-horizontal" [formGroup]="form">
+
           <div class="card-body">
 
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="email">Email</label>
               <div class="col-md-6">
                 <input type="email" class="form-control"  placeholder="Enter Email" autocomplete="email"
-                  formControlName="email" id="email">
-                <span *ngIf="!addOfferForm.get('email').valid && submitted" class="help-block">Please enter a valid
-                  email!</span>
+                  formControlName="email" id="email" [(ngModel)]="offer_data.email">
+                  <div class="cust_err_msg"
+                  *ngIf="form_validation && !form.controls['email'].valid">
+                  <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
+                    This field is required.
+                  </span>
+                  <span *ngIf="form.controls['email'].errors['email']" class="text-danger">
+                      Please enter valid data.
+                  </span>
+                </div>
               </div>
             </div>
 
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="name">Name</label>
-              <div class="col-md-6">
-                <input type="text" class="form-control" placeholder="Enter Name" autocomplete="name"
-                  formControlName="name" id="name">
-
-                <span *ngIf="!addOfferForm.get('name').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('name').errors['required']">This field is required!</span>
-                </span>
+                <label class="col-md-3 col-form-label" for="name">Name</label>
+                <div class="col-md-6">
+                  <input type="name" class="form-control"  placeholder="Enter Name" autocomplete="name"
+                    formControlName="name" id="name" [(ngModel)]="offer_data.name">
+                    <div class="cust_err_msg"
+                    *ngIf="form_validation && !form.controls['name'].valid">
+                    <span
+                      *ngIf="form.controls['name'].errors['required']" class="text-danger">This field is required.</span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="title">Title</label>
-              <div class="col-md-4">
-                  <input type="text" class="form-control" placeholder="Enter Title" autocomplete="title" formControlName="title" id="title">
-                <span *ngIf="!addOfferForm.get('title').valid && submitted" class="help-block">Please select
-                  title!</span>
-              </div>
-            </div>
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="salaryType">Salary Type</label>
-              <div class="col-md-4 col-form-label">
-                <div class="form-check form-check-inline mr-1" (click)='showdrop("annual")'>
-
-                  <input id="salarytype"  name="salarytype" class="form-check-input" type="radio"
-                    formControlName="salarytype" value="annual">
-                  <label class="form-check-label" for="annual">Annual</label>
+              <div class="form-group row">
+                  <label class="col-md-3 col-form-label" for="title">Title</label>
+                  <div class="col-md-6">
+                    <input type="title" class="form-control"  placeholder="Enter Name" autocomplete="title"
+                      formControlName="title" id="title" [(ngModel)]="offer_data.title">
+                      <div class="cust_err_msg"
+                      *ngIf="form_validation && !form.controls['title'].valid">
+                      <span
+                        *ngIf="form.controls['title'].errors['required']" class="text-danger">This field is required.</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="form-check form-check-inline mr-1" (click)='showdrop("hourly")'>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="title">Salary Type</label>
+                    <div class="col-md-6">
 
-                  <input id="salarytype" name="salarytype" class="form-check-input" type="radio"
-                    formControlName="salarytype" value="hourly">
-                  <label class="form-check-label" for="hourly">Hourly</label>
-                </div><br>
-                <span *ngIf="!addOfferForm.get('salarytype').valid && submitted" class="help-block">Please select
-                  Salary Type!</span>
-              </div>
-            </div>
+                      <div class="custom-radio-wrap">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="annual" class="custom-control-input" value="annual" name="salarytype" formControlName="salarytype"  [(ngModel)]="offer_data.salarytype">
+                            <label class="custom-control-label" for="annual">Annual</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="hourly" class="custom-control-input" value="hourly" name="salarytype" formControlName="salarytype"   [(ngModel)]="offer_data.salarytype" >
+                            <label class="custom-control-label" for="hourly">Hourly</label>
+                        </div>
+                       </div>
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="salaryduration">Hourly Salary Duration</label>
-              <div class="col-md-3">
-                <select id="salaryduration" name="salaryduration" class="form-control"   [disabled]="!flag" formControlName="salaryduration">
-                  <option value="0">Please select</option>
-                  <option value="1week">1 week</option>
-                  <option value="2week">2 week</option>
-                 
-                </select>
-                <!-- <span *ngIf="!addOfferForm.get('title').valid && submitted" class="help-block">Please select
-                  title!</span> -->
-              </div>
-            </div>
+                        <div class="cust_err_msg"
+                        *ngIf="form_validation && !form.controls['salarytype'].valid">
+                        <span
+                          *ngIf="form.controls['salarytype'].errors['required']" class="text-danger">This field is required.</span>
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="form-group row">
-              <label multiple class="col-md-3 col-form-label" for="country">Country</label>
-              <div class="col-md-4">
-                <select class='select-option form-control' #mySelect
-                  (change)='onChange(mySelect.value)' formControlName="country">
-                  <option class='option' *ngFor='let option of _country' [value]="option.code">{{option.name}}</option>
-                </select>
-                <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->
-                <span *ngIf="!addOfferForm.get('country').valid && submitted" class="help-block">Please select
-                  Country!</span>
-              </div>
-            </div>
+                  <div class="form-group row" >
+                    <label class="col-md-3 col-form-label" for="salaryduration">Hourly Salary Duration</label>
+                    <div class="col-md-6">
 
-            <div class="form-group row">
-              <label multiple class="col-md-3 col-form-label" for="location">location</label>
-              <div class="col-md-4">
-                <select id="location" name="location" class="form-control" formControlName="location">
-                  <option [value]="data._id" *ngFor="let data of location1">{{data.city}}</option>
+                        <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration" id="salaryduration"  [(ngModel)]="offer_data.salaryduration" [disabled]="!(offer_data.salarytype === 'hourly')"></p-dropdown>
 
-                </select>
-                <span *ngIf="!addOfferForm.get('location').valid && submitted" class="help-block">Please select
-                  Location!</span>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="currency_type">Currency Type</label>
-              <div class="col-md-4">
-                <input type="text"  id="currency_type" name="currency_type" formControlName="currency_type" [value]="currency['currency']"
-                  class="form-control" placeholder="Currency Type" disabled>
-              </div>
-            </div>
-
-            <!-- //salary bracket -->
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="salarybracket">Salary Bracket</label>
-              <div class="col-md-3">
-                <select id="salarybracket"  name="salarybracket" class="form-control" formControlName="salarybracket">
-                  <option [value]="data._id" *ngFor="let data of salary">{{data.from}} to {{data.to}}</option>
-
-                </select>
-                <span *ngIf="!addOfferForm.get('salarybracket').valid && submitted" class="help-block">Please select
-                  Salary - Bracket!</span>
-              </div>
-            </div>
+                        <div class="cust_err_msg"
+                        *ngIf="form_validation && !form.controls['salaryduration'].valid">
+                        <span
+                          *ngIf="form.controls['salaryduration'].errors['required']" class="text-danger">This field is required.</span>
+                      </div>
+                    </div>
+                  </div>
 
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="expirydate">Expiry Date</label>
-              <div class="col-md-9">
-                <input type="date" formControlName="expirydate" id="expirydate">
-                <span *ngIf="!addOfferForm.get('expirydate').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('expirydate').errors['required']">This field is required!</span>
-                </span>
-              </div>
-            </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="country">Country</label>
+                    <div class="col-md-6">
+
+                        <p-dropdown [options]="contryList" formControlName="country" id="country"  [(ngModel)]="offer_data.country" (onChange)="findCities()" (select)="selectCountry($event)" ></p-dropdown>
+
+                        <div class="cust_err_msg"
+                        *ngIf="form_validation && !form.controls['country'].valid">
+                        <span
+                          *ngIf="form.controls['country'].errors['required']" class="text-danger">This field is required.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="location">Location</label>
+                    <div class="col-md-6">
+
+                        <p-dropdown [options]="location" optionLabel="city" optionValue="_id" formControlName="location" id="location"  [(ngModel)]="offer_data.location" ></p-dropdown>
+
+                        <div class="cust_err_msg"
+                        *ngIf="form_validation && !form.controls['location'].valid">
+                        <span
+                          *ngIf="form.controls['location'].errors['required']" class="text-danger">This field is required.</span>
+                      </div>
+                    </div>
+                  </div>
 
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="joiningdate">Joining Date</label>
-              <div class="col-md-9">
-                <input type="date" formControlName="joiningdate" id="joiningdate">
-                <span *ngIf="!addOfferForm.get('joiningdate').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('joiningdate').errors['required']">This field is required!</span>
-                </span>
-              </div>
-            </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="currency_type">Currency Type</label>
+                    <div class="col-md-6">
 
-         
-        <div class="form-group row" *ngIf="panelTitle === 'Edit Offer'" disabled>
-          <label class="col-md-3 col-form-label" for="status">Status</label>
-          <div class="col-md-9">
-          
-            <label class="switch" >
-                                <input type="checkbox" formControlName="status" id="status" [checked]>
-                                <span class="slider round"></span>
-                              </label>
-          </div>
-        </div>
+                      <input type="text"  id="currency_type" name="currency_type" formControlName="currency_type" [value]="currency['currency']"
+                      class="form-control" placeholder="Currency Type" disabled>
 
+                        <div class="cust_err_msg"
+                        *ngIf="form_validation && !form.controls['currency_type'].valid">
+                        <span
+                          *ngIf="form.controls['location'].errors['currency_type']" class="text-danger">This field is required.</span>
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="offertype">Offer Type</label>
-              <div class="col-md-3">
-                <select id="offertype" me="offertype" class="form-control" formControlName="offertype">
-                  <option value="0">Please select</option>
-                  <option value="noCommit">No Commit</option>
-                  <option value="candidateCommit">Candidate Commit</option>
-                  <option value="bothCommit">Both Commit</option>
-                </select>
-                <span *ngIf="!addOfferForm.get('offertype').valid && submitted" class="help-block">Please select
-                  Offer Type!</span>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="group">Group</label>
-              <div class="col-md-3">
-                <select id="groupField"  class="form-control" formControlName="group">
-                  <option [value]="data._id" *ngFor="let data of groups">{{data.name}}</option>
-
-                </select>
-                <span *ngIf="!addOfferForm.get('group').valid && submitted" class="help-block">Please select
-                  Group!</span>
-              </div>
-            </div>
-
-            <!-- //Commit Status -->
-
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="commitstatus">Commit Status</label>
-              <div class="col-md-3">
-                <select  id="commitstatus" name="commitstatus" class="form-control" formControlName="commitstatus">
-                  <option value="high">High</option>
-                  <option value="medium">Medium</option>
-                  <option value="low">Low</option>
-                </select>
-                <span *ngIf="!addOfferForm.get('commitstatus').valid && submitted" class="help-block">Please select
-                  Commit Status!</span>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="customfeild1">Custom Field 1</label>
-              <div class="col-md-8">
-                <input type="text"  class="form-control" placeholder="Enter customfeild1" autocomplete="customfeild1"
-                  formControlName="customfeild1" id="customfeild1">
-
-                <!-- <span *ngIf="!addOfferForm.get('customField1').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('customField1').errors['required']">This field is required!</span>
-                </span> -->
-              </div>
-            </div>
-
-
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="customfeild2">custom Field 2</label>
-              <div class="col-md-8">
-                <input type="text"  class="form-control" placeholder="Enter customField2" autocomplete="customfeild2"
-                  formControlName="customfeild2" id="customfeild2">
-
-                <!-- <span *ngIf="!addOfferForm.get('customField2').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('customField2').errors['required']">This field is required!</span>
-                </span> -->
-              </div>
-            </div>
-
-
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="customfeild3">Custom Field 3</label>
-              <div class="col-md-8">
-                <input type="text"  class="form-control" placeholder="Enter customfeild3" autocomplete="customfeild3"
-                  formControlName="customfeild3" id="customfeild3">
-
-                <!-- <span *ngIf="!addOfferForm.get('customField3').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('customField3').errors['required']">This field is required!</span>
-                </span> -->
-              </div>
-            </div>
-
-            <!-- notes -->
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="notes">Notes</label>
-              <div class="col-md-4">
-
-                <textarea class="form-control" older="Enter notes" autocomplete="notes" formControlName="notes"
-                  id="notes" maxlength="300" rows="4" style=" overflow-y: scroll;"></textarea>
-                <!-- <span *ngIf="!addOfferForm.get('notes').valid && submitted" class="help-block">
-                  <span *ngIf="addOfferForm.get('notes').errors['required']">This field is required!</span>
-                </span> -->
-              </div>
-            </div>
-            
-            <input type="hidden" formControlName="employer_id" name="employer_id" >
 
           </div>
+
           <div class="card-footer text-right">
-            <button type="submit" class="btn btn-sm btn-primary">
+            <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)">
               <!-- <i class="fa fa-dot-circle-o"></i> -->
               {{buttonTitle}}</button>
             <button type="reset" class="btn btn-sm btn-danger">
               <!-- <i class="fa fa-ban"></i> -->
               Reset</button>
           </div>
+
         </form>
       </div>
     </div>
   </div>
+  {{countryArr | json}}
 </div>

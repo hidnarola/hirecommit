@@ -14,8 +14,10 @@ export class LocationService {
 
     constructor(private http: HttpClient, private route: Router) { }
 
-    view_location(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_location');
+    view_location(params): Observable<any[]> {
+        console.log('hiii');
+
+        return this.http.post<any[]>(`${this.url}` + '/view_location', {...params});
     }
 
     deactivate_location(id): Observable<any[]> {

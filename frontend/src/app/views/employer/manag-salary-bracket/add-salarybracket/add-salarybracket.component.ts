@@ -22,8 +22,8 @@ export class AddSalarybracketComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
-  error= false;
-  error_msg ="can't be less then minimum salary!";
+  error = false;
+  error_msg = 'can\'t be less then minimum salary!';
   constructor(private router: Router, private service: SalaryBracketService, private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -37,14 +37,14 @@ export class AddSalarybracketComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(this.id);
-    })
+    });
 
-    this.getDetail(this.id)
+    this.getDetail(this.id);
 
     this.Country = countries;
-    var obj = [];
+    const obj = [];
 
-    for (let [key, value] of Object.entries(countries)) {
+    for (const [key, value] of Object.entries(countries)) {
       obj.push({ 'code': key, 'name': value });
     }
     this.Country = obj;
@@ -55,69 +55,64 @@ export class AddSalarybracketComponent implements OnInit {
 
       console.log(this.location);
       this.location.forEach(element => {
-        let fetch_country = element.country;
+        const fetch_country = element.country;
         this.unique = this.Country.filter(x => x.code === fetch_country);
         this._country.push(this.unique[0]);
       });
       this._country = this._country.filter(this.onlyUnique);
 
-    })
+    });
   }
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
 
-  onBlurMethod(from,to){
-      if(from > to ){
-        this.error =true;
-        this.error_msg = "can't be less then minimum salary!";
-      }
-    else if (from >= to) {
+  onBlurMethod(from, to) {
+      if (from > to ) {
+        this.error = true;
+        this.error_msg = 'can\'t be less then minimum salary!';
+      } else if (from >= to) {
       this.error = true;
-      this.error_msg = "Can't be same!";
-    }
-      else{
+      this.error_msg = 'Can\'t be same!';
+    } else {
         this.error = false;
       }
   }
 
   getDetail(id: string) {
-    if (id === '0') {
-      this.detail =
-        {
-          _id: null,
-          country: null,
-          currency: null,
-          from: null,
-          to: null,
-
-        };
-      this.panelTitle = 'Add Salary Bracket';
-      this.buttonTitle = "Add";
-      this.AddSalaryBracket.reset();
-    }
-    else {
+    if (this.id) {
       this.panelTitle = 'Edit Salary Bracket';
-      this.buttonTitle = "Edit";
+      this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-      this.detail = res['data']['data']
-        console.log("subscribed!", this.detail);
+      this.detail = res['data']['data'];
+        console.log('subscribed!', this.detail);
       });
-      // console.log('incoming salary', this.detail);
+    } else {
+      this.detail = {
+        _id: null,
+        country: null,
+        currency: null,
+        from: null,
+        to: null,
+      };
+    this.panelTitle = 'Add Salary Bracket';
+    this.buttonTitle = 'Add';
+    this.AddSalaryBracket.reset();
+    // console.log('incoming salary', this.detail);
     }
   }
 
   onChange(e) {
 
-    //location
+    // location
     // this.service.get_location().subscribe(res => {
     //   this.location1 = res['data']['data'];
     //   this.location1 = this.location1.filter(x => x.country === e);
 
-    //currency
+    // currency
     this.currency = Currency;
-    var obj = [];
-    for (let [key, value] of Object.entries(this.currency)) {
+    const obj = [];
+    for (const [key, value] of Object.entries(this.currency)) {
       obj.push({ 'code': key, 'currency': value });
     }
     this.currency = obj;
@@ -130,25 +125,22 @@ export class AddSalarybracketComponent implements OnInit {
   }
 
   onSubmit(flag: boolean, id) {
-    console.log("get id", id);
-    if (id != 0) {
+    if (this.id) {
       this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
         console.log('edited successfully!!!');
         this.router.navigate(['/employer/manage_salarybracket/view_salarybracket']);
-      })
-    }
-    else {
+      });
+    } else {
     this.submitted = !flag;
-      console.log("added salary", this.AddSalaryBracket.value);
+      console.log('added salary', this.AddSalaryBracket.value);
       this.service.add_salary_brcaket(this.AddSalaryBracket.value).subscribe(res => {
-        console.log("addded");
+        console.log('addded');
         this.router.navigate(['/employer/manage_salarybracket/view_salarybracket']);
-      })
+      });
       if (flag) {
         this.AddSalaryBracket.reset();
       }
     }
-
   }
 
 

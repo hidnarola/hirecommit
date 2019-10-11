@@ -12,13 +12,19 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'add_location/:id',
+        path: 'add_location',
         component: AddLocationComponent,
         data: {
           title: 'Add Location'
         }
       },
-
+      {
+        path: 'add_location/:id',
+        component: AddLocationComponent,
+        data: {
+          title: 'Edit Location'
+        }
+      },
       {
         path: 'view_location',
         component: ViewLocationComponent,

@@ -28,6 +28,9 @@
               "node_modules/simple-line-icons/css/simple-line-icons.css",
               "node_modules/datatables.net-dt/css/jquery.dataTables.css",
               "node_modules/ngx-toastr/toastr.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
               "src/scss/style.scss"
             ],
             "stylePreprocessorOptions": {

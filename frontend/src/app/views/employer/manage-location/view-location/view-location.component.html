@@ -5,22 +5,20 @@
         <div class="card-header">
           <i class="fa fa-align-justify"></i> Location
           <p class="pull-right"></p>
-          <i class="pull-right icon-plus" [routerLink]="['/employer/manage_location/add_location/0']"> Add Location</i>
+          <i class="pull-right icon-plus" [routerLink]="['/employer/manage_location/add_location']"> Add Location</i>
         </div>
         <div class="card-body">
           <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
-          <table datatable class="row-border hover table" id="example" class="" cellspacing="0" width="100%">
+          <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
             <thead>
               <tr>
-
                 <th>City</th>
                 <th>Country</th>
                 <th>Action</th>
               </tr>
             </thead>
 
-            <tbody>
-              
+            <tbody *ngIf="locations?.length != 0">
               <tr *ngFor="let data of locations|| sal of sal">
                 <td>{{data.city}}</td>
                 <td *ngIf='GetCountry(data.country)'>{{c_name}}</td>
@@ -30,9 +28,12 @@
                   <button type="button" class="btn btn-sm btn-danger" (click)="delete(data._id)"><i
                       class="icon-trash"></i></button></td>
               </tr>
-
-
             </tbody>
+            <tbody *ngIf="locations?.length == 0">
+              <tr>
+                <td colspan="8" class="no-data-available">No data!</td>
+              </tr>
+            <tbody>
           </table>
         </div>
       </div>

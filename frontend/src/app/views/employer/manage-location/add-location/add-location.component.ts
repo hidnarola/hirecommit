@@ -31,39 +31,36 @@ export class AddLocationComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       // console.log(this.id);
-    })
+    });
     this.getDetail(this.id);
 
     this.Country = countries;
-    var obj = [];
-    for (let [key, value] of Object.entries(countries)) {
+    const obj = [];
+    for (const [key, value] of Object.entries(countries)) {
       obj.push({ 'code': key, 'name': value });
     }
     this.Country = obj;
   }
 
   getDetail(id: string) {
-    if (id === '0') {
-      this.detail =
-        {
-          _id: null,
-          city: null,
-          country: null,
-        };
-      this.panelTitle = 'Add Location';
-      this.buttonTitle = "Add";
-      this.addLocation.reset();
-    }
-    else {
+    if (this.id) {
       this.panelTitle = 'Edit Location';
-      this.buttonTitle = "Edit";
+      this.buttonTitle = 'Edit';
       this.service.get_location(id).subscribe(res => {
         // console.log('res', res);
 
-        this.detail = res['data']['data']
+        this.detail = res['data']['data'];
         // console.log("subscribed!", this.detail);
       });
-
+    } else {
+      this.detail = {
+        _id: null,
+        city: null,
+        country: null,
+      };
+    this.panelTitle = 'Add Location';
+    this.buttonTitle = 'Add';
+    this.addLocation.reset();
     }
   }
 
@@ -71,18 +68,17 @@ export class AddLocationComponent implements OnInit {
 
   onSubmit(flag: boolean, id) {
     this.submitted = !flag;
-    if (id != 0) {
+    if (this.id) {
       this.service.edit_location(this.id, this.addLocation.value).subscribe(res => {
         // console.log('edited !!');
-      })
-    }
-    else {
+      });
+    } else {
       if (flag) {
         // console.log("incoming", this.addLocation);
         this.service.add_location(this.addLocation.value).subscribe(res => {
           this.location = res;
-          this.bind();
-        })
+          // this.bind();
+        });
         this.addLocation.reset();
       }
     }
@@ -93,10 +89,10 @@ export class AddLocationComponent implements OnInit {
     this.router.navigate(['/employer/manage_location/view_location']);
   }
 
-  public bind() {
-    this.service.view_location().subscribe(res => {
-      this.locations = res['data']['data'];
-      this.location = this.location.filter(x => x.is_del === false)
-    })
-  }
+  // public bind() {
+  //   this.service.view_location().subscribe(res => {
+  //     this.locations = res['data']['data'];
+  //     this.location = this.location.filter(x => x.is_del === false);
+  //   });
+  // }
 }
