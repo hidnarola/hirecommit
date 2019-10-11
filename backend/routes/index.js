@@ -27,6 +27,7 @@ var Role = require('./../models/role');
 var User = require('./../models/user');
 var Candidate_Detail = require('./../models/candidate-detail');
 var Employer_Detail = require('./../models/employer-detail');
+var CountryData = require('./../models/country_data');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
@@ -304,7 +305,7 @@ router.post("/candidate_register", async (req, res) => {
             //       }
             //   }
             //   );
-          } 
+          }
           else {
             res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
           }
@@ -731,5 +732,23 @@ router.put('/change_password', async (req, res) => {
       res.status(config.BAD_REQUEST).json({ message: errors });
   }
 })
+
+async function getCountry(req, res){
+  try {
+    var condition = {};
+    if (req.params.id) {
+      condition = { ...condition, _id: req.params.id }
+    }
+    const country = await CountryData.find(condition).lean();
+    return res.status(config.OK_STATUS).json({success: true, message: 'country list fetched successfully.',
+    data: country});
+  } catch (error) {
+    return res.status(config.INTERNAL_SERVER_ERROR).send({success: false,
+  message: 'Error in Fetching country data',data: country});
+  }
+}
+
+router.get('/country', getCountry);
+router.get('/country/:id', getCountry);
 
 module.exports = router;
