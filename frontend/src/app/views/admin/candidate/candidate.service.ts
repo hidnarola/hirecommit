@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import * as env from '../../../../environments/environment.prod';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -24,4 +25,19 @@ export class CandidateService {
 
         return this.http.get<any[]>(`${this.url}` + '/manage_candidate/approved_candidate');
     }
+
+    approve_candidate(id) : Observable<any[]>{
+        return this.http.put<any[]>(`${this.url}` + '/approved_candidate/' + id,null)
+    }
+    deactivate_candidate(id): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/deactive_candidate/' + id, null)
+    }
+
+    candidate_detail(id): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/candidate_detail/' + id)
+    }
+
+  
+
+   
 }

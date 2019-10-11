@@ -7,7 +7,7 @@
             <!-- <i class="icon-plus" style="float: right; font-size: 25px" [routerLink]="['/employer/add']"></i> -->
           </div>
           <div class="card-body">
-              <table datatable class="table" id="example" cellspacing="0" width="100%" >
+              <table datatable class="row-border hover table">
                   <thead>
                     <tr>
                       <td>Employer Name</td>
@@ -19,9 +19,9 @@
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody *ngIf="offerList?.length != 0">
                       <tr *ngFor="let data of offerList">
-                        <td>{{employer.username}}</td>
+                        <td>{{employer[0].username}}</td>
                         <td>{{data.title}}</td>
                         <td>{{data.salarybracket}}</td>
                         <td>{{data.salarytype}}</td>
@@ -35,6 +35,11 @@
                         </td>
                       </tr>
                   </tbody>
+                  <tbody *ngIf="offerList?.length == 0">
+                    <tr>
+                      <td colspan="4" class="no-data-available">No data!</td>
+                    </tr>
+                  <tbody>
                 </table>
           </div>
         </div>

@@ -17,9 +17,7 @@ var employer_detail=require('../models/employer-detail');
 router.use("/candidate", auth, authorization, index);
 
 router.get('/view_offer', async (req, res) => {
-   
     var offer_list = await common_helper.find(offer, {});
-    
     console.log("candidate offer", offer_list);
 
     if (offer_list.status === 1) {

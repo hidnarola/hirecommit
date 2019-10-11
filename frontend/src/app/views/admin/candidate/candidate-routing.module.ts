@@ -24,7 +24,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'candidate_detail',
+        path: 'candidate_detail/:id',
         component: CandidatedetailApproveComponent,
         data: {
           title: 'ApproveCandidateDetail'
@@ -38,7 +38,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'newcandidate_detail',
+        path: 'newcandidate_detail/:id',
         component: NewcandidateDetailComponent,
         data: {
           title: 'NewCandidateDetail'

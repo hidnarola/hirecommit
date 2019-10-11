@@ -103,7 +103,7 @@ router.post("/add_role", async (req, res) => {
 
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
-  console.log(req);
+  console.log(req.body);
     var schema = {
         "firstname": {
             notEmpty: true,
@@ -129,13 +129,13 @@ router.post("/candidate_register", async (req, res) => {
           notEmpty: true,
           errorMessage: "Password is required"
         },
-        "contactno": {
+        "countrycode": {
           notEmpty: true,
           errorMessage: "countrycode is required"
         },
         "contactno": {
           notEmpty: true,
-          errorMessage: "countrycode is required"
+          errorMessage: "contactno is required"
         }
     };
 
@@ -179,102 +179,133 @@ router.post("/candidate_register", async (req, res) => {
                 "country": req.body.country,
                 "contactno": req.body.contactno,
                 "documenttype": req.body.documenttype,
+                "documentimage": req.body.documentImage,
                 "user_id": new ObjectId(interest_user_resp.data._id)
             };
+            var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
+            if (interest_resp.status == 0) {
+              logger.debug("Error = ", interest_resp.error);
+              res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+              var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                config.ACCESS_TOKEN_SECRET_KEY, {
+                expiresIn: 60 * 60 * 24 * 3
+              }
+              )).toString('base64');
 
-            async.waterfall(
-              [
-                  function (callback) {
-                      if (req.files && req.files["documentimage"]) {
-                          var image_path_array = [];
-                          var file = req.files['documentimage'];
-                          var files = [].concat(req.files.documentimage);
-                          var dir = "./upload";
-                          var filename = file.name;
-                          async.eachSeries(
-                              files,
-                              function (file, loop_callback) {
-                                  var mimetype = path.extname(file.name);
-                                  var mimetype = ["image/jpeg","image/png", 'application/pdf'];
-                                  if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
-                                      if (!fs.existsSync(dir)) {
-                                          fs.mkdirSync(dir);
-                                      }
-                                      var filename = file.name;
-                                      file.mv(dir + "/" + filename, function (err) {
-                                          if (err) {
-                                              logger.error("There was an issue in uploading");
-                                              loop_callback({
-                                                  status: config.MEDIA_ERROR_STATUS,
-                                                  err: "There was an issue in uploading"
-                                              });
-                                          } else {
-                                              logger.trace(
-                                                  "image has been uploaded. File name = ",
-                                                  filename
-                                              );
-                                              location = filename;
-                                              image_path_array.push(location);
-                                              loop_callback();
-                                          }
-                                      });
-                                  } else {
-                                      logger.error(" format is invalid");
-                                      loop_callback({
-                                          status: config.VALIDATION_FAILURE_STATUS,
-                                          err: " format is invalid"
-                                      });
-                                  }
-                              },
-                              function (err) {
-                                  if (err) {
-                                      res.status(err.status).json(err);
-                                  } else {
-                                      callback(null, image_path_array);
-                                  }
-                              }
-                          );
-                      } else {
-                          logger.info(
-                              "File not available to upload. Executing next instruction"
-                          );
-                          callback(null, []);
-                      }
-                  }
-              ],
-              async (err, image_path_array) => {
-                reg_obj.documentimage = image_path_array;
-                  var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
-                  if (interest_resp.status == 0) {
-                      logger.debug("Error = ", interest_resp.error);
-                      res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-                  } else {
-                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
-                      config.ACCESS_TOKEN_SECRET_KEY, {
-                        expiresIn: 60 * 60 * 24 * 3
-                      }
-                    )).toString('base64');
+              var time = new Date();
+              time.setMinutes(time.getMinutes() + 20);
+              time = btoa(time);
 
-                    var time = new Date();
-                    time.setMinutes(time.getMinutes() + 20);
-                    time = btoa(time);
-
-                    logger.trace("sending mail");
-                    let mail_resp = await mail_helper.send("email_confirmation", {
-                        "to": interest_user_resp.data.email,
-                        "subject": "HC - Email Confirmation"
-                    }, {
-                        // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-                        "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
-                    });
-                    if (mail_resp.status === 0) {
-                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-                    } else {
-                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp  })
-                    }
-                  }
+              logger.trace("sending mail");
+              let mail_resp = await mail_helper.send("email_confirmation", {
+                "to": interest_user_resp.data.email,
+                "subject": "HC - Email Confirmation"
+              }, {
+                // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
+                "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
               });
-          } else {
+              if (mail_resp.status === 0) {
+                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+              } else {
+                res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp })
+              }
+            }
+            // async.waterfall(
+            //   [
+            //       function (callback) {
+            //           if (req.files && req.files["documentimage"]) {
+            //               var image_path_array = [];
+            //               var file = req.files['documentimage'];
+            //               var files = [].concat(req.files.documentimage);
+            //               var dir = "./upload";
+            //               var filename = file.name;
+            //               async.eachSeries(
+            //                   files,
+            //                   function (file, loop_callback) {
+            //                       var mimetype = path.extname(file.name);
+            //                       var mimetype = ["image/jpeg","image/png", 'application/pdf'];
+            //                       if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
+            //                           if (!fs.existsSync(dir)) {
+            //                               fs.mkdirSync(dir);
+            //                           }
+            //                           var filename = file.name;
+            //                           file.mv(dir + "/" + filename, function (err) {
+            //                               if (err) {
+            //                                   logger.error("There was an issue in uploading");
+            //                                   loop_callback({
+            //                                       status: config.MEDIA_ERROR_STATUS,
+            //                                       err: "There was an issue in uploading"
+            //                                   });
+            //                               } else {
+            //                                   logger.trace(
+            //                                       "image has been uploaded. File name = ",
+            //                                       filename
+            //                                   );
+            //                                   location = filename;
+            //                                   image_path_array.push(location);
+            //                                   loop_callback();
+            //                               }
+            //                           });
+            //                       } else {
+            //                           logger.error(" format is invalid");
+            //                           loop_callback({
+            //                               status: config.VALIDATION_FAILURE_STATUS,
+            //                               err: " format is invalid"
+            //                           });
+            //                       }
+            //                   },
+            //                   function (err) {
+            //                       if (err) {
+            //                           res.status(err.status).json(err);
+            //                       } else {
+            //                           callback(null, image_path_array);
+            //                       }
+            //                   }
+            //               );
+            //           } else {
+            //               logger.info(
+            //                   "File not available to upload. Executing next instruction"
+            //               );
+            //               callback(null, []);
+            //           }
+            //       }
+            //   ],
+            //   async (err, image_path_array) => {
+            //     reg_obj.documentimage = image_path_array;
+            //       var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
+            //       if (interest_resp.status == 0) {
+            //           logger.debug("Error = ", interest_resp.error);
+            //           res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            //       } else {
+            //         var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+            //           config.ACCESS_TOKEN_SECRET_KEY, {
+            //             expiresIn: 60 * 60 * 24 * 3
+            //           }
+            //         )).toString('base64');
+
+            //         var time = new Date();
+            //         time.setMinutes(time.getMinutes() + 20);
+            //         time = btoa(time);
+
+            //         logger.trace("sending mail");
+            //         let mail_resp = await mail_helper.send("email_confirmation", {
+            //             "to": interest_user_resp.data.email,
+            //             "subject": "HC - Email Confirmation"
+            //         }, {
+            //             // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
+            //             "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+            //         });
+            //         if (mail_resp.status === 0) {
+            //             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+            //         } else {
+            //             res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp  })
+            //         }
+            //       }
+            //   }
+            //   );
+          } 
+          else {
             res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
           }
         }
@@ -284,7 +315,8 @@ router.post("/candidate_register", async (req, res) => {
         logger.error("Validation Error = ", errors);
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
-});
+}
+);
 
 // employer Registration
 router.post("/employer_register", async (req, res) => {

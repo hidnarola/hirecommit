@@ -1,46 +1,52 @@
 <div class="animated fadeIn">
-  <div class="row">
+  <div class="row" *ngIf="form">
     <div class="col-sm-12 col-md-12">
       <div class="card">
         <div class="card-header">
           Approved Candidate Detail
-          <i class="icon-close" [routerLink]="['/admin/candidate_manage/approve_candidate']"></i>
+          <i class="icon-close" (click)="check(candidates.user_id.isAllow)"></i>
         </div>
         <div class="card-body">
           <table class="table">
             <tbody>
               <tr>
-                <td>Candidate Name</td> 
+                <td>Candidate Name</td>
                 <td>{{candidates.firstname}} {{candidates.lastname}}</td>
               </tr>
               <tr>
                 <td>Candidate Email</td>
-                <td>vik@narola.email</td>
+                <td>{{candidates.user_id.email}}</td>
               </tr>
               <tr>
                 <td>Phone</td>
-                <td>9274512415</td>
+                <td>{{candidates.countrycode}} {{candidates.contactno}}</td>
               </tr>
               <tr>
-                <td>PAN</td>
-                <td>748x69dwsae14</td>
+                <td>Document Type</td>
+                <td>{{candidates.documenttype}}</td>
               </tr>
               <tr>
-                <td>PAN Image</td>
-                <td><img src="assets/img/brand/download.jpg" style="width:70px; height: 50px;"/></td>
+                <td>Document Image</td>
+                <td><img src="{{candidates.documentimage}}" alt="ABC" style="width:70px; height: 50px;" /></td>
               </tr>
               <tr>
                 <td>Date Of Register</td>
-                <td>05-09-2019</td>
+                <td>{{candidates.createdAt.split('T')[0]}}</td>
               </tr>
             </tbody>
-          </table>
+            </table>
+            
+            <div style="float: right;">
+              <button type="button" class="btn btn-sm btn-success" *ngIf="buttonValue != null"
+                (click)="onApproved(candidates.user_id._id)">{{buttonValue}}</button>
+              <button type="button" class="btn btn-sm btn-danger"
+                (click)="onUnapproved(candidates.user_id._id)">{{buttonValue1}}</button>
+              <!-- <button type="button" class="btn btn-sm btn-danger" (click)="cancel()">Cancel</button> -->
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
 
-          <!-- <div style="float: right;">
-            <button type="button" class="btn btn-sm btn-info" (click)="cancel()">Cancel</button>
-          </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
