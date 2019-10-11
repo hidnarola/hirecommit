@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular
 import { Router } from '@angular/router';
 import { LocationService } from '../manage-location.service';
 import { countries } from '../../../../shared/countries';
-import { timeout } from 'q';
+
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
@@ -78,15 +78,6 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     this.country = countries;
 
   }
-
-
-
-
-
-
-
-
-
   detail() {
     // this.router.navigate(['/groups/summarydetail']);
   }
@@ -100,6 +91,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('deactivate location', res);
       // this.bind();
     });
+    
   }
 
 
