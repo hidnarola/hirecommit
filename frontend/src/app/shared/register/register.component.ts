@@ -20,13 +20,14 @@ export class RegisterComponent implements OnInit {
   formData;
   isChecked = false;
   marked = false;
-
+  imgurl: any = '';
   // tslint:disable-next-line: max-line-length
   constructor(public router: Router, private service: CommonService, private toastr: ToastrService, public fb: FormBuilder,  private cd: ChangeDetectorRef) {
     this.registerData = {};
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
+      documentImage: new FormControl(this.imgurl, [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
@@ -38,9 +39,9 @@ export class RegisterComponent implements OnInit {
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
 
-    this.documentImage = this.fb.group({
-      documentimage: new FormControl('', [Validators.required]),
-    });
+    // this.documentImage = this.fb.group({
+    //   documentimage: new FormControl('', [Validators.required]),
+    // });
   }
 
   ngOnInit() {
@@ -50,6 +51,7 @@ export class RegisterComponent implements OnInit {
   onSubmit (valid) {
     this.isFormSubmited = true;
     if (valid && this.marked) {
+      this.registerData.documentImage = this.imgurl
       this.formData  = new FormData();
       // tslint:disable-next-line: forin
       for (const key in this.registerData) {
@@ -57,10 +59,11 @@ export class RegisterComponent implements OnInit {
         this.formData.append(key, value);
       }
 
-      if (this.fileFormData.get('filename')) {
-        this.formData.append('documentimage', this.fileFormData.get('filename'));
-      }
-
+      // if (this.fileFormData.get('filename')) {
+      //   this.formData.append('documentimage', this.imgurl);
+      // }
+    //  this.registerForm.controls.documentImage.setValue(this.imgurl)
+     // this.documentImage.controls.documentimage.setValue(this.imgurl);
       this.service.candidate_signup(this.formData).subscribe(res => {
         console.log(res);
         this.isFormSubmited = false;
@@ -83,18 +86,25 @@ export class RegisterComponent implements OnInit {
     if (event.target.files && event.target.files.length > 0) {
       this.file = event.target.files[0];
       this.fileFormData.append('filename', this.file);
-
       reader.readAsDataURL(this.file);
-      reader.onload = () => {
-        this.documentImage.patchValue({
-          documentimage: reader.result
-       });
+      reader.onload = this._handleReaderLoaded.bind(this);
+      // reader.onload = () => {
+      //   this.documentImage.patchValue({
+      //     documentimage: reader.result
+      //  });
+      this.imgurl = reader.result
         // need to run CD since file load runs outside of zone
         this.cd.markForCheck();
       };
     }
+  _handleReaderLoaded(e) {
+    let reader = e.target;
+    this.imgurl = reader.result;
+    console.log(this.imgurl)
   }
 
+  
+ 
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
     const confirmpassword = g.get('confirmpassword').value;
@@ -108,3 +118,4 @@ export class RegisterComponent implements OnInit {
     console.log(this.marked);
  }
 }
+

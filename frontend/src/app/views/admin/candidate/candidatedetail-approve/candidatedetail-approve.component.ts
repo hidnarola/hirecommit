@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CandidateService } from '../candidate.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-candidatedetail-approve',
@@ -9,17 +9,69 @@ import { Router } from '@angular/router';
 })
 export class CandidatedetailApproveComponent implements OnInit {
   candidates: any;
-  constructor(private service : CandidateService,private router : Router) { }
+  id: any;
+  form = false;
+  buttonValue: any;
+  buttonValue1: String;
+  constructor(private service: CandidateService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+    })
+
+    this.bind();
   }
 
   cancel() {
   }
- public bind(){
-   this.service.get_candidate().subscribe(res => {
-     this.candidates = res['data'];
-     this.candidates = this.candidates.filter(x => x.is_del === false);
-   })
- }
+  public bind() {
+    this.service.candidate_detail(this.id).subscribe(res => {
+      this.candidates = res['data'];
+      this.form = true;
+      if (this.candidates.user_id.isAllow === false) {
+        this.buttonValue = 'Approve'
+        this.buttonValue1 = 'unapprove'
+      }
+      else {
+
+        this.buttonValue1 = 'Cancel'
+      }
+     
+      console.log('img', this.candidates);
+
+    })
+  }
+  check(routes) {
+    if (routes === false) {
+      this.router.navigate(['/admin/candidate_manage/new_candidate']);
+    }
+    else {
+      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+    }
+  }
+
+
+  onApproved(id) {
+    this.service.approve_candidate(id).subscribe(res => {
+      console.log('approved!!!');
+      this.bind();
+      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+    })
+  }
+
+  onUnapproved(id) {
+    console.log(id);
+
+    this.service.deactivate_candidate(id).subscribe(res => {
+      console.log("Deleted!!");
+      this.router.navigate(['/admin/candidate_manage/new_candidate']);
+    })
+
+  }
+
+
+  
+
+  // [routerLink] = "['/admin/candidate_manage/approve_candidate']"
 }

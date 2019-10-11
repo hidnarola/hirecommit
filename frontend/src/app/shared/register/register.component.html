@@ -124,9 +124,9 @@
                             <i class="icon-doc"></i>
                           </span>
                         </div>
-                        <input type="file" class="form-control" placeholder="Select any image file"  (change)="onFileChange($event)">
-                        <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmited">
-                          <span>DocumentImage is required.</span>
+                        <input type="file" [(ngModel)]="registerData.documentImage" name="documentImage"  formControlName="documentImage" class="form-control" placeholder="Select any image file"  (change)="onFileChange($event)" value=''>
+                        <div class="error" *ngIf="!registerForm.controls['documentImage'].valid && isFormSubmited">
+                          <span  *ngIf="!registerForm.controls['documentImage'].errors['required']">DocumentImage is required.</span>
                         </div>
                       </div>
                     </div>

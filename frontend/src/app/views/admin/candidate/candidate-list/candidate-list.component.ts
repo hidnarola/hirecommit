@@ -11,7 +11,7 @@ import { CandidateService } from '../candidate.service';
 })
 export class CandidateListComponent implements OnInit, OnDestroy {
   candidates:any;
-  constructor(private router: Router,private service : CandidateService) { }
+  constructor(private route: Router,private service : CandidateService) { }
   // dtOptions: DataTables.Settings = {};
   // dtTrigger = new Subject();
   ngOnInit() {
@@ -56,14 +56,23 @@ export class CandidateListComponent implements OnInit, OnDestroy {
   ngOnDestroy = () => {
     // this.dtTrigger.unsubscribe();
   }
-  onDetail(){
-    this.router.navigate(['/admin/candidate_manage/candidate_detail']);
+  onDelete(id) {
+    this.service.deactivate_candidate(id).subscribe(res => {
+      console.log("deactivate!!");
+      this.bind();
+    })
+
+  }
+  detail(id) {
+    this.route.navigate(['admin/candidate_manage/candidate_detail/' + id])
   }
 
    public bind(){
      this.service.get_candidate().subscribe(res => {
             this.candidates = res['data'];
-            console.log(this.candidates);
+       console.log('>>',this.candidates);
+            this.candidates = this.candidates.filter(x => x.user_id.isAllow === true)
+            // this.candidates = this.candidates.filter(x => x.is_del === false)
             
      })
    }

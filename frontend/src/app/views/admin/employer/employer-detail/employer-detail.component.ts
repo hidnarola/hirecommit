@@ -8,11 +8,13 @@ import { EmployerService } from '../employer.service';
   styleUrls: ['./employer-detail.component.scss']
 })
 export class EmployerDetailComponent implements OnInit {
-  approval: boolean =  false;
+ 
   id: any;
   employer_detail : any;
   name : any=[];
   form = false;
+  buttonValue:any;
+  buttonValue1: String;
   constructor(private router: Router,private service: EmployerService,private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -23,6 +25,14 @@ export class EmployerDetailComponent implements OnInit {
     this.service.getemployerDetail(this.id).subscribe(res => {
       this.employer_detail = res['data'];
       this.form =true;
+      if (this.employer_detail.user_id.isAllow === false) {
+        this.buttonValue = 'Approve'
+        this.buttonValue1 = 'unapprove'
+      }
+      else {
+    
+        this.buttonValue1 = 'Cancel'
+      }
       console.log('details >>',this.employer_detail);
       
       this.name = this.employer_detail.username.split(' ');
@@ -31,15 +41,34 @@ export class EmployerDetailComponent implements OnInit {
     })
   }
 
-  cancel() {
-    this.router.navigate(['admin/employer_manage/view']);
+  onApproved(id){
+    this.service.aprroved_employer(id).subscribe(res => {
+      console.log("approved!!!",res);
+      this.router.navigate(['/admin/employer_manage/view']);
+    })
   }
 
-  approve() {
-    this.approval = true;
+  onUnapproved(id) {
+    console.log(id);
+
+    this.service.deactivate_employer(id).subscribe(res => {
+      console.log("Deleted!!");
+      this.router.navigate(['admin/employer_manage/new_employer']);
+    })
+
+  }
+  
+
+  check(routes) {
+    if (routes === false) {
+      this.router.navigate(['admin/employer_manage/new_employer']);
+     
+    }
+    else {
+      this.router.navigate(['/admin/employer_manage/view']);
+     
+    }
   }
 
-  unapprove() {
-    this.approval = false;
-  }
+
 }

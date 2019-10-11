@@ -22,13 +22,14 @@
                       <tr>
                         <td>{{candidate.firstname}} {{candidate.lastname}}</td>
                         <td>{{candidate.user_id.email}}</td>
-                        <td>{{candidate.contactno}}</td>
+                        <td>{{candidate.countrycode}} {{candidate.contactno}}</td>
                         <td>{{candidate.documenttype}}</td>
-                        <td>{{candidate.createdAt}}</td>
+                        <td>{{candidate.createdAt.split('T')[0]}}</td>
                         <td>
-                          <button type="button" class="btn btn-sm btn-success" [routerLink]="['/admin/candidate_manage/candidate_detail']"><i class="icon-eye"></i></button>
-                          <button type="button" class="btn btn-sm btn-primary"><i class="icon-pencil"></i></button>
-                          <button type="button" class="btn btn-sm btn-danger" ><i class="icon-trash"></i></button>
+                          <button type="button" class="btn btn-sm btn-success" (click)="detail(candidate._id)"><i class="icon-eye"></i></button>
+                          <button type="button" class="btn btn-sm btn-danger" (click)="onDelete(candidate.user_id._id)"><i
+                              class="icon-trash"></i></button>
+                        
                         </td>
                       </tr>
                       
