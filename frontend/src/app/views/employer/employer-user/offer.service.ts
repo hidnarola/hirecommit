@@ -34,8 +34,8 @@ export class OfferService {
         return this.http.put<any[]>(`${this.url}` + '/offer/edit_offer/' + id, data);
     }
 
-    get_location(): Observable <any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_location');
+    get_location(country: string): Observable <any[]> {
+        return this.http.get<any[]>(`${this.url}` + `/get_location/${country}`);
     }
 
     get_groups(): Observable <any[]> {
@@ -43,7 +43,7 @@ export class OfferService {
     }
 
     get_salary_brcaket(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_salary_bracket');
+        return this.http.get<any[]>(`${this.url}` + '/get_salary_bracket');
     }
 
     change_status(id, data): Observable<any[]> {

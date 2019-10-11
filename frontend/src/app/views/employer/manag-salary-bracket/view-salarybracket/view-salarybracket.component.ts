@@ -107,9 +107,11 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       columns: [
         {
           data: 'country'
-        }, {
+        },
+        {
           data: 'currency'
-        }, {
+        },
+        {
           data: 'from'
         },
         {

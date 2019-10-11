@@ -3,20 +3,25 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const Salary_Bracket_Schema = new Schema({
- country:{
-  type: String,
-  required: true
- },
-  currency: {
-    type: String,
-    // required: true
+//  country:{
+//   type: String,
+//   required: true
+//  },
+//   currency: {
+//     type: String,
+//     // required: true
+//   },
+  location: {
+    type: mongoose.Types.ObjectId,
+    ref: "location",
+    required: true
   },
   from:{
-    type:Number,
+    type: String,
     require: true
   },
   to: {
-    type: Number,
+    type: String,
     require: true
   },
   is_del: {

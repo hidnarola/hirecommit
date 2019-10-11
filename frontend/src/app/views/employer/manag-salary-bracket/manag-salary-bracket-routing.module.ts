@@ -10,10 +10,17 @@ const routes: Routes = [
   },
   children: [
   {
-    path: 'add_salarybracket/:id',
+    path: 'add_salarybracket',
     component: AddSalarybracketComponent,
     data: {
       title: 'Add Salary-bracket'
+    }
+  },
+  {
+    path: 'add_salarybracket/:id',
+    component: AddSalarybracketComponent,
+    data: {
+      title: 'Update Salary-bracket'
     }
   },
 
