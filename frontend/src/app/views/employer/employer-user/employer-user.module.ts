@@ -8,6 +8,7 @@ import { EmployerSummaryDetailComponent } from './employer-summary-detail/employ
 import { DataTablesModule } from 'angular-datatables';
 import { ReactiveFormsModule } from '@angular/forms';
 import {DropdownModule} from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {DropdownModule} from 'primeng/dropdown';
   EmployerUserRoutingModule,
   DataTablesModule,
   ReactiveFormsModule,
-  DropdownModule
+  DropdownModule,
+  CalendarModule
 ]
 })
 export class EmployerUserModule { }

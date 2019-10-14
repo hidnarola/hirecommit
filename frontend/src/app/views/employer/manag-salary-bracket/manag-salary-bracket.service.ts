@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ReturnStatement } from '@angular/compiler';
-import * as env from '../../../../environments/environment.prod';
+import * as env from '../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -29,7 +29,7 @@ export class SalaryBracketService {
      }
 
     get_location(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/view_location');
+        return this.http.get<any[]>(`${this.url}` + '/get_location');
     }
 
     edit_salary_bracket(id, data): Observable<any[]> {

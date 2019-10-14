@@ -14,7 +14,7 @@
                                     <label multiple class="col-md-3 col-form-label" for="country">Country</label>
                                     <div class="col-md-4">
                                         <select class='select-option form-control' formControlName="country" [(ngModel)]="detail.country">
-                                            <option class='option' *ngFor='let option of Country' [value]="option.code">{{option.name}}</option>
+                                            <option class='option' *ngFor='let option of Country' [value]="option._id">{{option.country}}</option>
                                         </select>
                                         <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->
                                         <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">Please select
@@ -51,3 +51,5 @@
         </div>
     </div>
 </div>
+
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->

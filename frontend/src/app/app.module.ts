@@ -12,7 +12,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ForgotPasswordComponent } from './shared/forgot-password/forgot-password.component';
 import { SignUpComponent } from './shared/sign-up/sign-up.component';
 import { RegisterComponent } from './shared/register/register.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RoleGuardService } from './services/auth/role-guard.service';
 import { AuthGuardService } from './services/auth/auth-guard.service';
 import { AuthService } from './services/auth/auth.service';
@@ -21,6 +21,7 @@ import { EmailconfermationComponent } from './shared/emailconfermation/emailconf
 import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { ToastrModule } from 'ngx-toastr';
+import { Interceptor } from './shared/interceptor';
 
 export function getToken(): string {
   return localStorage.getItem('token');
@@ -32,6 +33,7 @@ export function getToken(): string {
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+   
     HttpClientModule,
     JwtModule.forRoot({
       config: {
@@ -54,7 +56,8 @@ export function getToken(): string {
     EmailconfermationComponent,
     ResetPasswordComponent
   ],
-  providers: [ AuthService, AuthGuardService, RoleGuardService, JwtHelperService ],
+  providers: [ AuthService, AuthGuardService, RoleGuardService, JwtHelperService,
+  { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true }, ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

@@ -21,8 +21,9 @@
             <tbody *ngIf="locations?.length != 0">
               <tr *ngFor="let data of locations|| sal of sal">
                 <td>{{data.city}}</td>
-                <td *ngIf='GetCountry(data.country)'>{{c_name}}</td>
+                <td>{{data.country.country}}</td>
                 <td>
+                  
                   <button type="button" class="btn btn-sm btn-primary" (click)="edit(data._id)"><i
                       class="icon-pencil"></i></button>
                   <button type="button" class="btn btn-sm btn-danger" (click)="delete(data._id)"><i
@@ -40,3 +41,4 @@
     </div>
   </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

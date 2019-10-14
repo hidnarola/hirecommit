@@ -4,7 +4,7 @@ import { DefaultLayoutComponent } from '../../shared/containers';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
 import { ProfileComponent } from '../../shared/profile/profile.component';
-
+import {ListCustomFeildComponent} from '../employer/manage-custom-feild/list-custom-feild/list-custom-feild.component'
 const routes: Routes = [
   {
     path: '',
@@ -42,9 +42,14 @@ const routes: Routes = [
         path: 'manage_location',
         loadChildren: () => import('./manage-location/manage-location.module').then(m => m.ManageLocationModule)
       },
+      {
+        path: 'customfeild',
+        loadChildren: () => import('./manage-custom-feild/manage-custom-feild.module').then(m => m.ManageCustomFeildModule)
+      },
       { path: 'timeline', component: TimelineComponent },
       { path: 'change-password', component: ChangepasswordComponent },
       { path: 'profile', component: ProfileComponent },
+     
     ]
   }
 ];

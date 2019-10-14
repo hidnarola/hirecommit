@@ -119,10 +119,8 @@ router.put('/manage_candidate/candidate/edit_approved_candidate/:id', async (req
 
     };
     var id = req.params.id;
-    // console.log(id);
 
     var candidate_upadate = await common_helper.update(candidate, { "_id": id }, reg_obj)
-    // console.log(candidate_upadate);
 
     if (candidate_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });

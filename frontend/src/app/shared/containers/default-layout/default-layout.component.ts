@@ -43,6 +43,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this.router.navigate(['employer/profile']);
   }
 
+  customFeild(){
+    this.router.navigate(['employer/customfeild/list']);
+  }
+
   ngOnInit() {
     const userType = localStorage.getItem('user');
     if (userType === 'admin') {
