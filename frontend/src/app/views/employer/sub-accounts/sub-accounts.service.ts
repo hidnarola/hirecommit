@@ -13,7 +13,7 @@ export class SubAccountService {
   // myObservableArray: Observable<any[]> = new Observable<any[]>();
   // data = new BehaviorSubject(null);
   // dataList = this.data.asObservable();
-  constructor(private http: HttpClient, private route: Router) {}
+  constructor(private http: HttpClient, private route: Router) { }
 
   // Sub-Accounts
   // checkHere() {
@@ -35,9 +35,6 @@ export class SubAccountService {
   }
 
   decativate_sub_account(id): Observable<any[]> {
-    return this.http.put<any[]>(
-      `${this.url}` + '/deactive_sub_account/' + id,
-      null
-    );
+    return this.http.put<any[]>(`${this.url}` + '/deactive_sub_account/' + id, null);
   }
 }
