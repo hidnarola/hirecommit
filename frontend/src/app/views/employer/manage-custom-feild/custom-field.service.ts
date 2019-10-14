@@ -23,19 +23,22 @@ export class CustomFieldService {
     //   return this.data.next({});
     // }
 
-    view_sub_account(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/sub_account', { ...params });
+    view_custom_feild(params): Observable<any[]> {
+        console.log(' service called for listing of custom feilds');
+        
+        return this.http.post<any[]>(`${this.url}` + '/customfield/get', { ...params });
+        // http://localhost:3000/employer/customfield/get
     }
 
-    add_sub_account(data): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/add_subaccount', data);
+    add_custom_field(data):Observable<any[]>{
+        return this.http.post<any[]>(`${this.url}` + '/customfield',data)
     }
 
-    view_sub_acc_detail(id): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/user/' + id);
+    edit_custom_field(data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/customfield',  data)
     }
-
-    decativate_sub_account(id): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/deactive_sub_account/' + id, null);
+    get_custom_field(id): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/customfield/' +id)
     }
+   
 }

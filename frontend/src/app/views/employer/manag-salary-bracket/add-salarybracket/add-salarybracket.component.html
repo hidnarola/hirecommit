@@ -20,8 +20,7 @@
                   formControlName="country" #mySelect (change)='onChange(mySelect.value)'>
                   <option class='option' *ngFor='let option of _country' [value]="option.code">{{option.name}}</option>
                 </select>
-                <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">Please select
-                  country!</span>
+                <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">This field is required.</span>
               </div>
             </div>
 
@@ -40,10 +39,10 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="from">From</label>
               <div class="col-md-4">
-                <input type="number" #from id="from" [(ngModel)]="detail.from" name="from" class="form-control"
+                <input type="number" #from (blur)="onBlur(from.value,to.value)" id="from" [(ngModel)]="detail.from" name="from" class="form-control"
                   placeholder="from" formControlName="from">
-                <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">Please enter minimum
-                  Salary!</span>
+                <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">This field is required.
+                  </span><span *ngIf="error" class="help-block">{{error_msg1}}</span>
               </div>
             </div>
 
@@ -53,10 +52,11 @@
               <div class="col-md-4">
                 <input type="number" #to (blur)="onBlurMethod(from.value,to.value)" id="to" name="to"
                   [(ngModel)]="detail.to" class="form-control" placeholder="to" formControlName="to">
-                <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">Please enter maximum
-                  Salary!</span>
+                <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">This field is required.
+                  </span>
                 <span *ngIf="error" class="help-block">{{error_msg}}</span>
               </div>
+              <!-- <p-slider [(ngModel)]="rangeValues" [range]="true"></p-slider> -->
             </div>
           </div>
           <div class="card-footer text-right">
@@ -72,3 +72,4 @@
     </div>
   </div>
 </div>
+ 

@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body">
                     <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
-                    <table >
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
                         <thead>
                             <tr>
                                 <th>Custom Feilds</th>
@@ -19,18 +19,18 @@
                             </tr>
                         </thead>
 
-                        <tbody >
-                            <tr>
-                                <td>Social</td>
+                        <tbody  *ngIf="data?.length != 0">
+                            <tr *ngFor = "let d of data">
+                                <td>{{d.key}}</td>
                                
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
-                                            class="icon-pencil"></i></button>
+                                    <button type="button" class="btn btn-sm btn-primary"><i
+                                            class="icon-pencil" (click)="onEdit(d._id)"></i></button>
                                     <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
                                             class="icon-trash"></i></button></td>
                             </tr>
                         </tbody>
-                        <tbody *ngIf="salary?.length == 0">
+                        <tbody *ngIf="data?.length == 0">
                             <tr>
                                 <td colspan="8" class="no-data-available">No data!</td>
                             </tr>
@@ -41,4 +41,4 @@
         </div>
     </div>
 </div>
-<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
