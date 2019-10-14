@@ -11,7 +11,31 @@ salary_helper.get_all_salary_bracket = async (collection,search,start,length, re
             $match:{
               "is_del":false
             }
+          },
+        {
+          $lookup:
+          {
+            from: "location",
+            localField: "location",
+            foreignField: "_id",
+            as: "location"
           }
+        },
+        {
+          $unwind: "$location",
+        },
+        {
+          $lookup:
+          {
+            from: "country_datas",
+            localField: "location.country",
+            foreignField: "_id",
+            as: "location.country"
+          }
+        },
+        {
+          $unwind: "$location.country",
+        }
          ]
 
          console.log(RE);

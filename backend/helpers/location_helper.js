@@ -10,14 +10,26 @@ location_helper.get_all_location = async (collection,search,start,length, record
             $match:{
               "is_del":false
             }
-          }
+          },
+          {
+            $lookup:
+            {
+              from: "country_datas",
+              localField: "country",
+              foreignField: "_id",
+              as: "country"
+            }
+          },
+          {
+            $unwind: "$country",
+          },
          ]
 
         //  console.log(RE);
 
           aggregate.push({
               "$match":
-                  { $or: [{ "city": RE}, { "country": RE}] }
+              { $or: [{ "city": RE }, { "country.country": RE}] }
           });
           // console.log(aggregate);
       if(sort){

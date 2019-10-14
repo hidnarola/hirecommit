@@ -4,18 +4,19 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
-                    <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+                    <span class="input-group-text pull-right" [routerLink]="['/employer/customfeild/list']"><i class="icon-close"></i></span>
                 </div>
+                <!-- {{data | json}} -->
                 <form class="form-horizontal" [formGroup]="addCustomFeild"
                     (ngSubmit)="onSubmit(addCustomFeild.valid,id)">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="customFeild">Custom Feild </label>
+                            <label class="col-md-3 col-form-label" for="key">Custom Field </label>
                             <div class="col-md-4">
-                                <input type="number" id="customFeild" name="customFeild" class="form-control"
-                                    placeholder="customFeild" formControlName="customFeild">
-                                <span *ngIf="!addCustomFeild.get('customFeild').valid && submitted"
-                                    class="help-block">Please enter Custom Feild!!
+                                <input type="text" [(ngModel)]="data.key" id="key" name="key" class="form-control"
+                                    placeholder="Custom Feild" formControlName="key">
+                                <span *ngIf="!addCustomFeild.get('key').valid && submitted"
+                                    class="help-block">This field is required.
                                 </span>
 
                             </div>

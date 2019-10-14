@@ -3,13 +3,17 @@ import { FormGroup, FormControlName, FormControl, Validators, FormBuilder } from
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { countries } from '../../../../shared/countries';
 import { Currency } from '../../../../shared/currency';
+import { ToastrService } from 'ngx-toastr';
 import { SalaryBracketService } from '../manag-salary-bracket.service';
+import { SliderModule } from 'primeng/slider';
+
 @Component({
   selector: 'app-add-salarybracket',
   templateUrl: './add-salarybracket.component.html',
   styleUrls: ['./add-salarybracket.component.scss']
 })
 export class AddSalarybracketComponent implements OnInit {
+  rangeValues: number[] =[50,100];
   AddSalaryBracket: FormGroup;
   submitted = false;
   Country: any = [];
@@ -24,14 +28,19 @@ export class AddSalarybracketComponent implements OnInit {
   buttonTitle: string;
   error = false;
   error_msg = 'can\'t be less then minimum salary!';
-  constructor(private fb: FormBuilder, private router: Router, private service: SalaryBracketService, private route: ActivatedRoute) { }
+  error_msg1 = 'can\'t be greater then maximum salary!';
+  constructor(private fb: FormBuilder, 
+              private router: Router, 
+              private service: SalaryBracketService,
+              private route: ActivatedRoute,
+              private toastr: ToastrService) { }
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
-      country: new FormControl(null, [Validators.required]),
+      country: new FormControl('', [Validators.required]),
       currency: new FormControl(),
-      from: new FormControl(null, [Validators.required]),
-      to: new FormControl(null, [Validators.required])
+      from: new FormControl('', [Validators.required]),
+      to: new FormControl('', [Validators.required])
     });
 
     this.route.params.subscribe((params: Params) => {
@@ -57,9 +66,23 @@ export class AddSalarybracketComponent implements OnInit {
       } else if (from >= to) {
       this.error = true;
       this.error_msg = 'Can\'t be same!';
-    } else {
+    }
+     else {
         this.error = false;
       }
+  }
+  onBlur(from, to){
+    if (from > to) {
+      this.error = true;
+      this.error_msg = 'Can\'t greater than maximum salary!';
+    } 
+    else if (from <= to) {
+      this.error = true;
+      this.error_msg1 = 'Can\'t be same!';
+    } 
+ else {
+   this.error = false;
+ }
   }
 
 
@@ -93,18 +116,33 @@ export class AddSalarybracketComponent implements OnInit {
   }
 
   onSubmit(flag: boolean, id) {
+    console.log(!this.id ,flag);
+
+    this.submitted = true;
     if (this.id && flag) {
+
       // console.log(this.AddSalaryBracket.value);return false;
       this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
         console.log('edited successfully!!!');
         this.router.navigate(['/employer/manage_salarybracket/view_salarybracket']);
       });
     } else if (!this.id && flag) {
+      console.log('in add');
+      
     this.submitted = !flag;
       this.service.add_salary_brcaket(this.AddSalaryBracket.value).subscribe(res => {
         console.log('addded', res);
-        this.router.navigate(['/employer/manage_salarybracket/view_salarybracket']);
+      //   if (res['data']['status'] === 1) {
+      //     this.submitted = false;
+      //     this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+      //     this.AddSalaryBracket.reset();
+      //   }
+      // }, (err) => {
+      //   console.log('error msg ==>', err['error']['message']);
+
+      //   this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
+     
       if (flag) {
         this.AddSalaryBracket.reset();
       }
