@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
-import * as env from '../../environments/environment.prod';
+import * as env from '../../environments/environment';
+import jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,14 @@ export class CommonService {
     }
   }
 
+  // get user detail
+  getLoggedUserDetail(){
+    let userDetails;
+    const token = localStorage.getItem('token');
+    // decode the token to get its payload
+    userDetails = jwt_decode(token);
+    return userDetails;
+  }
 
 
   // myObservableArray: Observable<any[]> = new Observable<any[]>();

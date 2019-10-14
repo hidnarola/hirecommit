@@ -1,69 +1,74 @@
 <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <strong style="font-size: 20px;">{{panelTitle}}</strong>
-            <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
-          </div>
-          <form class="form-horizontal" [formGroup]="AddSalaryBracket" (ngSubmit)="onSubmit(AddSalaryBracket.valid,id)">
-            <div class="card-body">
-
-              <!-- <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="country">Select Country</label>
-                <div class="col-md-2">
-                  <select id="country" name="select1" class="form-control" [(ngModel)]="detail.country"  formControlName="country"  #mySelect (change)='onChange(mySelect.value)'>
-                    <option class='option' *ngFor='let option of location' [value]="option.country._id" >{{option.country.country}}</option>
-                  </select>
-                  <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">Please select country!</span>
-                </div>
-              </div> -->
-                <div class="form-group row">
-                  <label class="col-md-3 col-form-label" for="country">Select Country</label>
-                  <div class="col-md-6">
-                    <p-dropdown [options]="location"  placeholder="Select a Country" formControlName="country" optionValue="location._id" optionLabel="country.country" id="country" [(ngModel)]="detail.country"
-                      (onChange)="findCities()" (select)="selectCountry($event)"></p-dropdown>
-                      <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">This field is required.</span>
-                    </div>
-                </div>
-                <!-- {{location | json}} -->
-
-                    <div class="form-group row">
-                      <label class="col-md-3 col-form-label" for="currency">Currency</label>
-                      <div class="col-md-3">
-                        <input type="text" id="currency" [(ngModel)]="detail.currency" formControlName="currency" name="currency" class="form-control"  placeholder="Country currency" disabled>
-                        
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 col-form-label" for="from">From</label>
-                        <div class="col-md-4">
-                          <input type="number" #from id="from" [(ngModel)]="detail.from" name="from" class="form-control" placeholder="from" formControlName="from">
-                          <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">Please enter minimum Salary!</span>
-                        </div>
-                      </div>
-
-
-                      <div class="form-group row">
-                        <label class="col-md-3 col-form-label" for="to">To</label>
-                        <div class="col-md-4">
-                            <input type="number" #to (blur)="onBlurMethod(from.value,to.value)" id="to" name="to" [(ngModel)]="detail.to" class="form-control" placeholder="to" formControlName="to">
-                            <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">Please enter maximum Salary!</span>
-                            <span *ngIf="error" class="help-block">{{error_msg}}</span>
-                        </div>
-                      </div>
-            </div>
-            <div class="card-footer text-right">
-              <button type="submit" class="btn btn-sm btn-primary">
-                <!-- <i class="fa fa-dot-circle-o"></i> -->
-                {{buttonTitle}}</button>
-              <button type="reset" class="btn btn-sm btn-danger">
-                <!-- <i class="fa fa-ban"></i> -->
-                Reset</button>
-            </div>
-          </form>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <strong style="font-size: 20px;">{{panelTitle}}</strong>
+          <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
         </div>
+        <form class="form-horizontal" [formGroup]="AddSalaryBracket" (ngSubmit)="onSubmit(AddSalaryBracket.valid,id)">
+          <div class="card-body">
+
+
+
+
+
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="country">Select Country</label>
+              <div class="col-md-2">
+                <select id="country" name="select1" class="form-control" [(ngModel)]="detail.country"
+                  formControlName="country" #mySelect (change)='onChange(mySelect.value)'>
+                  <option class='option' *ngFor='let option of _country' [value]="option.code">{{option.name}}</option>
+                </select>
+                <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">Please select
+                  country!</span>
+              </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="currency">Currency</label>
+              <div class="col-md-3">
+                <input type="text" id="currency" [(ngModel)]="detail.currency" formControlName="currency"
+                  name="currency" class="form-control" placeholder="Country currency" disabled>
+
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="from">From</label>
+              <div class="col-md-4">
+                <input type="number" #from id="from" [(ngModel)]="detail.from" name="from" class="form-control"
+                  placeholder="from" formControlName="from">
+                <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">Please enter minimum
+                  Salary!</span>
+              </div>
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="to">To</label>
+              <div class="col-md-4">
+                <input type="number" #to (blur)="onBlurMethod(from.value,to.value)" id="to" name="to"
+                  [(ngModel)]="detail.to" class="form-control" placeholder="to" formControlName="to">
+                <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">Please enter maximum
+                  Salary!</span>
+                <span *ngIf="error" class="help-block">{{error_msg}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button type="submit" class="btn btn-sm btn-primary">
+              <!-- <i class="fa fa-dot-circle-o"></i> -->
+              {{buttonTitle}}</button>
+            <button type="reset" class="btn btn-sm btn-danger">
+              <!-- <i class="fa fa-ban"></i> -->
+              Reset</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>

@@ -1,9 +1,11 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { countries } from '../../../../shared/countries';
+import { Component, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators
+} from '@angular/forms';
 import { OfferService } from '../offer.service';
-import { Currency } from '../../../../shared/currency';
-import { cc, bb, aa } from '../../../../shared/countries2';
 import { CommonService } from '../../../../services/common.service';
 @Component({
   selector: 'app-employer-addoffer',
@@ -23,72 +25,90 @@ export class EmployerAddofferComponent implements OnInit {
   panelTitle = 'Add';
   countryArr: any[] = [];
   arr: any[] = [];
+  user_detail: any = {};
+
   salary_duration_optoins = [
     { label: 'Select', value: '' },
     { label: '1 week', value: '1week' },
-    { label: '2 week', value: '2week' },
+    { label: '2 week', value: '2week' }
+  ];
+  salary_bracket_optoins = [{ label: 'Select', value: '' }];
+  offer_type_optoins = [
+    { label: 'Select', value: '' },
+    { label: 'No Commit', value: 'noCommit' },
+    { label: 'Candidate Commit', value: 'candidateCommit' },
+    { label: 'Both Commit', value: 'bothCommit' }
+  ];
+  group_optoins = [{ label: 'Select', value: '' }];
+  commitstatus_optoins = [
+    { label: 'Select', value: '' },
+    { label: 'High', value: 'high' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Low', value: 'low' }
   ];
   contryList: any;
 
   constructor(
-    private fb: FormBuilder, private service: OfferService, private commonService: CommonService
-    ) {
-       // Form Controls
-       this.form = this.fb.group({
-        email: new FormControl('', [Validators.required, Validators.email]),
-        name: new FormControl('', [Validators.required]),
-        title: new FormControl('', [Validators.required]),
-        salarytype: new FormControl('', [Validators.required]),
-        salaryduration: new FormControl(''),
-        country: new FormControl('', [Validators.required]),
-        location: new FormControl('', [Validators.required]),
-        currency_type: new FormControl(),
-        salarybracket: new FormControl('', [Validators.required]),
-        expirydate: new FormControl('', [Validators.required]),
-        joiningdate: new FormControl('', [Validators.required]),
-        status: new FormControl(),
-        offertype: new FormControl('', [Validators.required]),
-        group: new FormControl('', [Validators.required]),
-        commitstatus: new FormControl('', [Validators.required]),
-        customfeild1: new FormControl(''),
-        customfeild2: new FormControl(''),
-        customfeild3: new FormControl(''),
-        notes: new FormControl(''),
-        employer_id: new FormControl('')
-       });
-
-      //  To Get all country data
-       this.getCountryData();
-   }
-
-   getCountryData()  {
-    this.commonService.country_data().subscribe(res => {
-      this.countryArr = res[`data`];
-      console.log('getCountryData : res ==> ', res);
+    private fb: FormBuilder,
+    private service: OfferService,
+    private commonService: CommonService
+  ) {
+    // Form Controls
+    this.form = this.fb.group({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      name: new FormControl('', [Validators.required]),
+      title: new FormControl('', [Validators.required]),
+      salarytype: new FormControl('', [Validators.required]),
+      salaryduration: new FormControl({ value: '', disabled: true }),
+      country: new FormControl('', [Validators.required]),
+      location: new FormControl('', [Validators.required]),
+      currency_type: new FormControl(),
+      salarybracket: new FormControl('', [Validators.required]),
+      expirydate: new FormControl('', [Validators.required]),
+      joiningdate: new FormControl('', [Validators.required]),
+      status: new FormControl(),
+      offertype: new FormControl('', [Validators.required]),
+      group: new FormControl('', [Validators.required]),
+      commitstatus: new FormControl('', [Validators.required]),
+      customfield1: new FormControl(''),
+      customfield2: new FormControl(''),
+      customfield3: new FormControl(''),
+      notes: new FormControl(''),
+      employer_id: new FormControl('')
     });
-   }
-
-   
-
-   selectCountry(e) {
-     console.log('event : e ==> ', e);
-   }
-
-  ngOnInit() {
-   }
+  }
 
   findCities = () => {
     this.service.get_location(this.offer_data.country).subscribe(res => {
       this.location = res['data']['data'];
+      // this.location.forEach(element => {
+      //   const fetch_country = element.country;
+      //   this.unique = this.contryList.filter(x => x.value === fetch_country);
+      //   this._country.push(this.unique[0]);
+      // });
+      console.log(this.location);
+      // this.currency = Currency;
+      // const obj = [];
+      // for (const [key, value] of Object.entries(this.currency)) {
+      //   obj.push({ 'code': key, 'currency': value });
+      // }
+      // this.currency = obj;
+      // this.currency = this.currency.find(x => x.code === e);
+
+      // this._country = this._country.filter(this.onlyUnique);
+      // console.log('this._country ==> ', this._country);
     });
   }
 
+  ngOnInit() {  }
+
+ 
+
   // submit form
   onSubmit(flag) {
-    this.offer_data.location = this.offer_data.location._id;
+    // this.offer_data.location = this.offer_data.location._id;
     console.log('onSubmit : flag ==> ', flag);
     console.log('onSubmit : offer_data ==> ', this.offer_data);
     this.form_validation = !flag;
   }
-
 }
