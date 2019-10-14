@@ -5,11 +5,16 @@ const Schema = mongoose.Schema;
 const LocationSchema = new Schema({
     country: {
         type: mongoose.Types.ObjectId,
-        ref:'country_datas',
+        ref: 'country_datas',
         required: true
     },
     city: {
         type: String,
+        required: true
+    },
+    emp_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
         required: true
     },
     is_del: {

@@ -1,0 +1,310 @@
+var express = require("express");
+var router = express.Router();
+var btoa = require('btoa');
+
+var auth = require("../../middlewares/auth");
+var authorization = require("../../middlewares/authorization");
+var config = require('../../config')
+var Offer = require('../../models/offer');
+var ObjectId = require('mongoose').Types.ObjectId;
+var common_helper = require('../../helpers/common_helper');
+var user_helper = require('../../helpers/user_helper');
+var groups_helper = require('../../helpers/groups_helper');
+var offer_helper = require('../../helpers/offer_helper');
+var salary_helper = require('../../helpers/salary_helper');
+var location_helper = require('../../helpers/location_helper');
+
+var logger = config.logger;
+var User = require('../../models/user');
+
+var async = require('async');
+var mail_helper = require('../../helpers/mail_helper');
+var Sub_Employer_Detail = require('../../models/sub-employer-detail');
+
+
+
+//Offer
+router.post("/add_offer", async (req, res) => {
+
+    var schema = {
+        "email": {
+            notEmpty: true,
+            errorMessage: "Email is required"
+        },
+        "name": {
+            notEmpty: true,
+            errorMessage: "Name is required"
+        },
+        "title": {
+            notEmpty: true,
+            errorMessage: "Title is required"
+        },
+        "salarytype": {
+            notEmpty: true,
+            errorMessage: "Salary Type is required"
+        },
+        "country": {
+            notEmpty: true,
+            errorMessage: "Country is required"
+        },
+        "location": {
+            notEmpty: true,
+            errorMessage: "Location is required"
+        },
+        "salarybracket": {
+            notEmpty: true,
+            errorMessage: "Salary Bracket is required"
+        },
+        "expirydate": {
+            notEmpty: true,
+            errorMessage: "Expiry Date Code is required"
+        },
+        "joiningdate": {
+            notEmpty: true,
+            errorMessage: "Joining Date is required"
+        },
+        "offertype": {
+            notEmpty: true,
+            errorMessage: "Offer Type  is required"
+        },
+        "groups": {
+            notEmpty: true,
+            errorMessage: "Group is required"
+        },
+        "commitstatus": {
+            notEmpty: true,
+            errorMessage: "Commit Status is required"
+        }
+    };
+    req.checkBody(schema);
+
+    var errors = req.validationErrors();
+    if (!errors) {
+
+        var reg_obj = {
+            "employer_id": req.userInfo.id,
+            "email": req.body.email,
+            "name": req.body.name,
+            "title": req.body.title,
+            "salarytype": req.body.salarytype,
+            "salaryduration": req.body.salaryduration,
+            "country": req.body.country,
+            "location": req.body.location,
+            "currency_type": req.body.currency_type,
+            "salarybracket": req.body.salarybracket,
+            "expirydate": req.body.expirydate,
+            "joiningdate": req.body.joiningdate,
+            "status": true,
+            "offertype": req.body.offertype,
+            "groups": req.body.groups,
+            "commitstatus": req.body.commitstatus,
+            // "customfeild": JSON.parse(req.body.customfeild),
+            "notes": req.body.notes,
+            "is_del": false
+        };
+
+        var interest_resp = await common_helper.insert(Offer, reg_obj);
+        if (interest_resp.status == 0) {
+            logger.debug("Error = ", interest_resp.error);
+            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        } else {
+            res.json({ "message": "Offer Added successfully", "data": interest_resp })
+        }
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
+
+router.post('/get', async (req, res) => {
+    // try {
+    //     const offer_list = await offer.find({is_del: false})
+    //     .populate([
+    //     { path: 'employer_id'},
+    //     { path: 'salarybracket'},
+    //     { path: 'group'},
+    //     ])
+    //     .lean();
+    //     return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
+    //   } catch (error) {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
+    //   }
+
+    var schema = {
+        // "page_no": {
+        //   notEmpty: true,
+        //   errorMessage: "page_no is required"
+        // },
+        // "page_size": {
+        //   notEmpty: true,
+        //   errorMessage: "page_size is required"
+        // }
+    };
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        var aggregate = [
+            {
+                $match: {
+                    "is_del": false,
+                    "employer_id": new ObjectId(req.userInfo.id)
+                }
+            }
+        ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        if (req.body.search && req.body.search.value != '') {
+            aggregate.push({
+                "$match":
+                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
+            });
+        }
+        let totalMatchingCountRecords = await Offer.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
+        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
+
+        var resp_data = await offer_helper.get_all_offer(Offer, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        console.log('resp_data', resp_data);
+
+        if (resp_data.status == 1) {
+            res.status(config.OK_STATUS).json(resp_data);
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+    } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
+
+router.put("/deactive_offer/:id", async (req, res) => {
+    var obj = {
+        is_del: true
+    }
+    var id = req.params.id;
+    var resp_data = await common_helper.update(Offer, { "_id": id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else if (resp_data.status == 1) {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+    }
+});
+
+
+router.put('/', async (req, res) => {
+    var obj = {};
+
+    if (req.body.email && req.body.email != "") {
+        obj.email = req.body.email
+    }
+    if (req.body.name && req.body.name != "") {
+        obj.name = req.body.name
+    }
+    if (req.body.title && req.body.title != "") {
+        obj.title = req.body.title
+    }
+    if (req.body.salarytype && req.body.salarytype != "") {
+        obj.salarytype = req.body.salarytype
+    }
+    if (req.body.salaryduration && req.body.salaryduration != "") {
+        obj.salaryduration = req.body.salaryduration
+    }
+    if (req.body.country && req.body.country != "") {
+        obj.country = req.body.country
+    }
+    if (req.body.location && req.body.location != "") {
+        obj.location = req.body.location
+    }
+    if (req.body.currenct_type && req.body.currenct_type != "") {
+        obj.currenct_type = req.body.currenct_type
+    }
+    if (req.body.salarybracket && req.body.salarybracket != "") {
+        obj.salarybracket = req.body.salarybracket
+    }
+    if (req.body.expirydate && req.body.expirydate != "") {
+        obj.expirydate = req.body.expirydate
+    }
+    if (req.body.joiningdate && req.body.joiningdate != "") {
+        obj.joiningdate = req.body.joiningdate
+    }
+    if (req.body.offertype && req.body.offertype != "") {
+        obj.offertype = req.body.offertype
+    }
+    if (req.body.group && req.body.group != "") {
+        obj.group = req.body.group
+    }
+    if (req.body.notes && req.body.notes != "") {
+        obj.notes = req.body.notes
+    }
+    var id = req.body.id;
+
+    var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
+    console.log('offer_upadate', offer_upadate);
+
+    if (offer_upadate.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    }
+    else if (offer_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": offer_upadate });
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+    }
+})
+
+router.get('/details/:id', async (req, res) => {
+    var id = req.params.id;
+    try {
+        const offer_detail = await Offer.findOne({ _id: id })
+
+            .populate([
+                { path: 'employer_id' },
+                { path: 'salarybracket' },
+                { path: 'location' },
+                { path: 'group' },
+            ])
+            .lean();
+
+        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
+});
+
+
+router.put("/status_change/:id", async (req, res) => {
+    var obj = {
+        "status": req.body.status
+    }
+
+    var id = req.params.id;
+    var resp_data = await common_helper.update(Offer, { "_id": id }, obj);
+    if (resp_data.status == 0) {
+        logger.error("Error occured while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    } else if (resp_data.status == 1) {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+    }
+});
+
+
+module.exports = router;
