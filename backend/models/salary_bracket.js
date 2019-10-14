@@ -3,20 +3,12 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const Salary_Bracket_Schema = new Schema({
-//  country:{
-//   type: String,
-//   required: true
-//  },
-//   currency: {
-//     type: String,
-//     // required: true
-//   },
   location: {
     type: mongoose.Types.ObjectId,
     ref: "location",
-    required: true
+    // required: true
   },
-  from:{
+  from: {
     type: String,
     require: true
   },
@@ -29,10 +21,10 @@ const Salary_Bracket_Schema = new Schema({
     default: false
   },
   createdAt: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
   }
 });
 
 
-module.exports = mongoose.model('salary_bracket',Salary_Bracket_Schema,'salary_bracket');
+module.exports = mongoose.model('salary_bracket', Salary_Bracket_Schema, 'salary_bracket');

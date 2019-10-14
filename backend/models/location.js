@@ -4,19 +4,17 @@ const Schema = mongoose.Schema;
 // Create Schema
 const LocationSchema = new Schema({
     country: {
-        type: String,
-        required: true
-    },
-    countryFullName: {
-        type: String,
-        required: true
-    },
-    currency: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: 'country_datas',
         required: true
     },
     city: {
         type: String,
+        required: true
+    },
+    emp_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
         required: true
     },
     is_del: {

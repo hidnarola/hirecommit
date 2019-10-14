@@ -1,16 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+
+
+const customField = new Schema({
+  key: String,
+  value: String
+})
+
 // Create Schema
 const OfferSchema = new Schema({
-  employer_id:{
+  employer_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user' 
+    ref: 'user'
   },
- email:{
-    type:String,
-    required: true 
- },
+  email: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -19,27 +26,27 @@ const OfferSchema = new Schema({
     type: String,
     required: true
   },
-  salarytype:{
-    type:String,
+  salarytype: {
+    type: String,
     require: true
   },
   salaryduration: {
     type: String
   },
-  country:{
-    type:String,
+  country: {
+    type: String,
     required: true
-  }, 
+  },
   location: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'location'
   },
-  currency_type:{
+  currency_type: {
     type: String
   },
   salarybracket: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'salary_bracket' 
+    ref: 'salary_bracket'
   },
   expirydate: {
     type: String,
@@ -51,41 +58,37 @@ const OfferSchema = new Schema({
   },
   status: {
     type: Boolean,
-    default:false
+    default: false
   },
   offertype: {
     type: String,
     required: true
   },
-  group: {
+  groups: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'group' 
+    ref: 'group'
   },
-  commitstatus:{
-      type: String,
-      require: true
+  commitstatus: {
+    type: String,
+    require: true
   },
- 
-  customfeild1: {
+
+  customField: [
+    {
+      customField
+    }
+  ],
+  notes: {
     type: String
-  },
-  customfeild2: {
-    type: String 
-  },
-  customfeild3: {
-    type: String
-  },
-   notes: {
-      type: String
   },
   is_del: {
     type: Boolean,
     default: false
   },
   createdAt: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
   }
 });
 
-module.exports = mongoose.model('offer', OfferSchema,'offer');
+module.exports = mongoose.model('offer', OfferSchema, 'offer');

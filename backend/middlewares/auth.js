@@ -9,7 +9,6 @@ module.exports = function (req, res, next) {
     // console.log(req.headers['authorization'])
     req.headers['x-access-token'];
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    console.log('token', token);
     if (token) {
         jwt.verify(token, config.ACCESS_TOKEN_SECRET_KEY, function (err, decoded) {
             if (err) {

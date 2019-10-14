@@ -83,7 +83,7 @@ router.post('/', async (req, res) => {
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
         aggregate.push({
             "$match":
-                { $or: [{ "username": RE }, { "user_id.email": RE }] }
+                { $or: [{ "username": RE }, { "user.email": RE }] }
         });
 
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
@@ -121,7 +121,7 @@ router.put('/:id', async (req, res) => {
 
     };
     var id = req.params.id;
-    var sub_account_upadate = await common_helper.update(sub_account, { "_id": id }, reg_obj)
+    var sub_account_upadate = await common_helper.update(User, { "_id": id }, reg_obj)
     if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
@@ -134,16 +134,13 @@ router.put('/:id', async (req, res) => {
 })
 
 router.put("/deactive_sub_account/:id", async (req, res) => {
-    // console.log('dsfdsfds');return false;
     var obj = {
         is_del: true
     }
     var id = req.params.id;
-    //  console.log("IDDDIDIDIDID", id);return false;
 
     var resp_user_data = await common_helper.update(User, { "_id": id }, obj);
     var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": id }, obj);
-    // console.log(resp_Detail_data.status);return false;
     if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_user_data);
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
@@ -155,9 +152,9 @@ router.put("/deactive_sub_account/:id", async (req, res) => {
     }
 });
 
-router.get('/sub_account_detail/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var sub_account_detail = await common_helper.findOne(sub_account, { "_id": id })
+    var sub_account_detail = await common_helper.findOne(User, { "_id": (id) })
     if (sub_account_detail.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
