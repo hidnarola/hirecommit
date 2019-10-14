@@ -4,6 +4,7 @@ import { SalaryBracketService } from '../manag-salary-bracket.service';
 import { countries } from '../../../../shared/countries';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { ConfirmationService } from 'primeng/api';
 @Component({
   selector: 'app-view-salarybracket',
   templateUrl: './view-salarybracket.component.html',
@@ -24,7 +25,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   salnew: any = [];
 
   unq: any;
-  constructor(private router: Router, private service: SalaryBracketService) { }
+  constructor(private router: Router, private confirmationService: ConfirmationService, private service: SalaryBracketService) { }
   ngOnInit() {
     this.bind();
   }
@@ -38,10 +39,17 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   delete(id) {
-    this.service.deactivate_salary_brcaket(id).subscribe(res => {
-      console.log('deactivate salary', res);
-      this.rrerender();
-      this.bind();
+    console.log(id);
+
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.deactivate_salary_brcaket(id).subscribe(res => {
+          console.log('deactivate salary', res);
+          this.rrerender();
+          this.bind();
+        });
+      }
     });
   }
 
@@ -53,23 +61,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   public bind() {
-    // this.service.view_salary_brcaket().subscribe(res => {
-    //   this.salary = res['data']['data'];
-    //   this.salary = this.salary.filter(x => x.is_del === false);
-    //   this.Country = countries;
-    //   const obj = [];
-    //   for (const [key, value] of Object.entries(countries)) {
-    //     obj.push({ 'code': key, 'name': value });
-    //   }
-    //   this.Country = obj;
-    //   this.salary.forEach(element => {
-    //     const fetch_country = element.country;
-    //     this.unique = this.Country.filter(x => x.code === fetch_country);
-    //     this._country.push(this.unique[0]);
-    //   });
-    //   this._country = this._country.filter(this.onlyUnique);
-    // });
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
@@ -82,7 +73,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
           if (res['status'] === 1) {
             this.salary = res['salary'];
             console.log('data==>', res);
-
           this.salary = this.salary.filter(x => x.is_del === false);
           this.Country = countries;
           const obj = [];

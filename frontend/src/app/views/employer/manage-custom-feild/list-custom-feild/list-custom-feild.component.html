@@ -1,0 +1,44 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Custom Feilds
+                    <p class="pull-right"></p>
+                    <i class="pull-right icon-plus" [routerLink]="['/employer/customfeild/add']">
+                        Add Custom Feild</i>
+                </div>
+                <div class="card-body">
+                    <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
+                    <table >
+                        <thead>
+                            <tr>
+                                <th>Custom Feilds</th>
+                               
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody >
+                            <tr>
+                                <td>Social</td>
+                               
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i
+                                            class="icon-pencil"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
+                                            class="icon-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="salary?.length == 0">
+                            <tr>
+                                <td colspan="8" class="no-data-available">No data!</td>
+                            </tr>
+                        <tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->

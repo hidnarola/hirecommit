@@ -19,7 +19,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'add_location/:id',
+        path: 'edit_location/:id',
         component: AddLocationComponent,
         data: {
           title: 'Edit Location'

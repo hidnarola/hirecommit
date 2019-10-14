@@ -1,51 +1,55 @@
 <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-header">
-            <i class="fa fa-align-justify"></i> Groups
-            <p class="pull-right"></p>
-            <button type="button" id="add" (click)="onclick()" class="b pull-right"><i class="pull-right icon-plus"> Add Group</i></button>
-          </div>
-          <div class="card-body">
-            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
-                  <thead>
-                    <tr>
-                      <th>Group Name</th>
-                      <th>High - UnOpened</th>
-                      <th>High - NotReplied</th>
-                      <th>Medium - UnOpened</th>
-                      <th>Medium - NotReplied</th>
-                      <th>Low - UnOpened</th>
-                      <th>Low - NotReplied</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Groups
+          <p class="pull-right"></p>
+          <button type="button" id="add" (click)="onclick()" class="b pull-right"><i class="pull-right icon-plus"> Add
+              Group</i></button>
+        </div>
+        <div class="card-body">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
+            <thead>
+              <tr>
+                <th>Group Name</th>
+                <th>High - UnOpened</th>
+                <th>High - NotReplied</th>
+                <th>Medium - UnOpened</th>
+                <th>Medium - NotReplied</th>
+                <th>Low - UnOpened</th>
+                <th>Low - NotReplied</th>
+                <th>Action</th>
+              </tr>
+            </thead>
 
-                  <tbody *ngIf="groups?.length != 0">
+            <tbody *ngIf="groups?.length != 0">
 
-                    <tr *ngFor="let group of groups">
-                      <td  (click) = "onaddDetails(group._id,group.name)">{{group.name}}</td>
-                     <td>{{group.high_unopened}}</td>
-                     <td>{{group.high_notreplied}}</td>
-                     <td>{{group.medium_unopened}}</td>
-                     <td>{{group.medium_notreplied}}</td>
-                     <td>{{group.low_unopened}}</td>
-                     <td>{{group.low_notreplied}}</td>
-                     <td>
-                        <button type="button" class="btn btn-sm btn-success" (click)="detail(group._id)"><i class="icon-eye"></i></button>
-                      <button type="button" class="btn btn-sm btn-primary" (click)="edit()"><i class="icon-pencil"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete(group._id)"><i class="icon-trash"></i></button></td>
-                    </tr>
-                  </tbody>
-                  <tbody *ngIf="groups?.length == 0">
-                    <tr>
-                      <td colspan="8" class="no-data-available">No data!</td>
-                    </tr>
-                  <tbody>
-                </table>
-          </div>
+              <tr *ngFor="let group of groups">
+                <td (click)="onaddDetails(group._id,group.name)">{{group.name}}</td>
+                <td>{{group.high_unopened}}</td>
+                <td>{{group.high_notreplied}}</td>
+                <td>{{group.medium_unopened}}</td>
+                <td>{{group.medium_notreplied}}</td>
+                <td>{{group.low_unopened}}</td>
+                <td>{{group.low_notreplied}}</td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-success" (click)="detail(group._id)"><i
+                      class="icon-eye"></i></button>
+                  <button type="button" class="btn btn-sm btn-primary" (click)="edit(group._id)"><i
+                      class="icon-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" (click)="delete(group._id)"><i
+                      class="icon-trash"></i></button></td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="groups?.length == 0">
+              <tr>
+                <td colspan="8" class="no-data-available">No data!</td>
+              </tr>
+            <tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>

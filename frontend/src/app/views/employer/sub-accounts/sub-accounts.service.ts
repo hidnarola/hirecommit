@@ -23,15 +23,15 @@ export class SubAccountService {
   // }
 
   view_sub_account(params): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/sub_account', { ...params });
+    return this.http.post<any[]>(`${this.url}` + '/sub_account/get', { ...params });
   }
 
   add_sub_account(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/add_subaccount', data);
+    return this.http.post<any[]>(`${this.url}` + '/sub_account', data);
   }
 
   view_sub_acc_detail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/user/' + id);
+    return this.http.get<any[]>(`${this.url}` + '/sub_account/' + id);
   }
 
   decativate_sub_account(id): Observable<any[]> {

@@ -14,8 +14,10 @@ import { MglTimelineModule } from 'angular-mgl-timeline';
     EmployerRoutingModule,
     ReactiveFormsModule,
     DefaultLayoutModule,
-    MglTimelineModule
-  ]
+    MglTimelineModule,
+  ],
+  providers: []
+
 })
 
 export class EmployerModule { }

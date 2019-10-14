@@ -1,14 +1,11 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   FormControl,
   Validators
 } from '@angular/forms';
-import { countries } from '../../../../shared/countries';
 import { OfferService } from '../offer.service';
-import { Currency } from '../../../../shared/currency';
-import { cc, bb, aa } from '../../../../shared/countries2';
 import { CommonService } from '../../../../services/common.service';
 @Component({
   selector: 'app-employer-addoffer',
@@ -28,6 +25,7 @@ export class EmployerAddofferComponent implements OnInit {
   panelTitle = 'Add';
   countryArr: any[] = [];
   arr: any[] = [];
+  user_detail: any = {};
 
   salary_duration_optoins = [
     { label: 'Select', value: '' },
@@ -102,7 +100,9 @@ export class EmployerAddofferComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {  }
+
+ 
 
   // submit form
   onSubmit(flag) {

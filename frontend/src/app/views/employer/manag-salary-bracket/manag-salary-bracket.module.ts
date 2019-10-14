@@ -7,13 +7,19 @@ import { AddSalarybracketComponent } from './add-salarybracket/add-salarybracket
 import { ReactiveFormsModule } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
 
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
+
 
 @NgModule({
   declarations: [ViewSalarybracketComponent, AddSalarybracketComponent],
   imports: [
     CommonModule,
     DataTablesModule,
-    ManagSalaryBracketRoutingModule, ReactiveFormsModule
-  ]
+    ConfirmDialogModule,
+    ManagSalaryBracketRoutingModule, ReactiveFormsModule, DropdownModule
+  ],
+  providers: [ConfirmationService]
 })
 export class ManagSalaryBracketModule { }
