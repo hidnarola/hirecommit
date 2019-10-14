@@ -1,15 +1,15 @@
-import {Component, OnInit, ViewChild, OnDestroy, AfterViewInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {SubAccountService} from '../sub-accounts.service';
-import {Subject} from 'rxjs';
-import {DataTableDirective} from 'angular-datatables';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SubAccountService } from '../sub-accounts.service';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
-@Component({selector: 'app-view-sub-accounts', templateUrl: './view-sub-accounts.component.html', styleUrls: ['./view-sub-accounts.component.scss']})
+@Component({ selector: 'app-view-sub-accounts', templateUrl: './view-sub-accounts.component.html', styleUrls: ['./view-sub-accounts.component.scss'] })
 export class ViewSubAccountsComponent
-implements OnDestroy,
-OnInit,
-AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  implements OnDestroy,
+  OnInit,
+  AfterViewInit {
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
@@ -17,12 +17,13 @@ AfterViewInit {
   data: any[];
   admin_rights = true;
 
-  constructor(private router: Router, private service: SubAccountService) {}
+  constructor(private router: Router, private service: SubAccountService) { }
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 2,
       serverSide: true,
+      searching: true,
       processing: true,
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -31,10 +32,10 @@ AfterViewInit {
           if (res['status']) {
             this.data = res['user'];
             console.log('data==>', res);
-            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
-          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
       columns: [
@@ -51,7 +52,7 @@ AfterViewInit {
     };
   }
 
-  get_SubEmployer() {}
+  get_SubEmployer() { }
 
   checkValue(e) {
     this.admin_rights = e.target.checked;

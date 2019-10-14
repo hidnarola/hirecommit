@@ -6,10 +6,9 @@ module.exports = function (req, res, next) {
     // // console.log("-----------------------------------------------------------------");
     // // console.log("Request Body", req.body);
     // // console.log("-----------------------------------------------------------------");
-    console.log(req.headers['authorization'])
-    // req.headers['x-access-token'];
-    var token = req.body.token || req.query.token || req.headers['authorization'];
-    console.log('token',token);
+    // console.log(req.headers['authorization'])
+    req.headers['x-access-token'];
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
     if (token) {
         jwt.verify(token, config.ACCESS_TOKEN_SECRET_KEY, function (err, decoded) {
             if (err) {
