@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import * as env from '../../../../environments/environment.prod';
+import * as env from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class EmployerService {
 
   deactivate_employer(id): Observable<any[]> {
     console.log('service id',id);
-    
+
     return this.http.put<any[]>(`${this.url}` + '/deactive_employer/' + id,null);
   }
   aprroved_employer(id):Observable<any[]>{

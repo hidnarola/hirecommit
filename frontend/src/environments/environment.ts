@@ -9,11 +9,12 @@ let str = 'http://';
 let web_host = host;
 
 if (host === 'localhost') {
-    https = false;
-    str = 'http://';
-    web_host = host + ':4200';
+  https = false;
+  str = 'http://';
+  web_host = host + ':4200';
 }
 export const environment = {
   production: false,
   API_URL: str + host + ':' + port + '/'
+  // API_URL: 'http://192.168.100.23:3000/'
 };
