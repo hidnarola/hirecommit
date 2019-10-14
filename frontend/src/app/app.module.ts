@@ -32,6 +32,7 @@ export function getToken(): string {
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+   
     HttpClientModule,
     JwtModule.forRoot({
       config: {
@@ -54,7 +55,7 @@ export function getToken(): string {
     EmailconfermationComponent,
     ResetPasswordComponent
   ],
-  providers: [ AuthService, AuthGuardService, RoleGuardService, JwtHelperService ],
+  providers: [AuthService, AuthGuardService, RoleGuardService, JwtHelperService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

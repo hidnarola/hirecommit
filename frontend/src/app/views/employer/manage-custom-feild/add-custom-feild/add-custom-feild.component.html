@@ -1,0 +1,37 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">{{panelTitle}}</strong>
+                    <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+                </div>
+                <form class="form-horizontal" [formGroup]="addCustomFeild"
+                    (ngSubmit)="onSubmit(addCustomFeild.valid,id)">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="customFeild">Custom Feild </label>
+                            <div class="col-md-4">
+                                <input type="number" id="customFeild" name="customFeild" class="form-control"
+                                    placeholder="customFeild" formControlName="customFeild">
+                                <span *ngIf="!addCustomFeild.get('customFeild').valid && submitted"
+                                    class="help-block">Please enter Custom Feild!!
+                                </span>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer text-right">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <!-- <i class="fa fa-dot-circle-o"></i> -->
+                            {{buttonTitle}}</button>
+                        <button type="reset" class="btn btn-sm btn-danger">
+                            <!-- <i class="fa fa-ban"></i> -->
+                            Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

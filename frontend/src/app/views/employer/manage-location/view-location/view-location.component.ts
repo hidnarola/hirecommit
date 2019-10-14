@@ -2,13 +2,14 @@ import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular
 import { Router } from '@angular/router';
 import { LocationService } from '../manage-location.service';
 import { countries } from '../../../../shared/countries';
-
+import { ConfirmationService } from 'primeng/api';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-view-location',
   templateUrl: './view-location.component.html',
+ 
   styleUrls: ['./view-location.component.scss']
 })
 export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -28,7 +29,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
   sal: any = [];
   salnew: any = [];
 
-  constructor(private router: Router, private service: LocationService) { }
+  constructor(private router: Router, private service: LocationService, private confirmationService: ConfirmationService) { }
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -40,21 +41,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
         this.service.view_location(dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
             this.locations = res['location'];
-            console.log('data==>', res);
-
-          this.locations = this.locations.filter(x => x.is_del === false);
-          this.Country = countries;
-          const obj = [];
-          for (const [key, value] of Object.entries(countries)) {
-            obj.push({ 'code': key, 'name': value });
-          }
-          this.Country = obj;
-          this.locations.forEach(element => {
-            const fetch_country = element.country;
-            this.unique = this.Country.filter(x => x.code === fetch_country);
-            this._country.push(this.unique[0]);
-          });
-          this._country = this._country.filter(this.onlyUnique);
+            console.log(this.locations);
             callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
           }
         }, err => {
@@ -65,7 +52,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
         {
           data: 'city'
         }, {
-          data: 'country'
+          data: 'country.country'
         }, {
           data: 'action'
         }
@@ -87,12 +74,18 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   delete(id) {
-    this.service.deactivate_location(id).subscribe(res => {
+   
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+         this.service.deactivate_location(id).subscribe(res => {
       console.log('deactivate location', res);
       // this.bind();
     });
-    
+      }
+    });
   }
+  
 
 
   onlyUnique(value, index, self) {
@@ -119,11 +112,11 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     // });
   }
 
-  public GetCountry(country) {
-    this.c_name = this._country.filter(x => x.code === country);
-    this.c_name = this.c_name[0].name;
-    return this.c_name;
-  }
+  // public GetCountry(country) {
+  //   this.c_name = this._country.filter(x => x.code === country);
+  //   this.c_name = this.c_name[0].name;
+  //   return this.c_name;
+  // }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next();

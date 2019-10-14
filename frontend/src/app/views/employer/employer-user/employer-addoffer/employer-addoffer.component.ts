@@ -68,27 +68,7 @@ export class EmployerAddofferComponent implements OnInit {
     });
    }
 
-   findCities = () => {
-    this.service.get_location(this.offer_data.country).subscribe(res => {
-      this.location = res['data']['data'];
-      // this.location.forEach(element => {
-      //   const fetch_country = element.country;
-      //   this.unique = this.contryList.filter(x => x.value === fetch_country);
-      //   this._country.push(this.unique[0]);
-      // });
-      console.log(this.location);
-      // this.currency = Currency;
-      // const obj = [];
-      // for (const [key, value] of Object.entries(this.currency)) {
-      //   obj.push({ 'code': key, 'currency': value });
-      // }
-      // this.currency = obj;
-      // this.currency = this.currency.find(x => x.code === e);
-
-      // this._country = this._country.filter(this.onlyUnique);
-      // console.log('this._country ==> ', this._country);
-    });
-   }
+   
 
    selectCountry(e) {
      console.log('event : e ==> ', e);
@@ -96,6 +76,12 @@ export class EmployerAddofferComponent implements OnInit {
 
   ngOnInit() {
    }
+
+  findCities = () => {
+    this.service.get_location(this.offer_data.country).subscribe(res => {
+      this.location = res['data']['data'];
+    });
+  }
 
   // submit form
   onSubmit(flag) {

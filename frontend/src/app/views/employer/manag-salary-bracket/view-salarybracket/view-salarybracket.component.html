@@ -22,8 +22,8 @@
 
                       <tbody *ngIf="salary?.length != 0">
                         <tr *ngFor = "let data of salary">
-                        <td *ngIf = 'GetCountry(data.country)' >{{c_name}}</td>
-                         <td>{{data.currency}}</td>
+                        <td>{{data.location.country.country}}</td>
+                        <td>{{data.location.country.currency_code}}</td>
                         <td>{{data.from}} </td>
                         <td>{{data.to}}</td>
                           <td>
@@ -42,3 +42,4 @@
           </div>
         </div>
       </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
