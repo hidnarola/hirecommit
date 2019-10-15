@@ -117,9 +117,9 @@ export class AddLocationComponent implements OnInit {
     }
   }
 
-  onClose() {
-    this.router.navigate(['/employer/locations/list']);
-  }
+  // onClose() {
+  //   this.router.navigate(['/employer/locations/list']);
+  // }
 
   // public bind() {
   //   this.service.list().subscribe(res => {

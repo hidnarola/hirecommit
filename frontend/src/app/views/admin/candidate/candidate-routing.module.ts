@@ -24,7 +24,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'candidate_detail/:id',
+        path: 'view/:id',
         component: CandidatedetailApproveComponent,
         data: {
           title: 'Approved Candidate Detail'

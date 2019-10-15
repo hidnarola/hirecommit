@@ -13,9 +13,6 @@ export class SubAccountsDetailsComponent implements OnInit {
   ngOnInit() {
   }
 
-  onClose() {
-    this.router.navigate(['/employer/sub_accounts/list']);
-  }
   edit() {
     this.router.navigate(['/employer/sub_accounts/add']);
   }

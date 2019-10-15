@@ -11,10 +11,10 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./newcandidate-list.component.scss']
 })
 export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
-  dtTrigger:  Subject<any> = new Subject();
+  dtTrigger: Subject<any> = new Subject();
   candidates: any[];
   userDetail: any = [];
   constructor(private service: CandidateService, private route: Router, private commonService: CommonService) {
@@ -23,7 +23,7 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnInit() {
-     this.dtOptions = {
+    this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
       serverSide: true,
@@ -36,10 +36,10 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
 
             this.candidates = res['user'];
             console.log(this.candidates);
-            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
-          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
       columnDefs: [{ orderable: false, targets: 2 }],
@@ -79,8 +79,8 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   detail(id) {
-// if(this.userDetail.role === '')
-    this.route.navigate([ 'employer/candidate_manage/candidate_detail/' + id]);
+    // if(this.userDetail.role === '')
+    this.route.navigate(['employer/candidates/view/' + id]);
   }
 
   ngAfterViewInit(): void {

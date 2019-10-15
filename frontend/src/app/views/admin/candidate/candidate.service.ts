@@ -40,10 +40,10 @@ export class CandidateService {
     }
 
     get_new_candidate(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/candidate/get_new', {...params});
+        return this.http.post<any[]>(`${this.url}` + '/candidate/get_new', { ...params });
     }
 
-     get_approved_candidate(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/candidate/get_approved', {...params});
+    get_approved_candidate(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/candidate/get_approved', { ...params });
     }
 }

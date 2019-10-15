@@ -23,10 +23,6 @@ export class AddGroupsComponent implements OnInit {
   _name: any;
   title: string;
 
-  onClose() {
-    this.router.navigate(['/employer/groups/list']);
-  }
-
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];

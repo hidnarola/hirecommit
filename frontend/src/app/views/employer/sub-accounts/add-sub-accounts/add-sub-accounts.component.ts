@@ -18,7 +18,7 @@ export class AddSubAccountsComponent implements OnInit {
   buttonTitle: string;
   detail: any = [];
   update_data_id: any;
-  constructor(private router: Router, private service: SubAccountService, private route: ActivatedRoute,  private toastr: ToastrService) { }
+  constructor(private router: Router, private service: SubAccountService, private route: ActivatedRoute, private toastr: ToastrService) { }
 
   ngOnInit() {
     this.addAccount = new FormGroup({
@@ -40,15 +40,15 @@ export class AddSubAccountsComponent implements OnInit {
       this.buttonTitle = 'Update';
       console.log('hiiiiiiiiiii', id);
 
-       this.service.view_sub_acc_detail(id).subscribe(res => {
-            console.log('res', res['data']);
-            this.detail = {
-              name: res['data']['username'],
-              email: res['data']['user_id']['email'],
-              admin_rights: res['data']['user_id']['admin_rights']
-            };
-           this.update_data_id = res['data']['user_id']['_id'];
-          });
+      this.service.view_sub_acc_detail(id).subscribe(res => {
+        console.log('res', res['data']);
+        this.detail = {
+          name: res['data']['username'],
+          email: res['data']['user_id']['email'],
+          admin_rights: res['data']['user_id']['admin_rights']
+        };
+        this.update_data_id = res['data']['user_id']['_id'];
+      });
 
     } else {
       this.detail = {
@@ -75,14 +75,14 @@ export class AddSubAccountsComponent implements OnInit {
       //  'city': this.detail.city
       // };
       // console.log(this.detail); return false;
-          this.service.edit_sub_account(this.update_data_id, this.detail).subscribe(res => {
-            console.log('edited !!', res);
-            this.submitted = false;
-            this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
-            this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
-          }, (err) => {
-            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-          });
+      this.service.edit_sub_account(this.update_data_id, this.detail).subscribe(res => {
+        console.log('edited !!', res);
+        this.submitted = false;
+        this.router.navigate(['/employer/sub_accounts/list']);
+        this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+      });
     } else {
       if (flag) {
         // console.log(this.addAccount.value); return false;
@@ -91,8 +91,8 @@ export class AddSubAccountsComponent implements OnInit {
             console.log(res);
             this.submitted = false;
             this.addAccount.reset();
-            this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
-             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
+            this.router.navigate(['/employer/sub_accounts/list']);
+            this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
           }
         }, (err) => {
           console.log(err);
@@ -107,8 +107,5 @@ export class AddSubAccountsComponent implements OnInit {
     this.admin_rights = e.target.checked;
   }
 
-  onClose() {
-    this.router.navigate(['/employer/subaccounts/list']);
-  }
 
 }
