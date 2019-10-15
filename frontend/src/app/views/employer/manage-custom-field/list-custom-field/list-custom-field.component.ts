@@ -67,23 +67,23 @@ export class ListCustomFieldComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        console.log('idid',id);
-        
+        console.log('idid', id);
+
         this.service.delete_custom_field(id).subscribe(res => {
-           console.log('deleted',res);
+          console.log('deleted', res);
 
           if (res['data']['status'] === 1) {
-           
+
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-           
+
           }
-           this.rrerender();
-        } ,(err) => {
+          this.rrerender();
+        }, (err) => {
           console.log('error msg ==>', err['error']['message']);
 
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         })
-          }
+      }
     });
   }
   onEdit(id) {

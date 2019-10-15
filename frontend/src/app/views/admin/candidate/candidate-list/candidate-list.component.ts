@@ -10,8 +10,8 @@ import { CandidateService } from '../candidate.service';
   styleUrls: ['./candidate-list.component.scss']
 })
 export class CandidateListComponent implements OnInit, OnDestroy {
-  candidates:any;
-  constructor(private route: Router,private service : CandidateService) { }
+  candidates: any;
+  constructor(private route: Router, private service: CandidateService) { }
   // dtOptions: DataTables.Settings = {};
   // dtTrigger = new Subject();
   ngOnInit() {
@@ -19,8 +19,8 @@ export class CandidateListComponent implements OnInit, OnDestroy {
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
-            this.nextButtonClickEvent();
-          });
+          this.nextButtonClickEvent();
+        });
       }
     });
 
@@ -64,17 +64,17 @@ export class CandidateListComponent implements OnInit, OnDestroy {
 
   }
   detail(id) {
-    this.route.navigate(['admin/candidate_manage/candidate_detail/' + id])
+    this.route.navigate(['admin/candidates/view/' + id])
   }
 
-   public bind(){
-     this.service.get_candidate().subscribe(res => {
-            this.candidates = res['data'];
-       console.log('>>',this.candidates);
-            this.candidates = this.candidates.filter(x => x.user_id.isAllow === true)
-            // this.candidates = this.candidates.filter(x => x.is_del === false)
-            
-     })
-   }
+  public bind() {
+    this.service.get_candidate().subscribe(res => {
+      this.candidates = res['data'];
+      console.log('>>', this.candidates);
+      this.candidates = this.candidates.filter(x => x.user_id.isAllow === true)
+      // this.candidates = this.candidates.filter(x => x.is_del === false)
+
+    })
+  }
 }
 

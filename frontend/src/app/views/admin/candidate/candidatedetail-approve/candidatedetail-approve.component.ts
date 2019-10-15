@@ -41,9 +41,9 @@ export class CandidatedetailApproveComponent implements OnInit {
   }
   check(routes) {
     if (routes === false) {
-      this.router.navigate(['/admin/candidate_manage/new_candidate']);
+      this.router.navigate(['/admin/candidates/new_candidate']);
     } else {
-      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+      this.router.navigate(['/admin/candidates/approve_candidate']);
     }
   }
 
@@ -52,7 +52,7 @@ export class CandidatedetailApproveComponent implements OnInit {
     this.service.approved_candidate(id).subscribe(res => {
       console.log('approved!!!');
       this.bind();
-      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+      this.router.navigate(['/admin/candidates/approve_candidate']);
     });
   }
 
@@ -61,7 +61,7 @@ export class CandidatedetailApproveComponent implements OnInit {
 
     this.service.deactivate_candidate(id).subscribe(res => {
       console.log('Deleted!!');
-      this.router.navigate(['/admin/candidate_manage/new_candidate']);
+      this.router.navigate(['/admin/candidates/new_candidate']);
     });
 
   }
@@ -69,5 +69,5 @@ export class CandidatedetailApproveComponent implements OnInit {
 
 
 
-  // [routerLink] = "['/admin/candidate_manage/approved_candidate']"
+  // [routerLink] = "['/admin/candidates/approved_candidate']"
 }

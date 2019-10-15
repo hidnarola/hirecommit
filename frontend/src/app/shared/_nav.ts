@@ -49,16 +49,16 @@ export const admin: NavData[] = [
   {
     name: 'Candidates',
     // name: 'Manage Candidate',
-    url: 'candidate_manage',
+    url: 'candidates',
     icon: 'icon-people',
     children: [
       {
         name: 'Approved Candidate',
-        url: 'candidate_manage/approved_candidate'
+        url: 'candidates/approved_candidate'
       },
       {
         name: 'New Candidate',
-        url: 'candidate_manage/new_candidate'
+        url: 'candidates/new_candidate'
       },
     ]
   }

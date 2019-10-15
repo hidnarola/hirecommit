@@ -22,7 +22,7 @@ export class NewcandidateDetailComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/admin/candidate_manage/new_candidate']);
+    this.router.navigate(['/admin/candidates/new_candidate']);
   }
 
 }

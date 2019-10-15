@@ -67,14 +67,14 @@ export class ViewSubAccountsComponent
 
   edit(id) {
     // console.log(id);
-    this.router.navigate(['/employer/manage_subaccount/edit_subaccounts/' + id]);
+    this.router.navigate(['/employer/sub_accounts/edit/' + id]);
   }
 
   delete(user_id) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-         this.service.decativate_sub_account(user_id).subscribe(res => {
+        this.service.decativate_sub_account(user_id).subscribe(res => {
           console.log('deactivate sub account', res['status']);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
