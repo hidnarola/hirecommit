@@ -8,13 +8,13 @@ import { GroupService } from '../manage-groups.service';
   styleUrls: ['./groups-details.component.scss']
 })
 export class GroupsDetailsComponent implements OnInit {
-id :any;
-_name: any;
-_details:any =[];
-data:any;
-viewform = false;
-communication: any = [];
-  constructor(private router: Router,private route:ActivatedRoute, private service : GroupService) { }
+  id: any;
+  _name: any;
+  _details: any = [];
+  data: any;
+  viewform = false;
+  communication: any = [];
+  constructor(private router: Router, private route: ActivatedRoute, private service: GroupService) { }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -30,28 +30,28 @@ communication: any = [];
     })
 
     this.service.get_communication_detail(this.id).subscribe(res => {
-       this._details = res['data']['data'];
-       this.data=this._details;
+      this._details = res['data']['data'];
+      this.data = this._details;
       this._details.forEach(element => {
         if (element.communication.length > 0) {
           element.communication.forEach(com => {
             this.communication.push(com);
           });
         }
-        
-       });
-       console.log('_details',this.data);
-       
+
+      });
+      console.log('_details', this.data);
+
 
     })
   }
 
   cancel() {
-    this.router.navigate(['/employer/manage_group/view_group']);
+    this.router.navigate(['/employer/groups/list']);
   }
 
-  edit () {
-    this.router.navigate(['/employer/manage_group/add_group']);
+  edit() {
+    this.router.navigate(['/employer/groups/add_group']);
   }
 
   onclick() {

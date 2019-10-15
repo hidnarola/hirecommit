@@ -4,34 +4,40 @@ import { AddSalarybracketComponent } from './add-salarybracket/add-salarybracket
 import { ViewSalarybracketComponent } from './view-salarybracket/view-salarybracket.component';
 
 const routes: Routes = [
-  { path: '',
-  data: {
-    title: 'Salary-bracket'
-  },
-  children: [
   {
-    path: 'add_salarybracket',
-    component: AddSalarybracketComponent,
+    path: '',
     data: {
-      title: 'Add Salary-bracket'
-    }
-  },
-  {
-    path: 'add_salarybracket/:id',
-    component: AddSalarybracketComponent,
-    data: {
-      title: 'Update Salary-bracket'
-    }
-  },
+      title: 'Salary Bracket'
+    },
+    children: [
+      {
+        path: '',
+        redirectTo: 'list'
+      },
+      {
+        path: 'add_salarybracket',
+        component: AddSalarybracketComponent,
+        data: {
+          title: 'Add'
+        }
+      },
+      {
+        path: 'add_salarybracket/:id',
+        component: AddSalarybracketComponent,
+        data: {
+          title: 'Edit'
+        }
+      },
 
-  {
-    path: 'view_salarybracket',
-  component: ViewSalarybracketComponent,
-    data: {
-      title: 'View Salary-bracket'
-    }
+      {
+        path: 'list',
+        component: ViewSalarybracketComponent,
+        data: {
+          title: 'List'
+        }
+      }
+    ]
   }
-]}
 ];
 
 @NgModule({

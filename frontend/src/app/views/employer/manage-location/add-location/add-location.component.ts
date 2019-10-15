@@ -51,9 +51,9 @@ export class AddLocationComponent implements OnInit {
     if (this.id) {
       this.panelTitle = 'Edit Location';
       this.buttonTitle = 'Update';
-       this.service.get_location(id).subscribe(res => {
-            this.detail = res['data']['data'];
-          });
+      this.service.get_location(id).subscribe(res => {
+        this.detail = res['data']['data'];
+      });
 
     } else {
       this.detail = {
@@ -61,9 +61,9 @@ export class AddLocationComponent implements OnInit {
         city: null,
         country: null,
       };
-    this.panelTitle = 'Add Location';
-    this.buttonTitle = 'Add';
-    this.addLocation.reset();
+      this.panelTitle = 'Add Location';
+      this.buttonTitle = 'Add';
+      this.addLocation.reset();
     }
   }
 
@@ -74,34 +74,34 @@ export class AddLocationComponent implements OnInit {
     // console.log(this.addLocation.get('country').valid); return false;
     this.submitted = true;
     if (this.id && flag) {
-     const res_data = {
-       'id': this.id,
-       'country': this.detail.country,
-       'city': this.detail.city
+      const res_data = {
+        'id': this.id,
+        'country': this.detail.country,
+        'city': this.detail.city
       };
-          this.service.edit_location(res_data).subscribe(res => {
-            console.log('edited !!', res);
-            this.submitted = false;
-            this.router.navigate(['/employer/manage_location/view_location']);
-          });
-        } else {
+      this.service.edit_location(res_data).subscribe(res => {
+        console.log('edited !!', res);
+        this.submitted = false;
+        this.router.navigate(['/employer/locations/list']);
+      });
+    } else {
       if (flag) {
-        this.service.add_location(this.addLocation.value).subscribe(res => {
+        this.service.add(this.addLocation.value).subscribe(res => {
           this.location = res;
           this.submitted = false;
         });
         this.addLocation.reset();
-        this.router.navigate(['/employer/manage_location/view_location']);
+        this.router.navigate(['/employer/locations/list']);
       }
     }
   }
 
   onClose() {
-    this.router.navigate(['/employer/manage_location/view_location']);
+    this.router.navigate(['/employer/locations/list']);
   }
 
   // public bind() {
-  //   this.service.view_location().subscribe(res => {
+  //   this.service.list().subscribe(res => {
   //     this.locations = res['data']['data'];
   //     this.location = this.location.filter(x => x.is_del === false);
   //   });

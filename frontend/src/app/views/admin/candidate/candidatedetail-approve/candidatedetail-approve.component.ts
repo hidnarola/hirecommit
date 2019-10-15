@@ -37,7 +37,7 @@ export class CandidatedetailApproveComponent implements OnInit {
 
         this.buttonValue1 = 'Cancel'
       }
-     
+
       console.log('img', this.candidates);
 
     })
@@ -47,16 +47,16 @@ export class CandidatedetailApproveComponent implements OnInit {
       this.router.navigate(['/admin/candidate_manage/new_candidate']);
     }
     else {
-      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+      this.router.navigate(['/admin/candidate_manage/approved_candidate']);
     }
   }
 
 
   onApproved(id) {
-    this.service.approve_candidate(id).subscribe(res => {
+    this.service.approved_candidate(id).subscribe(res => {
       console.log('approved!!!');
       this.bind();
-      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+      this.router.navigate(['/admin/candidate_manage/approved_candidate']);
     })
   }
 
@@ -71,7 +71,7 @@ export class CandidatedetailApproveComponent implements OnInit {
   }
 
 
-  
 
-  // [routerLink] = "['/admin/candidate_manage/approve_candidate']"
+
+  // [routerLink] = "['/admin/candidate_manage/approved_candidate']"
 }

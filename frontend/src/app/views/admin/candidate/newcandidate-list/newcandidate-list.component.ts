@@ -8,16 +8,16 @@ import { Router } from '@angular/router';
   styleUrls: ['./newcandidate-list.component.scss']
 })
 export class NewcandidateListComponent implements OnInit {
- candidates: any;
- 
+  candidates: any;
+
   constructor(private service: CandidateService, private route: Router) { }
 
   ngOnInit() {
     const table = $('#example').DataTable({
       drawCallback: () => {
         $('.paginate_button.next').on('click', () => {
-            this.nextButtonClickEvent();
-          });
+          this.nextButtonClickEvent();
+        });
       }
     });
 
@@ -45,24 +45,24 @@ export class NewcandidateListComponent implements OnInit {
     // we are calling to API
   }
 
-  onApproved(id){
-    this.service.approve_candidate(id).subscribe(res => {
+  onApproved(id) {
+    this.service.approved_candidate(id).subscribe(res => {
       console.log('approved!!!');
       this.bind();
     })
   }
-  onDelete(id){
+  onDelete(id) {
     this.service.deactivate_candidate(id).subscribe(res => {
       console.log("deactivate!!");
       this.bind();
     })
 
   }
-  detail(id){
+  detail(id) {
     this.route.navigate(['admin/candidate_manage/candidate_detail/' + id])
-       
 
-}
+
+  }
 
 
   public bind() {

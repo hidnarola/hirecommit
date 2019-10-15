@@ -1,14 +1,14 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {ViewEmployerComponent} from './view-employer/view-employer.component';
-import {AddEmployerComponent} from './add-employer/add-employer.component';
-import {EmployerDetailComponent} from './employer-detail/employer-detail.component';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ViewEmployerComponent } from './view-employer/view-employer.component';
+import { AddEmployerComponent } from './add-employer/add-employer.component';
+import { EmployerDetailComponent } from './employer-detail/employer-detail.component';
 import { RequestedEmployerComponent } from './requested-employer/requested-employer.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'view'
+    redirectTo: 'new_employer'
   }, {
     path: '',
     data: {
@@ -16,10 +16,10 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'view',
+        path: 'approved_employer',
         component: ViewEmployerComponent,
         data: {
-          title: 'View'
+          title: 'Approved Employer'
         }
       }, {
         path: 'add',
@@ -48,4 +48,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class EmployerRoutingModule {}
+export class EmployerRoutingModule { }

@@ -13,10 +13,10 @@ import { Subject } from 'rxjs';
   styleUrls: ['./view-location.component.scss']
 })
 export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
-  dtTrigger:  Subject<any> = new Subject();
+  dtTrigger: Subject<any> = new Subject();
   country: any = [];
   locations: any[];
   loc: any;
@@ -42,10 +42,10 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
           if (res['status'] === 1) {
             this.locations = res['location'];
             console.log(this.locations);
-            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
-          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
       columnDefs: [{ orderable: false, targets: 2 }],
@@ -71,7 +71,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_location/edit_location/' + id]);
+    this.router.navigate(['/employer/locations/edit_location/' + id]);
   }
 
   delete(id) {
@@ -79,11 +79,11 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-         this.service.deactivate_location(id).subscribe(res => {
-      console.log('deactivate location', res);
-      // this.bind();
-      this.rrerender();
-    });
+        this.service.deactivate_location(id).subscribe(res => {
+          console.log('deactivate location', res);
+          // this.bind();
+          this.rrerender();
+        });
       }
     });
   }
