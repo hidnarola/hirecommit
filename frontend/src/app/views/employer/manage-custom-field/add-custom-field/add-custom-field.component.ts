@@ -15,6 +15,7 @@ export class AddCustomFieldComponent implements OnInit {
   addCustomFeild: FormGroup;
   id: any;
   data: any = {};
+  isEdit = false;
   constructor(private service: CustomFieldService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
@@ -22,7 +23,10 @@ export class AddCustomFieldComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
+      console.log('params', params);
+      
       this.id = params['id'];
+      this.isEdit = true;
       console.log(this.id);
     });
 
@@ -41,7 +45,9 @@ export class AddCustomFieldComponent implements OnInit {
   }
   onSubmit(valid) {
     this.submitted = true;
-    if (this.id != 0) {
+    if (this.id && this.id != 0) {
+      console.log('edit==>', this.id);
+      
       let obj = {
         "id": this.id,
         "key": this.addCustomFeild.value['key']
@@ -57,7 +63,9 @@ export class AddCustomFieldComponent implements OnInit {
       }, (err) => {
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
-    } else {
+    }
+     else {
+       
       if (valid) {
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
           console.log('>>', this.addCustomFeild.value);
