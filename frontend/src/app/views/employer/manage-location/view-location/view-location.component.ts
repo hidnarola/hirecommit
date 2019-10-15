@@ -5,6 +5,7 @@ import { countries } from '../../../../shared/countries';
 import { ConfirmationService } from 'primeng/api';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-view-location',
@@ -13,10 +14,10 @@ import { Subject } from 'rxjs';
   styleUrls: ['./view-location.component.scss']
 })
 export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
-  dtTrigger:  Subject<any> = new Subject();
+  dtTrigger: Subject<any> = new Subject();
   country: any = [];
   locations: any[];
   loc: any;
@@ -29,7 +30,9 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
   sal: any = [];
   salnew: any = [];
 
-  constructor(private router: Router, private service: LocationService, private confirmationService: ConfirmationService) { }
+  constructor(private router: Router,
+    private service: LocationService,
+    private confirmationService: ConfirmationService, private toastr: ToastrService) { }
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -42,10 +45,10 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
           if (res['status'] === 1) {
             this.locations = res['location'];
             console.log(this.locations);
-            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
-          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
       columnDefs: [{ orderable: false, targets: 2 }],
@@ -79,11 +82,16 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-         this.service.deactivate_location(id).subscribe(res => {
-      console.log('deactivate location', res);
-      // this.bind();
-      this.rrerender();
-    });
+        this.service.deactivate_location(id).subscribe(res => {
+          console.log('deactivate location', res['status']);
+
+          if (res['status'] === 1) {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          }
+          this.rrerender();
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
       }
     });
   }

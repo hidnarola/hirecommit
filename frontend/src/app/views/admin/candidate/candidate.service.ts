@@ -9,7 +9,7 @@ import * as env from '../../../../environments/environment';
 })
 export class CandidateService {
     // private url = 'http://localhost:3000/admin';
-    private url = env.environment.API_URL + 'admin';
+    private url = env.environment.API_URL + '';
     constructor(private http: HttpClient, private route: Router) { }
 
     myObservableArray: Observable<any[]> = new Observable<any[]>();
@@ -23,7 +23,7 @@ export class CandidateService {
 
     get_candidate(): Observable<any[]> {
 
-        return this.http.get<any[]>(`${this.url}` + '/manage_candidate/approved_candidate');
+        return this.http.get<any[]>(`${this.url}` + 'employer/candidate/manage_candidate/approved_candidate');
     }
 
     approve_candidate(id) : Observable<any[]>{
@@ -35,6 +35,9 @@ export class CandidateService {
 
     candidate_detail(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/candidate_detail/' + id)
+    }
+    new_request(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + 'employer/candidate/manage_candidate/new_request');
     }
 
 

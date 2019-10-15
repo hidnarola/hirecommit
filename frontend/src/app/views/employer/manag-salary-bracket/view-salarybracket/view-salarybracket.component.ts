@@ -5,6 +5,7 @@ import { countries } from '../../../../shared/countries';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-view-salarybracket',
   templateUrl: './view-salarybracket.component.html',
@@ -25,7 +26,12 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   salnew: any = [];
 
   unq: any;
-  constructor(private router: Router, private confirmationService: ConfirmationService, private service: SalaryBracketService) { }
+  constructor(private router: Router, 
+    private confirmationService: ConfirmationService, 
+    private service: SalaryBracketService,
+    private toastr: ToastrService) {}
+      
+  
   ngOnInit() {
     this.bind();
   }
@@ -46,8 +52,13 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       accept: () => {
         this.service.deactivate_salary_brcaket(id).subscribe(res => {
           console.log('deactivate salary', res);
+          if (res['status'] === 1) {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          }
           this.rrerender();
-          this.bind();
+   
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });

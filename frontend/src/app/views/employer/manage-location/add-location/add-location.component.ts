@@ -5,6 +5,7 @@ import { countries } from '../../../../shared/countries';
 import { LocationService } from '../manage-location.service';
 import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-add-location',
   templateUrl: './add-location.component.html',
@@ -20,12 +21,16 @@ export class AddLocationComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
-  constructor(private router: Router, private confirmationService: ConfirmationService, private commonService: CommonService, private service: LocationService, private route: ActivatedRoute) { }
+  constructor(private router: Router,
+    private toastr: ToastrService,
+    private commonService: CommonService,
+    private service: LocationService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
-      country: new FormControl(null, [Validators.required]),
-      city: new FormControl(null, [Validators.required])
+      country: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required])
 
     });
 
@@ -51,9 +56,9 @@ export class AddLocationComponent implements OnInit {
     if (this.id) {
       this.panelTitle = 'Edit Location';
       this.buttonTitle = 'Update';
-       this.service.get_location(id).subscribe(res => {
-            this.detail = res['data']['data'];
-          });
+      this.service.get_location(id).subscribe(res => {
+        this.detail = res['data']['data'];
+      });
 
     } else {
       this.detail = {
@@ -61,37 +66,53 @@ export class AddLocationComponent implements OnInit {
         city: null,
         country: null,
       };
-    this.panelTitle = 'Add Location';
-    this.buttonTitle = 'Add';
-    this.addLocation.reset();
+      this.panelTitle = 'Add Location';
+      this.buttonTitle = 'Add';
+      this.addLocation.reset();
     }
   }
 
   get f() { return this.addLocation.controls; }
 
   onSubmit(flag: boolean, id) {
-    console.log('check for form validation : flag ==> ', flag);
-    // console.log(this.addLocation.get('country').valid); return false;
     this.submitted = true;
     if (this.id && flag) {
-     const res_data = {
-       'id': this.id,
-       'country': this.detail.country,
-       'city': this.detail.city
+      const res_data = {
+        'id': this.id,
+        'country': this.detail.country,
+        'city': this.detail.city
       };
-          this.service.edit_location(res_data).subscribe(res => {
-            console.log('edited !!', res);
-            this.submitted = false;
-            this.router.navigate(['/employer/manage_location/view_location']);
-          });
-        } else {
+      this.service.edit_location(res_data).subscribe(res => {
+        console.log('edited !!', res);
+        if (res['data']['status'] === 1) {
+          this.submitted = false;
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          this.addLocation.reset();
+          // this.router.navigate(['/employer/customfeild/list'])
+        }
+        this.submitted = false;
+        // this.router.navigate(['/employer/manage_location/view_location']);
+      }, (err) => {
+        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+      });
+    } else {
       if (flag) {
         this.service.add_location(this.addLocation.value).subscribe(res => {
           this.location = res;
+          if (res['data']['status'] === 1) {
+            this.submitted = false;
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.addLocation.reset();
+            // this.router.navigate(['/employer/customfeild/list'])
+          }
           this.submitted = false;
+        }, (err) => {
+          console.log('error msg ==>', err['error']['message']);
+
+          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
         this.addLocation.reset();
-        this.router.navigate(['/employer/manage_location/view_location']);
+        // this.router.navigate(['/employer/manage_location/view_location']);
       }
     }
   }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CustomFeildService } from '../customFeild.service';
+import { customField } from '../customFeild.service';
 import { ToastrService } from 'ngx-toastr';
 import { Params, ActivatedRoute, Router } from '@angular/router';
 @Component({
@@ -15,7 +15,7 @@ export class AddCustomFeildComponent implements OnInit {
   addCustomFeild: FormGroup;
   id:any;
   data: any ={};
-  constructor(private service: CustomFeildService, 
+  constructor(private service: customField, 
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router : Router) { }
@@ -48,8 +48,19 @@ export class AddCustomFeildComponent implements OnInit {
       }
       console.log('Edited!!', obj);
       this.service.edit_custom_field(obj).subscribe(res => {
-        this.router.navigate(['/employer/customfeild/list'])
-      })
+
+        if (res['data']['status'] === 1) {
+          this.submitted = false;
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          this.addCustomFeild.reset();
+          this.router.navigate(['/employer/customfeild/list'])
+        }
+      }, (err) => {
+        console.log('error msg ==>', err['error']['message']);
+
+        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+      });
+    
     }
     else{
     if (valid) {

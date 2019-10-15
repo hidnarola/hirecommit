@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, Validators, FormControl, FormControlName } from '@angular/forms';
 import { SubAccountService } from '../sub-accounts.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-sub-accounts',
@@ -16,7 +17,10 @@ export class AddSubAccountsComponent implements OnInit {
   panelTitle: string;
   buttonTitle: string;
   detail: any = [];
-  constructor(private router: Router, private service: SubAccountService, private route: ActivatedRoute) { }
+  constructor(private router: Router,
+     private service: SubAccountService, 
+     private route: ActivatedRoute,
+     private toastr: ToastrService) { }
 
   ngOnInit() {
     this.addAccount = new FormGroup({

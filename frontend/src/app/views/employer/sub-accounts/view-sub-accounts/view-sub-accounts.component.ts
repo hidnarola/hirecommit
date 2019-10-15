@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { SubAccountService } from '../sub-accounts.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { ConfirmationService } from 'primeng/api';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({ selector: 'app-view-sub-accounts', templateUrl: './view-sub-accounts.component.html', styleUrls: ['./view-sub-accounts.component.scss'] })
 export class ViewSubAccountsComponent
@@ -17,7 +19,10 @@ export class ViewSubAccountsComponent
   data: any[];
   admin_rights = true;
 
-  constructor(private router: Router, private service: SubAccountService) { }
+  constructor(private router: Router, 
+    private service: SubAccountService, 
+    private confirmationService: ConfirmationService,
+    private toastr : ToastrService) { }
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -67,11 +72,21 @@ export class ViewSubAccountsComponent
   }
 
   delete(user_id) {
-    this.service.decativate_sub_account(user_id).subscribe(res => {
-      if (res['status'] === 1) {
-        console.log(res);
-        this.rrerender();
-        // this.get_SubEmployer();
+    console.log('hi',user_id);
+    
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.decativate_sub_account(user_id).subscribe(res => {
+          console.log('deactivate sub account',res);
+
+          if (res['status'] === 1) {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          }
+          this.rrerender();
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
       }
     });
   }

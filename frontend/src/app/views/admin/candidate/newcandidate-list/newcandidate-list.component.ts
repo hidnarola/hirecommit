@@ -65,13 +65,11 @@ export class NewcandidateListComponent implements OnInit {
 }
 
 
-  public bind() {
-    this.service.get_candidate().subscribe(res => {
-      this.candidates = res['data'];
-      this.candidates = this.candidates.filter(x => x.user_id.isAllow === false)
-      console.log('>>', this.candidates);
-      // this.candidates = this.candidates.filter(x => x.is_del === false)
-
+public bind() {
+  this.service.new_request().subscribe(res => {
+    this.candidates = res;
+    console.log('>>', res);
+    
     })
   }
 

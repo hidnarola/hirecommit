@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
-import { CustomFeildService } from '../customFeild.service';
+import { customField } from '../customFeild.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
-
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-list-custom-feild',
@@ -17,7 +17,8 @@ data: any[];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   constructor(private confirmationService: ConfirmationService,
-    private service : CustomFeildService,
+    private toastr: ToastrService,
+    private service: customField,
     private router: Router) { }
 
   ngOnInit() {
@@ -61,16 +62,28 @@ data: any[];
     };
   }
 
-  delete() {
+  delete(id) {
 
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        // this.service.deactivate_location(id).subscribe(res => {
-        //   console.log('deactivate location', res);
-        //   // this.bind();
-        // });
-      }
+        console.log('idid',id);
+        
+        this.service.delete_custom_field(id).subscribe(res => {
+           console.log('deleted',res);
+
+          if (res['data']['status'] === 1) {
+           
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+           
+          }
+           this.rrerender();
+        } ,(err) => {
+          console.log('error msg ==>', err['error']['message']);
+
+          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+        })
+          }
     });
   }
   onEdit(id){
