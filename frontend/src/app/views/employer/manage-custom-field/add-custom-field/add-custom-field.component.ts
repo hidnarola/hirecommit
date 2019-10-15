@@ -48,21 +48,26 @@ export class AddCustomFieldComponent implements OnInit {
       }
       console.log('Edited!!', obj);
       this.service.edit_custom_field(obj).subscribe(res => {
+        if (res['data']['status'] === 1) {
+          this.submitted = false;
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          this.addCustomFeild.reset();
+        }
         this.router.navigate(['/employer/custom_field/list'])
-      })
+      }, (err) => {
+        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+      });
     } else {
       if (valid) {
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
-          console.log('add', res);
-
+          console.log('>>', this.addCustomFeild.value);
+          
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.addCustomFeild.reset();
           }
         }, (err) => {
-          console.log('error msg ==>', err['error']['message']);
-
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
       }

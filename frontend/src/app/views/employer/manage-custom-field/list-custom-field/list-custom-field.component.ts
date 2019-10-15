@@ -69,20 +69,20 @@ export class ListCustomFieldComponent implements OnInit {
       accept: () => {
         console.log('idid',id);
         
-        // this.service.delete_custom_field(id).subscribe(res => {
-        //    console.log('deleted',res);
+        this.service.delete_custom_field(id).subscribe(res => {
+           console.log('deleted',res);
 
-        //   if (res['data']['status'] === 1) {
+          if (res['data']['status'] === 1) {
            
-        //     this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
            
-        //   }
-        //    this.rrerender();
-        // } ,(err) => {
-        //   console.log('error msg ==>', err['error']['message']);
+          }
+           this.rrerender();
+        } ,(err) => {
+          console.log('error msg ==>', err['error']['message']);
 
-        //   this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
-        // })
+          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+        })
           }
     });
   }

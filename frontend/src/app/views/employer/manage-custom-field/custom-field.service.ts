@@ -40,5 +40,8 @@ export class CustomFieldService {
     get_custom_field(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/customfield/' +id)
     }
+    delete_custom_field(id): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/customfield/delete/' + id,{})
+    }
    
 }
