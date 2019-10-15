@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
-import { CustomFeildService } from '../customFeild.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
 import { Router } from '@angular/router';
+import { CustomFieldService } from '../custom-field.service';
 @Component({
   selector: 'app-list-custom-feild',
   templateUrl: './list-custom-feild.component.html',
@@ -17,7 +17,7 @@ data: any[];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   constructor(private confirmationService: ConfirmationService,
-    private service : CustomFeildService,
+    private service: CustomFieldService,
     private router: Router) { }
 
   ngOnInit() {
@@ -27,7 +27,7 @@ data: any[];
 
   public bind() {
     console.log(' bind function ');
-    
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
@@ -38,11 +38,11 @@ data: any[];
         console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
           console.log(' res 1 ===>' , res);
-          
+
           if (res['status'] === 1) {
             this.data = res['data'];
             console.log('custom_data==>', res);
-           
+
 
             callback({ recordsTotal: res['recordsTotal']['recordsTotal'], recordsFiltered: res['recordsTotal']['recordsTotal'], data: [] });
           }
@@ -73,8 +73,8 @@ data: any[];
       }
     });
   }
-  onEdit(id){
-    this.router.navigate(['/employer/customfeild/edit/' + id])
+  onEdit(id) {
+    this.router.navigate(['/employer/customfeild/edit/' + id]);
   }
 
   ngAfterViewInit(): void {
@@ -96,5 +96,3 @@ data: any[];
   }
 
 }
-
- 

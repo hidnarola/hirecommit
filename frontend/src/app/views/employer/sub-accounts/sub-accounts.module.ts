@@ -8,6 +8,8 @@ import { ViewSubAccountsComponent } from './view-sub-accounts/view-sub-accounts.
 import { SubAccountsDetailsComponent } from './sub-accounts-details/sub-accounts-details.component';
 import { AddSubAccountsComponent } from './add-sub-accounts/add-sub-accounts.component';
 import { DataTablesModule } from 'angular-datatables';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [ViewSubAccountsComponent, SubAccountsDetailsComponent, AddSubAccountsComponent],
@@ -15,7 +17,9 @@ import { DataTablesModule } from 'angular-datatables';
     CommonModule,
     SubAccountsRoutingModule,
     ReactiveFormsModule,
-    DataTablesModule
-  ]
+    DataTablesModule,
+    ConfirmDialogModule,
+  ],
+  providers: [ConfirmationService]
 })
 export class SubAccountsModule { }

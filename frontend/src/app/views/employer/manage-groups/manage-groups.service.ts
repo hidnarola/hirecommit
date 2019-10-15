@@ -17,7 +17,7 @@ export class GroupService {
     }
 
     view_groups(params): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}` + '/view_groups', {...params});
+      return this.http.post<any[]>(`${this.url}` + '/group/get', {...params});
     }
 
     get_detail(id): Observable<any[]> {
@@ -29,11 +29,11 @@ export class GroupService {
     }
 
     deleteGroup(id): Observable<any[]> {
-      return this.http.put<any[]>(`${this.url}` + '/deactivate_group/' + id, null);
+      return this.http.put<any[]>(`${this.url}` + '/deactivate_group/' + id, {});
     }
 
     addGroup(data): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}` + '/add_group', data);
+      return this.http.post<any[]>(`${this.url}` + '/group', data);
     }
 
 }

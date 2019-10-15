@@ -34,9 +34,9 @@ export const admin: NavData[] = [
     name: 'Manage Employer',
     url: 'employer_manage/view',
     icon: 'icon-user',
-    children:[
+    children: [
       {
-        name:'New Request',
+        name: 'New Request',
         url: 'employer_manage/new_employer'
     },
       {
@@ -50,7 +50,6 @@ export const admin: NavData[] = [
     url: 'candidate_manage',
     icon: 'icon-people',
     children: [
-    
      {
        name: 'New Request',
        url: 'candidate_manage/new_candidate'
