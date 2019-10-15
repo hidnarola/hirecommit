@@ -67,7 +67,6 @@ export class ListCustomFieldComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        console.log('idid', id);
 
         // this.service.delete_custom_field(id).subscribe(res => {
         //    console.log('deleted',res);
