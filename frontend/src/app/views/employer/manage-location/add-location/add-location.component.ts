@@ -97,7 +97,7 @@ export class AddLocationComponent implements OnInit {
       });
     } else {
       if (flag) {
-        this.service.add_location(this.addLocation.value).subscribe(res => {
+        this.service.add(this.addLocation.value).subscribe(res => {
           this.location = res;
           if (res['data']['status'] === 1) {
             this.submitted = false;
@@ -112,17 +112,17 @@ export class AddLocationComponent implements OnInit {
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
         this.addLocation.reset();
-        // this.router.navigate(['/employer/manage_location/view_location']);
+        this.router.navigate(['/employer/locations/list']);
       }
     }
   }
 
   onClose() {
-    this.router.navigate(['/employer/manage_location/view_location']);
+    this.router.navigate(['/employer/locations/list']);
   }
 
   // public bind() {
-  //   this.service.view_location().subscribe(res => {
+  //   this.service.list().subscribe(res => {
   //     this.locations = res['data']['data'];
   //     this.location = this.location.filter(x => x.is_del === false);
   //   });

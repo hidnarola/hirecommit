@@ -21,6 +21,6 @@ import { DataTablesModule } from 'angular-datatables';
     HttpClientModule,
     DataTablesModule
   ],
-  providers: [  ]
+  providers: []
 })
 export class ManageGroupsModule { }

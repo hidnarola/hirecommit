@@ -1,34 +1,34 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
-import { customField } from '../customFeild.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { CustomFieldService } from '../custom-field.service';
 @Component({
-  selector: 'app-list-custom-feild',
-  templateUrl: './list-custom-feild.component.html',
-  styleUrls: ['./list-custom-feild.component.scss']
+  selector: 'app-list-custom-field',
+  templateUrl: './list-custom-field.component.html',
+  styleUrls: ['./list-custom-field.component.scss']
 })
-export class ListCustomFeildComponent implements OnInit {
-data: any[];
+export class ListCustomFieldComponent implements OnInit {
+  data: any[];
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   constructor(private confirmationService: ConfirmationService,
     private toastr: ToastrService,
-    private service: customField,
+    private service: CustomFieldService,
     private router: Router) { }
 
   ngOnInit() {
-    console.log(' list feild component');
+    console.log(' list field component');
     this.bind();
   }
 
   public bind() {
     console.log(' bind function ');
-    
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
@@ -38,12 +38,12 @@ data: any[];
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
-          console.log(' res 1 ===>' , res);
-          
+          console.log(' res 1 ===>', res);
+
           if (res['status'] === 1) {
             this.data = res['data'];
             console.log('custom_data==>', res);
-           
+
 
             callback({ recordsTotal: res['recordsTotal']['recordsTotal'], recordsFiltered: res['recordsTotal']['recordsTotal'], data: [] });
           }
@@ -69,25 +69,25 @@ data: any[];
       accept: () => {
         console.log('idid',id);
         
-        this.service.delete_custom_field(id).subscribe(res => {
-           console.log('deleted',res);
+        // this.service.delete_custom_field(id).subscribe(res => {
+        //    console.log('deleted',res);
 
-          if (res['data']['status'] === 1) {
+        //   if (res['data']['status'] === 1) {
            
-            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+        //     this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
            
-          }
-           this.rrerender();
-        } ,(err) => {
-          console.log('error msg ==>', err['error']['message']);
+        //   }
+        //    this.rrerender();
+        // } ,(err) => {
+        //   console.log('error msg ==>', err['error']['message']);
 
-          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
-        })
+        //   this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+        // })
           }
     });
   }
-  onEdit(id){
-    this.router.navigate(['/employer/customfeild/edit/' + id])
+  onEdit(id) {
+    this.router.navigate(['/employer/custom_field/edit/' + id])
   }
 
   ngAfterViewInit(): void {
@@ -110,4 +110,3 @@ data: any[];
 
 }
 
- 

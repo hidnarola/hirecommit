@@ -15,15 +15,15 @@ export class LocationService {
     constructor(private http: HttpClient, private route: Router) { }
 
     view_location(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/location/get', {...params});
+        return this.http.post<any[]>(`${this.url}` + '/location/get', { ...params });
     }
 
     deactivate_location(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/location/deactivate_location/' + id, null);
     }
 
-    add_location(data): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/location' , data);
+    add(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/location', data);
     }
 
     get_location(id): Observable<any[]> {
@@ -31,6 +31,6 @@ export class LocationService {
     }
 
     edit_location(data): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/location/' , data);
+        return this.http.put<any[]>(`${this.url}` + '/location/', data);
     }
 }

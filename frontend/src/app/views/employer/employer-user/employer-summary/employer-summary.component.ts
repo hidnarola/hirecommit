@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
@@ -40,10 +40,10 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
           if (res['offer']) {
             this.offers = res['offer'];
             console.log('data==>', res);
-            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
-          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
       columns: [
@@ -96,33 +96,33 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   detail(id) {
-    this.router.navigate(['/employer/manage_offer/offerdetail/' + id]);
+    this.router.navigate(['/employer/offers/offerdetail/' + id]);
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_offer/addoffer/' + id]);
+    this.router.navigate(['/employer/offers/add/' + id]);
   }
 
   delete(id) {
     this.service.deactivate_offer(id).subscribe(res => {
-        // this.offers = res['data'];
-        console.log('res', res);
+      // this.offers = res['data'];
+      console.log('res', res);
 
-        // console.log("deactivate",this.offers);
-        this.bind();
+      // console.log("deactivate",this.offers);
+      this.bind();
     });
-   }
-
-  checkValue(id, e) {
-      this.status = e.target.checked;
-      // console.log('updated', this.status);
-     this.service.change_status(id, this.status).subscribe(res => {
-      //  console.log('updated12', this.status);
-     });
   }
 
-   onAdd() {
-    this.router.navigate(['/employer/manage_offer/addoffer']);
+  checkValue(id, e) {
+    this.status = e.target.checked;
+    // console.log('updated', this.status);
+    this.service.change_status(id, this.status).subscribe(res => {
+      //  console.log('updated12', this.status);
+    });
+  }
+
+  onAdd() {
+    this.router.navigate(['/employer/offers/add']);
   }
 
   onlyUnique(value, index, self) {

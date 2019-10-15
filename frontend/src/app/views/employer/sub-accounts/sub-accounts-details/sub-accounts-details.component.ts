@@ -14,14 +14,14 @@ export class SubAccountsDetailsComponent implements OnInit {
   }
 
   onClose() {
-   this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
+    this.router.navigate(['/employer/sub_accounts/list']);
   }
   edit() {
-    this.router.navigate(['/employer/manage_subaccount/add_subaccounts']);
+    this.router.navigate(['/employer/sub_accounts/add']);
   }
 
   cancel() {
-    this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
+    this.router.navigate(['/employer/sub_accounts/list']);
   }
 
 }

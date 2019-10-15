@@ -4,9 +4,9 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
-                    <span class="input-group-text pull-right" [routerLink]="['/employer/customfeild/list']"><i class="icon-close"></i></span>
+                    <span class="input-group-text pull-right" [routerLink]="['/employer/custom_field/list']"><i
+                            class="icon-close"></i></span>
                 </div>
-                <!-- {{data | json}} -->
                 <form class="form-horizontal" [formGroup]="addCustomFeild"
                     (ngSubmit)="onSubmit(addCustomFeild.valid,id)">
                     <div class="card-body">
@@ -14,9 +14,9 @@
                             <label class="col-md-3 col-form-label" for="key">Custom Field </label>
                             <div class="col-md-4">
                                 <input type="text" [(ngModel)]="data.key" id="key" name="key" class="form-control"
-                                    placeholder="Custom Feild" formControlName="key">
-                                <span *ngIf="!addCustomFeild.get('key').valid && submitted"
-                                    class="help-block">This field is required.
+                                    placeholder="Custom Field" formControlName="key">
+                                <span *ngIf="!addCustomFeild.get('key').valid && submitted" class="help-block">This
+                                    field is required.
                                 </span>
 
                             </div>

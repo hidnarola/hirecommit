@@ -8,28 +8,32 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Location'
+      title: 'Locations'
     },
     children: [
       {
-        path: 'add_location',
+        path: '',
+        redirectTo: 'list'
+      },
+      {
+        path: 'add',
         component: AddLocationComponent,
         data: {
-          title: 'Add Location'
+          title: 'Add'
         }
       },
       {
         path: 'edit_location/:id',
         component: AddLocationComponent,
         data: {
-          title: 'Edit Location'
+          title: 'Edit'
         }
       },
       {
-        path: 'view_location',
+        path: 'list',
         component: ViewLocationComponent,
         data: {
-          title: 'View Location'
+          title: 'List'
         }
       }
     ]

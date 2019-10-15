@@ -8,39 +8,39 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Employer'
+      title: 'Offers'
     },
     children: [
       {
         path: '',
-        redirectTo: 'created_offerlist'
+        redirectTo: 'list'
       },
       {
-        path: 'created_offerlist',
+        path: 'list',
         component: EmployerSummaryComponent,
         data: {
-          title: 'Created_Offerlist'
+          title: 'List'
         }
       },
       {
-        path: 'addoffer',
+        path: 'add',
         component: EmployerAddofferComponent,
         data: {
-          title: 'AddOffer'
+          title: 'Add'
         }
       },
       {
         path: 'addoffer/:id',
         component: EmployerAddofferComponent,
         data: {
-          title: 'edit offer'
+          // title: 'edit offer'
         }
       }
       , {
         path: 'offerdetail/:id',
         component: EmployerSummaryDetailComponent,
         data: {
-          title: 'offerDetail'
+          // title: 'offerDetail'
         }
       }
     ]

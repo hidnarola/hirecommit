@@ -28,7 +28,7 @@ export class AddSubAccountsComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       adminrights: new FormControl('')
     });
-     this.route.params.subscribe((params: Params) => {
+    this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       // console.log(this.id);
     });
@@ -41,11 +41,11 @@ export class AddSubAccountsComponent implements OnInit {
       this.panelTitle = 'Edit';
       this.buttonTitle = 'Update';
 
-       this.service.view_sub_acc_detail(id).subscribe(res => {
-            console.log('res', res);
-            this.detail = res['data']['data'];
-            console.log('subscribed!', this.detail);
-          });
+      this.service.view_sub_acc_detail(id).subscribe(res => {
+        console.log('res', res);
+        this.detail = res['data']['data'];
+        console.log('subscribed!', this.detail);
+      });
 
     } else {
       this.detail = {
@@ -54,13 +54,13 @@ export class AddSubAccountsComponent implements OnInit {
         email: null,
         adminrights: null
       };
-    this.panelTitle = 'Add';
-    this.buttonTitle = 'Add';
-    this.addAccount.reset();
+      this.panelTitle = 'Add';
+      this.buttonTitle = 'Add';
+      this.addAccount.reset();
     }
   }
 
-  get f() {return  this.addAccount.controls; }
+  get f() { return this.addAccount.controls; }
 
   onSubmit(flag: boolean) {
     this.submitted = true;
@@ -68,8 +68,8 @@ export class AddSubAccountsComponent implements OnInit {
       this.service.add_sub_account(this.addAccount.value).subscribe(res => {
         if (res['data']['status'] === 1) {
           console.log(res);
-            this.addAccount.reset();
-            this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
+          this.addAccount.reset();
+          this.router.navigate(['/employer/subaccounts/list']);
         }
       }, (err) => {
         console.log(err);
@@ -82,7 +82,7 @@ export class AddSubAccountsComponent implements OnInit {
   }
 
   onClose() {
-    this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
+    this.router.navigate(['/employer/subaccounts/list']);
   }
 
 }

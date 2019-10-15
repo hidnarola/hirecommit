@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as env from '../../../../environments/environment';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class customField {
+export class CustomFieldService {
+
     private url = env.environment.API_URL + 'employer';
     // private url = 'http://localhost:3000/employer';
     // myObservableArray: Observable<any[]> = new Observable<any[]>();
@@ -38,11 +39,6 @@ export class customField {
     }
     get_custom_field(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/customfield/' +id)
-    }
-
-    delete_custom_field(id): Observable<any[]>{
-        console.log('service id', id);
-        return this.http.put<any[]>(`${this.url}` + '/customfield/delete/' +id,{})
     }
    
 }

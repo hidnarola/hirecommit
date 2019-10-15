@@ -74,7 +74,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_location/edit_location/' + id]);
+    this.router.navigate(['/employer/locations/edit_location/' + id]);
   }
 
   delete(id) {
