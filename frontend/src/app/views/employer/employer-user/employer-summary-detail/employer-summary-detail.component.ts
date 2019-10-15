@@ -8,14 +8,14 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary-detail.component.scss']
 })
 export class EmployerSummaryDetailComponent implements OnInit {
- id: any;
-offers: any;
-Disable = true;
-display = false;
+  id: any;
+  offers: any;
+  Disable = true;
+  display = false;
   constructor(private router: Router, private service: OfferService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-     this.route.params.subscribe((params: Params) => {
+    this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
 
@@ -34,13 +34,13 @@ display = false;
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_offer/addoffer/' + id]);
+    this.router.navigate(['/employer/offers/add/' + id]);
   }
-  cancel( ) {
-    this.router.navigate(['/employer/manage_offer/created_offerlist']) ;
+  cancel() {
+    this.router.navigate(['/employer/offers/list']);
   }
   details(gid) {
-    this.router.navigate(['/employer/manage_group/group_details/' + gid]);
+    this.router.navigate(['/employer/groups/group_details/' + gid]);
   }
 
 

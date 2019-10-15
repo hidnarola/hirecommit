@@ -17,14 +17,14 @@ export class AddGroupsComponent implements OnInit {
   public Editor = ClassicEditor;
   myForm: FormGroup;
   arr: FormArray;
-   id: any;
+  id: any;
   value = false;
   submitted = false;
   _name: any;
   title: string;
 
   onClose() {
-    this.router.navigate(['/employer/manage_group/view_group']);
+    this.router.navigate(['/employer/groups/list']);
   }
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class AddGroupsComponent implements OnInit {
     });
 
     this.service.get_detail(this.id).subscribe(res => {
-    this._name = res['data']['data'];
+      this._name = res['data']['data'];
       console.log('name', this._name);
     });
 
@@ -43,11 +43,11 @@ export class AddGroupsComponent implements OnInit {
     });
   }
 
-  public onReady( editor ) {
-      editor.ui.getEditableElement().parentElement.insertBefore(
-          editor.ui.view.toolbar.element,
-          editor.ui.getEditableElement()
-      );
+  public onReady(editor) {
+    editor.ui.getEditableElement().parentElement.insertBefore(
+      editor.ui.view.toolbar.element,
+      editor.ui.getEditableElement()
+    );
   }
 
   onSubmit(valid) {
@@ -56,18 +56,18 @@ export class AddGroupsComponent implements OnInit {
     if (valid) {
       this.service.add_communication(this.myForm.controls.arr.value, this.id).subscribe(res => {
         this.submitted = false;
-        this.router.navigate(['/employer/manage_group/view_group']);
+        this.router.navigate(['/employer/groups/list']);
       });
     }
   }
 
   createItem() {
     return this.fb.group({
-        communicationname: ['', Validators.required],
-        trigger: ['', Validators.required],
-        priority: ['', Validators.required],
-        day: ['', Validators.required],
-        message: ['']
+      communicationname: ['', Validators.required],
+      trigger: ['', Validators.required],
+      priority: ['', Validators.required],
+      day: ['', Validators.required],
+      message: ['']
     });
   }
 

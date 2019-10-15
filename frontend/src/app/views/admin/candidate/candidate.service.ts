@@ -25,7 +25,7 @@ export class CandidateService {
         return this.http.get<any[]>(`${this.url}` + '/manage_candidate/approved_candidate');
     }
 
-    approve_candidate(id): Observable<any[]> {
+    approved_candidate(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/approved_candidate/' + id, null);
     }
     deactivate_candidate(id): Observable<any[]> {
@@ -34,6 +34,9 @@ export class CandidateService {
 
     candidate_detail(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/candidate/' + id);
+    }
+    new_request(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + 'employer/candidate/manage_candidate/new_request');
     }
 
     get_new_candidate(params): Observable<any[]> {

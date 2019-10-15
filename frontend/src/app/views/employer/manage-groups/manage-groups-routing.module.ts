@@ -6,47 +6,53 @@ import { GroupsDetailsComponent } from './groups-details/groups-details.componen
 import { GroupsComponent } from './groups/groups.component';
 
 const routes: Routes = [
- { path: '',
-  data: {
-    title: 'Groups'
-  },
-  children: [
   {
-    path: 'add_comunication/:id',
-    component: AddGroupsComponent,
+    path: '',
     data: {
-      title: 'Add Group Communication'
-    }
-  },
-  {
-    path: 'view_group',
-    component: ViewGroupsComponent,
-    data: {
-      title: 'View Groups'
-    }
-  },
-  {
-    path: 'group_details/:id',
-    component: GroupsDetailsComponent,
-    data: {
-      title: 'View Group Detail'
-    }
-  },
-  {
-    path: 'add-group',
-    component: GroupsComponent,
-    data: {
-      title: 'Add Group'
-    }
-  },
-  {
-    path: 'edit-group/:id',
-    component: GroupsComponent,
-    data: {
-      title: 'Edit Group'
-    }
+      title: 'Groups'
+    },
+    children: [
+      {
+        path: '',
+        redirectTo: 'list'
+      },
+      {
+        path: 'add_comunication/:id',
+        component: AddGroupsComponent,
+        data: {
+          title: 'Add Group Communication'
+        }
+      },
+      {
+        path: 'list',
+        component: ViewGroupsComponent,
+        data: {
+          title: 'List'
+        }
+      },
+      {
+        path: 'group_details/:id',
+        component: GroupsDetailsComponent,
+        data: {
+          title: 'View Group Detail'
+        }
+      },
+      {
+        path: 'add',
+        component: GroupsComponent,
+        data: {
+          title: 'Add'
+        }
+      },
+      {
+        path: 'edit-group/:id',
+        component: GroupsComponent,
+        data: {
+          title: 'Edit Group'
+        }
+      }
+    ]
   }
-]}
 ];
 
 @NgModule({

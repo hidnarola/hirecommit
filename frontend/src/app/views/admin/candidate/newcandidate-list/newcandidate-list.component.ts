@@ -65,7 +65,7 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
 
 
   onApproved(id) {
-    this.service.approve_candidate(id).subscribe(res => {
+    this.service.approved_candidate(id).subscribe(res => {
       console.log('approved!!!');
       this.rrerender();
     });

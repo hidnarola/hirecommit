@@ -26,7 +26,7 @@ export class AddSubAccountsComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       admin_rights: new FormControl(false)
     });
-     this.route.params.subscribe((params: Params) => {
+    this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       // console.log(this.id);
     });
@@ -57,13 +57,13 @@ export class AddSubAccountsComponent implements OnInit {
         email: null,
         admin_rights: false
       };
-    this.panelTitle = 'Add';
-    this.buttonTitle = 'Add';
-    this.addAccount.reset();
+      this.panelTitle = 'Add';
+      this.buttonTitle = 'Add';
+      this.addAccount.reset();
     }
   }
 
-  get f() {return  this.addAccount.controls; }
+  get f() { return this.addAccount.controls; }
 
   onSubmit(flag: boolean) {
     this.submitted = true;
@@ -108,7 +108,7 @@ export class AddSubAccountsComponent implements OnInit {
   }
 
   onClose() {
-    this.router.navigate(['/employer/manage_subaccount/view_subaccount']);
+    this.router.navigate(['/employer/subaccounts/list']);
   }
 
 }

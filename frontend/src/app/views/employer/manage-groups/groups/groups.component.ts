@@ -26,28 +26,28 @@ export class GroupsComponent implements OnInit {
     });
   }
 
-  get f() {return  this.addGroup.controls; }
+  get f() { return this.addGroup.controls; }
 
   onSubmit(valid) {
     this.isFormSubmited = true;
     if (valid) {
       this.service.addGroup(this.addGroup.value).subscribe(res => {
         if (res['data']['status'] === 1) {
-          this.toastr.success(res['message'], 'Succsess!', {timeOut: 3000});
+          this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
           this.isFormSubmited = false;
           this.addGroup.reset();
         }
       }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }
 
   onClose() {
-    this.router.navigate(['/employer/manage_group/view_group']);
+    this.router.navigate(['/employer/groups/list']);
   }
 
-  reset () {
+  reset() {
     this.isFormSubmited = false;
   }
 }

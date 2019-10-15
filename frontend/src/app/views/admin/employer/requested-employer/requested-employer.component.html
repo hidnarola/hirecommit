@@ -5,7 +5,7 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i>
                     Employer List
-                    <!-- <i class="icon-plus pull-right" [routerLink]="['/admin/employer_manage/add']">Add Employer</i> -->
+                    <!-- <i class="icon-plus pull-right" [routerLink]="['/admin/employers/add']">Add Employer</i> -->
                 </div>
                 <div class="card-body">
                     <table datatable class="table" id="example" cellspacing="0" width="100%">
@@ -34,11 +34,10 @@
                                 <td>
                                     <button type="button" class="btn btn-sm btn-success" (click)="detail(emp._id)"><i
                                             class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(emp.user_id._id)"><i
-                                            class="icon-trash"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                        (click)="delete(emp.user_id._id)"><i class="icon-trash"></i></button>
                                     <button type="button" class="btn btn-sm btn-success"
-                                        (click)="aprrov(emp.user_id._id)"><i
-                                            class="icon-check"></i></button></td>
+                                        (click)="aprrov(emp.user_id._id)"><i class="icon-check"></i></button></td>
                             </tr>
                         </tbody>
                     </table>

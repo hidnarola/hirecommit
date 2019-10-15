@@ -21,15 +21,15 @@ export class ChangepasswordComponent implements OnInit {
     this.form = this.fb.group({
       'oldpassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
       'newpassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
-     'confirmnewpassword': new FormControl('', [Validators.required])
+      'confirmnewpassword': new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
-   }
-
-  onClose() {
-    this.router.navigate(['/employer/manage_offer/created_offerlist']);
   }
 
-  ngOnInit () {
+  onClose() {
+    this.router.navigate(['/employer/offers/list']);
+  }
+
+  ngOnInit() {
     this.token = localStorage.getItem('token');
     console.log(this.token);
   }
@@ -45,11 +45,11 @@ export class ChangepasswordComponent implements OnInit {
       this.service.change_password(this.submitform.value).subscribe(res => {
         this.isFormSubmited = false;
         if (res['status'] === 1) {
-          this.toastr.success(res['message'], 'Error!', {timeOut: 3000});
-          this.router.navigate(['/employer/manage_offer/created_offerlist']);
+          this.toastr.success(res['message'], 'Error!', { timeOut: 3000 });
+          this.router.navigate(['/employer/offers/list']);
         }
       }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }

@@ -7,25 +7,25 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'User'
+      title: 'Offers'
     },
     children: [
       {
         path: '',
-        redirectTo: 'offerlist'
+        redirectTo: 'list'
       },
       {
-        path: 'offerlist',
+        path: 'list',
         component: OfferlistComponent,
         data: {
-          title: 'OfferList'
+          title: 'List'
         }
       },
       {
-        path: 'offerdetail',
+        path: 'view',
         component: ViewofferDetailComponent,
         data: {
-          title: 'OfferDetail'
+          title: 'View'
         }
       }
     ]

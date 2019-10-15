@@ -5,11 +5,11 @@
         <div class="card-header">
           <i class="fa fa-align-justify"></i> Location
           <p class="pull-right"></p>
-          <i class="pull-right icon-plus" [routerLink]="['/employer/manage_location/add_location']"> Add Location</i>
+          <i class="pull-right icon-plus" [routerLink]="['/employer/locations/add']"> Add Location</i>
         </div>
         <div class="card-body">
           <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
-          <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
             <thead>
               <tr>
                 <th>City</th>
@@ -23,7 +23,7 @@
                 <td>{{data.city}}</td>
                 <td>{{data.country.country}}</td>
                 <td>
-                  
+
                   <button type="button" class="btn btn-sm btn-primary" (click)="edit(data._id)"><i
                       class="icon-pencil"></i></button>
                   <button type="button" class="btn btn-sm btn-danger" (click)="delete(data._id)"><i

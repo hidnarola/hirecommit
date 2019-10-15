@@ -62,7 +62,7 @@ export class ViewSubAccountsComponent
   }
 
   detail() {
-    this.router.navigate(['/employer/manage_subaccount/sub_accountdetail']);
+    this.router.navigate(['/employer/sub_accounts/sub_accountdetail']);
   }
 
   edit(id) {

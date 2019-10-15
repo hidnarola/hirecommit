@@ -5,8 +5,8 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Custom Feilds
                     <p class="pull-right"></p>
-                    <i class="pull-right icon-plus" [routerLink]="['/employer/customfeild/add']">
-                        Add Custom Feild</i>
+                    <i class="pull-right icon-plus" [routerLink]="['/employer/custom_field/add']">
+                        Add Custom Field</i>
                 </div>
                 <div class="card-body">
                     <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
@@ -14,19 +14,19 @@
                         <thead>
                             <tr>
                                 <th>Custom Feilds</th>
-                               
+
                                 <th>Action</th>
                             </tr>
                         </thead>
 
-                        <tbody  *ngIf="data?.length != 0">
-                            <tr *ngFor = "let d of data">
+                        <tbody *ngIf="data?.length != 0">
+                            <tr *ngFor="let d of data">
                                 <td>{{d.key}}</td>
-                               
+
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"><i
                                             class="icon-pencil" (click)="onEdit(d._id)"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete()"><i
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(d._id)"><i
                                             class="icon-trash"></i></button></td>
                             </tr>
                         </tbody>

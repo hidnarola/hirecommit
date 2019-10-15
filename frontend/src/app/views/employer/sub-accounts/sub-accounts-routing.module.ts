@@ -8,35 +8,39 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Sub-Accounts'
+      title: 'Sub Accounts'
     },
     children: [
       {
-         path: 'add_subaccounts',
-         component: AddSubAccountsComponent,
-         data: {
-           title: 'Add Sub-Account'
-         }
-      },
-       {
-         path: 'edit_subaccounts/:id',
-         component: AddSubAccountsComponent,
-         data: {
-           title: 'Edit Sub-Account'
-         }
+        path: '',
+        redirectTo: 'list'
       },
       {
-        path: 'view_subaccount',
+        path: 'add',
+        component: AddSubAccountsComponent,
+        data: {
+          title: 'Add'
+        }
+      },
+      {
+        path: 'edit/:id',
+        component: AddSubAccountsComponent,
+        data: {
+          title: 'Edit'
+        }
+      },
+      {
+        path: 'list',
         component: ViewSubAccountsComponent,
         data: {
-          title: 'View Sub-Account'
+          title: 'List'
         }
       },
       {
         path: 'sub_accountdetail',
         component: SubAccountsDetailsComponent,
         data: {
-          title: 'View Sub-Account Details'
+          title: 'View'
         }
       }
     ]
