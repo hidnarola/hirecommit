@@ -1,18 +1,11 @@
 var express = require("express");
 var router = express.Router();
-var btoa = require('btoa');
 
-var auth = require("../../middlewares/auth");
-var authorization = require("../../middlewares/authorization");
 var config = require('../../config')
-var offer = require('../../models/offer');
-var objectID = require('mongoose').Types.ObjectId;
+var ObjectId = require('mongoose').Types.ObjectId;
 var common_helper = require('../../helpers/common_helper');
 var user_helper = require('../../helpers/user_helper');
-var groups_helper = require('../../helpers/groups_helper');
-var offer_helper = require('../../helpers/offer_helper');
-var salary_helper = require('../../helpers/salary_helper');
-var location_helper = require('../../helpers/location_helper');
+
 
 var logger = config.logger;
 var User = require('../../models/user');
@@ -23,7 +16,7 @@ var Sub_Employer_Detail = require('../../models/sub-employer-detail');
 
 
 
-router.post("/add_sub_account", async (req, res) => {
+router.post("/", async (req, res) => {
     var schema = {
         "name": {
             notEmpty: true,
@@ -45,12 +38,15 @@ router.post("/add_sub_account", async (req, res) => {
             "is_del": false,
             "emp_id": req.userInfo.id
         };
+
         var interest_resp = await common_helper.insert(User, reg_obj);
+        console.log('interest_resp', interest_resp);
+
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            res.json({ "message": "Sub-Account Added successfully", "data": interest_resp })
+            res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resp })
         }
     }
     else {
@@ -59,7 +55,7 @@ router.post("/add_sub_account", async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/get', async (req, res) => {
 
     var schema = {};
     req.checkBody(schema);
@@ -67,7 +63,7 @@ router.post('/', async (req, res) => {
 
     if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'username' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
             [sortOrderColumn]: sortOrder
@@ -81,13 +77,17 @@ router.post('/', async (req, res) => {
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        aggregate.push({
-            "$match":
-                { $or: [{ "username": RE }, { "user.email": RE }] }
-        });
+        if (req.body.search && req.body.search != "") {
+            aggregate.push({
+                "$match":
+                    { $or: [{ "username": RE }, { "user.email": RE }] }
+            });
+        }
+
 
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
+        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
         var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
@@ -154,7 +154,8 @@ router.put("/deactive_sub_account/:id", async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var sub_account_detail = await common_helper.findOne(User, { "_id": (id) })
+    var sub_account_detail = await common_helper.findOne(User, { "_id": new ObjectId(id) })
+
     if (sub_account_detail.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
