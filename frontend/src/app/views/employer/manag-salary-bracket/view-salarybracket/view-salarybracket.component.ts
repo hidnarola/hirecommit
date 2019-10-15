@@ -25,7 +25,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   salnew: any = [];
 
   unq: any;
-  constructor(private router: Router, private confirmationService: ConfirmationService,private service: SalaryBracketService) { }
+  constructor(private router: Router, private confirmationService: ConfirmationService, private service: SalaryBracketService) { }
   ngOnInit() {
     this.bind();
   }
@@ -39,6 +39,8 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   delete(id) {
+    console.log(id);
+
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {

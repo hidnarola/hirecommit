@@ -62,8 +62,8 @@ export class ViewSubAccountsComponent
     this.router.navigate(['/employer/manage_subaccount/sub_accountdetail']);
   }
 
-  edit() {
-    this.router.navigate(['/employer/manage_subaccount/add_subaccounts']);
+  edit(id) {
+    this.router.navigate(['/employer/manage_subaccount/edit_subaccounts/' + id]);
   }
 
   delete(user_id) {

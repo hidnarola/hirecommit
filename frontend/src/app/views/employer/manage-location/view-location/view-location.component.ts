@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-view-location',
   templateUrl: './view-location.component.html',
- 
+
   styleUrls: ['./view-location.component.scss']
 })
 export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -48,6 +48,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
           callback({recordsTotal: 0, recordsFiltered: 0, data: []});
         });
       },
+      columnDefs: [{ orderable: false, targets: 2 }],
       columns: [
         {
           data: 'city'
@@ -70,22 +71,23 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_location/add_location/' + id]);
+    this.router.navigate(['/employer/manage_location/edit_location/' + id]);
   }
 
   delete(id) {
-   
+
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
          this.service.deactivate_location(id).subscribe(res => {
       console.log('deactivate location', res);
       // this.bind();
+      this.rrerender();
     });
       }
     });
   }
-  
+
 
 
   onlyUnique(value, index, self) {

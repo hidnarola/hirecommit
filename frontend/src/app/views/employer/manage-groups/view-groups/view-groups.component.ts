@@ -30,8 +30,8 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['/employer/manage_group/group_details/' + id]);
    }
 
-   edit() {
-    this.router.navigate(['/employer/manage_group/add_group']);
+   edit(id) {
+    this.router.navigate(['/employer/manage_group/edit-group/' + id]);
    }
 
    delete(id) {
@@ -51,11 +51,11 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
    }
 
    onclick() {
-    this.router.navigate(['/employer/manage_group/group']);
+    this.router.navigate(['/employer/manage_group/add-group']);
    }
 
    onaddDetails(id) {
-    this.router.navigate(['/employer/manage_group/add_group/' + id ]);
+    this.router.navigate(['/employer/manage_group/add_comunication/' + id ]);
    }
 
     public bind() {

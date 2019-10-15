@@ -18,6 +18,13 @@ const routes: Routes = [
            title: 'Add Sub-Account'
          }
       },
+       {
+         path: 'edit_subaccounts/:id',
+         component: AddSubAccountsComponent,
+         data: {
+           title: 'Edit Sub-Account'
+         }
+      },
       {
         path: 'view_subaccount',
         component: ViewSubAccountsComponent,

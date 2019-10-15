@@ -6,9 +6,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DefaultLayoutModule } from '../../shared/containers/default-layout/default-layout.module';
 import { TimelineComponent } from './timeline/timeline.component';
 import { MglTimelineModule } from 'angular-mgl-timeline';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
-import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [TimelineComponent] ,
@@ -18,9 +15,9 @@ import { ConfirmationService } from 'primeng/api';
     ReactiveFormsModule,
     DefaultLayoutModule,
     MglTimelineModule,
-    ConfirmDialogModule
   ],
-  providers: [ConfirmationService]
+  providers: []
 
 })
+
 export class EmployerModule { }

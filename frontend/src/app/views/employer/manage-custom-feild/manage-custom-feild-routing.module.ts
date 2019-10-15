@@ -24,6 +24,13 @@ const routes: Routes = [{
         title: 'List Custom Feild'
       }
     },
+    {
+      path: 'edit/:id',
+      component: AddCustomFeildComponent,
+      data: {
+        title: 'Edit Custom Feild'
+      }
+    },
   ]
 }];
 

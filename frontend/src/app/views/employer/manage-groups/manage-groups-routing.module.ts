@@ -12,16 +12,15 @@ const routes: Routes = [
   },
   children: [
   {
-    path: 'add_group/:id',
+    path: 'add_comunication/:id',
     component: AddGroupsComponent,
     data: {
-      title: 'Add Group'
+      title: 'Add Group Communication'
     }
   },
-
   {
     path: 'view_group',
-  component: ViewGroupsComponent,
+    component: ViewGroupsComponent,
     data: {
       title: 'View Groups'
     }
@@ -34,10 +33,17 @@ const routes: Routes = [
     }
   },
   {
-    path: 'group',
+    path: 'add-group',
     component: GroupsComponent,
     data: {
       title: 'Add Group'
+    }
+  },
+  {
+    path: 'edit-group/:id',
+    component: GroupsComponent,
+    data: {
+      title: 'Edit Group'
     }
   }
 ]}

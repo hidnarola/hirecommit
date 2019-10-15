@@ -49,7 +49,7 @@ const routes: Routes = [
       { path: 'timeline', component: TimelineComponent },
       { path: 'change-password', component: ChangepasswordComponent },
       { path: 'profile', component: ProfileComponent },
-     
+
     ]
   }
 ];

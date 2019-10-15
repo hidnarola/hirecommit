@@ -20,10 +20,9 @@ export class AddLocationComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
-  constructor(private router: Router, private confirmationService: ConfirmationService,private commonService: CommonService,private service: LocationService, private route: ActivatedRoute) { }
+  constructor(private router: Router, private confirmationService: ConfirmationService, private commonService: CommonService, private service: LocationService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-
     this.addLocation = new FormGroup({
       country: new FormControl(null, [Validators.required]),
       city: new FormControl(null, [Validators.required])
@@ -45,21 +44,17 @@ export class AddLocationComponent implements OnInit {
     this.commonService.country_data().subscribe(res => {
       this.Country = res['data'];
       console.log('country_data ==>', this.Country);
-    })
+    });
   }
 
   getDetail(id: string) {
     if (this.id) {
       this.panelTitle = 'Edit Location';
       this.buttonTitle = 'Update';
-      
        this.service.get_location(id).subscribe(res => {
-            // console.log('res', res);
-
             this.detail = res['data']['data'];
-            // console.log("subscribed!", this.detail);
           });
-      
+
     } else {
       this.detail = {
         _id: null,
@@ -75,26 +70,30 @@ export class AddLocationComponent implements OnInit {
   get f() { return this.addLocation.controls; }
 
   onSubmit(flag: boolean, id) {
-    this.submitted = !flag;
-    if (this.id) {
-     
-          this.service.edit_location(this.id, this.addLocation.value).subscribe(res => {
-            console.log('edited !!');
+    console.log('check for form validation : flag ==> ', flag);
+    // console.log(this.addLocation.get('country').valid); return false;
+    this.submitted = true;
+    if (this.id && flag) {
+     const res_data = {
+       'id': this.id,
+       'country': this.detail.country,
+       'city': this.detail.city
+      };
+          this.service.edit_location(res_data).subscribe(res => {
+            console.log('edited !!', res);
+            this.submitted = false;
+            this.router.navigate(['/employer/manage_location/view_location']);
           });
-        }
-  
-      
-     else {
+        } else {
       if (flag) {
-        // console.log("incoming", this.addLocation);
         this.service.add_location(this.addLocation.value).subscribe(res => {
           this.location = res;
-          // this.bind();
+          this.submitted = false;
         });
         this.addLocation.reset();
+        this.router.navigate(['/employer/manage_location/view_location']);
       }
     }
-    this.router.navigate(['/employer/manage_location/view_location']);
   }
 
   onClose() {

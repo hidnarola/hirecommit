@@ -23,5 +23,3 @@ import { DropdownModule } from 'primeng/dropdown';
   providers: [ConfirmationService]
 })
 export class ManagSalaryBracketModule { }
-
-

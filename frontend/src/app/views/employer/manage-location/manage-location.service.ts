@@ -15,24 +15,22 @@ export class LocationService {
     constructor(private http: HttpClient, private route: Router) { }
 
     view_location(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/view_location', {...params});
+        return this.http.post<any[]>(`${this.url}` + '/location/get', {...params});
     }
 
     deactivate_location(id): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/deactivate_location/' + id, null);
+        return this.http.put<any[]>(`${this.url}` + '/location/deactivate_location/' + id, null);
     }
 
     add_location(data): Observable<any[]> {
-        console.log('service add location', data);
-
-        return this.http.post<any[]>(`${this.url}` + '/add_location' , data);
+        return this.http.post<any[]>(`${this.url}` + '/location' , data);
     }
 
     get_location(id): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/location_detail/' + id);
+        return this.http.get<any[]>(`${this.url}` + '/location/' + id);
     }
 
-    edit_location(id, data): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/edit_location/' + id, data);
+    edit_location(data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/location/' , data);
     }
 }
