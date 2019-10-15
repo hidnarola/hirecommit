@@ -87,7 +87,7 @@ export class ListCustomFieldComponent implements OnInit {
     });
   }
   onEdit(id) {
-    this.router.navigate(['/employer/custom_field/edit/' + id])
+    this.router.navigate(['/employer/custom_field/edit/' + id]);
   }
 
   ngAfterViewInit(): void {
@@ -109,4 +109,3 @@ export class ListCustomFieldComponent implements OnInit {
   }
 
 }
-

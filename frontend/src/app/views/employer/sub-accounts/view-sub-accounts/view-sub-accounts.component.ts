@@ -19,14 +19,12 @@ export class ViewSubAccountsComponent
   data: any[];
   admin_rights = true;
 
-  constructor(private router: Router, 
-    private service: SubAccountService, 
-    private confirmationService: ConfirmationService,
-    private toastr : ToastrService) { }
+  // tslint:disable-next-line: max-line-length
+  constructor(private router: Router, private service: SubAccountService, private confirmationService: ConfirmationService, private toastr: ToastrService) { }
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2,
+      pageLength: 5,
       serverSide: true,
       searching: true,
       processing: true,
@@ -68,18 +66,16 @@ export class ViewSubAccountsComponent
   }
 
   edit(id) {
-    this.router.navigate(['/employer/sub_accounts/edit/' + id]);
+    // console.log(id);
+    this.router.navigate(['/employer/manage_subaccount/edit_subaccounts/' + id]);
   }
 
   delete(user_id) {
-    console.log('hi',user_id);
-    
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        this.service.decativate_sub_account(user_id).subscribe(res => {
-          console.log('deactivate sub account',res);
-
+         this.service.decativate_sub_account(user_id).subscribe(res => {
+          console.log('deactivate sub account', res['status']);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
@@ -89,6 +85,8 @@ export class ViewSubAccountsComponent
         });
       }
     });
+
+
   }
 
   onAdd() {

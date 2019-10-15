@@ -18,7 +18,7 @@ export class CandidatedetailApproveComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-    })
+    });
 
     this.bind();
   }
@@ -30,24 +30,20 @@ export class CandidatedetailApproveComponent implements OnInit {
       this.candidates = res['data'];
       this.form = true;
       if (this.candidates.user_id.isAllow === false) {
-        this.buttonValue = 'Approve'
-        this.buttonValue1 = 'unapprove'
+        this.buttonValue = 'Approve';
+        this.buttonValue1 = 'unapprove';
+      } else {
+        this.buttonValue1 = 'Cancel';
       }
-      else {
-
-        this.buttonValue1 = 'Cancel'
-      }
-
       console.log('img', this.candidates);
 
-    })
+    });
   }
   check(routes) {
     if (routes === false) {
       this.router.navigate(['/admin/candidate_manage/new_candidate']);
-    }
-    else {
-      this.router.navigate(['/admin/candidate_manage/approved_candidate']);
+    } else {
+      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
     }
   }
 
@@ -56,17 +52,17 @@ export class CandidatedetailApproveComponent implements OnInit {
     this.service.approved_candidate(id).subscribe(res => {
       console.log('approved!!!');
       this.bind();
-      this.router.navigate(['/admin/candidate_manage/approved_candidate']);
-    })
+      this.router.navigate(['/admin/candidate_manage/approve_candidate']);
+    });
   }
 
   onUnapproved(id) {
     console.log(id);
 
     this.service.deactivate_candidate(id).subscribe(res => {
-      console.log("Deleted!!");
+      console.log('Deleted!!');
       this.router.navigate(['/admin/candidate_manage/new_candidate']);
-    })
+    });
 
   }
 
