@@ -43,9 +43,9 @@ export class GroupsComponent implements OnInit {
     }
   }
 
-  onClose() {
-    this.router.navigate(['/employer/groups/list']);
-  }
+  // onClose() {
+  //   this.router.navigate(['/employer/groups/list']);
+  // }
 
   reset() {
     this.isFormSubmited = false;

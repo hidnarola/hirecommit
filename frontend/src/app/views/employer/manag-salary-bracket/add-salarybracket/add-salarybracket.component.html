@@ -4,7 +4,9 @@
       <div class="card">
         <div class="card-header">
           <strong style="font-size: 20px;">{{panelTitle}}</strong>
-          <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+          <span class="input-group-text pull-right" [routerLink]="['/employer/salary_brackets/list']">
+            <i class="icon-close"></i>
+          </span>
         </div>
         <form class="form-horizontal" [formGroup]="AddSalaryBracket" (ngSubmit)="onSubmit(AddSalaryBracket.valid,id)">
           <div class="card-body">
@@ -18,7 +20,8 @@
               <div class="col-md-2">
 
                 <!-- [(ngModel)]="offer_data.country" -->
-                <p-dropdown [options]="countryList"  formControlName="country" id="country" #country (onChange)="findCurrency($event)">
+                <p-dropdown [options]="countryList" formControlName="country" id="country" #country
+                  (onChange)="findCurrency($event)">
                 </p-dropdown>
                 <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
                   <span *ngIf="form.controls['country'].errors['required']" class="text-danger">This field is

@@ -82,7 +82,7 @@ export const employer: NavData[] = [
         url: 'candidates/approved_candidate'
       },
       {
-        name: 'New Request',
+        name: 'New Candidate',
         url: 'candidates/new_candidate'
       }
     ]

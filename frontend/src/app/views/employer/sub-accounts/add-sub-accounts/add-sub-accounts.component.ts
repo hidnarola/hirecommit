@@ -78,7 +78,7 @@ export class AddSubAccountsComponent implements OnInit {
       this.service.edit_sub_account(this.update_data_id, this.detail).subscribe(res => {
         console.log('edited !!', res);
         this.submitted = false;
-        this.router.navigate(['/employer/sub_accounts/view_subaccount']);
+        this.router.navigate(['/employer/sub_accounts/list']);
         this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
       }, (err) => {
         this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
@@ -91,7 +91,7 @@ export class AddSubAccountsComponent implements OnInit {
             console.log(res);
             this.submitted = false;
             this.addAccount.reset();
-            this.router.navigate(['/employer/sub_accounts/view_subaccount']);
+            this.router.navigate(['/employer/sub_accounts/list']);
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
           }
         }, (err) => {
@@ -107,8 +107,5 @@ export class AddSubAccountsComponent implements OnInit {
     this.admin_rights = e.target.checked;
   }
 
-  onClose() {
-    this.router.navigate(['/employer/subaccounts/list']);
-  }
 
 }
