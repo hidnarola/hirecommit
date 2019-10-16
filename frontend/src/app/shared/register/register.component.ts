@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./register.scss']
 })
 export class RegisterComponent implements OnInit {
+
   registerForm: FormGroup;
   documentImage: FormGroup;
   public registerData: any;
@@ -21,7 +22,14 @@ export class RegisterComponent implements OnInit {
   marked = false;
   imgurl: any = '';
   // tslint:disable-next-line: max-line-length
-  constructor(public router: Router, private service: CommonService, private toastr: ToastrService, public fb: FormBuilder, private cd: ChangeDetectorRef) {
+
+  constructor(
+    public router: Router,
+    private service: CommonService,
+    private toastr: ToastrService,
+    public fb: FormBuilder,
+    private cd: ChangeDetectorRef
+  ) {
     this.registerData = {};
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),

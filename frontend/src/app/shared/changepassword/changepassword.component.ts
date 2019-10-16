@@ -16,7 +16,12 @@ export class ChangepasswordComponent implements OnInit {
   public formData: any;
   token: any;
 
-  constructor(private router: Router, public fb: FormBuilder, public service: CommonService, private toastr: ToastrService) {
+  constructor(
+    private router: Router,
+    public fb: FormBuilder,
+    public service: CommonService,
+    private toastr: ToastrService
+  ) {
     this.formData = {};
     this.form = this.fb.group({
       'oldpassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),

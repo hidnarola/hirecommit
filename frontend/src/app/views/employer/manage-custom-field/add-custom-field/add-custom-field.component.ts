@@ -9,6 +9,7 @@ import { CustomFieldService } from '../custom-field.service';
   styleUrls: ['./add-custom-field.component.scss']
 })
 export class AddCustomFieldComponent implements OnInit {
+
   submitted = false;
   panelTitle = 'Add Custom Field';
   buttonTitle = 'Add';
@@ -17,10 +18,14 @@ export class AddCustomFieldComponent implements OnInit {
   data: any = {};
   isEdit = false;
 
-  constructor(private service: CustomFieldService,
+  constructor(
+    private service: CustomFieldService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router
+  ) {
+    console.log('employer - customfield: add-custom-field component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {

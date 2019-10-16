@@ -13,13 +13,20 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   public isFormSubmited;
   public formData: any;
-  constructor(public router: Router, private service: CommonService, public fb: FormBuilder) {
+
+  constructor(
+    public router: Router,
+    private service: CommonService,
+    public fb: FormBuilder
+  ) {
     this.formData = {};
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)]))
     });
   }
+
+  ngOnInit() { }
 
   onSubmit(valid) {
     // console.log(this.loginForm.controls['email'].errors['required']);
@@ -55,10 +62,6 @@ export class LoginComponent implements OnInit {
 
   Onclick() {
     this.router.navigate(['/forgot_password']);
-  }
-
-  ngOnInit() {
-
   }
 
 }

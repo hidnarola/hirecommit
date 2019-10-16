@@ -8,6 +8,7 @@ import { GroupService } from '../manage-groups.service';
   styleUrls: ['./groups-details.component.scss']
 })
 export class GroupsDetailsComponent implements OnInit {
+
   id: any;
   _name: any;
   _details: any = [];
@@ -15,21 +16,25 @@ export class GroupsDetailsComponent implements OnInit {
   viewform = false;
   communication: any = [];
 
-  constructor(private router: Router, private route: ActivatedRoute, private service: GroupService) { }
+  constructor
+    (private router: Router,
+      private route: ActivatedRoute,
+      private service: GroupService
+    ) {
+    console.log('employer - groups : groups-details component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(this.id);
     });
-
     this.service.get_detail(this.id).subscribe(res => {
       this._name = res['data']['data'];
       this.viewform = true;
       console.log('name', this._name);
 
     });
-
     this.service.get_communication_detail(this.id).subscribe(res => {
       this._details = res['data']['data'];
       this.data = this._details;
@@ -53,8 +58,6 @@ export class GroupsDetailsComponent implements OnInit {
     this.router.navigate(['/employer/groups/add_group']);
   }
 
-  onclick() {
-
-  }
+  onclick() { }
 
 }

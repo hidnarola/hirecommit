@@ -11,18 +11,25 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./candidate-list.component.scss']
 })
 export class CandidateListComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   candidates: any[];
   userDetail: any = [];
-  constructor(private route: Router, private service: CandidateService, private commonService: CommonService) {
-     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('token : userDetail ==> ', this.userDetail);
-   }
+
+  constructor(
+    private route: Router,
+    private service: CandidateService,
+    private commonService: CommonService
+  ) {
+    this.userDetail = this.commonService.getLoggedUserDetail();
+    console.log('admin- candidate: candidate - list component => ');
+  }
+
   ngOnInit() {
-      this.dtOptions = {
+    this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
       serverSide: true,
@@ -70,6 +77,15 @@ export class CandidateListComponent implements OnInit, OnDestroy, AfterViewInit 
     this.route.navigate([this.userDetail.role + '/candidates/view/' + id]);
   }
 
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
   ngAfterViewInit(): void {
     this.dtTrigger.next();
   }
@@ -79,12 +95,4 @@ export class CandidateListComponent implements OnInit, OnDestroy, AfterViewInit 
     this.dtTrigger.unsubscribe();
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
 }

@@ -15,8 +15,14 @@ export class EmployerDetailComponent implements OnInit {
   form = false;
   buttonValue: any;
   buttonValue1: String;
+  cancel_link = '/admin/employers/list';
 
-  constructor(private router: Router, private service: EmployerService, private route: ActivatedRoute) { }
+  constructor(
+    private router: Router,
+    private service: EmployerService,
+    private route: ActivatedRoute) {
+    console.log('admin- employer: employer-detail component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -48,13 +54,13 @@ export class EmployerDetailComponent implements OnInit {
     console.log(id);
     this.service.deactivate_employer(id).subscribe(res => {
       console.log('Deleted!!');
-      this.router.navigate(['admin/employers/list']);
+      this.router.navigate([this.cancel_link]);
     });
   }
 
   check(routes) {
     if (routes === false) {
-      this.router.navigate(['admin/employers/list']);
+      this.router.navigate([this.cancel_link]);
     } else {
       this.router.navigate(['/admin/employers/view']);
     }

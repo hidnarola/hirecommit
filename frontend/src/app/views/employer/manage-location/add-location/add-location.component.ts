@@ -4,12 +4,15 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { LocationService } from '../manage-location.service';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-add-location',
   templateUrl: './add-location.component.html',
   styleUrls: ['./add-location.component.scss']
 })
+
 export class AddLocationComponent implements OnInit {
+
   Country: any = [];
   addLocation: FormGroup;
   submitted = false;
@@ -20,19 +23,22 @@ export class AddLocationComponent implements OnInit {
   panelTitle: string;
   buttonTitle: string;
   cancel_link = '/employer/locations/list';
-  constructor(private router: Router,
+
+  constructor(
+    private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
     private service: LocationService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute
+  ) {
+    console.log('employer - locations : add-location component => ');
+  }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
       country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required])
-
     });
-
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       // console.log(this.id);
@@ -58,7 +64,6 @@ export class AddLocationComponent implements OnInit {
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
       });
-
     } else {
       this.detail = {
         _id: null,

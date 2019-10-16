@@ -17,10 +17,14 @@ export class ListCustomFieldComponent implements OnInit, AfterViewInit, OnDestro
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
 
-  constructor(private confirmationService: ConfirmationService,
+  constructor(
+    private confirmationService: ConfirmationService,
     private toastr: ToastrService,
     private service: CustomFieldService,
-    private router: Router) { }
+    private router: Router
+  ) {
+    console.log('employer - customfield: list-custom-field component => ');
+  }
 
   ngOnInit() {
     console.log(' list field component');
@@ -83,15 +87,6 @@ export class ListCustomFieldComponent implements OnInit, AfterViewInit, OnDestro
     this.router.navigate(['/employer/custom_field/edit/' + id]);
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
@@ -99,6 +94,15 @@ export class ListCustomFieldComponent implements OnInit, AfterViewInit, OnDestro
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
 
 }

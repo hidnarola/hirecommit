@@ -14,7 +14,10 @@ export class AddEmployerComponent implements OnInit {
   postFormData = new FormData();
   file: any;
   cancel_link = '/admin/employers/view';
-  constructor(private router: Router) { }
+
+  constructor(private router: Router) {
+    console.log('admin- employer: add-employer component => ');
+  }
 
   ngOnInit() {
     this.registerForm = new FormGroup({

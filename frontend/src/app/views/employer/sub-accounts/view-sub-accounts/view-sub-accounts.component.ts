@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./view-sub-accounts.component.scss']
 })
 export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -21,7 +22,14 @@ export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewIni
   admin_rights = true;
 
   // tslint:disable-next-line: max-line-length
-  constructor(private router: Router, private service: SubAccountService, private confirmationService: ConfirmationService, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private service: SubAccountService,
+    private confirmationService: ConfirmationService,
+    private toastr: ToastrService
+  ) {
+    console.log('employer - sub accounts : view-sub-accounts component => ');
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -94,15 +102,6 @@ export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewIni
     //  this.router.navigate(['/groups/addgroup']);
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
@@ -110,6 +109,15 @@ export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewIni
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
 
 }

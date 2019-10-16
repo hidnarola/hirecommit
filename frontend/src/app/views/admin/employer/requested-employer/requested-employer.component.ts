@@ -12,7 +12,12 @@ export class RequestedEmployerComponent implements OnInit {
   name: any;
   data: any;
 
-  constructor(private router: Router, private service: EmployerService) { }
+  constructor(
+    private router: Router,
+    private service: EmployerService
+  ) {
+    console.log('admin- employer: requested-employer component => ');
+  }
 
   ngOnInit(): void {
     // const table = $('#example').DataTable({
@@ -37,7 +42,6 @@ export class RequestedEmployerComponent implements OnInit {
   nextButtonClickEvent(): void {
     // do next particular records like  101 - 200 rows.
     // we are calling to api
-
     console.log('next clicked');
   }
 

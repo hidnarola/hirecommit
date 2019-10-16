@@ -8,23 +8,29 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
   styleUrls: ['./candidatedetail-approve.component.scss']
 })
 export class CandidatedetailApproveComponent implements OnInit {
+
   candidates: any;
   id: any;
   form = false;
   buttonValue: any;
   buttonValue1: String;
-  constructor(private service: CandidateService, private router: Router, private route: ActivatedRoute) { }
+
+  constructor(
+    private service: CandidateService,
+    private router: Router,
+    private route: ActivatedRoute) {
+    console.log('admin- candidate: candidatedetail-approve component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
-
     this.bind();
   }
 
-  cancel() {
-  }
+  cancel() { }
+
   public bind() {
     this.service.candidate_detail(this.id).subscribe(res => {
       this.candidates = res['data'];
@@ -39,6 +45,7 @@ export class CandidatedetailApproveComponent implements OnInit {
 
     });
   }
+
   check(routes) {
     if (routes === false) {
       this.router.navigate(['/admin/candidates/new_candidate']);
@@ -46,7 +53,6 @@ export class CandidatedetailApproveComponent implements OnInit {
       this.router.navigate(['/admin/candidates/approve_candidate']);
     }
   }
-
 
   onApproved(id) {
     this.service.approved_candidate(id).subscribe(res => {
@@ -63,5 +69,5 @@ export class CandidatedetailApproveComponent implements OnInit {
       this.router.navigate(['/admin/candidates/new_candidate']);
     });
   }
-  // [routerLink] = "['/admin/candidates/approved_candidate']"
+
 }

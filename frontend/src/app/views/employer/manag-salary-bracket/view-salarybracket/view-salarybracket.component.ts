@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./view-salarybracket.component.scss']
 })
 export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -26,10 +27,14 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   salnew: any = [];
   unq: any;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private confirmationService: ConfirmationService,
     private service: SalaryBracketService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService
+  ) {
+    console.log('employer - salary bracket: view-salarybracket component => ');
+  }
 
   ngOnInit() {
     this.bind();
@@ -41,7 +46,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
 
   edit(id) {
     console.log(id);
-    
     this.router.navigate(['/employer/salary_brackets/add_salarybracket/' + id]);
   }
 
@@ -133,15 +137,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
     return this.c_name;
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
@@ -149,6 +144,15 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
 
 }

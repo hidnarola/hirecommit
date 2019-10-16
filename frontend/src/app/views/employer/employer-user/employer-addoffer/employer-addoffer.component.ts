@@ -27,7 +27,6 @@ export class EmployerAddofferComponent implements OnInit {
   arr: any[] = [];
   user_detail: any = {};
   candidate: any[];
-
   salary_duration_optoins = [
     { label: 'Select', value: '' },
     { label: '1 week', value: '1week' },
@@ -78,6 +77,8 @@ export class EmployerAddofferComponent implements OnInit {
       notes: new FormControl(''),
       employer_id: new FormControl('')
     });
+
+    console.log('employer - offer: employer-addoffer component => ');
   }
 
   findCities = () => {
@@ -105,8 +106,8 @@ export class EmployerAddofferComponent implements OnInit {
   ngOnInit() {
     this.service.get_candidate_list().subscribe(res => {
       console.log('res=>', res['data']);
-       this.candidate = res['data'];
-        res['data'].forEach(element => {
+      this.candidate = res['data'];
+      res['data'].forEach(element => {
         console.log('element', element);
         // this.candidate.push({ 'label': element.firstname + element.lastname , 'value': element.id });
       });
@@ -125,8 +126,6 @@ export class EmployerAddofferComponent implements OnInit {
     //   });
   }
 
-
-
   // submit form
   onSubmit(flag) {
     // this.offer_data.location = this.offer_data.location._id;
@@ -134,4 +133,5 @@ export class EmployerAddofferComponent implements OnInit {
     console.log('onSubmit : offer_data ==> ', this.offer_data);
     this.form_validation = !flag;
   }
+
 }

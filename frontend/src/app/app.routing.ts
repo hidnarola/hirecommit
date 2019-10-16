@@ -13,16 +13,15 @@ import { ResetPasswordComponent } from './shared/reset-password/reset-password.c
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  {path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
-  {path: 'forgot_password', component: ForgotPasswordComponent },
-  {path: 'emp_register', component: SignUpComponent },
-  {path: 'candidate_register', component: RegisterComponent },
-  {path: 'confirmation/:token', component: EmailconfermationComponent },
-  {path: 'reset-password/:token', component: ResetPasswordComponent },
+  { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+  { path: 'forgot_password', component: ForgotPasswordComponent },
+  { path: 'emp_register', component: SignUpComponent },
+  { path: 'candidate_register', component: RegisterComponent },
+  { path: 'confirmation/:token', component: EmailconfermationComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent },
   {
     path: 'admin',
     loadChildren: () => import('./views/admin/admin.module').then(m => m.AdminModule),
-    // canActivate: [AuthGuard],
     canActivate: [RoleGuardService],
     data: {
       expectedRole: 'admin'
@@ -48,8 +47,8 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes, { useHash: false }) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forRoot(routes, { useHash: false })],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {
 

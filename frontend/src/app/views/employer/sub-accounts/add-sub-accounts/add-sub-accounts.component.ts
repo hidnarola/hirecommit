@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./add-sub-accounts.component.scss']
 })
 export class AddSubAccountsComponent implements OnInit {
+
   addAccount: FormGroup;
   submitted = false;
   admin_rights = false;
@@ -20,7 +21,14 @@ export class AddSubAccountsComponent implements OnInit {
   update_data_id: any;
   cancel_link = '/employer/sub_accounts/list';
 
-  constructor(private router: Router, private service: SubAccountService, private route: ActivatedRoute, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private service: SubAccountService,
+    private route: ActivatedRoute,
+    private toastr: ToastrService
+  ) {
+    console.log('employer - sub accounts : add-sub-accounts component => ');
+  }
 
   ngOnInit() {
     this.addAccount = new FormGroup({
@@ -34,7 +42,6 @@ export class AddSubAccountsComponent implements OnInit {
     });
     this.getDetail(this.id);
   }
-
 
   getDetail(id) {
     if (this.id) {
@@ -66,6 +73,10 @@ export class AddSubAccountsComponent implements OnInit {
   }
 
   get f() { return this.addAccount.controls; }
+
+  checkValue(e) {
+    this.admin_rights = e.target.checked;
+  }
 
   onSubmit(flag: boolean) {
     this.submitted = true;
@@ -104,10 +115,5 @@ export class AddSubAccountsComponent implements OnInit {
     }
 
   }
-
-  checkValue(e) {
-    this.admin_rights = e.target.checked;
-  }
-
 
 }

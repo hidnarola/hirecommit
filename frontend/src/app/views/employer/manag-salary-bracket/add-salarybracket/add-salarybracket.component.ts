@@ -13,6 +13,7 @@ import { SliderModule } from 'primeng/slider';
   styleUrls: ['./add-salarybracket.component.scss']
 })
 export class AddSalarybracketComponent implements OnInit {
+
   countryList: any = [];
   AddSalaryBracket: FormGroup;
   submitted = false;
@@ -31,11 +32,15 @@ export class AddSalarybracketComponent implements OnInit {
   error_msg1 = 'can\'t be greater then maximum salary!';
   cancel_link = '/employer/salary_brackets/list';
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private router: Router,
     private service: SalaryBracketService,
     private route: ActivatedRoute,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService
+  ) {
+    console.log('employer - salary bracket: add-salarybracket component => ');
+  }
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
@@ -51,18 +56,18 @@ export class AddSalarybracketComponent implements OnInit {
     });
 
     this.service.get_location().subscribe(res => {
-      this.currency = res['data']
+      this.currency = res['data'];
       res['data'].forEach(element => {
-        this.countryList.push({ 'label': element.country, 'value': element.id })
+        this.countryList.push({ 'label': element.country, 'value': element.id });
       });
     });
-
     this.getDetail(this.id);
   }
 
   findCities() {
     this.detail.currency = this.detail.country.country.currency_code;
   }
+
   findCurrency(value) {
     this.currency.forEach(element => {
       if (value.value === element.id) {
@@ -140,14 +145,12 @@ export class AddSalarybracketComponent implements OnInit {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.AddSalaryBracket.reset();
-          this.router.navigate([this.cancel_link])
+          this.router.navigate([this.cancel_link]);
         }
       }, (err) => {
         console.log('error msg ==>', err['error']['message']);
-
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
-
       if (flag) {
         this.AddSalaryBracket.reset();
       }

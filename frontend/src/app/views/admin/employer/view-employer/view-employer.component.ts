@@ -14,7 +14,12 @@ export class ViewEmployerComponent implements OnInit {
   name: any = [];
   data: any;
 
-  constructor(private router: Router, private service: EmployerService) { }
+  constructor(
+    private router: Router,
+    private service: EmployerService
+  ) {
+    console.log('admin- employer: view-employer component => ');
+  }
 
   ngOnInit(): void {
     // const table = $('#example').DataTable({

@@ -12,20 +12,26 @@ import { Subject } from 'rxjs';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   offers: any[];
   status = true;
-  constructor(private router: Router, private service: OfferService) { }
+
+  constructor(
+    private router: Router,
+    private service: OfferService
+  ) {
+    console.log('employer - offer: employer-summary component => ');
+  }
 
   ngOnInit() {
     // setTimeout(() => {
 
     //   this.bind();
     // }, 100);
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 2,
@@ -78,24 +84,6 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
-
   detail(id) {
     this.router.navigate(['/employer/offers/offerdetail/' + id]);
   }
@@ -136,4 +124,23 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
     //   this.offers = res['data'];
     // });
   }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
 }

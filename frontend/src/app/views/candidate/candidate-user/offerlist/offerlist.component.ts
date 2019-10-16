@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./offerlist.component.scss']
 })
 export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -18,7 +19,12 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
   offerList: any[];
   form = false;
 
-  constructor(private service: OfferListService, private route: Router) { }
+  constructor(
+    private service: OfferListService,
+    private route: Router
+  ) {
+    console.log('candidate: offerlist component => ');
+  }
 
   ngOnInit() {
     this.bind();
@@ -76,15 +82,6 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
@@ -92,6 +89,15 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
 
 }

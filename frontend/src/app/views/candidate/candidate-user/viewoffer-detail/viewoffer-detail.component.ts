@@ -13,7 +13,10 @@ export class ViewofferDetailComponent implements OnInit {
   submitted = false;
   registerForm: FormGroup;
   cancel_link = '/candidate/offers/offerlist';
-  constructor(private router: Router) { }
+
+  constructor(private router: Router) {
+    console.log('candidate: viewoffer-detail component => ');
+  }
 
   ngOnInit() {
     this.registerForm = new FormGroup({

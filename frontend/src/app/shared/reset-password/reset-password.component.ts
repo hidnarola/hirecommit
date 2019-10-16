@@ -10,19 +10,27 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
+
   form: FormGroup;
   submitform: FormGroup;
   params_token: any;
   public isFormSubmited;
   public formData: any;
   // tslint:disable-next-line: max-line-length
-  constructor(private activatedRoute: ActivatedRoute, private service: CommonService, private toastr: ToastrService, private router: Router, public fb: FormBuilder) {
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private service: CommonService,
+    private toastr: ToastrService,
+    private router: Router,
+    public fb: FormBuilder
+  ) {
     this.formData = {};
     this.form = this.fb.group({
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
       confirmpassword: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
-   }
+  }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -30,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
-  confirm (valid) {
+  confirm(valid) {
     this.isFormSubmited = true;
     if (valid) {
       this.submitform = new FormGroup({
@@ -41,11 +49,11 @@ export class ResetPasswordComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 1) {
-          this.toastr.success(res['message'], 'Succsess!', {timeOut: 3000});
+          this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
           this.router.navigate(['/login']);
         }
       }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }

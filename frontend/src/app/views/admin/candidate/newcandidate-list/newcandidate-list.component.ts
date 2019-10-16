@@ -11,15 +11,20 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./newcandidate-list.component.scss']
 })
 export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   candidates: any[];
   userDetail: any = [];
-  constructor(private service: CandidateService, private route: Router, private commonService: CommonService) {
+
+  constructor(
+    private service: CandidateService,
+    private route: Router,
+    private commonService: CommonService) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('token : userDetail ==> ', this.userDetail);
+    console.log('admin- candidate: newcandidate - list component => ');
   }
 
   ngOnInit() {
@@ -64,13 +69,13 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
     };
   }
 
-
   onApproved(id) {
     this.service.approved_candidate(id).subscribe(res => {
       console.log('approved!!!');
       this.rrerender();
     });
   }
+
   onDelete(id) {
     this.service.deactivate_candidate(id).subscribe(res => {
       console.log('deactivate!!');
@@ -83,6 +88,15 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
     this.route.navigate([this.userDetail.role + '/candidates/view/' + id]);
   }
 
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
   ngAfterViewInit(): void {
     this.dtTrigger.next();
   }
@@ -92,12 +106,4 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
     this.dtTrigger.unsubscribe();
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
 }

@@ -10,8 +10,6 @@ import { GroupService } from '../manage-groups.service';
 })
 export class AddGroupsComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private router: Router, private service: GroupService, private route: ActivatedRoute) { }
-
   public Editor = ClassicEditor;
   myForm: FormGroup;
   arr: FormArray;
@@ -21,6 +19,15 @@ export class AddGroupsComponent implements OnInit {
   _name: any;
   title: string;
   cancel_link = '/employer/groups/list';
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private service: GroupService,
+    private route: ActivatedRoute
+  ) {
+    console.log('employer - groups : add-groups component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -47,7 +54,6 @@ export class AddGroupsComponent implements OnInit {
 
   onSubmit(valid) {
     this.submitted = true;
-
     if (valid) {
       this.service.add_communication(this.myForm.controls.arr.value, this.id).subscribe(res => {
         this.submitted = false;

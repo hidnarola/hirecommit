@@ -10,7 +10,9 @@ export class SubAccountsDetailsComponent implements OnInit {
 
   cancel_link = '/employer/sub_accounts/list';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    console.log('employer - sub accounts : sub-accounts-details component => ');
+  }
 
   ngOnInit() { }
 
