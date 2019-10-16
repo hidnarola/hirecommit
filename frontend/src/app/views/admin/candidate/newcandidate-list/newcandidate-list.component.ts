@@ -11,15 +11,20 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./newcandidate-list.component.scss']
 })
 export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   candidates: any[];
   userDetail: any = [];
-  constructor(private service: CandidateService, private route: Router, private commonService: CommonService) {
+
+  constructor(
+    private service: CandidateService,
+    private route: Router,
+    private commonService: CommonService) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('token : userDetail ==> ', this.userDetail);
+    console.log('admin- candidate: newcandidate - list component => ');
   }
 
   ngOnInit() {
@@ -28,14 +33,12 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.get_new_candidate(dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
-            console.log('====>>>>>>', res);
-
             this.candidates = res['user'];
-            console.log(this.candidates);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -63,24 +66,30 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
     };
   }
 
-
   onApproved(id) {
     this.service.approved_candidate(id).subscribe(res => {
-      console.log('approved!!!');
       this.rrerender();
     });
   }
+
   onDelete(id) {
     this.service.deactivate_candidate(id).subscribe(res => {
-      console.log('deactivate!!');
       this.rrerender();
     });
 
   }
 
   detail(id) {
-    // if(this.userDetail.role === '')
-    this.route.navigate(['employer/candidates/view/' + id]);
+    this.route.navigate([this.userDetail.role + '/candidates/view/' + id]);
+  }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -92,12 +101,4 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
     this.dtTrigger.unsubscribe();
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
 }

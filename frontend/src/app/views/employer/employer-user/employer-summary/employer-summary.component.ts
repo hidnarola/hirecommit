@@ -12,34 +12,37 @@ import { Subject } from 'rxjs';
   styleUrls: ['./employer-summary.component.scss']
 })
 export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   offers: any[];
   status = true;
-  constructor(private router: Router, private service: OfferService) { }
+
+  constructor(
+    private router: Router,
+    private service: OfferService
+  ) {
+    console.log('employer - offer: employer-summary component => ');
+  }
 
   ngOnInit() {
     // setTimeout(() => {
 
     //   this.bind();
     // }, 100);
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 2,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_offer(dataTablesParameters).subscribe(res => {
-          console.log(res);
-
           if (res['offer']) {
             this.offers = res['offer'];
-            console.log('data==>', res);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -77,24 +80,6 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
-
   detail(id) {
     this.router.navigate(['/employer/offers/offerdetail/' + id]);
   }
@@ -105,19 +90,13 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   delete(id) {
     this.service.deactivate_offer(id).subscribe(res => {
-      // this.offers = res['data'];
-      console.log('res', res);
-
-      // console.log("deactivate",this.offers);
       this.bind();
     });
   }
 
   checkValue(id, e) {
     this.status = e.target.checked;
-    // console.log('updated', this.status);
     this.service.change_status(id, this.status).subscribe(res => {
-      //  console.log('updated12', this.status);
     });
   }
 
@@ -131,8 +110,26 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   public bind() {
     // this.service.view_offer().subscribe(res => {
-    //   console.log(res['data']);
     //   this.offers = res['data'];
     // });
   }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
 }

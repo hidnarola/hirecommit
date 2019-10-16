@@ -8,11 +8,19 @@ import { OfferService } from '../offer.service';
   styleUrls: ['./employer-summary-detail.component.scss']
 })
 export class EmployerSummaryDetailComponent implements OnInit {
+
   id: any;
   offers: any;
   Disable = true;
   display = false;
-  constructor(private router: Router, private service: OfferService, private route: ActivatedRoute) { }
+
+  constructor(
+    private router: Router,
+    private service: OfferService,
+    private route: ActivatedRoute
+  ) {
+    console.log('employer - offer: employer-summary component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -36,13 +44,13 @@ export class EmployerSummaryDetailComponent implements OnInit {
   edit(id) {
     this.router.navigate(['/employer/offers/add/' + id]);
   }
+
   cancel() {
     this.router.navigate(['/employer/offers/list']);
   }
+
   details(gid) {
     this.router.navigate(['/employer/groups/group_details/' + gid]);
   }
-
-
 
 }

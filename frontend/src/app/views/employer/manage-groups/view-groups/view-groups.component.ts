@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./view-groups.component.scss']
 })
 export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   viewInfo: FormGroup;
@@ -20,7 +21,13 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   dtTrigger: Subject<any> = new Subject();
   groups: any[];
 
-  constructor(private router: Router, private service: GroupService, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private service: GroupService,
+    private toastr: ToastrService
+  ) {
+    console.log('employer - groups : view-groups component => ');
+  }
 
   ngOnInit(): void {
     this.bind();
@@ -64,13 +71,12 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.lists(dataTablesParameters).subscribe(res => {
           if (res['status']) {
             this.groups = res['groups'];
-            console.log('data==>', res);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -104,15 +110,6 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  ngOnDestroy() {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
@@ -120,6 +117,15 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
 
 }

@@ -52,7 +52,7 @@ export class CommonService {
   }
 
   // get user detail
-  getLoggedUserDetail(){
+  getLoggedUserDetail() {
     let userDetails;
     const token = localStorage.getItem('token');
     // decode the token to get its payload
@@ -66,7 +66,6 @@ export class CommonService {
   // employerList = this.employer.asObservable();
 
   // checkHere() {
-  //   console.log('here', this.employer);
   //   return this.employer.next({});
   // }
 

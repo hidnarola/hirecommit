@@ -1,42 +1,43 @@
 <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-header">
-            <i class="fa fa-align-justify"></i> All Approved Candidate List
-            <!-- <i class="icon-plus" style="float: right; font-size: 25px" [routerLink]="['/employer/add']"></i> -->
-          </div>
-          <div class="card-body">
-              <table datatable class="table" id="example" cellspacing="0" width="100%" >
-                  <thead>
-                    <tr>
-                      <th>Candidate Name</th>
-                      <th>Candidate Email</th>
-                      <th>Phone</th>
-                      <th>Document Type</th>
-                      <th>Approve Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody *ngFor="let candidate of candidates">
-                      <tr>
-                        <td>{{candidate.firstname}} {{candidate.lastname}}</td>
-                        <td>{{candidate.user_id.email}}</td>
-                        <td>{{candidate.countrycode}} {{candidate.contactno}}</td>
-                        <td>{{candidate.documenttype}}</td>
-                        <td>{{candidate.createdAt.split('T')[0]}}</td>
-                        <td>
-                          <button type="button" class="btn btn-sm btn-success" (click)="detail(candidate._id)"><i class="icon-eye"></i></button>
-                          <button type="button" class="btn btn-sm btn-danger" (click)="onDelete(candidate.user_id._id)"><i
-                              class="icon-trash"></i></button>
-                        
-                        </td>
-                      </tr>
-                      
-                  </tbody>
-                </table>
-          </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> All Approved Candidate List
+          <!-- <i class="icon-plus" style="float: right; font-size: 25px" [routerLink]="['/employer/add']"></i> -->
+        </div>
+        <div class="card-body">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
+            <thead>
+              <tr>
+                <th>Candidate Name</th>
+                <th>Candidate Email</th>
+                <th>Phone</th>
+                <th>Document Type</th>
+                <th>Approve Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let candidate of candidates">
+              <tr>
+                <td>{{candidate.firstname}} {{candidate.lastname}}</td>
+                <td>{{candidate.user.email}}</td>
+                <td>{{candidate.countrycode}} {{candidate.contactno}}</td>
+                <td>{{candidate.documenttype}}</td>
+                <td>{{candidate.createdAt.split('T')[0]}}</td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-success" (click)="detail(candidate._id)"><i
+                      class="icon-eye"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" (click)="onDelete(candidate.user_id._id)"><i
+                      class="icon-trash"></i></button>
+
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>

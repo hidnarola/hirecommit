@@ -15,60 +15,50 @@ export class EmployerDetailComponent implements OnInit {
   form = false;
   buttonValue: any;
   buttonValue1: String;
-  constructor(private router: Router, private service: EmployerService, private route: ActivatedRoute) { }
+  cancel_link = '/admin/employers/list';
+
+  constructor(
+    private router: Router,
+    private service: EmployerService,
+    private route: ActivatedRoute) {
+    console.log('admin- employer: employer-detail component => ');
+  }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-    })
-
+    });
     this.service.getemployerDetail(this.id).subscribe(res => {
       this.employer_detail = res['data'];
       this.form = true;
       if (this.employer_detail.user_id.isAllow === false) {
-        this.buttonValue = 'Approve'
-        this.buttonValue1 = 'unapprove'
+        this.buttonValue = 'Approve';
+        this.buttonValue1 = 'unapprove';
+      } else {
+        this.buttonValue1 = 'Cancel';
       }
-      else {
-
-        this.buttonValue1 = 'Cancel'
-      }
-      console.log('details >>', this.employer_detail);
-
       this.name = this.employer_detail.username.split(' ');
-      console.log('name >>', this.name);
-
-    })
+    });
   }
 
   onApproved(id) {
     this.service.aprroved_employer(id).subscribe(res => {
-      console.log("approved!!!", res);
       this.router.navigate(['/admin/employers/view']);
-    })
+    });
   }
 
   onUnapproved(id) {
-    console.log(id);
-
     this.service.deactivate_employer(id).subscribe(res => {
-      console.log("Deleted!!");
-      this.router.navigate(['admin/employers/list']);
-    })
-
+      this.router.navigate([this.cancel_link]);
+    });
   }
-
 
   check(routes) {
     if (routes === false) {
-      this.router.navigate(['admin/employers/list']);
-
-    }
-    else {
+      this.router.navigate([this.cancel_link]);
+    } else {
       this.router.navigate(['/admin/employers/view']);
-
     }
   }
-
 
 }

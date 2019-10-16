@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-header">
           <strong style="font-size: 20px;">{{panelTitle}}</strong>
-          <span class="input-group-text pull-right" [routerLink]="['/employer/salary_brackets/list']">
+          <span class="input-group-text pull-right" [routerLink]="cancel_link">
             <i class="icon-close"></i>
           </span>
         </div>
@@ -20,19 +20,9 @@
               <div class="col-md-2">
 
                 <!-- [(ngModel)]="offer_data.country" -->
-                <p-dropdown [options]="countryList" formControlName="country" id="country" #country
-                  (onChange)="findCurrency($event)">
-                </p-dropdown>
-                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
-                  <span *ngIf="form.controls['country'].errors['required']" class="text-danger">This field is
-                    required.</span>
-                </div> -->
-
-                <!-- <select id="country" name="select1" class="form-control" [(ngModel)]="detail.country"
-                  formControlName="country" #mySelect (change)='onChange(mySelect.value)'>
-                  <option class='option' *ngFor='let loc of location' [value]="loc.country._id">{{loc.country.country}}
-                  </option>
-                </select> -->
+                <p-dropdown [options]="countryList" placeholder="Select Value" formControlName="country" id="country" #country
+                  (onChange)="findCurrency($event)"></p-dropdown>
+                
                 <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">This field is
                   required.</span>
               </div>

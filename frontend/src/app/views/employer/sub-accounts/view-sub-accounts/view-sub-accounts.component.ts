@@ -6,11 +6,13 @@ import { DataTableDirective } from 'angular-datatables';
 import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 
-@Component({ selector: 'app-view-sub-accounts', templateUrl: './view-sub-accounts.component.html', styleUrls: ['./view-sub-accounts.component.scss'] })
-export class ViewSubAccountsComponent
-  implements OnDestroy,
-  OnInit,
-  AfterViewInit {
+@Component({
+  selector: 'app-view-sub-accounts',
+  templateUrl: './view-sub-accounts.component.html',
+  styleUrls: ['./view-sub-accounts.component.scss']
+})
+export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -20,7 +22,15 @@ export class ViewSubAccountsComponent
   admin_rights = true;
 
   // tslint:disable-next-line: max-line-length
-  constructor(private router: Router, private service: SubAccountService, private confirmationService: ConfirmationService, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private service: SubAccountService,
+    private confirmationService: ConfirmationService,
+    private toastr: ToastrService
+  ) {
+    console.log('employer - sub accounts : view-sub-accounts component => ');
+  }
+
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -28,13 +38,12 @@ export class ViewSubAccountsComponent
       serverSide: true,
       searching: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_sub_account(dataTablesParameters).subscribe(res => {
           if (res['status']) {
             this.data = res['user'];
-            console.log('data==>', res);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -66,7 +75,6 @@ export class ViewSubAccountsComponent
   }
 
   edit(id) {
-    // console.log(id);
     this.router.navigate(['/employer/sub_accounts/edit/' + id]);
   }
 
@@ -75,7 +83,6 @@ export class ViewSubAccountsComponent
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.decativate_sub_account(user_id).subscribe(res => {
-          console.log('deactivate sub account', res['status']);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
@@ -85,12 +92,19 @@ export class ViewSubAccountsComponent
         });
       }
     });
-
-
   }
 
   onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
+  }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -102,12 +116,4 @@ export class ViewSubAccountsComponent
     this.dtTrigger.unsubscribe();
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
 }

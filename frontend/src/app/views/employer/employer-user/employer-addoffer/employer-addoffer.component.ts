@@ -26,7 +26,7 @@ export class EmployerAddofferComponent implements OnInit {
   countryArr: any[] = [];
   arr: any[] = [];
   user_detail: any = {};
-
+  candidate: any[];
   salary_duration_optoins = [
     { label: 'Select', value: '' },
     { label: '1 week', value: '1week' },
@@ -47,6 +47,7 @@ export class EmployerAddofferComponent implements OnInit {
     { label: 'Low', value: 'low' }
   ];
   contryList: any;
+  cancel_link = '/employer/offers/list';
 
   constructor(
     private fb: FormBuilder,
@@ -76,6 +77,8 @@ export class EmployerAddofferComponent implements OnInit {
       notes: new FormControl(''),
       employer_id: new FormControl('')
     });
+
+    console.log('employer - offer: employer-addoffer component => ');
   }
 
   findCities = () => {
@@ -86,7 +89,6 @@ export class EmployerAddofferComponent implements OnInit {
       //   this.unique = this.contryList.filter(x => x.value === fetch_country);
       //   this._country.push(this.unique[0]);
       // });
-      console.log(this.location);
       // this.currency = Currency;
       // const obj = [];
       // for (const [key, value] of Object.entries(this.currency)) {
@@ -100,15 +102,21 @@ export class EmployerAddofferComponent implements OnInit {
     });
   }
 
-  ngOnInit() {  }
-
- 
+  ngOnInit() {
+    this.service.get_candidate_list().subscribe(res => {
+      this.candidate = res['data'];
+      res['data'].forEach(element => {
+        // this.candidate.push({ 'label': element.firstname + element.lastname , 'value': element.id });
+      });
+    }, (err) => {
+      console.log(err);
+    });
+  }
 
   // submit form
   onSubmit(flag) {
     // this.offer_data.location = this.offer_data.location._id;
-    console.log('onSubmit : flag ==> ', flag);
-    console.log('onSubmit : offer_data ==> ', this.offer_data);
     this.form_validation = !flag;
   }
+
 }

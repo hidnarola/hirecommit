@@ -17,7 +17,6 @@ export class CandidateService {
     employerList = this.employer.asObservable();
 
     checkHere() {
-        console.log('here', this.employer);
         return this.employer.next({});
     }
 
@@ -28,6 +27,7 @@ export class CandidateService {
     approved_candidate(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/approved_candidate/' + id, null);
     }
+
     deactivate_candidate(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/deactive_candidate/' + id, null);
     }
@@ -35,6 +35,7 @@ export class CandidateService {
     candidate_detail(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/candidate/' + id);
     }
+
     new_request(): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + 'employer/candidate/manage_candidate/new_request');
     }

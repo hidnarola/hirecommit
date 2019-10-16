@@ -4,12 +4,37 @@
       <div class="card">
         <div class="card-header">
           <strong style="font-size: 20px;">{{panelTitle}} Offer</strong>
-          <span class="input-group-text pull-right" [routerLink]="['/employer/offers/list']"><i
-              class="icon-close"></i></span>
+          <span class="input-group-text pull-right" [routerLink]="cancel_link"><i class="icon-close"></i></span>
         </div>
         <form class="form-horizontal" [formGroup]="form">
 
           <div class="card-body">
+
+
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="country">Select Country</label>
+              <div class="col-md-2">
+                <!-- [(ngModel)]="offer_data.country" -->
+                <p-dropdown [options]="countryList" placeholder="Select Name" formControlName="country" id="country"
+                  #country (onChange)="findCurrency($event)">
+                </p-dropdown>
+                <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">This field is
+                  required.</span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="name">Name</label>
+              <div class="col-md-6">
+                <!-- [(ngModel)]="offer_data.name" -->
+                <input type="name" class="form-control" placeholder="Enter Name" autocomplete="name"
+                  formControlName="name" id="name">
+                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['name'].valid">
+                  <span *ngIf="form.controls['name'].errors['required']" class="text-danger">This field is
+                    required.</span>
+                </div>
+              </div>
+            </div>
 
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="email">Email</label>
@@ -28,18 +53,7 @@
               </div>
             </div>
 
-            <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="name">Name</label>
-              <div class="col-md-6">
-                <!-- [(ngModel)]="offer_data.name" -->
-                <input type="name" class="form-control" placeholder="Enter Name" autocomplete="name"
-                  formControlName="name" id="name">
-                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['name'].valid">
-                  <span *ngIf="form.controls['name'].errors['required']" class="text-danger">This field is
-                    required.</span>
-                </div>
-              </div>
-            </div>
+
 
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="title">Title</label>

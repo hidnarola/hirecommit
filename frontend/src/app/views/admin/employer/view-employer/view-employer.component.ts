@@ -13,7 +13,14 @@ export class ViewEmployerComponent implements OnInit {
   employer: any = [];
   name: any = [];
   data: any;
-  constructor(private router: Router, private service: EmployerService) { }
+
+  constructor(
+    private router: Router,
+    private service: EmployerService
+  ) {
+    console.log('admin- employer: view-employer component => ');
+  }
+
   ngOnInit(): void {
     // const table = $('#example').DataTable({
     //   drawCallback: () => {
@@ -22,10 +29,7 @@ export class ViewEmployerComponent implements OnInit {
     //       });
     //   }
     // });
-
-
     this.bind();
-
   }
 
   buttonInRowClick(event: any): void {
@@ -40,42 +44,32 @@ export class ViewEmployerComponent implements OnInit {
   nextButtonClickEvent(): void {
     // do next particular records like  101 - 200 rows.
     // we are calling to api
-
     console.log('next clicked');
   }
+
   previousButtonClickEvent(): void {
     // do previous particular the records like  0 - 100 rows.
     // we are calling to API
   }
+
   delete(id) {
-    console.log(id);
-
     this.service.deactivate_employer(id).subscribe(res => {
-      console.log("Deleted!!");
       this.bind();
-    })
-
+    });
   }
 
-
-
-  getEmployerlist() {
-  }
+  getEmployerlist() { }
 
   detail(id) {
     this.router.navigate(['admin/employers/detail/' + id]);
   }
 
   public bind() {
-
     this.service.getemployer().subscribe(res => {
       this.employer = res['data'];
-      console.log("emp data", this.employer);
       this.employer = this.employer.filter(x => x.user_id.isAllow === true);
 
-    })
+    });
   }
-
-
 
 }

@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormControl, NgForm } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { countries } from '../../../../shared/countries';
 import { LocationService } from '../manage-location.service';
-import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-add-location',
   templateUrl: './add-location.component.html',
   styleUrls: ['./add-location.component.scss']
 })
+
 export class AddLocationComponent implements OnInit {
+
   Country: any = [];
   addLocation: FormGroup;
   submitted = false;
@@ -21,22 +22,25 @@ export class AddLocationComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
-  constructor(private router: Router,
+  cancel_link = '/employer/locations/list';
+
+  constructor(
+    private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
     private service: LocationService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute
+  ) {
+    console.log('employer - locations : add-location component => ');
+  }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
       country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required])
-
     });
-
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      // console.log(this.id);
     });
     this.getDetail(this.id);
 
@@ -48,7 +52,6 @@ export class AddLocationComponent implements OnInit {
     // this.Country = obj;
     this.commonService.country_data().subscribe(res => {
       this.Country = res['data'];
-      console.log('country_data ==>', this.Country);
     });
   }
 
@@ -59,7 +62,6 @@ export class AddLocationComponent implements OnInit {
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
       });
-
     } else {
       this.detail = {
         _id: null,
@@ -83,7 +85,6 @@ export class AddLocationComponent implements OnInit {
         'city': this.detail.city
       };
       this.service.edit_location(res_data).subscribe(res => {
-        console.log('edited !!', res);
         if (res['data']['status'] === 1) {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -107,18 +108,16 @@ export class AddLocationComponent implements OnInit {
           }
           this.submitted = false;
         }, (err) => {
-          console.log('error msg ==>', err['error']['message']);
-
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
         this.addLocation.reset();
-        this.router.navigate(['/employer/locations/list']);
+        this.router.navigate([this.cancel_link]);
       }
     }
   }
 
   // onClose() {
-  //   this.router.navigate(['/employer/locations/list']);
+  //   this.router.navigate([this.cancel_link]);
   // }
 
   // public bind() {

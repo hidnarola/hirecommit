@@ -8,10 +8,15 @@ import { Router } from '@angular/router';
 })
 export class NewcandidateDetailComponent implements OnInit {
   approval: boolean = false;
-  constructor(private router: Router) { }
+  cancel_link = '/admin/candidates/new_candidate';
 
-  ngOnInit() {
+  constructor(
+    private router: Router
+  ) {
+    console.log('admin- candidate: newcandidate - detail component => ');
   }
+
+  ngOnInit() { }
 
   approve() {
     this.approval = true;
@@ -19,10 +24,6 @@ export class NewcandidateDetailComponent implements OnInit {
 
   unapprove() {
     this.approval = false;
-  }
-
-  cancel() {
-    this.router.navigate(['/admin/candidates/new_candidate']);
   }
 
 }

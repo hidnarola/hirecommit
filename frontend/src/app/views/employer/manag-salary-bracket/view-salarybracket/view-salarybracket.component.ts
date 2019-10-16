@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./view-salarybracket.component.scss']
 })
 export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -24,14 +25,17 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   c_name: any = [];
   sal: any = [];
   salnew: any = [];
-
   unq: any;
-  constructor(private router: Router, 
-    private confirmationService: ConfirmationService, 
+
+  constructor(
+    private router: Router,
+    private confirmationService: ConfirmationService,
     private service: SalaryBracketService,
-    private toastr: ToastrService) {}
-      
-  
+    private toastr: ToastrService
+  ) {
+    console.log('employer - salary bracket: view-salarybracket component => ');
+  }
+
   ngOnInit() {
     this.bind();
   }
@@ -45,18 +49,14 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   delete(id) {
-    console.log(id);
-
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.deactivate_salary_brcaket(id).subscribe(res => {
-          console.log('deactivate salary', res);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
           this.rrerender();
-   
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
@@ -67,6 +67,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
   }
+
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
@@ -77,13 +78,12 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_salary_brcaket(dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
             this.salary = res['salary'];
-            console.log('data==>', res);
             this.salary = this.salary.filter(x => x.is_del === false);
             this.Country = countries;
             const obj = [];
@@ -97,8 +97,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
               this._country.push(this.unique[0]);
             });
             this._country = this._country.filter(this.onlyUnique);
-
-
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -131,6 +129,15 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
     return this.c_name;
   }
 
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
   ngAfterViewInit(): void {
     this.dtTrigger.next();
   }
@@ -140,12 +147,4 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
     this.dtTrigger.unsubscribe();
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
 }

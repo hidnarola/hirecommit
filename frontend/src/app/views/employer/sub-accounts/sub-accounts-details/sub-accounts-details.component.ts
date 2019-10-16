@@ -8,17 +8,16 @@ import { Router } from '@angular/router';
 })
 export class SubAccountsDetailsComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  cancel_link = '/employer/sub_accounts/list';
 
-  ngOnInit() {
+  constructor(private router: Router) {
+    console.log('employer - sub accounts : sub-accounts-details component => ');
   }
+
+  ngOnInit() { }
 
   edit() {
     this.router.navigate(['/employer/sub_accounts/add']);
-  }
-
-  cancel() {
-    this.router.navigate(['/employer/sub_accounts/list']);
   }
 
 }

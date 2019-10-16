@@ -6,8 +6,6 @@ import { OfferlistComponent } from './offerlist/offerlist.component';
 import { ViewofferDetailComponent } from './viewoffer-detail/viewoffer-detail.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ng2-tooltip-directive';
-// import { DefaultLayoutModule } from '../../../containers/default-layout/default-layout.module';
-
 
 @NgModule({
   declarations: [OfferlistComponent, ViewofferDetailComponent],
@@ -16,8 +14,6 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     CandidateUserRoutingModule,
     ReactiveFormsModule,
     TooltipModule,
-    // DefaultLayoutModule
-   
   ]
 })
 export class CandidateUserModule { }

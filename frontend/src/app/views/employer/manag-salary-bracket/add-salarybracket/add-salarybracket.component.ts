@@ -13,6 +13,7 @@ import { SliderModule } from 'primeng/slider';
   styleUrls: ['./add-salarybracket.component.scss']
 })
 export class AddSalarybracketComponent implements OnInit {
+
   countryList: any = [];
   AddSalaryBracket: FormGroup;
   submitted = false;
@@ -29,12 +30,17 @@ export class AddSalarybracketComponent implements OnInit {
   error = false;
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
+  cancel_link = '/employer/salary_brackets/list';
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private router: Router,
     private service: SalaryBracketService,
     private route: ActivatedRoute,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService
+  ) {
+    console.log('employer - salary bracket: add-salarybracket component => ');
+  }
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
@@ -43,44 +49,28 @@ export class AddSalarybracketComponent implements OnInit {
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required])
     });
-
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      // console.log(this.id);
     });
-
     this.service.get_location().subscribe(res => {
-      console.log('res=>', res['data']);
-      this.currency = res['data']
+      this.currency = res['data'];
       res['data'].forEach(element => {
-        console.log('element', element);
-        this.countryList.push({ 'label': element.country, 'value': element.id })
+        this.countryList.push({ 'label': element.country, 'value': element.id });
       });
-      // this.contryList.push()
-      // this.contryList = res['data'];
-      // this.contryList = this.location
-      console.log('country list', this.countryList);
-
     });
-
     this.getDetail(this.id);
   }
 
   findCities() {
     this.detail.currency = this.detail.country.country.currency_code;
   }
+
   findCurrency(value) {
-    console.log('cur', value.value);
     this.currency.forEach(element => {
-      console.log('element >>', element);
       if (value.value === element.id) {
         this.detail.currency = element.currency;
       }
-      // this.currency=this.currency.filter(x => x.element === value.value)
-      // console.log(this.currency);
-
-    })
-
+    });
   }
 
   onBlurMethod(from, to) {
@@ -90,35 +80,31 @@ export class AddSalarybracketComponent implements OnInit {
     } else if (from >= to) {
       this.error = true;
       this.error_msg = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
+
   onBlur(from, to) {
     if (from > to) {
       this.error = true;
       this.error_msg = 'Can\'t greater than maximum salary!';
-    }
-    else if (from <= to) {
+    } else if (from <= to) {
       this.error = true;
       this.error_msg1 = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
 
-
-  getDetail(id: string) {
-    if (this.id) {
+  getDetail(id) {
+    if (id) {
       this.panelTitle = 'Edit Salary Bracket';
       this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-        this.detail = res['data'][0];
-        this.detail.country = res['data'][0].location;
-        this.detail.currency = res['data'][0].location.country.currency_code;
-        console.log('subscribed!', this.detail);
+        this.detail = res['data'];
+        // this.detail.country = res['data'][0].location;
+        // this.detail.currency = res['data'][0].location.country.currency_code;
       });
     } else {
       this.detail = {
@@ -134,48 +120,32 @@ export class AddSalarybracketComponent implements OnInit {
     }
   }
 
-
   get f() {
     return this.AddSalaryBracket.controls;
   }
 
   onSubmit(flag: boolean, id) {
-    console.log(!this.id, flag);
-
     this.submitted = true;
     if (this.id && flag) {
-      this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
-        console.log('edited successfully!!!');
-        this.router.navigate(['/employer/salary_brackets/list']);
+      this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
+        this.router.navigate([this.cancel_link]);
       });
     } else if (!this.id && flag) {
-      console.log('in add');
-
       this.submitted = !flag;
       this.service.add_salary_brcaket(this.AddSalaryBracket.value).subscribe(res => {
-        console.log('addded', res);
         if (res['data']['status'] === 1) {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.AddSalaryBracket.reset();
+          this.router.navigate([this.cancel_link]);
         }
       }, (err) => {
-        console.log('error msg ==>', err['error']['message']);
-
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
-
       if (flag) {
         this.AddSalaryBracket.reset();
       }
     }
   }
-
-
-  // onClose() {
-  //   this.router.navigate(['/employer/salary_brackets/list']);
-  // }
-
-
 
 }

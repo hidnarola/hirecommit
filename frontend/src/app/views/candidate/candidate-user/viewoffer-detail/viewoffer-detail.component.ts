@@ -12,7 +12,11 @@ export class ViewofferDetailComponent implements OnInit {
   accepted: boolean = false;
   submitted = false;
   registerForm: FormGroup;
-  constructor(private router: Router) { }
+  cancel_link = '/candidate/offers/offerlist';
+
+  constructor(private router: Router) {
+    console.log('candidate: viewoffer-detail component => ');
+  }
 
   ngOnInit() {
     this.registerForm = new FormGroup({
@@ -21,7 +25,6 @@ export class ViewofferDetailComponent implements OnInit {
   }
 
   accepte() {
-    // console.log('dsd' );
     Swal.fire({
       type: 'success',
       text: 'Offer Accepted Successfully..!'
@@ -39,10 +42,7 @@ export class ViewofferDetailComponent implements OnInit {
 
   onSubmit(flag: boolean) {
     this.submitted = !flag;
-
     if (flag) {
-      // console.log(this.registerForm.value.offerstatus);
-
       if (this.registerForm.value.offerstatus === 'accept') {
         Swal.fire({
           type: 'success',
@@ -58,7 +58,4 @@ export class ViewofferDetailComponent implements OnInit {
     this.registerForm.reset();
   }
 
-  onclick() {
-    this.router.navigate(['/candidate/offers/offerlist']);
-  }
 }

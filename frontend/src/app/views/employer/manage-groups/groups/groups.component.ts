@@ -10,9 +10,19 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./groups.component.scss']
 })
 export class GroupsComponent implements OnInit {
+
   addGroup: FormGroup;
   isFormSubmited = false;
-  constructor(private router: Router, public fb: FormBuilder, private service: GroupService, private toastr: ToastrService) { }
+  cancel_link = '/employer/groups/list';
+
+  constructor(
+    private router: Router,
+    public fb: FormBuilder,
+    private service: GroupService,
+    private toastr: ToastrService
+  ) {
+    console.log('employer - groups : groups component => ');
+  }
 
   ngOnInit() {
     this.addGroup = this.fb.group({
@@ -43,11 +53,8 @@ export class GroupsComponent implements OnInit {
     }
   }
 
-  // onClose() {
-  //   this.router.navigate(['/employer/groups/list']);
-  // }
-
   reset() {
     this.isFormSubmited = false;
   }
+
 }
