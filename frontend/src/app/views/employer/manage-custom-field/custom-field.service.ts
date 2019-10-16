@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import * as env from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class CustomFieldService {
 
@@ -25,23 +25,25 @@ export class CustomFieldService {
 
     view_custom_feild(params): Observable<any[]> {
         console.log(' service called for listing of custom feilds');
-        
+
         return this.http.post<any[]>(`${this.url}` + '/customfield/get', { ...params });
         // http://localhost:3000/employer/customfield/get
     }
 
-    add_custom_field(data):Observable<any[]>{
-        return this.http.post<any[]>(`${this.url}` + '/customfield',data)
+    add_custom_field(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/customfield', data);
     }
 
     edit_custom_field(data): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/customfield',  data)
+        return this.http.put<any[]>(`${this.url}` + '/customfield', data);
     }
+
     get_custom_field(id): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/customfield/' +id)
+        return this.http.get<any[]>(`${this.url}` + '/customfield/' + id);
     }
+
     delete_custom_field(id): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/customfield/delete/' + id,{})
+        return this.http.put<any[]>(`${this.url}` + '/customfield/delete/' + id, {});
     }
-   
+
 }

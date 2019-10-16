@@ -14,6 +14,7 @@ export class GroupsDetailsComponent implements OnInit {
   data: any;
   viewform = false;
   communication: any = [];
+
   constructor(private router: Router, private route: ActivatedRoute, private service: GroupService) { }
 
   ngOnInit() {
@@ -27,7 +28,7 @@ export class GroupsDetailsComponent implements OnInit {
       this.viewform = true;
       console.log('name', this._name);
 
-    })
+    });
 
     this.service.get_communication_detail(this.id).subscribe(res => {
       this._details = res['data']['data'];
@@ -41,9 +42,7 @@ export class GroupsDetailsComponent implements OnInit {
 
       });
       console.log('_details', this.data);
-
-
-    })
+    });
   }
 
   cancel() {

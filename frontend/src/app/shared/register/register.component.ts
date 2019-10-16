@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
-import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -22,7 +21,7 @@ export class RegisterComponent implements OnInit {
   marked = false;
   imgurl: any = '';
   // tslint:disable-next-line: max-line-length
-  constructor(public router: Router, private service: CommonService, private toastr: ToastrService, public fb: FormBuilder,  private cd: ChangeDetectorRef) {
+  constructor(public router: Router, private service: CommonService, private toastr: ToastrService, public fb: FormBuilder, private cd: ChangeDetectorRef) {
     this.registerData = {};
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
@@ -31,10 +30,10 @@ export class RegisterComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
-      contactno: new FormControl('', Validators.compose([Validators.required,  Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
+      contactno: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
       country: new FormControl('', [Validators.required]),
       documenttype: new FormControl('', [Validators.required]),
-      password: new FormControl('',  Validators.compose([Validators.required, Validators.minLength(8)])),
+      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
       confirmpassword: new FormControl('', [Validators.required]),
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
@@ -44,41 +43,7 @@ export class RegisterComponent implements OnInit {
     // });
   }
 
-  ngOnInit() {
-
-  }
-
-  onSubmit (valid) {
-    this.isFormSubmited = true;
-    if (valid && this.marked) {
-      this.registerData.documentImage = this.imgurl
-      this.formData  = new FormData();
-      // tslint:disable-next-line: forin
-      for (const key in this.registerData) {
-        const value = this.registerData[key];
-        this.formData.append(key, value);
-      }
-
-      // if (this.fileFormData.get('filename')) {
-      //   this.formData.append('documentimage', this.imgurl);
-      // }
-    //  this.registerForm.controls.documentImage.setValue(this.imgurl)
-     // this.documentImage.controls.documentimage.setValue(this.imgurl);
-      this.service.candidate_signup(this.formData).subscribe(res => {
-        console.log(res);
-        this.isFormSubmited = false;
-        this.registerData = {};
-        if (res['status'] === 0) {
-          this.toastr.error(res['message'], 'Error!', {timeOut: 3000});
-        } else if (res['status'] === 1) {
-          this.toastr.success(res['message'], 'Success!', {timeOut: 3000});
-          this.router.navigate(['/login']);
-        }
-      }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
-      });
-    }
-  }
+  ngOnInit() { }
 
   onFileChange(event) {
     this.fileFormData = new FormData();
@@ -92,19 +57,18 @@ export class RegisterComponent implements OnInit {
       //   this.documentImage.patchValue({
       //     documentimage: reader.result
       //  });
-      this.imgurl = reader.result
-        // need to run CD since file load runs outside of zone
-        this.cd.markForCheck();
-      };
+      this.imgurl = reader.result;
+      // need to run CD since file load runs outside of zone
+      this.cd.markForCheck();
     }
-  _handleReaderLoaded(e) {
-    let reader = e.target;
-    this.imgurl = reader.result;
-    console.log(this.imgurl)
   }
 
-  
- 
+  _handleReaderLoaded(e) {
+    const reader = e.target;
+    this.imgurl = reader.result;
+    console.log(this.imgurl);
+  }
+
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
     const confirmpassword = g.get('confirmpassword').value;
@@ -116,6 +80,38 @@ export class RegisterComponent implements OnInit {
   checkValue(e) {
     this.marked = e.target.checked;
     console.log(this.marked);
- }
+  }
+
+  onSubmit(valid) {
+    this.isFormSubmited = true;
+    if (valid && this.marked) {
+      this.registerData.documentImage = this.imgurl;
+      this.formData = new FormData();
+      // tslint:disable-next-line: forin
+      for (const key in this.registerData) {
+        const value = this.registerData[key];
+        this.formData.append(key, value);
+      }
+      // if (this.fileFormData.get('filename')) {
+      //   this.formData.append('documentimage', this.imgurl);
+      // }
+      //  this.registerForm.controls.documentImage.setValue(this.imgurl)
+      // this.documentImage.controls.documentimage.setValue(this.imgurl);
+      this.service.candidate_signup(this.formData).subscribe(res => {
+        console.log(res);
+        this.isFormSubmited = false;
+        this.registerData = {};
+        if (res['status'] === 0) {
+          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
+        } else if (res['status'] === 1) {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          this.router.navigate(['/login']);
+        }
+      }, (err) => {
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+      });
+    }
+  }
+
 }
 

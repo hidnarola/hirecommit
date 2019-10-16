@@ -24,13 +24,12 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   c_name: any = [];
   sal: any = [];
   salnew: any = [];
-
   unq: any;
+
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
     private service: SalaryBracketService,
     private toastr: ToastrService) { }
-
 
   ngOnInit() {
     this.bind();
@@ -46,7 +45,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
 
   delete(id) {
     console.log(id);
-
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
@@ -56,7 +54,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
           this.rrerender();
-
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
@@ -67,6 +64,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   onAdd() {
     //  this.router.navigate(['/groups/addgroup']);
   }
+
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
@@ -82,9 +80,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_salary_brcaket(dataTablesParameters).subscribe(res => {
-          console.log('res data =>>',res);
-          
-
+          console.log('res data =>>', res);
           if (res['status'] === 1) {
             this.salary = res['salary'];
             console.log('data==>', res);
@@ -152,4 +148,5 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       this.dtTrigger.next();
     });
   }
+
 }

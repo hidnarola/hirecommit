@@ -2,7 +2,6 @@ import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { admin, employer, candidate } from '../../_nav';
 import { Router } from '@angular/router';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,7 +42,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this.router.navigate(['employer/profile']);
   }
 
-  customFeild(){
+  customFeild() {
     this.router.navigate(['employer/customfeild/list']);
   }
 

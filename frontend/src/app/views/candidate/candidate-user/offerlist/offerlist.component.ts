@@ -16,8 +16,9 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
   dtTrigger: Subject<any> = new Subject();
   employer: any;
   offerList: any[];
-form=false;
-  constructor(private service:OfferListService,private route: Router) { }
+  form = false;
+
+  constructor(private service: OfferListService, private route: Router) { }
 
   ngOnInit() {
     this.bind();
@@ -53,29 +54,26 @@ form=false;
     // };
   }
 
-  
-
-  onDelete(id){
+  onDelete(id) {
     this.service.deactivate_offer(id).subscribe(res => {
-      console.log("deactivate offer",res);
+      console.log('deactivate offer', res);
       // this.rrerender();
       this.bind();
-    })
+    });
   }
 
-  public bind(){
-         this.service.view_offerList().subscribe(res => {
-           this.offerList = res['data']['data'];
-          
-           console.log("candidate offer list", this.offerList);
-           this.offerList = this.offerList.filter(x => x.is_del === false);
-           console.log('eid', this.offerList[0].employer_id);
-           this.service.get_employer(this.offerList[0].employer_id).subscribe(res => {
-             this.employer = res['data']['data'];
-             this.form = true;
-             console.log('emp data', this.employer);
-           })
-         })
+  public bind() {
+    this.service.view_offerList().subscribe(res => {
+      this.offerList = res['data']['data'];
+      console.log('candidate offer list', this.offerList);
+      this.offerList = this.offerList.filter(x => x.is_del === false);
+      console.log('eid', this.offerList[0].employer_id);
+      this.service.get_employer(this.offerList[0].employer_id).subscribe(resp => {
+        this.employer = resp['data']['data'];
+        this.form = true;
+        console.log('emp data', this.employer);
+      });
+    });
   }
 
   ngAfterViewInit(): void {

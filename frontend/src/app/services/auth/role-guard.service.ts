@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 @Injectable()
 export class RoleGuardService implements CanActivate {
 
-  constructor(public auth: AuthService, public router: Router) {}
+  constructor(public auth: AuthService, public router: Router) { }
   canActivate(route: ActivatedRouteSnapshot): boolean {
     // this will be passed from the route config
     // on the data property
@@ -15,7 +15,6 @@ export class RoleGuardService implements CanActivate {
     // decode the token to get its payload
     const tokenPayload = jwt_decode(token);
     console.log('decoded value of token', tokenPayload);
-    
     if (
       !this.auth.isAuthenticated() ||
       tokenPayload.role !== expectedRole

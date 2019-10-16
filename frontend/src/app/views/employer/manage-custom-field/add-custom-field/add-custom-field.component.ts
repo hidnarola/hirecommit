@@ -10,12 +10,13 @@ import { CustomFieldService } from '../custom-field.service';
 })
 export class AddCustomFieldComponent implements OnInit {
   submitted = false;
-  panelTitle = 'Add Custom Field'
+  panelTitle = 'Add Custom Field';
   buttonTitle = 'Add';
   addCustomFeild: FormGroup;
   id: any;
   data: any = {};
   isEdit = false;
+
   constructor(private service: CustomFieldService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
@@ -24,34 +25,30 @@ export class AddCustomFieldComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       console.log('params', params);
-      
       this.id = params['id'];
       this.isEdit = true;
       console.log(this.id);
     });
-
     this.service.get_custom_field(this.id).subscribe(res => {
       this.data = res['data'];
       this.panelTitle = 'Edit Custom Field';
       this.buttonTitle = 'Update';
       console.log('custom data', this.data);
 
-    })
-
-
+    });
     this.addCustomFeild = new FormGroup({
       key: new FormControl('', [Validators.required])
-    })
+    });
   }
+
   onSubmit(valid) {
     this.submitted = true;
-    if (this.id && this.id != 0) {
+    if (this.id && this.id !== 0) {
       console.log('edit==>', this.id);
-      
-      let obj = {
-        "id": this.id,
-        "key": this.addCustomFeild.value['key']
-      }
+      const obj = {
+        'id': this.id,
+        'key': this.addCustomFeild.value['key']
+      };
       console.log('Edited!!', obj);
       this.service.edit_custom_field(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
@@ -59,17 +56,14 @@ export class AddCustomFieldComponent implements OnInit {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.addCustomFeild.reset();
         }
-        this.router.navigate(['/employer/custom_field/list'])
+        this.router.navigate(['/employer/custom_field/list']);
       }, (err) => {
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
-    }
-     else {
-       
+    } else {
       if (valid) {
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
           console.log('>>', this.addCustomFeild.value);
-
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -81,4 +75,5 @@ export class AddCustomFieldComponent implements OnInit {
       }
     }
   }
+
 }

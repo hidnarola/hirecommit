@@ -52,10 +52,10 @@ export class AddSalarybracketComponent implements OnInit {
 
     this.service.get_location().subscribe(res => {
       console.log('res=>', res['data']);
-      this.currency = res['data']
+      this.currency = res['data'];
       res['data'].forEach(element => {
         console.log('element', element);
-        this.countryList.push({ 'label': element.country, 'value': element.id })
+        this.countryList.push({ 'label': element.country, 'value': element.id });
       });
       // this.contryList.push()
       // this.contryList = res['data'];
@@ -79,9 +79,7 @@ export class AddSalarybracketComponent implements OnInit {
       }
       // this.currency=this.currency.filter(x => x.element === value.value)
       // console.log(this.currency);
-
-    })
-
+    });
   }
 
   onBlurMethod(from, to) {
@@ -91,25 +89,22 @@ export class AddSalarybracketComponent implements OnInit {
     } else if (from >= to) {
       this.error = true;
       this.error_msg = 'Can\'t be same!';
-    }
-    else {
-      this.error = false;
-    }
-  }
-  onBlur(from, to) {
-    if (from > to) {
-      this.error = true;
-      this.error_msg = 'Can\'t greater than maximum salary!';
-    }
-    else if (from <= to) {
-      this.error = true;
-      this.error_msg1 = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
 
+  onBlur(from, to) {
+    if (from > to) {
+      this.error = true;
+      this.error_msg = 'Can\'t greater than maximum salary!';
+    } else if (from <= to) {
+      this.error = true;
+      this.error_msg1 = 'Can\'t be same!';
+    } else {
+      this.error = false;
+    }
+  }
 
   getDetail(id: string) {
     if (this.id) {
@@ -135,14 +130,12 @@ export class AddSalarybracketComponent implements OnInit {
     }
   }
 
-
   get f() {
     return this.AddSalaryBracket.controls;
   }
 
   onSubmit(flag: boolean, id) {
     console.log(!this.id, flag);
-
     this.submitted = true;
     if (this.id && flag) {
       this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
@@ -151,7 +144,6 @@ export class AddSalarybracketComponent implements OnInit {
       });
     } else if (!this.id && flag) {
       console.log('in add');
-
       this.submitted = !flag;
       this.service.add_salary_brcaket(this.AddSalaryBracket.value).subscribe(res => {
         console.log('addded', res);
@@ -171,9 +163,5 @@ export class AddSalarybracketComponent implements OnInit {
       }
     }
   }
-
-
-
-
 
 }

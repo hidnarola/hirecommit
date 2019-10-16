@@ -20,7 +20,7 @@ export class AddGroupsComponent implements OnInit {
   submitted = false;
   _name: any;
   title: string;
-  cancel_link = '/employer/groups/list'
+  cancel_link = '/employer/groups/list';
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {

@@ -6,11 +6,12 @@ import { DataTableDirective } from 'angular-datatables';
 import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 
-@Component({ selector: 'app-view-sub-accounts', templateUrl: './view-sub-accounts.component.html', styleUrls: ['./view-sub-accounts.component.scss'] })
-export class ViewSubAccountsComponent
-  implements OnDestroy,
-  OnInit,
-  AfterViewInit {
+@Component({
+  selector: 'app-view-sub-accounts',
+  templateUrl: './view-sub-accounts.component.html',
+  styleUrls: ['./view-sub-accounts.component.scss']
+})
+export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -21,6 +22,7 @@ export class ViewSubAccountsComponent
 
   // tslint:disable-next-line: max-line-length
   constructor(private router: Router, private service: SubAccountService, private confirmationService: ConfirmationService, private toastr: ToastrService) { }
+
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -86,8 +88,6 @@ export class ViewSubAccountsComponent
         });
       }
     });
-
-
   }
 
   onAdd() {
@@ -111,4 +111,5 @@ export class ViewSubAccountsComponent
       this.dtTrigger.next();
     });
   }
+
 }

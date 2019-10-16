@@ -52,7 +52,7 @@ export class CommonService {
   }
 
   // get user detail
-  getLoggedUserDetail(){
+  getLoggedUserDetail() {
     let userDetails;
     const token = localStorage.getItem('token');
     // decode the token to get its payload
