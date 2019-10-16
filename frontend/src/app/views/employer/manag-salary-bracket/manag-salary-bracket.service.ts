@@ -20,7 +20,7 @@ export class SalaryBracketService {
     }
 
     deactivate_salary_brcaket(id): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/deactive_salary_bracket/' + id , null);
+        return this.http.put<any[]>(`${this.url}` + '/salary_bracket/deactive_salary_bracket/' + id , null);
     }
 
      add_salary_brcaket(data): Observable<any[]> {
@@ -38,7 +38,7 @@ export class SalaryBracketService {
     }
 
     get_salary_bracket_detail(id): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/salary_brcaket_detail/' + id);
+        return this.http.get<any[]>(`${this.url}` + '/salary_bracket/' + id);
     }
 
 

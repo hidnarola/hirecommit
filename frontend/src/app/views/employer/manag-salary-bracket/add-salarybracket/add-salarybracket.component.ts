@@ -47,21 +47,14 @@ export class AddSalarybracketComponent implements OnInit {
 
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      // console.log(this.id);
+      // console.log('eid',this.id);
     });
 
     this.service.get_location().subscribe(res => {
-      console.log('res=>', res['data']);
       this.currency = res['data']
       res['data'].forEach(element => {
-        console.log('element', element);
         this.countryList.push({ 'label': element.country, 'value': element.id })
       });
-      // this.contryList.push()
-      // this.contryList = res['data'];
-      // this.contryList = this.location
-      console.log('country list', this.countryList);
-
     });
 
     this.getDetail(this.id);
@@ -71,15 +64,10 @@ export class AddSalarybracketComponent implements OnInit {
     this.detail.currency = this.detail.country.country.currency_code;
   }
   findCurrency(value) {
-    console.log('cur', value.value);
     this.currency.forEach(element => {
-      console.log('element >>', element);
       if (value.value === element.id) {
         this.detail.currency = element.currency;
       }
-      // this.currency=this.currency.filter(x => x.element === value.value)
-      // console.log(this.currency);
-
     })
 
   }
@@ -111,15 +99,15 @@ export class AddSalarybracketComponent implements OnInit {
   }
 
 
-  getDetail(id: string) {
-    if (this.id) {
+  getDetail(id) {
+    if (id) {
       this.panelTitle = 'Edit Salary Bracket';
       this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-        this.detail = res['data'][0];
-        this.detail.country = res['data'][0].location;
-        this.detail.currency = res['data'][0].location.country.currency_code;
-        console.log('subscribed!', this.detail);
+        this.detail = res['data'];
+        // this.detail.country = res['data'][0].location;
+        // this.detail.currency = res['data'][0].location.country.currency_code;
+        console.log('subscribed!', res['data']);
       });
     } else {
       this.detail = {
@@ -145,7 +133,7 @@ export class AddSalarybracketComponent implements OnInit {
 
     this.submitted = true;
     if (this.id && flag) {
-      this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
+      this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
         console.log('edited successfully!!!');
         this.router.navigate([this.cancel_link]);
       });
@@ -159,6 +147,7 @@ export class AddSalarybracketComponent implements OnInit {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.AddSalaryBracket.reset();
+          this.router.navigate([this.cancel_link])
         }
       }, (err) => {
         console.log('error msg ==>', err['error']['message']);
