@@ -35,11 +35,9 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
     //   processing: true,
     //   destroy: true,
     //   ajax: (dataTablesParameters: any, callback) => {
-    //     console.log('dataTablesParameters', dataTablesParameters);
     //     this.service.view_offerList(dataTablesParameters).subscribe(res => {
     //     //   if (res['status']) {
     //     //     this.data = res['user'];
-    //     //     console.log('data==>', res);
     //     //     callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
     //     //   }
     //     }, err => {
@@ -62,7 +60,6 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onDelete(id) {
     this.service.deactivate_offer(id).subscribe(res => {
-      console.log('deactivate offer', res);
       // this.rrerender();
       this.bind();
     });
@@ -71,13 +68,10 @@ export class OfferlistComponent implements OnInit, OnDestroy, AfterViewInit {
   public bind() {
     this.service.view_offerList().subscribe(res => {
       this.offerList = res['data']['data'];
-      console.log('candidate offer list', this.offerList);
       this.offerList = this.offerList.filter(x => x.is_del === false);
-      console.log('eid', this.offerList[0].employer_id);
       this.service.get_employer(this.offerList[0].employer_id).subscribe(resp => {
         this.employer = resp['data']['data'];
         this.form = true;
-        console.log('emp data', this.employer);
       });
     });
   }

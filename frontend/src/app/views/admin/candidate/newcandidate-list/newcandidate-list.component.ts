@@ -38,10 +38,7 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
       ajax: (dataTablesParameters: any, callback) => {
         this.service.get_new_candidate(dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
-            console.log('====>>>>>>', res);
-
             this.candidates = res['user'];
-            console.log(this.candidates);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -71,14 +68,12 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
 
   onApproved(id) {
     this.service.approved_candidate(id).subscribe(res => {
-      console.log('approved!!!');
       this.rrerender();
     });
   }
 
   onDelete(id) {
     this.service.deactivate_candidate(id).subscribe(res => {
-      console.log('deactivate!!');
       this.rrerender();
     });
 

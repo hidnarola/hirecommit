@@ -27,13 +27,10 @@ export class GroupsDetailsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      console.log(this.id);
     });
     this.service.get_detail(this.id).subscribe(res => {
       this._name = res['data']['data'];
       this.viewform = true;
-      console.log('name', this._name);
-
     });
     this.service.get_communication_detail(this.id).subscribe(res => {
       this._details = res['data']['data'];
@@ -44,9 +41,7 @@ export class GroupsDetailsComponent implements OnInit {
             this.communication.push(com);
           });
         }
-
       });
-      console.log('_details', this.data);
     });
   }
 

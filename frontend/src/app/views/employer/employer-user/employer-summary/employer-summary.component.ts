@@ -40,13 +40,9 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_offer(dataTablesParameters).subscribe(res => {
-          console.log(res);
-
           if (res['offer']) {
             this.offers = res['offer'];
-            console.log('data==>', res);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -94,19 +90,13 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   delete(id) {
     this.service.deactivate_offer(id).subscribe(res => {
-      // this.offers = res['data'];
-      console.log('res', res);
-
-      // console.log("deactivate",this.offers);
       this.bind();
     });
   }
 
   checkValue(id, e) {
     this.status = e.target.checked;
-    // console.log('updated', this.status);
     this.service.change_status(id, this.status).subscribe(res => {
-      //  console.log('updated12', this.status);
     });
   }
 
@@ -120,7 +110,6 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
 
   public bind() {
     // this.service.view_offer().subscribe(res => {
-    //   console.log(res['data']);
     //   this.offers = res['data'];
     // });
   }

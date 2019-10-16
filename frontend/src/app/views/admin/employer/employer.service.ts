@@ -17,7 +17,6 @@ export class EmployerService {
   employerList = this.employer.asObservable();
 
   checkHere() {
-    console.log('here', this.employer);
     return this.employer.next({});
   }
 
@@ -34,7 +33,6 @@ export class EmployerService {
   }
 
   deactivate_employer(id): Observable<any[]> {
-    console.log('service id', id);
     return this.http.put<any[]>(`${this.url}` + '/deactive_employer/' + id, null);
   }
 

@@ -18,14 +18,10 @@ export class CustomFieldService {
 
     // Sub-Accounts
     // checkHere() {
-    //   console.log('here', this.data);
-    //   console.log(this.data);
     //   return this.data.next({});
     // }
 
     view_custom_feild(params): Observable<any[]> {
-        console.log(' service called for listing of custom feilds');
-
         return this.http.post<any[]>(`${this.url}` + '/customfield/get', { ...params });
         // http://localhost:3000/employer/customfield/get
     }

@@ -38,9 +38,7 @@ export class CandidateListComponent implements OnInit, OnDestroy, AfterViewInit 
       ajax: (dataTablesParameters: any, callback) => {
         this.service.get_approved_candidate(dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
-            console.log('====>>>>>>', res);
             this.candidates = res['user'];
-            console.log(this.candidates);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -68,7 +66,6 @@ export class CandidateListComponent implements OnInit, OnDestroy, AfterViewInit 
 
   onDelete(id) {
     this.service.deactivate_candidate(id).subscribe(res => {
-      console.log('deactivate!!');
       this.rrerender();
     });
   }

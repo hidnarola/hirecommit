@@ -66,7 +66,6 @@ export class CommonService {
   // employerList = this.employer.asObservable();
 
   // checkHere() {
-  //   console.log('here', this.employer);
   //   return this.employer.next({});
   // }
 

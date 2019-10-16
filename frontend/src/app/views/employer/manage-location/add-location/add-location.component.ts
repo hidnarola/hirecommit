@@ -41,7 +41,6 @@ export class AddLocationComponent implements OnInit {
     });
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      // console.log(this.id);
     });
     this.getDetail(this.id);
 
@@ -53,7 +52,6 @@ export class AddLocationComponent implements OnInit {
     // this.Country = obj;
     this.commonService.country_data().subscribe(res => {
       this.Country = res['data'];
-      console.log('country_data ==>', this.Country);
     });
   }
 
@@ -87,7 +85,6 @@ export class AddLocationComponent implements OnInit {
         'city': this.detail.city
       };
       this.service.edit_location(res_data).subscribe(res => {
-        console.log('edited !!', res);
         if (res['data']['status'] === 1) {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -111,8 +108,6 @@ export class AddLocationComponent implements OnInit {
           }
           this.submitted = false;
         }, (err) => {
-          console.log('error msg ==>', err['error']['message']);
-
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
         this.addLocation.reset();

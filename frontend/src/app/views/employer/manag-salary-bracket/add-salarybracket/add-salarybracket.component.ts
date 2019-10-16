@@ -49,12 +49,9 @@ export class AddSalarybracketComponent implements OnInit {
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required])
     });
-
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      // console.log('eid',this.id);
     });
-
     this.service.get_location().subscribe(res => {
       this.currency = res['data'];
       res['data'].forEach(element => {
@@ -108,7 +105,6 @@ export class AddSalarybracketComponent implements OnInit {
         this.detail = res['data'];
         // this.detail.country = res['data'][0].location;
         // this.detail.currency = res['data'][0].location.country.currency_code;
-        console.log('subscribed!', res['data']);
       });
     } else {
       this.detail = {
@@ -129,18 +125,14 @@ export class AddSalarybracketComponent implements OnInit {
   }
 
   onSubmit(flag: boolean, id) {
-    console.log(!this.id, flag);
     this.submitted = true;
     if (this.id && flag) {
       this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
-        console.log('edited successfully!!!');
         this.router.navigate([this.cancel_link]);
       });
     } else if (!this.id && flag) {
-      console.log('in add');
       this.submitted = !flag;
       this.service.add_salary_brcaket(this.AddSalaryBracket.value).subscribe(res => {
-        console.log('addded', res);
         if (res['data']['status'] === 1) {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -148,7 +140,6 @@ export class AddSalarybracketComponent implements OnInit {
           this.router.navigate([this.cancel_link]);
         }
       }, (err) => {
-        console.log('error msg ==>', err['error']['message']);
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
       if (flag) {

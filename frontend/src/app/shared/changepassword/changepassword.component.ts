@@ -36,7 +36,6 @@ export class ChangepasswordComponent implements OnInit {
 
   ngOnInit() {
     this.token = localStorage.getItem('token');
-    console.log(this.token);
   }
 
   submit(valid) {

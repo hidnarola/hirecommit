@@ -29,17 +29,13 @@ export class AddCustomFieldComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      console.log('params', params);
       this.id = params['id'];
       this.isEdit = true;
-      console.log(this.id);
     });
     this.service.get_custom_field(this.id).subscribe(res => {
       this.data = res['data'];
       this.panelTitle = 'Edit Custom Field';
       this.buttonTitle = 'Update';
-      console.log('custom data', this.data);
-
     });
     this.addCustomFeild = new FormGroup({
       key: new FormControl('', [Validators.required])
@@ -49,12 +45,10 @@ export class AddCustomFieldComponent implements OnInit {
   onSubmit(valid) {
     this.submitted = true;
     if (this.id && this.id !== 0) {
-      console.log('edit==>', this.id);
       const obj = {
         'id': this.id,
         'key': this.addCustomFeild.value['key']
       };
-      console.log('Edited!!', obj);
       this.service.edit_custom_field(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.submitted = false;
@@ -68,7 +62,6 @@ export class AddCustomFieldComponent implements OnInit {
     } else {
       if (valid) {
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
-          console.log('>>', this.addCustomFeild.value);
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

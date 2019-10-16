@@ -52,7 +52,6 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
         this.service.view_location(dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
             this.locations = res['location'];
-            console.log(this.locations);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -70,12 +69,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       ]
     };
-
-    // setTimeout(() => {
-    //   this.bind();
-    // }, 100);
     this.country = countries;
-
   }
 
   detail() {
@@ -91,8 +85,6 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.deactivate_location(id).subscribe(res => {
-          console.log('deactivate location', res['status']);
-
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }

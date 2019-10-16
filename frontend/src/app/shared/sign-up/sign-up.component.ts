@@ -45,7 +45,6 @@ export class SignUpComponent implements OnInit {
 
   next1() {
     this.isFormSubmited = true;
-    // console.log(this.registerForm.controls['recaptcha'].valid);
     // tslint:disable-next-line: max-line-length
     if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
       this.isFormSubmited = false;
@@ -65,25 +64,19 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit(valid) {
-    // console.log(this.registerForm['recaptcha']);
-
-    console.log(this.registerForm);
     this.isFormSubmited = true;
     if (valid) {
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
-          console.log(res);
         } else if (res['data'].status === 1) {
           Swal.fire({
             type: 'success',
             text: res['message']
           });
           this.router.navigate(['/login']);
-        } else {
-          console.log(res);
-        }
+        } else { }
       });
     }
   }

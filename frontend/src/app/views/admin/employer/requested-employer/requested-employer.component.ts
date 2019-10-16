@@ -51,7 +51,6 @@ export class RequestedEmployerComponent implements OnInit {
   }
 
   aprrov(id) {
-    console.log('approved!!', id);
     this.service.aprroved_employer(id).subscribe(res => {
       this.bind();
       //  this.router.navigate(['/admin/employers/view']);
@@ -65,9 +64,7 @@ export class RequestedEmployerComponent implements OnInit {
   }
 
   delete(id) {
-    console.log(id);
     this.service.deactivate_employer(id).subscribe(res => {
-      console.log('Deleted!!');
       this.bind();
     });
   }
@@ -75,7 +72,6 @@ export class RequestedEmployerComponent implements OnInit {
   public bind() {
     this.service.getemployer().subscribe(res => {
       this.employer = res['data'];
-      console.log('emp data >>', this.employer[0].username);
       this.employer = this.employer.filter(x => x.user_id.isAllow === false);
     });
   }

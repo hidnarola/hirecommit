@@ -45,17 +45,14 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   edit(id) {
-    console.log(id);
     this.router.navigate(['/employer/salary_brackets/add_salarybracket/' + id]);
   }
 
   delete(id) {
-    console.log(id);
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.deactivate_salary_brcaket(id).subscribe(res => {
-          console.log('deactivate salary', res);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
@@ -84,12 +81,9 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_salary_brcaket(dataTablesParameters).subscribe(res => {
-          console.log('res data =>>', res);
           if (res['status'] === 1) {
             this.salary = res['salary'];
-            console.log('data==>', res);
             this.salary = this.salary.filter(x => x.is_del === false);
             this.Country = countries;
             const obj = [];
@@ -103,8 +97,6 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
               this._country.push(this.unique[0]);
             });
             this._country = this._country.filter(this.onlyUnique);
-
-
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {

@@ -41,11 +41,9 @@ export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewIni
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_sub_account(dataTablesParameters).subscribe(res => {
           if (res['status']) {
             this.data = res['user'];
-            console.log('data==>', res);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -77,7 +75,6 @@ export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewIni
   }
 
   edit(id) {
-    // console.log(id);
     this.router.navigate(['/employer/sub_accounts/edit/' + id]);
   }
 
@@ -86,7 +83,6 @@ export class ViewSubAccountsComponent implements OnDestroy, OnInit, AfterViewIni
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.decativate_sub_account(user_id).subscribe(res => {
-          console.log('deactivate sub account', res['status']);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }

@@ -32,12 +32,10 @@ export class AddGroupsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      console.log(this.id);
     });
 
     this.service.get_detail(this.id).subscribe(res => {
       this._name = res['data']['data'];
-      console.log('name', this._name);
     });
 
     this.myForm = this.fb.group({

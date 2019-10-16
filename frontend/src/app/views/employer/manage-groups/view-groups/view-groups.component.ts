@@ -74,11 +74,9 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.lists(dataTablesParameters).subscribe(res => {
           if (res['status']) {
             this.groups = res['groups'];
-            console.log('data==>', res);
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {

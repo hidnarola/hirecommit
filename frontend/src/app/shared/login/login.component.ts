@@ -29,14 +29,11 @@ export class LoginComponent implements OnInit {
   ngOnInit() { }
 
   onSubmit(valid) {
-    // console.log(this.loginForm.controls['email'].errors['required']);
-
     this.isFormSubmited = true;
     if (valid) {
       this.service.login(this.loginForm.value).subscribe(res => {
         this.isFormSubmited = false;
         this.formData = {};
-        // console.log(res['token']);
         const token = res['token'];
         localStorage.setItem('token', token);
         localStorage.setItem('user', res['role']);

@@ -35,10 +35,7 @@ export class AddEmployerComponent implements OnInit {
 
   onSubmit(flag: boolean) {
     this.submitted = !flag;
-    console.log(this.registerForm.value);
-
     if (flag) {
-      console.log(this.registerForm.value);
       this.registerForm.reset();
       this.router.navigate(['/employer/view']);
     }

@@ -74,7 +74,6 @@ export class RegisterComponent implements OnInit {
   _handleReaderLoaded(e) {
     const reader = e.target;
     this.imgurl = reader.result;
-    console.log(this.imgurl);
   }
 
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
@@ -87,7 +86,6 @@ export class RegisterComponent implements OnInit {
 
   checkValue(e) {
     this.marked = e.target.checked;
-    console.log(this.marked);
   }
 
   onSubmit(valid) {
@@ -106,7 +104,6 @@ export class RegisterComponent implements OnInit {
       //  this.registerForm.controls.documentImage.setValue(this.imgurl)
       // this.documentImage.controls.documentimage.setValue(this.imgurl);
       this.service.candidate_signup(this.formData).subscribe(res => {
-        console.log(res);
         this.isFormSubmited = false;
         this.registerData = {};
         if (res['status'] === 0) {

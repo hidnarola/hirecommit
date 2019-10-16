@@ -53,9 +53,7 @@ export class ViewEmployerComponent implements OnInit {
   }
 
   delete(id) {
-    console.log(id);
     this.service.deactivate_employer(id).subscribe(res => {
-      console.log('Deleted!!');
       this.bind();
     });
   }
@@ -69,7 +67,6 @@ export class ViewEmployerComponent implements OnInit {
   public bind() {
     this.service.getemployer().subscribe(res => {
       this.employer = res['data'];
-      console.log('emp data', this.employer);
       this.employer = this.employer.filter(x => x.user_id.isAllow === true);
 
     });

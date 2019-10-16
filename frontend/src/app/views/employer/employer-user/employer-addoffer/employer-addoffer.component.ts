@@ -89,7 +89,6 @@ export class EmployerAddofferComponent implements OnInit {
       //   this.unique = this.contryList.filter(x => x.value === fetch_country);
       //   this._country.push(this.unique[0]);
       // });
-      console.log(this.location);
       // this.currency = Currency;
       // const obj = [];
       // for (const [key, value] of Object.entries(this.currency)) {
@@ -105,32 +104,18 @@ export class EmployerAddofferComponent implements OnInit {
 
   ngOnInit() {
     this.service.get_candidate_list().subscribe(res => {
-      console.log('res=>', res['data']);
       this.candidate = res['data'];
       res['data'].forEach(element => {
-        console.log('element', element);
         // this.candidate.push({ 'label': element.firstname + element.lastname , 'value': element.id });
       });
     }, (err) => {
       console.log(err);
     });
-
-
-
-    //  this.service.get_location().subscribe(res => {
-    //   console.log('res=>', res['data']);
-    //   this.currency = res['data']
-    //   res['data'].forEach(element => {
-    //     console.log('element', element);
-    //     this.countryList.push({ 'label': element.country, 'value': element.id })
-    //   });
   }
 
   // submit form
   onSubmit(flag) {
     // this.offer_data.location = this.offer_data.location._id;
-    console.log('onSubmit : flag ==> ', flag);
-    console.log('onSubmit : offer_data ==> ', this.offer_data);
     this.form_validation = !flag;
   }
 

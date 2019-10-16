@@ -37,23 +37,18 @@ export class EmployerDetailComponent implements OnInit {
       } else {
         this.buttonValue1 = 'Cancel';
       }
-      console.log('details >>', this.employer_detail);
       this.name = this.employer_detail.username.split(' ');
-      console.log('name >>', this.name);
     });
   }
 
   onApproved(id) {
     this.service.aprroved_employer(id).subscribe(res => {
-      console.log('approved!!!', res);
       this.router.navigate(['/admin/employers/view']);
     });
   }
 
   onUnapproved(id) {
-    console.log(id);
     this.service.deactivate_employer(id).subscribe(res => {
-      console.log('Deleted!!');
       this.router.navigate([this.cancel_link]);
     });
   }

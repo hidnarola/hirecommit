@@ -41,8 +41,6 @@ export class CandidatedetailApproveComponent implements OnInit {
       } else {
         this.buttonValue1 = 'Cancel';
       }
-      console.log('img', this.candidates);
-
     });
   }
 
@@ -56,16 +54,13 @@ export class CandidatedetailApproveComponent implements OnInit {
 
   onApproved(id) {
     this.service.approved_candidate(id).subscribe(res => {
-      console.log('approved!!!');
       this.bind();
       this.router.navigate(['/admin/candidates/approve_candidate']);
     });
   }
 
   onUnapproved(id) {
-    console.log(id);
     this.service.deactivate_candidate(id).subscribe(res => {
-      console.log('Deleted!!');
       this.router.navigate(['/admin/candidates/new_candidate']);
     });
   }
