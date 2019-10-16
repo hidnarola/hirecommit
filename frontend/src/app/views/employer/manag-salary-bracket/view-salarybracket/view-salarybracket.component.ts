@@ -82,6 +82,9 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_salary_brcaket(dataTablesParameters).subscribe(res => {
+          console.log('res data =>>',res);
+          
+
           if (res['status'] === 1) {
             this.salary = res['salary'];
             console.log('data==>', res);

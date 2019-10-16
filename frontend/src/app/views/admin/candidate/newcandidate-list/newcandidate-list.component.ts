@@ -80,8 +80,7 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   detail(id) {
-    // if(this.userDetail.role === '')
-    this.route.navigate(['employer/candidates/view/' + id]);
+    this.route.navigate([this.userDetail.role + '/candidates/view/' + id]);
   }
 
   ngAfterViewInit(): void {

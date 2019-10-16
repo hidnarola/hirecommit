@@ -28,6 +28,7 @@ export class CandidateService {
     approved_candidate(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/approved_candidate/' + id, null);
     }
+
     deactivate_candidate(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/deactive_candidate/' + id, null);
     }
