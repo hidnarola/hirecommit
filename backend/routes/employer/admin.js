@@ -1,41 +1,32 @@
 var express = require("express");
 var router = express.Router();
 
-var auth = require("../middlewares/auth");
-var authorization = require("../middlewares/authorization");
-var config = require('../config')
-var common_helper = require('../helpers/common_helper');
+var auth = require("../../middlewares/auth");
+var authorization = require("../../middlewares/authorization");
+var config = require('../../config')
+var common_helper = require('../../helpers/common_helper');
 var logger = config.logger;
-var mail_helper = require('./../helpers/mail_helper');
+var mail_helper = require('../../helpers/mail_helper');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var index = require('./admin/index');
-var candidate_detail = require('../models/candidate-detail');
-var employer_detail = require('../models/employer-detail');
-var user = require('../models/user');
+var index = require('../admin/index');
+var candidate_detail = require('../../models/candidate-detail');
+var employer_detail = require('../../models/employer-detail');
+var user = require('../../models/user');
 var objectID = require('mongoose').Types.ObjectId;
 
 router.use("/admin", auth, authorization, index);
 
 //employer
 router.get('/view_employer', async (req, res) => {
-//     var employer_list = await employer.find();
-//     if (employer_list) {
-//         return res.status(config.OK_STATUS).json({ 'message': "Emlpoyer List", "status": 1, data: employer_list });
-//     }
-//     else {
-//         return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
-//     }
-// });
-   
     try {
         const Employer_list = await employer_detail.find({ is_del: false })
             .populate([
                 { path: 'user_id' }
             ])
             .lean();
-         
-            
+
+
         return res.status(config.OK_STATUS).json({ 'message': "Employer List", "status": 1, data: Employer_list });
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
@@ -186,26 +177,13 @@ router.put('/edit_employer/:id', async (req, res) => {
     }
 })
 
-// router.delete("/delete_employer/:id", async (req, res) => {
-//     var id = req.params.id;
-//     var employer_delete = await common_helper.delete(employer, { "_id": id });
-//     if (employer_delete.status == 0) {
-//         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
-//     }
-//     else if (employer_delete.status == 1) {
-//         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer Deleted successfully", "data": employer_delete });
-//     }
-//     //   else {
-//     //     res.status(config.BAD_REQUEST).json({"message": "No data found" });
-//     //   }
-// })
+
 
 router.put("/deactive_employer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
     var id = req.params.id;
-     console.log("IDDDIDIDIDID", id);
 
     var resp_user_data = await common_helper.update(user, { "_id": id }, obj);
     var resp_Detail_data = await common_helper.update(employer_detail, { "user_id": id }, obj);
@@ -226,11 +204,9 @@ router.put("/approved_employer/:id", async (req, res) => {
         isAllow: true
     }
     var id = req.params.id;
-    //  console.log("IDDDIDIDIDID", id);return false;
 
     var resp_user_data = await common_helper.update(user, { "_id": id }, obj);
     var resp_Detail_data = await common_helper.update(employer_detail, { "user_id": id }, obj);
-    // console.log(resp_Detail_data.status);return false;
     if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_user_data);
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
@@ -260,19 +236,14 @@ router.get('/employer_detail/:id', async (req, res) => {
     }
 });
 
-//candidate
 
 router.get('/manage_candidate/approved_candidate', async (req, res) => {
-   
-
-    console.log("hello");
     try {
         const Candidate_list = await candidate_detail.find({ is_del: false })
             .populate([
                 { path: 'user_id' }
             ])
             .lean();
-        console.log("hello");
 
         return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: Candidate_list });
     } catch (error) {

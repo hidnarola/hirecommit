@@ -79,11 +79,6 @@ common_helper.findWithFilter = async (collection, data = {}, start, limit, filte
             .populate(populate)
             .skip(start).limit(limit).sort(sort);
 
-        // var data = await collection.find({is_del: false})
-        // .populate(populate).where({'user_id.email': 'abc@gmail.com'})
-        // .skip(start).limit(limit).sort(sort);
-        // console.log(data); return false;
-
         if (data || (data && data.length > 0)) {
             return {
                 status: 1,

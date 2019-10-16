@@ -46,6 +46,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+
 router.post('/get', async (req, res) => {
     var schema = {
     };
@@ -92,6 +93,48 @@ router.post('/get', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
+
+
+router.get('/get_location', async (req, res) => {
+
+    try {
+        var aggregate = [
+            {
+                $match: {
+                    "is_del": false,
+                    "emp_id": new ObjectId(req.userInfo.id)
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "country_datas",
+                    localField: "country",
+                    foreignField: "_id",
+                    as: "country"
+                }
+            },
+            {
+                $unwind: "$country",
+            },
+            {
+                $group: {
+                    "_id": "$country.alpha3Code",
+                    "country": { $first: "$country.country" },
+                    "id": { $first: "$_id" },
+                    "currency": { $first: "$country.currency_code" }
+                }
+            }
+        ];
+
+        const location_list = await location.aggregate(aggregate);
+        console.log('location_list=====>', location_list);
+
+        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    }
+})
 
 
 router.get('/get_location/:country', async (req, res) => {
@@ -172,33 +215,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.get('/get_location', async (req, res) => {
-    try {
-        var aggregate = [
-            {
-                $match: {
-                    "is_del": false
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "country_datas",
-                    localField: "country",
-                    foreignField: "_id",
-                    as: "country"
-                }
-            },
-            {
-                $unwind: "$country",
-            },
-        ];
 
-        const location_list = await location.aggregate(aggregate);
-        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list });
-    } catch (error) {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
-    }
-})
 
 module.exports = router;

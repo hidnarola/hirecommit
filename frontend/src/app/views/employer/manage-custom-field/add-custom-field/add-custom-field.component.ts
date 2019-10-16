@@ -61,7 +61,7 @@ export class AddCustomFieldComponent implements OnInit {
       if (valid) {
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
           console.log('>>', this.addCustomFeild.value);
-          
+
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
