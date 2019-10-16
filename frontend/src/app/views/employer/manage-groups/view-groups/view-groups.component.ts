@@ -64,6 +64,7 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);
