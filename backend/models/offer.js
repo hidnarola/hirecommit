@@ -14,6 +14,10 @@ const OfferSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  },
   email: {
     type: String,
     required: true
@@ -49,16 +53,16 @@ const OfferSchema = new Schema({
     ref: 'salary_bracket'
   },
   expirydate: {
-    type: String,
+    type: Date,
     required: true
   },
   joiningdate: {
-    type: String,
+    type: Date,
     required: true
   },
   status: {
-    type: Boolean,
-    default: false
+    type: String,
+    default: "On Hold"
   },
   offertype: {
     type: String,

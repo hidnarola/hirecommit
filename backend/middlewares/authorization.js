@@ -9,10 +9,11 @@ module.exports = function (req, res, next) {
         req.userInfo = req.decoded;
         next();
     }
-    else if (req.decoded.role == "employer" && req.baseUrl.match('/employer')) {
+    else if ((req.decoded.role == "employer" || req.decoded.role == "sub-employer") && req.baseUrl.match('/employer')) {
         req.userInfo = req.decoded;
         next();
     }
+
 
     else {
         return res.status(config.UNAUTHORIZED).json({

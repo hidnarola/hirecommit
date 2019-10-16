@@ -3,9 +3,14 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const Salary_Bracket_Schema = new Schema({
-  location: {
+  country: {
     type: mongoose.Types.ObjectId,
-    ref: "location",
+    ref: "country_datas",
+    // required: true
+  },
+  emp_id: {
+    type: mongoose.Types.ObjectId,
+    ref: "user",
     // required: true
   },
   from: {
@@ -20,6 +25,7 @@ const Salary_Bracket_Schema = new Schema({
     type: Boolean,
     default: false
   },
+
   createdAt: {
     type: Date,
     default: Date.now

@@ -7,6 +7,7 @@ var common_helper = require('../../helpers/common_helper');
 
 var logger = config.logger;
 var CustomField = require('../../models/customfield');
+var User = require('../../models/user');
 
 
 router.post("/", async (req, res) => {
@@ -20,11 +21,21 @@ router.post("/", async (req, res) => {
 
     var errors = req.validationErrors();
     if (!errors) {
-        var obj = {
-            "emp_id": req.userInfo.id,
-            "key": req.body.key,
-        };
 
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var obj = {
+                "emp_id": user.data.emp_id,
+                "key": req.body.key,
+            };
+        }
+        else {
+            var obj = {
+                "emp_id": req.userInfo.id,
+                "key": req.body.key,
+            };
+
+        }
         var interest_resp = await common_helper.insert(CustomField, obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -32,6 +43,7 @@ router.post("/", async (req, res) => {
         } else {
             res.json({ "message": "Custom Field Added successfully", "data": interest_resp })
         }
+
     }
     else {
         logger.error("Validation Error = ", errors);
@@ -60,7 +72,11 @@ router.put("/", async (req, res) => {
 
 router.post("/get", async (req, res) => {
     user_id = req.userInfo.id;
-    var totalMatchingCountRecords = await common_helper.count(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false });
+    //var totalMatchingCountRecords = await common_helper.count(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false });
+    var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+    console.log('user', user);
+
+    var totalMatchingCountRecords = await common_helper.count(CustomField, { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false });
     var sortOrderColumnIndex = req.body.order[0].column;
     let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data; // column name
     let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
@@ -68,7 +84,7 @@ router.post("/get", async (req, res) => {
         [sortOrderColumn]: sortOrder
     }
 
-    var resp_data = await common_helper.findWithFilter(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false }, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+    var resp_data = await common_helper.findWithFilter(CustomField, { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
     if (resp_data.status == 0) {
         logger.error("Error occurred while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);

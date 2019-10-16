@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     var schema = {
         "country": {
             notEmpty: true,
-            errorMessage: "country is required"
+            errorMessage: "Country is required"
         },
         "from": {
             notEmpty: true,
@@ -30,11 +30,12 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var reg_obj = {
+            "emp_id": req.userInfo.id,
             "country": req.body.country,
             "currency": req.body.currency,
             "from": req.body.from,
             "to": req.body.to,
-            "location": req.body.location
+            //"location": req.body.location
         };
         var interest_resp = await common_helper.insert(salary_bracket, reg_obj);
         if (interest_resp.status == 0) {
@@ -67,21 +68,26 @@ router.post('/get', async (req, res) => {
         var aggregate = [
             {
                 $match: {
-                    "is_del": false
+                    "is_del": false,
+                    "emp_id": new ObjectId(req.userInfo.id)
                 }
             }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        aggregate.push({
-            "$match":
-                { $or: [{ "country": RE }, { "currency": RE }, { "from": RE }, { "to": RE }] }
-        });
+        if (req.body.search && req.body.search != "") {
+            aggregate.push({
+                "$match":
+                    { $or: [{ "country": RE }, { "currency": RE }, { "from": RE }, { "to": RE }] }
+            });
+
+        }
 
         let totalMatchingCountRecords = await salary_bracket.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
+        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
-        var resp_data = await salary_helper.get_all_salary_bracket(salary_bracket, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await salary_helper.get_all_salary_bracket(salary_bracket, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -94,20 +100,58 @@ router.post('/get', async (req, res) => {
 });
 
 router.get('/get_salary_bracket', async (req, res) => {
-    var salary_bracket_list = await common_helper.find(salary_bracket, {});
+    var aggregate = [
+        {
+            $match: {
+                "is_del": false
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "country_datas",
+                localField: "country",
+                foreignField: "_id",
+                as: "country"
+            }
+        },
+        {
+            $unwind: {
+                path: "$country",
+                preserveNullAndEmptyArrays: false
+            },
+        }
+    ]
 
-    console.log("salary list", this.salary_bracket_list);
-
-    if (salary_bracket_list.status === 1) {
+    const salary_bracket_list = await salary_bracket.aggregate(aggregate);
+    if (salary_bracket_list && salary_bracket_list.length > 0) {
         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
     }
-    else if (salary_bracket_list.status === 2) {
+    else {
         return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
     }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
-    }
+    // else {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    // }
 });
+
+
+
+// router.get('/get_salary_bracket', async (req, res) => {
+//     var salary_bracket_list = await common_helper.find(salary_bracket, {});
+
+//     console.log("salary list", this.salary_bracket_list);
+
+//     if (salary_bracket_list.status === 1) {
+//         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
+//     }
+//     else if (salary_bracket_list.status === 2) {
+//         return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+//     }
+//     else {
+//         return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+//     }
+// });
 
 
 router.put('/', async (req, res) => {
@@ -154,13 +198,9 @@ router.put("/deactive_salary_bracket/:id", async (req, res) => {
     }
 });
 
-router.get('/salary_brcaket_detail/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    // console.log('Edited',id);
-
-    var salary_brcaket_detail = await common_helper.findOne(salary_bracket, { "_id": objectID(id) })
-    // console.log("salary detail from backend",salary_brcaket_detail);
-
+    var salary_brcaket_detail = await common_helper.findOne(salary_bracket, { "_id": ObjectId(id) })
     if (salary_brcaket_detail.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
     }
