@@ -12,6 +12,7 @@ export class ViewofferDetailComponent implements OnInit {
   accepted: boolean = false;
   submitted = false;
   registerForm: FormGroup;
+  cancel_link = '/candidate/offers/offerlist';
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -58,7 +59,5 @@ export class ViewofferDetailComponent implements OnInit {
     this.registerForm.reset();
   }
 
-  onclick() {
-    this.router.navigate(['/candidate/offers/offerlist']);
-  }
+
 }

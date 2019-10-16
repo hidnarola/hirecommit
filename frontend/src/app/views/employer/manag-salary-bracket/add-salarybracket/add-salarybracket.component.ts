@@ -29,6 +29,7 @@ export class AddSalarybracketComponent implements OnInit {
   error = false;
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
+  cancel_link = '/employer/salary_brackets/list';
 
   constructor(private fb: FormBuilder,
     private router: Router,
@@ -146,7 +147,7 @@ export class AddSalarybracketComponent implements OnInit {
     if (this.id && flag) {
       this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
         console.log('edited successfully!!!');
-        this.router.navigate(['/employer/salary_brackets/list']);
+        this.router.navigate([this.cancel_link]);
       });
     } else if (!this.id && flag) {
       console.log('in add');
@@ -172,9 +173,6 @@ export class AddSalarybracketComponent implements OnInit {
   }
 
 
-  // onClose() {
-  //   this.router.navigate(['/employer/salary_brackets/list']);
-  // }
 
 
 

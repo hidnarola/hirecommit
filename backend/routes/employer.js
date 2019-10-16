@@ -32,6 +32,7 @@ var offer = require('./employer/offer');
 var salary_bracket = require('./employer/salary_bracket');
 var location = require('./employer/location');
 var group = require('./employer/group');
+var candidate = require('./employer/candidate');
 
 router.use("/sub_account", auth, authorization, sub_account);
 router.use("/customField", auth, authorization, customField);
@@ -39,6 +40,7 @@ router.use("/offer", auth, authorization, offer);
 router.use("/salary_bracket", auth, authorization, salary_bracket);
 router.use("/location", auth, authorization, location);
 router.use("/group", auth, authorization, group);
+router.use("/candidate", auth, authorization, candidate);
 
 
 

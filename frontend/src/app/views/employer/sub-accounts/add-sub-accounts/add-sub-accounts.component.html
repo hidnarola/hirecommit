@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}} Sub-Accounts</strong>
-                    <span class="input-group-text pull-right" [routerLink]="['/employer/sub_accounts/list']">
+                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
                         <i class="icon-close"></i></span>
                 </div>
                 <form class="form-horizontal" [formGroup]="addAccount" (ngSubmit)="onSubmit(addAccount.valid)">

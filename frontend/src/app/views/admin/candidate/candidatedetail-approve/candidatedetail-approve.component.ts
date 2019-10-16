@@ -58,16 +58,10 @@ export class CandidatedetailApproveComponent implements OnInit {
 
   onUnapproved(id) {
     console.log(id);
-
     this.service.deactivate_candidate(id).subscribe(res => {
       console.log('Deleted!!');
       this.router.navigate(['/admin/candidates/new_candidate']);
     });
-
   }
-
-
-
-
   // [routerLink] = "['/admin/candidates/approved_candidate']"
 }

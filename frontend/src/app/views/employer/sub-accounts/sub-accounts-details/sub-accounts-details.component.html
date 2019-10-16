@@ -4,8 +4,8 @@
             <div class="card">
                 <div class="card-header">
                     Sub-Accounts Detail
-                    <span class="input-group-text pull-right" [routerLink]="['/employer/sub_accounts/list']"><i
-                            class="icon-close"></i></span>
+                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
+                        <i class="icon-close"></i></span>
                 </div>
                 <div class="card-body">
                     <table class="table">
@@ -34,7 +34,7 @@
                     </table>
 
                     <button type="button" class="btn btn-sm btn-danger" style="float: right;"
-                        (click)="cancel()">Cancel</button>
+                        [routerLink]="cancel_link">Cancel</button>
                     <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;"
                         (click)="edit()">Edit</button>
                 </div>

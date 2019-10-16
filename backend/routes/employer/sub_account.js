@@ -32,21 +32,23 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var reg_obj = {
-            "name": req.body.name,
+            "username": req.body.name,
             "email": req.body.email,
-            "adminrights": req.body.adminrights,
+            "admin_rights": req.body.admin_rights,
             "is_del": false,
-            "emp_id": req.userInfo.id
+            "emp_id": req.userInfo.id,
+
         };
 
-        var interest_resp = await common_helper.insert(User, reg_obj);
-        console.log('interest_resp', interest_resp);
+        var interest_resps = await common_helper.insert(User, reg_obj);
+        reg_obj.user_id = interest_resps.data._id;
+        var interest_resp = await common_helper.insert(Sub_Employer_Detail, reg_obj);
 
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resp })
+            res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resps })
         }
     }
     else {
@@ -71,7 +73,8 @@ router.post('/get', async (req, res) => {
         var aggregate = [
             {
                 $match: {
-                    "is_del": false
+                    "is_del": false,
+                    "emp_id": new ObjectId(req.userInfo.id)
                 }
             }
         ]
@@ -89,7 +92,7 @@ router.post('/get', async (req, res) => {
         totalMatchingCountRecords = totalMatchingCountRecords.length;
         console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
-        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -101,46 +104,16 @@ router.post('/get', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
-    var schema = {
-        "name": {
-            notEmpty: true,
-            errorMessage: "Name is required"
-        },
-        "email": {
-            notEmpty: true,
-            errorMessage: "Email is required"
-        }
-    };
-    req.checkBody(schema);
-    var reg_obj = {
-        "name": req.body.name,
-        "email": req.body.email,
-        "adminrights": req.body.adminrights,
-        "is_del": false,
+router.put("/deactive_sub_account", async (req, res) => {
 
-    };
-    var id = req.params.id;
-    var sub_account_upadate = await common_helper.update(User, { "_id": id }, reg_obj)
-    if (sub_account_upadate.status == 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-    }
-    else if (sub_account_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": sub_account_upadate });
-    }
-    else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
-    }
-})
-
-router.put("/deactive_sub_account/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var id = req.params.id;
+    var id = req.body.id;
+    var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
 
-    var resp_user_data = await common_helper.update(User, { "_id": id }, obj);
-    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": id }, obj);
+    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
+
     if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_user_data);
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
@@ -152,19 +125,55 @@ router.put("/deactive_sub_account/:id", async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
-    var id = req.params.id;
-    var sub_account_detail = await common_helper.findOne(User, { "_id": new ObjectId(id) })
+router.put('/:id', async (req, res) => {
 
-    if (sub_account_detail.status == 0) {
+    var reg_obj = {};
+
+    if (req.body.name && req.body.name != "") {
+        reg_obj.username = req.body.name;
+    }
+    if (req.body.email && req.body.email != "") {
+        reg_obj.email = req.body.email;
+    }
+    if (req.body.admin_rights && req.body.admin_rights != "") {
+        reg_obj.admin_rights = req.body.admin_rights;
+    }
+    console.log('req.body.admin_rights', req.body.admin_rights);
+
+    var id = req.params.id;
+    var sub_account_upadates = await common_helper.update(User, { "_id": id }, reg_obj)
+    console.log('sub_account_upadates===>', sub_account_upadates);
+
+    var sub_account_upadate = await common_helper.update(Sub_Employer_Detail, { "user_id": id }, reg_obj)
+    if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
-    else if (sub_account_detail.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+    else if (sub_account_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": sub_account_upadate });
     }
     else {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
     }
+})
+
+
+
+router.get('/:id', async (req, res) => {
+    var id = req.params.id;
+    console.log('id', id);
+
+    var sub_account_detail = await Sub_Employer_Detail.findOne({ "_id": new ObjectId(id) }).populate('user_id')
+    console.log('sub_account_detail', sub_account_detail);
+
+    // if (sub_account_detail.status == 0) {
+    //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    // }
+    // else if (sub_account_detail.status == 1) {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+    // }
+    // else {
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    // }
 });
 
 module.exports = router;
