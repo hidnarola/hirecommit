@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 // import Swal from 'sweetalert2';
 import { GroupService } from '../manage-groups.service';
 import { Subject } from 'rxjs';
-import {DataTableDirective} from 'angular-datatables';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -13,11 +13,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./view-groups.component.scss']
 })
 export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   viewInfo: FormGroup;
   dtOptions: DataTables.Settings = {};
-  dtTrigger:  Subject<any> = new Subject();
+  dtTrigger: Subject<any> = new Subject();
   groups: any[];
 
   constructor(private router: Router, private service: GroupService, private toastr: ToastrService) { }
@@ -27,99 +27,99 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   detail(id) {
-    this.router.navigate(['/employer/manage_group/group_details/' + id]);
-   }
+    this.router.navigate(['/employer/groups/group_details/' + id]);
+  }
 
-   edit(id) {
-    this.router.navigate(['/employer/manage_group/edit-group/' + id]);
-   }
+  edit(id) {
+    this.router.navigate(['/employer/groups/edit-group/' + id]);
+  }
 
-   delete(id) {
-     this.service.deleteGroup(id).subscribe(res => {
+  delete(id) {
+    this.service.deleteGroup(id).subscribe(res => {
       if (res['status']) {
-        this.toastr.success(res['message'], 'Succsess!', {timeOut: 3000});
+        this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
         this.rrerender();
         this.bind();
       }
-     }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
-     });
-   }
+    }, (err) => {
+      this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+    });
+  }
 
-   onAdd() {
-     this.router.navigate(['/groups/addgroup']);
-   }
+  onAdd() {
+    this.router.navigate(['/groups/addgroup']);
+  }
 
-   onclick() {
-    this.router.navigate(['/employer/manage_group/add-group']);
-   }
+  onclick() {
+    this.router.navigate(['/employer/groups/add']);
+  }
 
-   onaddDetails(id) {
-    this.router.navigate(['/employer/manage_group/add_comunication/' + id ]);
-   }
+  onaddDetails(id) {
+    this.router.navigate(['/employer/groups/add_comunication/' + id]);
+  }
 
-    public bind() {
-      this.dtOptions = {
-        pagingType: 'full_numbers',
-        pageLength: 5,
-        serverSide: true,
-        processing: true,
-        destroy: true,
-        ajax: (dataTablesParameters: any, callback) => {
-          console.log('dataTablesParameters', dataTablesParameters);
-          this.service.view_groups(dataTablesParameters).subscribe(res => {
-            if (res['status']) {
-              this.groups = res['groups'];
-              console.log('data==>', res);
-              callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
-            }
-          }, err => {
-            callback({recordsTotal: 0, recordsFiltered: 0, data: []});
-          });
-        },
-        columns: [
-          {
-            data: 'name'
-          }, {
-            data: 'high_unopened'
-          }, {
-            data: 'high_notreplied'
-          },
-          {
-            data: 'medium_unopened'
-          },
-          {
-            data: 'medium_notreplied'
-          },
-          {
-            data: 'low_unopened'
-          },
-          {
-            data: 'low_notreplied'
-          },
-          {
-            data: 'actions'
+  public bind() {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 5,
+      serverSide: true,
+      processing: true,
+      destroy: true,
+      ajax: (dataTablesParameters: any, callback) => {
+        console.log('dataTablesParameters', dataTablesParameters);
+        this.service.lists(dataTablesParameters).subscribe(res => {
+          if (res['status']) {
+            this.groups = res['groups'];
+            console.log('data==>', res);
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
-        ]
-      };
-    }
+        }, err => {
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+        });
+      },
+      columns: [
+        {
+          data: 'name'
+        }, {
+          data: 'high_unopened'
+        }, {
+          data: 'high_notreplied'
+        },
+        {
+          data: 'medium_unopened'
+        },
+        {
+          data: 'medium_notreplied'
+        },
+        {
+          data: 'low_unopened'
+        },
+        {
+          data: 'low_notreplied'
+        },
+        {
+          data: 'actions'
+        }
+      ]
+    };
+  }
 
-    ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-    }
-
-    ngOnDestroy() {
-      // Do not forget to unsubscribe the event
-      this.dtTrigger.unsubscribe();
-    }
-
-    rrerender(): void {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        // Destroy the table first
-        dtInstance.destroy();
-        // Call the dtTrigger to rerender again
-        this.dtTrigger.next();
-      });
-    }
+    });
+  }
 
 }

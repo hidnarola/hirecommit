@@ -9,39 +9,39 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Candidate'
+      title: 'Candidates'
     },
     children: [
       {
         path: '',
-        redirectTo: 'approve_candidate'
+        redirectTo: 'new_candidate'
       },
       {
-        path: 'approve_candidate',
+        path: 'approved_candidate',
         component: CandidateListComponent,
         data: {
-          title: 'ApproveCandidate'
+          title: 'Approved Candidate'
         }
       },
       {
-        path: 'candidate_detail/:id',
+        path: 'view/:id',
         component: CandidatedetailApproveComponent,
         data: {
-          title: 'ApproveCandidateDetail'
+          title: 'Approved Candidate Detail'
         }
       },
       {
         path: 'new_candidate',
         component: NewcandidateListComponent,
         data: {
-          title: 'NewCandidate'
+          title: 'New Candidate'
         }
       },
       {
         path: 'newcandidate_detail/:id',
         component: NewcandidateDetailComponent,
         data: {
-          title: 'NewCandidateDetail'
+          title: 'New Candidate Detail'
         }
       }
 

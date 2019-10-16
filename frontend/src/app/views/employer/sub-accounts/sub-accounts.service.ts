@@ -31,10 +31,16 @@ export class SubAccountService {
   }
 
   view_sub_acc_detail(id): Observable<any[]> {
+    console.log('===>>>>>>>', id);
+
     return this.http.get<any[]>(`${this.url}` + '/sub_account/' + id);
   }
 
+   edit_sub_account(id, data): Observable<any[]> {
+    return this.http.put<any[]>(`${this.url}` + '/sub_account/' + id, data);
+  }
+
   decativate_sub_account(id): Observable<any[]> {
-    return this.http.put<any[]>(`${this.url}` + '/deactive_sub_account/' + id, null);
+    return this.http.put<any[]>(`${this.url}` + '/sub_account/deactive_sub_account', {'id': id});
   }
 }

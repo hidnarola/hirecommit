@@ -6,12 +6,14 @@ import { CandidateListComponent } from './candidate-list/candidate-list.componen
 import { NewcandidateListComponent } from './newcandidate-list/newcandidate-list.component';
 import { NewcandidateDetailComponent } from './newcandidate-detail/newcandidate-detail.component';
 import { CandidatedetailApproveComponent } from './candidatedetail-approve/candidatedetail-approve.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [CandidateListComponent, NewcandidateListComponent, NewcandidateDetailComponent, CandidatedetailApproveComponent],
   imports: [
     CommonModule,
-    CandidateRoutingModule
+    CandidateRoutingModule,
+    DataTablesModule
   ],
   providers: []
 })

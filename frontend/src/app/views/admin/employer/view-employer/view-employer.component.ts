@@ -9,11 +9,11 @@ import { EmployerService } from '../employer.service';
 })
 export class ViewEmployerComponent implements OnInit {
 
-  clicked=false;
-  employer: any=[];
-  name: any=[];
-  data:any;
-  constructor(private router: Router, private service: EmployerService) {}
+  clicked = false;
+  employer: any = [];
+  name: any = [];
+  data: any;
+  constructor(private router: Router, private service: EmployerService) { }
   ngOnInit(): void {
     // const table = $('#example').DataTable({
     //   drawCallback: () => {
@@ -23,9 +23,9 @@ export class ViewEmployerComponent implements OnInit {
     //   }
     // });
 
- 
-   this.bind();
- 
+
+    this.bind();
+
   }
 
   buttonInRowClick(event: any): void {
@@ -57,25 +57,25 @@ export class ViewEmployerComponent implements OnInit {
 
   }
 
- 
+
 
   getEmployerlist() {
   }
 
   detail(id) {
-    this.router.navigate(['admin/employer_manage/detail/' + id]);
+    this.router.navigate(['admin/employers/detail/' + id]);
   }
 
- public bind(){
-   
-   this.service.getemployer().subscribe(res => {
-     this.employer = res['data'];
-     console.log("emp data", this.employer);
-     this.employer = this.employer.filter(x => x.user_id.isAllow === true);
+  public bind() {
 
-   })
- }
- 
-  
+    this.service.getemployer().subscribe(res => {
+      this.employer = res['data'];
+      console.log("emp data", this.employer);
+      this.employer = this.employer.filter(x => x.user_id.isAllow === true);
+
+    })
+  }
+
+
 
 }

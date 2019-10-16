@@ -5,7 +5,7 @@ import { DefaultLayoutComponent } from '../../shared/containers';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'employer_manage',
+    redirectTo: 'employers',
     pathMatch: 'full'
   },
   {
@@ -16,11 +16,11 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'employer_manage',
+        path: 'employers',
         loadChildren: () => import('./employer/employer.module').then(m => m.EmployerModule)
       },
       {
-        path: 'candidate_manage',
+        path: 'candidates',
         loadChildren: () => import('./candidate/candidate.module').then(m => m.CandidateModule)
       }
     ]

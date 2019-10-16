@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddGroupsComponent } from './add-groups.component';
+import { AddCustomFieldComponent } from './add-custom-field.component';
 
-describe('AddGroupsComponent', () => {
-  let component: AddGroupsComponent;
-  let fixture: ComponentFixture<AddGroupsComponent>;
+describe('AddCustomFieldComponent', () => {
+  let component: AddCustomFieldComponent;
+  let fixture: ComponentFixture<AddCustomFieldComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AddGroupsComponent]
+      declarations: [AddCustomFieldComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddGroupsComponent);
+    fixture = TestBed.createComponent(AddCustomFieldComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

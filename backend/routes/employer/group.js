@@ -274,14 +274,14 @@ router.put("/deactivate_group/:id", async (req, res) => {
 });
 
 
-router.get("/groups_list", async (req, res) => {
-    var group_list = await common_helper.find(group, { is_del: false });
-    if (group_list.status === 1) {
-        return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
-    }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
-    }
-})
+// router.get("/groups_list", async (req, res) => {
+//     var group_list = await common_helper.find(group, { is_del: false });
+//     if (group_list.status === 1) {
+//         return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
+//     }
+//     else {
+//         return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+//     }
+// })
 
 module.exports = router;

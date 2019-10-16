@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { SubAccountService } from '../sub-accounts.service';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { ConfirmationService } from 'primeng/api';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({ selector: 'app-view-sub-accounts', templateUrl: './view-sub-accounts.component.html', styleUrls: ['./view-sub-accounts.component.scss'] })
 export class ViewSubAccountsComponent
@@ -17,11 +19,12 @@ export class ViewSubAccountsComponent
   data: any[];
   admin_rights = true;
 
-  constructor(private router: Router, private service: SubAccountService) { }
+  // tslint:disable-next-line: max-line-length
+  constructor(private router: Router, private service: SubAccountService, private confirmationService: ConfirmationService, private toastr: ToastrService) { }
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2,
+      pageLength: 5,
       serverSide: true,
       searching: true,
       processing: true,
@@ -59,21 +62,31 @@ export class ViewSubAccountsComponent
   }
 
   detail() {
-    this.router.navigate(['/employer/manage_subaccount/sub_accountdetail']);
+    this.router.navigate(['/employer/sub_accounts/sub_accountdetail']);
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_subaccount/edit_subaccounts/' + id]);
+    // console.log(id);
+    this.router.navigate(['/employer/sub_accounts/edit/' + id]);
   }
 
   delete(user_id) {
-    this.service.decativate_sub_account(user_id).subscribe(res => {
-      if (res['status'] === 1) {
-        console.log(res);
-        this.rrerender();
-        // this.get_SubEmployer();
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.decativate_sub_account(user_id).subscribe(res => {
+          console.log('deactivate sub account', res['status']);
+          if (res['status'] === 1) {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          }
+          this.rrerender();
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
       }
     });
+
+
   }
 
   onAdd() {

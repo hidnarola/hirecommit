@@ -4,11 +4,10 @@ import { DefaultLayoutComponent } from '../../shared/containers';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
 import { ProfileComponent } from '../../shared/profile/profile.component';
-import {ListCustomFeildComponent} from '../employer/manage-custom-feild/list-custom-feild/list-custom-feild.component'
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'manage_offer',
+    redirectTo: 'offers',
     pathMatch: 'full'
   },
   {
@@ -19,32 +18,32 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'manage_offer',
+        path: 'offers',
         loadChildren: () => import('./employer-user/employer-user.module').then(m => m.EmployerUserModule)
       },
       {
-        path: 'manage_subaccount',
+        path: 'sub_accounts',
         loadChildren: () => import('./sub-accounts/sub-accounts.module').then(m => m.SubAccountsModule)
       },
       {
-        path: 'manage_group',
+        path: 'groups',
         loadChildren: () => import('./manage-groups/manage-groups.module').then(m => m.ManageGroupsModule)
       },
       {
-        path: 'manage_salarybracket',
+        path: 'salary_brackets',
         loadChildren: () => import('./manag-salary-bracket/manag-salary-bracket.module').then(m => m.ManagSalaryBracketModule)
       },
       {
-        path: 'manage_candidate',
+        path: 'candidates',
         loadChildren: () => import('../admin/candidate/candidate.module').then(m => m.CandidateModule)
       },
       {
-        path: 'manage_location',
+        path: 'locations',
         loadChildren: () => import('./manage-location/manage-location.module').then(m => m.ManageLocationModule)
       },
       {
-        path: 'customfeild',
-        loadChildren: () => import('./manage-custom-feild/manage-custom-feild.module').then(m => m.ManageCustomFeildModule)
+        path: 'custom_field',
+        loadChildren: () => import('./manage-custom-field/manage-custom-field.module').then(m => m.ManageCustomFieldModule)
       },
       { path: 'timeline', component: TimelineComponent },
       { path: 'change-password', component: ChangepasswordComponent },

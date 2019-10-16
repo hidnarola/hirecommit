@@ -5,27 +5,33 @@ import { countries } from '../../../../shared/countries';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-view-salarybracket',
   templateUrl: './view-salarybracket.component.html',
   styleUrls: ['./view-salarybracket.component.scss']
 })
 export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
-  dtTrigger:  Subject<any> = new Subject();
+  dtTrigger: Subject<any> = new Subject();
   Country: any;
   salary: any[];
   location: any;
   unique: any = [];
   _country: any = [];
   c_name: any = [];
-  sal: any = [] ;
+  sal: any = [];
   salnew: any = [];
 
   unq: any;
-  constructor(private router: Router, private confirmationService: ConfirmationService, private service: SalaryBracketService) { }
+  constructor(private router: Router, 
+    private confirmationService: ConfirmationService, 
+    private service: SalaryBracketService,
+    private toastr: ToastrService) {}
+      
+  
   ngOnInit() {
     this.bind();
   }
@@ -35,7 +41,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   edit(id) {
-    this.router.navigate(['/employer/manage_salarybracket/add_salarybracket/' + id]);
+    this.router.navigate(['/employer/salary_brackets/add_salarybracket/' + id]);
   }
 
   delete(id) {
@@ -46,8 +52,13 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       accept: () => {
         this.service.deactivate_salary_brcaket(id).subscribe(res => {
           console.log('deactivate salary', res);
+          if (res['status'] === 1) {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          }
           this.rrerender();
-          this.bind();
+   
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });
@@ -73,25 +84,25 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
           if (res['status'] === 1) {
             this.salary = res['salary'];
             console.log('data==>', res);
-          this.salary = this.salary.filter(x => x.is_del === false);
-          this.Country = countries;
-          const obj = [];
-          for (const [key, value] of Object.entries(countries)) {
-            obj.push({ 'code': key, 'name': value });
-          }
-          this.Country = obj;
-          this.salary.forEach(element => {
-            const fetch_country = element.country;
-            this.unique = this.Country.filter(x => x.code === fetch_country);
-            this._country.push(this.unique[0]);
-          });
-          this._country = this._country.filter(this.onlyUnique);
+            this.salary = this.salary.filter(x => x.is_del === false);
+            this.Country = countries;
+            const obj = [];
+            for (const [key, value] of Object.entries(countries)) {
+              obj.push({ 'code': key, 'name': value });
+            }
+            this.Country = obj;
+            this.salary.forEach(element => {
+              const fetch_country = element.country;
+              this.unique = this.Country.filter(x => x.code === fetch_country);
+              this._country.push(this.unique[0]);
+            });
+            this._country = this._country.filter(this.onlyUnique);
 
 
-            callback({recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: []});
+            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
-          callback({recordsTotal: 0, recordsFiltered: 0, data: []});
+          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
       columns: [

@@ -31,77 +31,84 @@ export interface NavData {
 
 export const admin: NavData[] = [
   {
-    name: 'Manage Employer',
-    url: 'employer_manage/view',
+    name: 'Employers',
+    // name: 'Manage Employer',
+    url: 'employers/view',
     icon: 'icon-user',
-    children:[
+    children: [
       {
-        name:'New Request',
-        url: 'employer_manage/new_employer'
-    },
+        name: 'Approved Employer',
+        url: 'employers/approved_employer'
+      },
       {
-        name: 'Approved Request',
-        url: 'employer_manage/view'
+        name: 'New Employer',
+        url: 'employers/new_employer'
       }
     ]
   },
   {
-    name: 'Manage Candidate',
-    url: 'candidate_manage',
+    name: 'Candidates',
+    // name: 'Manage Candidate',
+    url: 'candidates',
     icon: 'icon-people',
     children: [
-    
-     {
-       name: 'New Request',
-       url: 'candidate_manage/new_candidate'
-     },
       {
         name: 'Approved Candidate',
-        url: 'candidate_manage/approve_candidate'
-      }
+        url: 'candidates/approved_candidate'
+      },
+      {
+        name: 'New Candidate',
+        url: 'candidates/new_candidate'
+      },
     ]
   }
 ];
 
 export const employer: NavData[] = [
   {
-    name: 'Manage Offer',
-    url: 'manage_offer/created_offerlist',
+    name: 'Offers',
+    // name: 'Manage Offer',
+    url: 'offers/list',
     icon: 'icon-grid'
   },
   {
-    name: 'Manage Candidate',
-    url: 'manage_candidate',
+    name: 'Candidates',
+    // name: 'Manage Candidate',
+    url: 'candidates',
     icon: 'icon-people',
     children: [
-     {
-       name: 'Approved Candidate',
-       url: 'manage_candidate/approve_candidate'
-     },
-     {
-       name: 'New Request',
-       url: 'manage_candidate/new_candidate'
-     }
+      {
+        name: 'Approved Candidate',
+        url: 'candidates/approved_candidate'
+      },
+      {
+        name: 'New Candidate',
+        url: 'candidates/new_candidate'
+      }
     ]
   },
   {
-    name: 'Manage Sub-accounts',
-    url: 'manage_subaccount/view_subaccount',
+    name: 'Sub accounts',
+    // name: 'Manage Sub-accounts',
+    url: 'sub_accounts/list',
     icon: 'icon-puzzle',
   },
   {
-    name: 'Manage Groups',
-    url: 'manage_group/view_group',
+    name: 'Groups',
+    // name: 'Manage Groups',
+    url: 'groups/list',
     icon: 'icon-people',
   },
   {
-    name: 'Manage Salary-Brackets',
-    url: 'manage_salarybracket/view_salarybracket',
+    name: 'Salary Brackets',
+    // name: 'Manage Salary-Brackets',
+    url: 'salary_brackets/list',
     icon: 'icon-wallet',
   },
   {
-    name: 'Manage Location',
-    url: 'manage_location/view_location',
+    name: 'Locations',
+    // name: 'Manage Location',
+    url: 'locations/list',
     icon: 'icon-location-pin',
   },
   {
@@ -113,14 +120,15 @@ export const employer: NavData[] = [
 
 export const candidate: NavData[] = [
   {
-    name: 'Manager Offers',
+    name: 'Offers',
+    // name: 'Manager Offers',
     url: 'user',
     icon: 'icon-puzzle',
     children: [
-     {
-       name: 'Offer List',
-       url: 'offers/offerlist'
-     }
+      {
+        name: 'Offer List',
+        url: 'offers/list'
+      }
     ]
   }
 ];

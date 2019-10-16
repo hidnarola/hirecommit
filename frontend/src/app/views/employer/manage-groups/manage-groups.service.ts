@@ -13,23 +13,26 @@ export class GroupService {
   constructor(private http: HttpClient, private route: Router) { }
 
   add_communication(data, id): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/group/communication/' + id, { data });
+    return this.http.post<any[]>(`${this.url}` + '/add_group_details/' + id, { data });
   }
 
   view_groups(params): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/group/get', { ...params });
   }
+  lists(params): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/lists', { ...params });
+  }
 
   get_detail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/group/' + id);
+    return this.http.get<any[]>(`${this.url}` + '/group_detail/' + id);
   }
 
   get_communication_detail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/group/communication_detail/' + id);
+    return this.http.get<any[]>(`${this.url}` + '/group_communication_detail/' + id);
   }
 
   deleteGroup(id): Observable<any[]> {
-    return this.http.put<any[]>(`${this.url}` + '/deactivate_group/' + id, null);
+    return this.http.put<any[]>(`${this.url}` + '/deactivate_group/' + id, {});
   }
 
   addGroup(data): Observable<any[]> {
