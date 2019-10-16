@@ -40,6 +40,8 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   edit(id) {
+    console.log(id);
+    
     this.router.navigate(['/employer/salary_brackets/add_salarybracket/' + id]);
   }
 
