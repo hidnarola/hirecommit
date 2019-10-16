@@ -26,6 +26,7 @@ export class EmployerAddofferComponent implements OnInit {
   countryArr: any[] = [];
   arr: any[] = [];
   user_detail: any = {};
+  candidate: any[];
 
   salary_duration_optoins = [
     { label: 'Select', value: '' },
@@ -101,7 +102,28 @@ export class EmployerAddofferComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.service.get_candidate_list().subscribe(res => {
+      console.log('res=>', res['data']);
+       this.candidate = res['data'];
+        res['data'].forEach(element => {
+        console.log('element', element);
+        // this.candidate.push({ 'label': element.firstname + element.lastname , 'value': element.id });
+      });
+    }, (err) => {
+      console.log(err);
+    });
+
+
+
+    //  this.service.get_location().subscribe(res => {
+    //   console.log('res=>', res['data']);
+    //   this.currency = res['data']
+    //   res['data'].forEach(element => {
+    //     console.log('element', element);
+    //     this.countryList.push({ 'label': element.country, 'value': element.id })
+    //   });
+  }
 
 
 
