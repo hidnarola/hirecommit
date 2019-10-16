@@ -28,6 +28,7 @@ export class NewcandidateListComponent implements OnInit, OnDestroy, AfterViewIn
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.get_new_candidate(dataTablesParameters).subscribe(res => {

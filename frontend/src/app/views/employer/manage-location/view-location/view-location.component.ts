@@ -39,6 +39,7 @@ export class ViewLocationComponent implements OnInit, OnDestroy, AfterViewInit {
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_location(dataTablesParameters).subscribe(res => {
