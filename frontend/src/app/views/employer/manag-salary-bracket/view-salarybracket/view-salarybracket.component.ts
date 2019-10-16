@@ -26,12 +26,12 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
   salnew: any = [];
 
   unq: any;
-  constructor(private router: Router, 
-    private confirmationService: ConfirmationService, 
+  constructor(private router: Router,
+    private confirmationService: ConfirmationService,
     private service: SalaryBracketService,
-    private toastr: ToastrService) {}
-      
-  
+    private toastr: ToastrService) { }
+
+
   ngOnInit() {
     this.bind();
   }
@@ -58,7 +58,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
           this.rrerender();
-   
+
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
@@ -79,6 +79,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       pageLength: 5,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);

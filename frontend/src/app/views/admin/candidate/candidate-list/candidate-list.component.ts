@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { Subject } from 'rxjs';
-
 import { Router } from '@angular/router';
 import { CandidateService } from '../candidate.service';
 import { DataTableDirective } from 'angular-datatables';

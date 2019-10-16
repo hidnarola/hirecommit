@@ -31,6 +31,7 @@ export class EmployerSummaryComponent implements OnInit, OnDestroy, AfterViewIni
       pageLength: 2,
       serverSide: true,
       processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);

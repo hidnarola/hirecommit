@@ -50,4 +50,8 @@ export class OfferService {
         const body = { status: data };
         return this.http.put<any[]>(`${this.url}` + '/offer/status_change/' + id, body);
     }
+
+     get_candidate_list(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/candidate');
+    }
 }
