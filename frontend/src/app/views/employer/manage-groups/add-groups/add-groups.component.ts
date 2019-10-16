@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormArray, FormBuilder } from '@angular/forms';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { EmployerService } from '../../employer.service';
 import { GroupService } from '../manage-groups.service';
-// import { AngularEditorConfig } from '@kolkov/angular-editor';
 @Component({
   selector: 'app-add-groups',
   templateUrl: './add-groups.component.html',
@@ -22,10 +20,7 @@ export class AddGroupsComponent implements OnInit {
   submitted = false;
   _name: any;
   title: string;
-
-  onClose() {
-    this.router.navigate(['/employer/groups/list']);
-  }
+  cancel_link = '/employer/groups/list'
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -56,7 +51,7 @@ export class AddGroupsComponent implements OnInit {
     if (valid) {
       this.service.add_communication(this.myForm.controls.arr.value, this.id).subscribe(res => {
         this.submitted = false;
-        this.router.navigate(['/employer/groups/list']);
+        this.router.navigate([this.cancel_link]);
       });
     }
   }

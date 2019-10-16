@@ -13,6 +13,7 @@ export class AddEmployerComponent implements OnInit {
   fileFormData = new FormData();
   postFormData = new FormData();
   file: any;
+  cancel_link = '/admin/employers/view';
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -31,7 +32,7 @@ export class AddEmployerComponent implements OnInit {
 
   onSubmit(flag: boolean) {
     this.submitted = !flag;
-      console.log(this.registerForm.value);
+    console.log(this.registerForm.value);
 
     if (flag) {
       console.log(this.registerForm.value);

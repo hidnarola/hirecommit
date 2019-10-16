@@ -98,7 +98,7 @@ router.post("/add_offer", async (req, res) => {
             "offertype": req.body.offertype,
             "groups": req.body.groups,
             "commitstatus": req.body.commitstatus,
-            // "customfeild": JSON.parse(req.body.customfeild),
+            "customfeild": JSON.parse(req.body.customfeild),
             "notes": req.body.notes,
             "is_del": false
         };

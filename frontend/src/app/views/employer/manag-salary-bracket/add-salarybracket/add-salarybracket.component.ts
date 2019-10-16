@@ -13,12 +13,12 @@ import { SliderModule } from 'primeng/slider';
   styleUrls: ['./add-salarybracket.component.scss']
 })
 export class AddSalarybracketComponent implements OnInit {
-  countryList: any =[];
+  countryList: any = [];
   AddSalaryBracket: FormGroup;
   submitted = false;
   Country: any = [];
   currency: any = [];
-  location: any ={};
+  location: any = {};
   unique: any = [];
   _country: any = [];
   id: any;
@@ -29,12 +29,13 @@ export class AddSalarybracketComponent implements OnInit {
   error = false;
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
-  
-  constructor(private fb: FormBuilder, 
-              private router: Router, 
-              private service: SalaryBracketService,
-              private route: ActivatedRoute,
-              private toastr: ToastrService) { }
+  cancel_link = '/employer/salary_brackets/list';
+
+  constructor(private fb: FormBuilder,
+    private router: Router,
+    private service: SalaryBracketService,
+    private route: ActivatedRoute,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
@@ -51,16 +52,16 @@ export class AddSalarybracketComponent implements OnInit {
 
     this.service.get_location().subscribe(res => {
       console.log('res=>', res['data']);
-      this.currency = res ['data']
-       res['data'].forEach(element => {
-         console.log('element', element);
-         this.countryList.push({ 'label': element.country, 'value': element.id})
-       });
+      this.currency = res['data']
+      res['data'].forEach(element => {
+        console.log('element', element);
+        this.countryList.push({ 'label': element.country, 'value': element.id })
+      });
       // this.contryList.push()
       // this.contryList = res['data'];
       // this.contryList = this.location
       console.log('country list', this.countryList);
-      
+
     });
 
     this.getDetail(this.id);
@@ -69,18 +70,18 @@ export class AddSalarybracketComponent implements OnInit {
   findCities() {
     this.detail.currency = this.detail.country.country.currency_code;
   }
-  findCurrency(value){
+  findCurrency(value) {
     console.log('cur', value.value);
     this.currency.forEach(element => {
       console.log('element >>', element);
-      if (value.value === element.id ){
+      if (value.value === element.id) {
         this.detail.currency = element.currency;
       }
       // this.currency=this.currency.filter(x => x.element === value.value)
       // console.log(this.currency);
 
     })
-    
+
   }
 
   onBlurMethod(from, to) {
@@ -146,7 +147,7 @@ export class AddSalarybracketComponent implements OnInit {
     if (this.id && flag) {
       this.service.edit_salary_bracket(this.id, this.AddSalaryBracket.value).subscribe(res => {
         console.log('edited successfully!!!');
-        this.router.navigate(['/employer/salary_brackets/list']);
+        this.router.navigate([this.cancel_link]);
       });
     } else if (!this.id && flag) {
       console.log('in add');
@@ -172,9 +173,6 @@ export class AddSalarybracketComponent implements OnInit {
   }
 
 
-  onClose() {
-    this.router.navigate(['/employer/salary_brackets/list']);
-  }
 
 
 

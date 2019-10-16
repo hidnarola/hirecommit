@@ -4,7 +4,8 @@
             <div class="card">
                 <div class="card-header">
                     Sub-Accounts Detail
-                    <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
+                        <i class="icon-close"></i></span>
                 </div>
                 <div class="card-body">
                     <table class="table">
@@ -18,23 +19,24 @@
                                 <td>Email</td>
                                 <td>ABC@gmail.com</td>
                             </tr>
-                           
+
 
                             <tr>
                                 <td>Admin Rights</td>
                                 <td><label class="switch">
-                                    <input type="checkbox" checked>
-                                    <span class="slider round"></span>
-                                  </label></td>
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label></td>
                             </tr>
-                           
-                           
+
+
                         </tbody>
                     </table>
 
                     <button type="button" class="btn btn-sm btn-danger" style="float: right;"
-                    (click)="cancel()">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;" (click)="edit()">Edit</button>
+                        [routerLink]="cancel_link">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;"
+                        (click)="edit()">Edit</button>
                 </div>
             </div>
         </div>

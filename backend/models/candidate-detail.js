@@ -11,8 +11,8 @@ const CandidateDetailSchema = new Schema({
     type: String,
     required: true
   },
-  countrycode:{
-    type:String,
+  countrycode: {
+    type: String,
     require: true
   },
   contactno: {
@@ -39,14 +39,18 @@ const CandidateDetailSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
+  status: {
+    type: String,
+    default: "On Hold"
+  },
   is_del: {
     type: Boolean,
     default: false
   },
   createdAt: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
   }
 });
 
-module.exports = mongoose.model('candidateDetail', CandidateDetailSchema,'candidateDetail');
+module.exports = mongoose.model('candidateDetail', CandidateDetailSchema, 'candidateDetail');

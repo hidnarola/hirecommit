@@ -4,37 +4,46 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">Add Group</strong>
-                    <span class="input-group-text pull-right" (click)="onClose()"><i class="icon-close"></i></span>
+                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
+                        <i class="icon-close"></i>
+                    </span>
                 </div>
                 <form class="form-horizontal" [formGroup]="addGroup" (ngSubmit)="onSubmit(addGroup.valid)">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="name"><h5>Name</h5></label>
+                            <label class="col-md-3 col-form-label" for="name">
+                                <h5>Name</h5>
+                            </label>
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
                                     autocomplete="name" formControlName="name" id="name">
-                                    <div class="error" *ngIf="!addGroup.controls['name'].valid && isFormSubmited">
-                                        <span *ngIf="addGroup.controls['name'].errors['required']">Group name is required.</span>
-                                    </div>
+                                <div class="error" *ngIf="!addGroup.controls['name'].valid && isFormSubmited">
+                                    <span *ngIf="addGroup.controls['name'].errors['required']">Group name is
+                                        required.</span>
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label class="d-block text-left col-md-3 col-form-label" for="commitStatus"><h5>Commit
-                                Status</h5></label>
+                            <label class="d-block text-left col-md-3 col-form-label" for="commitStatus">
+                                <h5>Commit
+                                    Status</h5>
+                            </label>
                         </div>
 
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="high_unopened">High - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="high_unopened"
-                                    formControlName="high_unopened" id="high_unopened" >
+                                    formControlName="high_unopened" id="high_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error" *ngIf="!addGroup.controls['high_unopened'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['high_unopened'].errors['required']">This field is required.</span>
-                                    <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']">Allow number from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['high_unopened'].errors['required']">This field is
+                                        required.</span>
+                                    <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']">Allow number from
+                                        1-31.</span>
                                 </div>
                             </div>
                         </div>
@@ -47,9 +56,12 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!addGroup.controls['high_notreplied'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['required']">This field is required.</span>
-                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['pattern']">Allow number from 1-31.</span>
+                                <div class="error"
+                                    *ngIf="!addGroup.controls['high_notreplied'].valid && isFormSubmited">
+                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['required']">This field is
+                                        required.</span>
+                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['pattern']">Allow number
+                                        from 1-31.</span>
                                 </div>
                             </div>
                         </div>
@@ -64,9 +76,12 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!addGroup.controls['medium_unopened'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['required']">This field is required.</span>
-                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']">Allow number from 1-31.</span>
+                                <div class="error"
+                                    *ngIf="!addGroup.controls['medium_unopened'].valid && isFormSubmited">
+                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['required']">This field is
+                                        required.</span>
+                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']">Allow number
+                                        from 1-31.</span>
                                 </div>
                             </div>
                         </div>
@@ -79,9 +94,12 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!addGroup.controls['medium_notreplied'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['required']">This field is required.</span>
-                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['pattern']">Allow number from 1-31.</span>
+                                <div class="error"
+                                    *ngIf="!addGroup.controls['medium_notreplied'].valid && isFormSubmited">
+                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['required']">This field
+                                        is required.</span>
+                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['pattern']">Allow number
+                                        from 1-31.</span>
                                 </div>
                             </div>
                         </div>
@@ -95,8 +113,10 @@
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error" *ngIf="!addGroup.controls['low_unopened'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['low_unopened'].errors['required']">This field is required.</span>
-                                    <span *ngIf="addGroup.controls['low_unopened'].errors['pattern']">Allow number from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['low_unopened'].errors['required']">This field is
+                                        required.</span>
+                                    <span *ngIf="addGroup.controls['low_unopened'].errors['pattern']">Allow number from
+                                        1-31.</span>
                                 </div>
                             </div>
                         </div>
@@ -104,14 +124,16 @@
                         <div class="form-group row">
                             <label class="ml-4 col-md-3" for="low_notreplied">Low - NotReplied</label>
                             <div class="input-group col-md-2">
-                              <input type="number" class="form-control" autocomplete="low_notreplied"
+                                <input type="number" class="form-control" autocomplete="low_notreplied"
                                     formControlName="low_notreplied" id="low_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error" *ngIf="!addGroup.controls['low_notreplied'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['required']">This field is required.</span>
-                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['pattern']">Allow number from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['required']">This field is
+                                        required.</span>
+                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['pattern']">Allow number
+                                        from 1-31.</span>
                                 </div>
                             </div>
                         </div>

@@ -47,6 +47,7 @@ export class EmployerAddofferComponent implements OnInit {
     { label: 'Low', value: 'low' }
   ];
   contryList: any;
+  cancel_link = '/employer/offers/list';
 
   constructor(
     private fb: FormBuilder,
@@ -100,9 +101,9 @@ export class EmployerAddofferComponent implements OnInit {
     });
   }
 
-  ngOnInit() {  }
+  ngOnInit() { }
 
- 
+
 
   // submit form
   onSubmit(flag) {

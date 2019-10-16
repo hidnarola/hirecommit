@@ -138,7 +138,7 @@ router.post('/get', async (req, res) => {
     }
 });
 
-router.post("/add_group_details/:id", async (req, res) => {
+router.post("/communication/:id", async (req, res) => {
     var schema =
         [{
             "communicationname": {
@@ -179,6 +179,47 @@ router.post("/add_group_details/:id", async (req, res) => {
     }
 });
 
+router.put("/communication/:id", async (req, res) => {
+    var schema =
+        [{
+            "communicationname": {
+                notEmpty: true,
+                errorMessage: "Communication Name is required"
+            },
+            "trigger": {
+                notEmpty: true,
+                errorMessage: "Trigger is required"
+            },
+            "day": {
+                notEmpty: true,
+                errorMessage: "Days are required"
+            },
+            "priority": {
+                notEmpty: true,
+                errorMessage: "Priority is required"
+            }
+        }];
+
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+    if (!errors) {
+        const reqData = req.body.data;
+        const grp_data = {
+            group_id: req.params.id,
+            communication: reqData
+        };
+        var response = await common_helper.update(GroupDetail, { "group_id": req.params.id }, grp_data);
+        if (response.status === 0) {
+            throw new Error('Error occured while inserting data');
+        }
+        res.status(config.OK_STATUS).json(response);
+    }
+    else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     var group_detail = await common_helper.find(group, { _id: ObjectId(req.params.id) });
     if (group_detail.status === 1) {
@@ -192,7 +233,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/group_communication_detail/:id', async (req, res) => {
+router.get('/communication_detail/:id', async (req, res) => {
     var group_detail = await common_helper.find(GroupDetail, { group_id: ObjectId(req.params.id) });
     console.log("group detail", group_detail);
 

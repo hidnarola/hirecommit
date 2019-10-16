@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class GroupsComponent implements OnInit {
   addGroup: FormGroup;
   isFormSubmited = false;
+  cancel_link = '/employer/groups/list';
   constructor(private router: Router, public fb: FormBuilder, private service: GroupService, private toastr: ToastrService) { }
 
   ngOnInit() {
@@ -41,10 +42,6 @@ export class GroupsComponent implements OnInit {
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
-  }
-
-  onClose() {
-    this.router.navigate(['/employer/groups/list']);
   }
 
   reset() {

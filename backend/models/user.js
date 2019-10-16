@@ -38,6 +38,10 @@ const UserSchema = new Schema({
     type: Number,
     default: 1
   },
+  emp_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  },
   createdate: {
     type: Date,
     default: Date.now

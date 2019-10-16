@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormControl, NgForm } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { countries } from '../../../../shared/countries';
 import { LocationService } from '../manage-location.service';
-import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 @Component({
@@ -21,6 +19,7 @@ export class AddLocationComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
+  cancel_link = '/employer/locations/list';
   constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
@@ -112,14 +111,14 @@ export class AddLocationComponent implements OnInit {
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
         this.addLocation.reset();
-        this.router.navigate(['/employer/locations/list']);
+        this.router.navigate([this.cancel_link]);
       }
     }
   }
 
-  onClose() {
-    this.router.navigate(['/employer/locations/list']);
-  }
+  // onClose() {
+  //   this.router.navigate([this.cancel_link]);
+  // }
 
   // public bind() {
   //   this.service.list().subscribe(res => {

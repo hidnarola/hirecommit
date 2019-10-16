@@ -28,14 +28,18 @@ const SubEmployerDetailSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
+  emp_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  },
   is_del: {
     type: Boolean,
     default: false
   },
   createdate: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
   }
 });
 
-module.exports = mongoose.model('subemployerDetail', SubEmployerDetailSchema,'subemployerDetail');
+module.exports = mongoose.model('subemployerDetail', SubEmployerDetailSchema, 'subemployerDetail');

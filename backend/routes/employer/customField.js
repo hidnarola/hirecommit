@@ -105,4 +105,17 @@ router.get("/:id", async (req, res) => {
 });
 
 
+router.put("/delete/:id", async (req, res) => {
+    var obj = {
+        "is_del": true
+    };
+    var interest_resp = await common_helper.update(CustomField, { "_id": req.params.id }, obj);
+    if (interest_resp.status == 0) {
+        logger.debug("Error = ", interest_resp.error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+    } else {
+        res.json({ "message": "Custom Field deleted successfully", "data": interest_resp })
+    }
+});
+
 module.exports = router;
