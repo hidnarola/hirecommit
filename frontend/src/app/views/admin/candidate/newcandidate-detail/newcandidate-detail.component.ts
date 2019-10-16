@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 })
 export class NewcandidateDetailComponent implements OnInit {
   approval: boolean = false;
+  cancel_link = '/admin/candidates/new_candidate';
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -22,7 +23,7 @@ export class NewcandidateDetailComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/admin/candidates/new_candidate']);
+    this.router.navigate([this.cancel_link]);
   }
 
 }
