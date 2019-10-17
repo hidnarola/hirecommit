@@ -19,9 +19,14 @@ export class SignUpComponent implements OnInit {
   step3 = false;
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
-
   private stepper: Stepper;
-  constructor(private router: Router,  private formBuilder: FormBuilder, private service: CommonService, public fb: FormBuilder) {
+
+  constructor(
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: CommonService,
+    public fb: FormBuilder
+  ) {
     this.formData = {};
     this.registerForm = this.fb.group({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -33,14 +38,13 @@ export class SignUpComponent implements OnInit {
       username: new FormControl('', [Validators.required]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
-      contactno: new FormControl('', Validators.compose([Validators.required,  Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
-      recaptcha: new FormControl('', [ Validators.required])
+      contactno: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
+      recaptcha: new FormControl('', [Validators.required])
     });
   }
 
   next1() {
     this.isFormSubmited = true;
-    // console.log(this.registerForm.controls['recaptcha'].valid);
     // tslint:disable-next-line: max-line-length
     if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
       this.isFormSubmited = false;
@@ -48,6 +52,7 @@ export class SignUpComponent implements OnInit {
       this.stepper.next();
     }
   }
+
   next2() {
     this.isFormSubmited = true;
     // tslint:disable-next-line: max-line-length
@@ -59,25 +64,19 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit(valid) {
-    // console.log(this.registerForm['recaptcha']);
-
-    console.log(this.registerForm);
     this.isFormSubmited = true;
     if (valid) {
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
-          console.log(res);
         } else if (res['data'].status === 1) {
           Swal.fire({
             type: 'success',
             text: res['message']
           });
           this.router.navigate(['/login']);
-        } else {
-          console.log(res);
-        }
+        } else { }
       });
     }
   }
@@ -88,7 +87,9 @@ export class SignUpComponent implements OnInit {
       animation: true
     });
   }
+
   onLogin() {
     this.router.navigate(['/login']);
   }
+
 }

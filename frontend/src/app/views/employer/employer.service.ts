@@ -11,6 +11,6 @@ export class EmployerService {
     private url = env.environment.API_URL + 'employer';
 
     constructor(private http: HttpClient, private route: Router) {
-     }
+    }
 
 }

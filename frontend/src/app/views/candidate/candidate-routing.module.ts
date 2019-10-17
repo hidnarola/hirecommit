@@ -17,7 +17,7 @@ const routes: Routes = [
     children: [
       {
         path: 'offers',
-        loadChildren: () => import('./candidate-user/candidate-user.module').then(m => m.CandidateUserModule)
+        loadChildren: () => import('../shared-components/offers/offers.module').then(m => m.OffersModule)
       }
     ]
   }

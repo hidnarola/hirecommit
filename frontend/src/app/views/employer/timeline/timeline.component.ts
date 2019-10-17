@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
-export class TimelineComponent {
+export class TimelineComponent implements OnInit {
   alternate: boolean = true;
   toggle: boolean = true;
   color: boolean = false;
@@ -19,6 +19,12 @@ export class TimelineComponent {
       content: 'content'
     }
   ];
+
+  constructor() {
+    console.log('employer - time line : timeline component => ');
+  }
+
+  ngOnInit() { }
 
   addEntry() {
     this.entries.push({
