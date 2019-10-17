@@ -13,7 +13,7 @@ var index = require('../admin/index');
 var candidate_detail = require('../../models/candidate-detail');
 var employer_detail = require('../../models/employer-detail');
 var user = require('../../models/user');
-var objectID = require('mongoose').Types.ObjectId;
+var objectId = require('mongoose').Types.ObjectId;
 
 router.use("/admin", auth, authorization, index);
 

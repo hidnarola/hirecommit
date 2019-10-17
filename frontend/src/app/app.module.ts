@@ -56,8 +56,13 @@ export function getToken(): string {
     EmailconfermationComponent,
     ResetPasswordComponent
   ],
-  providers: [AuthService, AuthGuardService, RoleGuardService, JwtHelperService,
-    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },],
+  providers: [
+    AuthService,
+    AuthGuardService,
+    RoleGuardService,
+    JwtHelperService,
+    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

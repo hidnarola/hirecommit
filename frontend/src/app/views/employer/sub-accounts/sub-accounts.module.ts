@@ -5,13 +5,15 @@ import { SubAccountsRoutingModule } from './sub-accounts-routing.module';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ViewSubAccountsComponent } from './view-sub-accounts/view-sub-accounts.component';
-import { SubAccountsDetailsComponent } from './sub-accounts-details/sub-accounts-details.component';
-import { AddSubAccountsComponent } from './add-sub-accounts/add-sub-accounts.component';
 import { DataTablesModule } from 'angular-datatables';
+import { SubAccountAddViewComponent } from './sub-account-add-view/sub-account-add-view.component';
+import { SubAccountsListComponent } from './sub-accounts-list/sub-accounts-list.component';
 
 @NgModule({
-  declarations: [ViewSubAccountsComponent, SubAccountsDetailsComponent, AddSubAccountsComponent],
+  declarations: [
+    SubAccountAddViewComponent,
+    SubAccountsListComponent
+  ],
   imports: [
     CommonModule,
     SubAccountsRoutingModule,

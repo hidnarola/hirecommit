@@ -19,7 +19,7 @@ const routes: Routes = [
     children: [
       {
         path: 'offers',
-        loadChildren: () => import('./employer-user/employer-user.module').then(m => m.EmployerUserModule)
+        loadChildren: () => import('../shared-components/offers/offers.module').then(m => m.OffersModule)
       },
       {
         path: 'sub_accounts',
@@ -27,23 +27,23 @@ const routes: Routes = [
       },
       {
         path: 'groups',
-        loadChildren: () => import('./manage-groups/manage-groups.module').then(m => m.ManageGroupsModule)
+        loadChildren: () => import('./groups/groups.module').then(m => m.GroupsModule)
       },
       {
         path: 'salary_brackets',
-        loadChildren: () => import('./manag-salary-bracket/manag-salary-bracket.module').then(m => m.ManagSalaryBracketModule)
+        loadChildren: () => import('./salary-brackets/salary-brackets.module').then(m => m.SalaryBracketsModule)
       },
       {
         path: 'candidates',
-        loadChildren: () => import('../admin/candidate/candidate.module').then(m => m.CandidateModule)
+        loadChildren: () => import('../shared-components/candidates/candidate.module').then(m => m.CandidateModule)
       },
       {
         path: 'locations',
-        loadChildren: () => import('./manage-location/manage-location.module').then(m => m.ManageLocationModule)
+        loadChildren: () => import('./locations/locations.module').then(m => m.LocationsModule)
       },
       {
-        path: 'custom_field',
-        loadChildren: () => import('./manage-custom-field/manage-custom-field.module').then(m => m.ManageCustomFieldModule)
+        path: 'custom_fields',
+        loadChildren: () => import('./custom-fields/custom-fields.module').then(m => m.CustomFieldsModule)
       },
       { path: 'timeline', component: TimelineComponent },
       { path: 'change-password', component: ChangepasswordComponent },

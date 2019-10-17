@@ -9,10 +9,16 @@ import { CommonService } from '../../services/common.service';
   styleUrls: ['./emailconfermation.component.scss']
 })
 export class EmailconfermationComponent implements OnInit {
+
   params_token: any;
 
   // tslint:disable-next-line: max-line-length
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private service: CommonService, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private service: CommonService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -20,14 +26,15 @@ export class EmailconfermationComponent implements OnInit {
     });
   }
 
-  confirm () {
+  confirm() {
     this.service.verify_email(this.params_token).subscribe(res => {
       if (res['status'] === 1) {
-        this.toastr.success(res['message'], 'Success!', {timeOut: 3000});
+        this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         this.router.navigate(['/login']);
       }
     }, (err) => {
-      this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
+      this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
     });
   }
+
 }

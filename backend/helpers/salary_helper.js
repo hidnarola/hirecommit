@@ -3,7 +3,7 @@ var ObjectId = require('mongodb').ObjectID;
 var salary_helper = {};
 
 
-salary_helper.get_all_salary_bracket = async (collection, search, start, length, recordsTotal, sort) => {
+salary_helper.get_all_salary_bracket = async (collection, id, search, start, length, recordsTotal, sort) => {
   try {
     // console.log(search);
 
@@ -11,41 +11,49 @@ salary_helper.get_all_salary_bracket = async (collection, search, start, length,
     var aggregate = [
       {
         $match: {
-          "is_del": false
+          "is_del": false,
+          "emp_id": new ObjectId(id)
         }
       },
-      {
-        $lookup:
-        {
-          from: "location",
-          localField: "location",
-          foreignField: "_id",
-          as: "location"
-        }
-      },
-      {
-        $unwind: "$location",
-      },
+      // {
+      //   $lookup:
+      //   {
+      //     from: "location",
+      //     localField: "location",
+      //     foreignField: "_id",
+      //     as: "location"
+      //   }
+      // },
+      // {
+      //   $unwind: {
+      //     path: "$location",
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
       {
         $lookup:
         {
           from: "country_datas",
-          localField: "location.country",
+          localField: "country",
           foreignField: "_id",
-          as: "location.country"
+          as: "country"
         }
       },
       {
-        $unwind: "$location.country",
+        $unwind: {
+          path: "$country",
+          preserveNullAndEmptyArrays: false
+        },
       }
     ]
 
-    console.log(RE);
+    if (search && search != "") {
+      aggregate.push({
+        "$match":
+          { $or: [{ "country": RE }, { "currency": RE }, { "from": RE }, { "to": RE }] }
+      });
+    }
 
-    aggregate.push({
-      "$match":
-        { $or: [{ "country": RE }, { "currency": RE }, { "from": RE }, { "to": RE }] }
-    });
     // console.log(aggregate);
     if (sort) {
       aggregate.push({
