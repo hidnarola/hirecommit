@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong style="font-size: 20px;">Add Group</strong>
+                    <strong style="font-size: 20px;">{{panelTitle}}</strong>
                     <span class="input-group-text pull-right" [routerLink]="cancel_link">
                         <i class="icon-close"></i>
                     </span>
@@ -16,7 +16,7 @@
                             </label>
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
-                                    autocomplete="name" formControlName="name" id="name">
+                                    autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
                                 <div class="error" *ngIf="!addGroup.controls['name'].valid && isFormSubmited">
                                     <span *ngIf="addGroup.controls['name'].errors['required']">Group name is
                                         required.</span>
@@ -35,7 +35,8 @@
                             <label class="ml-4 col-md-3 " for="high_unopened">High - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="high_unopened"
-                                    formControlName="high_unopened" id="high_unopened">
+                                    formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
+                                    id="high_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -52,7 +53,8 @@
                             <label class="ml-4 col-md-3 " for="high_notreplied">High - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="high_notreplied"
-                                    formControlName="high_notreplied" id="high_notreplied">
+                                    formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
+                                    id="high_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -72,7 +74,8 @@
                             <label class="ml-4 col-md-3 " for="medium_unopened">Medium - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="medium_unopened"
-                                    formControlName="medium_unopened" id="medium_unopened">
+                                    formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
+                                    id="medium_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -90,7 +93,8 @@
                             <label class="ml-4 col-md-3 " for="medium_notreplied">Medium - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="medium_notreplied"
-                                    formControlName="medium_notreplied" id="medium_notreplied">
+                                    formControlName="medium_notreplied" [(ngModel)]="groupData.medium_notreplied"
+                                    id="medium_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -108,7 +112,8 @@
                             <label class="ml-4 col-md-3" for="low_unopened">Low - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="low_unopened"
-                                    formControlName="low_unopened" id="low_unopened">
+                                    formControlName="low_unopened" [(ngModel)]="groupData.low_unopened"
+                                    id="low_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -125,7 +130,8 @@
                             <label class="ml-4 col-md-3" for="low_notreplied">Low - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="low_notreplied"
-                                    formControlName="low_notreplied" id="low_notreplied">
+                                    formControlName="low_notreplied" [(ngModel)]="groupData.low_notreplied"
+                                    id="low_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -142,7 +148,7 @@
                     <div class="w-100 card-footer text-right">
                         <button type="submit" class="btn btn-sm btn-primary">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
-                            Submit</button>
+                            {{buttonTitle}}</button>
                         <button type="reset" class="btn btn-sm btn-danger" (click)='reset()'>
                             <!-- <i class="fa fa-ban"></i> -->
                             Reset</button>

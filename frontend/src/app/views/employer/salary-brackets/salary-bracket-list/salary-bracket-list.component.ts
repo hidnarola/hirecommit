@@ -59,6 +59,8 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
           }
           this.rrerender();
         }, (err) => {
+          console.log('error', err['error']['message']);
+
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
@@ -104,12 +106,14 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
+      columnDefs: [{ orderable: false, targets: 4 }],
+
       columns: [
         {
-          data: 'country'
+          data: 'country.country'
         },
         {
-          data: 'currency'
+          data: 'country.currency_code'
         },
         {
           data: 'from'
@@ -118,7 +122,8 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
           data: 'to'
         },
         {
-          data: 'action'
+          data: 'action',
+
         }
       ]
     };

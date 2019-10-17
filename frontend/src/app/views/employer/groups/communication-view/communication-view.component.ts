@@ -45,12 +45,11 @@ export class CommunicationViewComponent implements OnInit {
     });
   }
 
-  cancel() {
-    this.router.navigate(['/employer/groups/list']);
-  }
+  //   this.router.navigate(['/employer/groups/list']);
+  // }
 
-  edit() {
-    this.router.navigate(['/employer/groups/add_group']);
+  edit(id) {
+    this.router.navigate(['/employer/groups/edit_comunication/' + id]);
   }
 
   onclick() { }

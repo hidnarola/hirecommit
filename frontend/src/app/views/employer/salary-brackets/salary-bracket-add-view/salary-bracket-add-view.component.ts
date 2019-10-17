@@ -41,7 +41,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
-      country: new FormControl('', [Validators.required]),
+      location: new FormControl('', [Validators.required]),
       currency: new FormControl(),
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required])
@@ -99,7 +99,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
       this.panelTitle = 'Edit Salary Bracket';
       this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-        this.detail = res['data'];
+        this.detail = res['data']['data'];
         // this.detail.country = res['data'][0].location;
         // this.detail.currency = res['data'][0].location.country.currency_code;
       });
@@ -126,6 +126,8 @@ export class SalaryBracketAddViewComponent implements OnInit {
     if (this.id && flag) {
       this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
         this.router.navigate([this.cancel_link]);
+      }, (err) => {
+        this.toastr.error(err['error']['message'].msg, 'Error!', { timeOut: 3000 });
       });
     } else if (!this.id && flag) {
       this.submitted = !flag;

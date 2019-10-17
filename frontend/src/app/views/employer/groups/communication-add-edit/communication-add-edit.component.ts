@@ -17,7 +17,9 @@ export class CommunicationAddEditComponent implements OnInit {
   id: any;
   value = false;
   submitted = false;
-  _name: any;
+  details: any = {};
+  _name: any = {};
+  isEdit = false;
   title: string;
   cancel_link = '/employer/groups/list';
 
@@ -39,10 +41,20 @@ export class CommunicationAddEditComponent implements OnInit {
       this._name = res['data']['data'];
     });
 
+    this.service.get_communication_detail(this.id).subscribe(res => {
+      this.details = res['data']['data'][0];
+      console.log('details >> ', this.details);
+
+    })
+
+
+
     this.myForm = this.fb.group({
       arr: this.fb.array([this.createItem()])
     });
   }
+
+
 
   public onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
@@ -61,13 +73,14 @@ export class CommunicationAddEditComponent implements OnInit {
     }
   }
 
+
   createItem() {
     return this.fb.group({
       communicationname: ['', Validators.required],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', Validators.required],
-      message: ['']
+      message: ['', Validators.required]
     });
   }
 
