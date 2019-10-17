@@ -24,6 +24,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'edit_comunication/:id',
+        component: AddGroupsComponent,
+        data: {
+          title: 'Edit Group Communication'
+        }
+      },
+      {
         path: 'list',
         component: ViewGroupsComponent,
         data: {
@@ -45,7 +52,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'edit-group/:id',
+        path: 'edit/:id',
         component: GroupsComponent,
         data: {
           title: 'Edit Group'

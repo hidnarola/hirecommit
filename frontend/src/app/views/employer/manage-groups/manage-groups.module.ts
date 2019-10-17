@@ -10,7 +10,7 @@ import { GroupsDetailsComponent } from './groups-details/groups-details.componen
 import { GroupsComponent } from './groups/groups.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
-
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   declarations: [ViewGroupsComponent, AddGroupsComponent, GroupsDetailsComponent, GroupsComponent],
   imports: [
@@ -19,7 +19,7 @@ import { DataTablesModule } from 'angular-datatables';
     ReactiveFormsModule,
     CKEditorModule,
     HttpClientModule,
-    DataTablesModule
+    DataTablesModule, DropdownModule
   ],
   providers: []
 })

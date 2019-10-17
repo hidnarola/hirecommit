@@ -40,18 +40,25 @@ export class GroupsDetailsComponent implements OnInit {
         }
 
       });
-      console.log('_details', this.data);
-
-
+      console.log('_details', this.communication);
     })
   }
 
-  cancel() {
+  delete(id) {
+    console.log(' ts>><<', id);
+    this.service.deactivate_communication(id).subscribe(res => {
+      console.log("deleted..!!", res);
+
+    }, (err) => {
+      console.log('error >>', err); return false
+
+    })
+
     this.router.navigate(['/employer/groups/list']);
   }
 
-  edit() {
-    this.router.navigate(['/employer/groups/add_group']);
+  edit(id) {
+    this.router.navigate(['/employer/groups/edit_comunication/' + id]);
   }
 
   onclick() {

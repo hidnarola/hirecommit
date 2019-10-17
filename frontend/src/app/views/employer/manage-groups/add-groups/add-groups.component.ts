@@ -18,25 +18,54 @@ export class AddGroupsComponent implements OnInit {
   id: any;
   value = false;
   submitted = false;
-  _name: any;
+  details: any = {};
+  _name: any = {};
+  isEdit = false;
   title: string;
+  id1: any;
   cancel_link = '/employer/groups/list'
+  Triggers = [
+    { label: 'Select', value: '' },
+    { label: 'After Offer', value: 'After Offer' },
+    { label: 'Before Joining', value: 'Before Joining' },
+    { label: 'Before Expiry', value: 'Before Expiry' },
+    { label: 'After Expiry', value: 'After Expiry' },
+    { label: 'After Joining', value: 'After Joining' }
+  ];
+
+  Priority = [
+    { label: 'Select', value: '' },
+    { label: 'High', value: 'High' },
+    { label: 'Medium', value: 'Medium' },
+    { label: 'Low', value: 'Low' }
+  ];
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      console.log(this.id);
+      this.isEdit = true;
+
     });
 
     this.service.get_detail(this.id).subscribe(res => {
       this._name = res['data']['data'];
-      console.log('name', this._name);
+      this._name = this._name[0];
     });
+
+    this.service.get_communication_detail(this.id).subscribe(res => {
+      this.details = res['data']['data'][0];
+      console.log('details >> ', this.details);
+
+    })
+
+
 
     this.myForm = this.fb.group({
       arr: this.fb.array([this.createItem()])
     });
   }
+
+
 
   public onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
@@ -47,6 +76,9 @@ export class AddGroupsComponent implements OnInit {
 
   onSubmit(valid) {
     this.submitted = true;
+    if (this.isEdit) {
+
+    }
 
     if (valid) {
       this.service.add_communication(this.myForm.controls.arr.value, this.id).subscribe(res => {
@@ -56,13 +88,14 @@ export class AddGroupsComponent implements OnInit {
     }
   }
 
+
   createItem() {
     return this.fb.group({
       communicationname: ['', Validators.required],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', Validators.required],
-      message: ['']
+      message: ['', Validators.required]
     });
   }
 

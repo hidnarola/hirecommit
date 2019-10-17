@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <strong style="font-size: 20px;">Add Communication : {{_name[0].name}}</strong>
+          <strong style="font-size: 20px;">Add Communication : {{_name.name}}</strong>
           <span class="input-group-text pull-right" [routerLink]="cancel_link"><i class="icon-close"></i></span>
         </div>
         <form class="form-horizontal" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm.valid)">
@@ -28,16 +28,15 @@
                           <div *ngIf="f[i].controls.communicationname.errors.required">This Field is required.</div>
                         </div>
                       </div>
+
                       <label class="col-md-1 col-form-label" for="trigger">Trigger</label>
                       <div class="col-md-4">
-                        <select id="trigger" name="select1" class="form-control" formControlName="trigger">
-                          <option value="null" selected="selected">Please select trigger</option>
-                          <option value="beforeJoining">Before Joining</option>
-                          <option value="afterJoining">After Joining</option>
-                          <option value="afterOffer">After Offer</option>
-                          <option value="beforeExpiry">Before Expiry</option>
-                          <option value="afterExpiry">After Expiry</option>
-                        </select>
+
+                        <!-- {{form.controls['salarytype'].value}} -->
+                        <!-- [(ngModel)]="offer_data.salaryduration" -->
+                        <p-dropdown [options]="Triggers" formControlName="trigger" id="trigger">
+                        </p-dropdown>
+
                         <div *ngIf="submitted && f[i].controls.trigger.errors" style="color: red;">
                           <div *ngIf="f[i].controls.trigger.errors.required">This Field is required.</div>
                         </div>
@@ -54,14 +53,10 @@
                       </div>
 
 
-                      <label class="col-md-1 col-form-label" for="trigger">Priority</label>
+                      <label class="col-md-1 col-form-label" for="priority">Priority</label>
                       <div class="col-md-4">
-                        <select id="priority" name="select1" class="form-control" formControlName="priority">
-                          <option value="null" selected="selected">Please select priority</option>
-                          <option value="High">High</option>
-                          <option value="Medium">Medium</option>
-                          <option value="Low">Low</option>
-                        </select>
+                        <p-dropdown [options]="Priority" formControlName="priority" id="priority">
+                        </p-dropdown>
                         <div *ngIf="submitted && f[i].controls.priority.errors" style="color: red;">
                           <div *ngIf="f[i].controls.priority.errors.required">This Field is required.</div>
                         </div>
@@ -72,6 +67,9 @@
                       <label class="col-md-2 col-form-label" for="message">Message</label>
                       <div class="col-md-9">
                         <ckeditor [editor]="Editor" formControlName="message" (ready)="onReady($event)"></ckeditor>
+                        <div *ngIf="submitted && f[i].controls.message.errors" style="color: red;">
+                          <div *ngIf="f[i].controls.message.errors.required">This Field is required.</div>
+                        </div>
                       </div>
                     </div>
                   </div>

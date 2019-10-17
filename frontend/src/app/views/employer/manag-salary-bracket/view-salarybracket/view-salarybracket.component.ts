@@ -42,7 +42,7 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
 
   edit(id) {
     console.log(id);
-    
+
     this.router.navigate(['/employer/salary_brackets/add_salarybracket/' + id]);
   }
 
@@ -60,6 +60,8 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
           this.rrerender();
 
         }, (err) => {
+          console.log('error', err['error']['message']);
+
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
@@ -84,8 +86,8 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
       ajax: (dataTablesParameters: any, callback) => {
         console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_salary_brcaket(dataTablesParameters).subscribe(res => {
-          console.log('res data =>>',res);
-          
+          console.log('res data =>>', res);
+
 
           if (res['status'] === 1) {
             this.salary = res['salary'];
@@ -111,12 +113,14 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
+      columnDefs: [{ orderable: false, targets: 4 }],
+
       columns: [
         {
-          data: 'country'
+          data: 'country.country'
         },
         {
-          data: 'currency'
+          data: 'country.currency_code'
         },
         {
           data: 'from'
@@ -125,7 +129,8 @@ export class ViewSalarybracketComponent implements OnInit, OnDestroy, AfterViewI
           data: 'to'
         },
         {
-          data: 'action'
+          data: 'action',
+
         }
       ]
     };

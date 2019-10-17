@@ -22,8 +22,9 @@
             </thead>
             <tbody *ngIf="salary?.length != 0">
               <tr *ngFor="let data of salary">
-                <td>-</td>
-                <td>-</td>
+
+                <td>{{data.location.country.country}}</td>
+                <td>{{data.location.country.currency_code}}</td>
                 <!-- <td>{{data.location.country.country}}</td> -->
                 <!-- <td>{{data.location.country.currency_code}}</td> -->
                 <td>{{data.from}} </td>

@@ -31,7 +31,7 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   edit(id) {
-    this.router.navigate(['/employer/groups/edit-group/' + id]);
+    this.router.navigate(['employer/groups/edit/' + id]);
   }
 
   delete(id) {
@@ -77,7 +77,7 @@ export class ViewGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
         }, err => {
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
-      },
+      }, columnDefs: [{ orderable: false, targets: 7 }],
       columns: [
         {
           data: 'name'

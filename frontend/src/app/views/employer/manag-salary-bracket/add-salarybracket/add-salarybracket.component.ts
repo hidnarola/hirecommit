@@ -39,7 +39,7 @@ export class AddSalarybracketComponent implements OnInit {
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
-      country: new FormControl('', [Validators.required]),
+      location: new FormControl('', [Validators.required]),
       currency: new FormControl(),
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required])
@@ -52,6 +52,8 @@ export class AddSalarybracketComponent implements OnInit {
 
     this.service.get_location().subscribe(res => {
       this.currency = res['data']
+      console.log('from currency =>', this.currency);
+
       res['data'].forEach(element => {
         this.countryList.push({ 'label': element.country, 'value': element.id })
       });
@@ -60,9 +62,9 @@ export class AddSalarybracketComponent implements OnInit {
     this.getDetail(this.id);
   }
 
-  findCities() {
-    this.detail.currency = this.detail.country.country.currency_code;
-  }
+  // findCities() {
+  //   this.detail.currency = this.detail.country.country.currency_code;
+  // }
   findCurrency(value) {
     this.currency.forEach(element => {
       if (value.value === element.id) {
@@ -104,10 +106,10 @@ export class AddSalarybracketComponent implements OnInit {
       this.panelTitle = 'Edit Salary Bracket';
       this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-        this.detail = res['data'];
+        this.detail = res['data']['data'];
         // this.detail.country = res['data'][0].location;
         // this.detail.currency = res['data'][0].location.country.currency_code;
-        console.log('subscribed!', res['data']);
+        console.log('subscribed!', res['data']['data']);
       });
     } else {
       this.detail = {
@@ -135,7 +137,10 @@ export class AddSalarybracketComponent implements OnInit {
     if (this.id && flag) {
       this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
         console.log('edited successfully!!!');
+        this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         this.router.navigate([this.cancel_link]);
+      }, (err) => {
+        this.toastr.error(err['error']['message'].msg, 'Error!', { timeOut: 3000 });
       });
     } else if (!this.id && flag) {
       console.log('in add');
@@ -150,9 +155,9 @@ export class AddSalarybracketComponent implements OnInit {
           this.router.navigate([this.cancel_link])
         }
       }, (err) => {
-        console.log('error msg ==>', err['error']['message']);
+        console.log('>>>>', err['message']);
 
-        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+        this.toastr.error(err['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
 
       if (flag) {

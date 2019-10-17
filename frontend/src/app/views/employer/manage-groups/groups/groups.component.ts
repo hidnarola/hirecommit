@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { GroupService } from '../manage-groups.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -10,12 +10,37 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./groups.component.scss']
 })
 export class GroupsComponent implements OnInit {
+  id: any;
+  groupData: any = {};
+  isEdit = false;
+  buttonTitle = 'Add';
+  panelTitle = 'Add Group';
+  editedData: any;
   addGroup: FormGroup;
   isFormSubmited = false;
   cancel_link = '/employer/groups/list';
-  constructor(private router: Router, public fb: FormBuilder, private service: GroupService, private toastr: ToastrService) { }
+  constructor(private router: Router,
+    public fb: FormBuilder,
+    private service: GroupService,
+    private toastr: ToastrService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
+
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+      this.buttonTitle = 'Update';
+      this.panelTitle = 'Edit Group';
+      console.log('params id', this.id);
+    });
+
+    this.service.get_detail(this.id).subscribe(res => {
+      this.groupData = res['data']['data']
+      this.groupData = this.groupData[0];
+      console.log('groupData >> ', this.groupData);
+
+    })
+
     this.addGroup = this.fb.group({
       name: new FormControl('', [Validators.required]),
       high_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
@@ -31,16 +56,49 @@ export class GroupsComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmited = true;
-    if (valid) {
-      this.service.addGroup(this.addGroup.value).subscribe(res => {
+    console.log('p1==>', this.id);
+    if (this.id && this.id != 0) {
+
+      console.log('edit==>', this.id);
+
+      let obj = {
+        "id": this.id,
+        name: this.groupData['name'],
+        high_unopened: this.groupData['high_unopened'],
+        high_notreplied: this.groupData['high_notreplied'],
+        medium_unopened: this.groupData['medium_unopened'],
+        medium_notreplied: this.groupData['medium_notreplied'],
+        low_unopened: this.groupData['low_unopened'],
+        low_notreplied: this.groupData['low_notreplied'],
+
+      }
+      console.log('Edited!!', obj);
+      this.service.edit_group(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
-          this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
           this.isFormSubmited = false;
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.addGroup.reset();
         }
+        this.router.navigate(['/employer/groups/list'])
       }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
+    }
+    else {
+      this.buttonTitle = 'Add';
+      this.panelTitle = 'Add Group';
+      if (valid) {
+
+        this.service.addGroup(this.addGroup.value).subscribe(res => {
+          if (res['data']['status'] === 1) {
+            this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
+            this.isFormSubmited = false;
+            this.addGroup.reset();
+          }
+        }, (err) => {
+          this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        });
+      }
     }
   }
 

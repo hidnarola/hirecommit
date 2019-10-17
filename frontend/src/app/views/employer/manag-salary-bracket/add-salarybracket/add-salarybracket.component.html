@@ -20,10 +20,10 @@
               <div class="col-md-2">
 
                 <!-- [(ngModel)]="offer_data.country" -->
-                <p-dropdown [options]="countryList" placeholder="Select Value" formControlName="country" id="country" #country
-                  (onChange)="findCurrency($event)"></p-dropdown>
-                
-                <span *ngIf="!AddSalaryBracket.get('country').valid && submitted" class="help-block">This field is
+                <p-dropdown [options]="countryList" placeholder="Select Value" formControlName="location" id="location"
+                  #country [(ngModel)]="detail.location" (onChange)="findCurrency($event)"></p-dropdown>
+
+                <span *ngIf="!AddSalaryBracket.get('location').valid && submitted" class="help-block">This field is
                   required.</span>
               </div>
             </div>

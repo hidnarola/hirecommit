@@ -13,30 +13,43 @@ export class GroupService {
   constructor(private http: HttpClient, private route: Router) { }
 
   add_communication(data, id): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/add_group_details/' + id, { data });
+    return this.http.post<any[]>(`${this.url}` + '/group/communication/' + id, { data });
   }
+
+  edit_group(data): Observable<any[]> {
+    console.log('in service =>> ', data);
+
+    return this.http.put<any[]>(`${this.url}` + '/group', data);
+  }
+
 
   view_groups(params): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/group/get', { ...params });
   }
   lists(params): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + '/lists', { ...params });
+    return this.http.post<any[]>(`${this.url}` + '/group/get', { ...params });
   }
 
   get_detail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/group_detail/' + id);
+    return this.http.get<any[]>(`${this.url}` + '/group/' + id);
   }
 
   get_communication_detail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/group_communication_detail/' + id);
+    console.log('group id from service ==>', id);
+    return this.http.get<any[]>(`${this.url}` + '/group/communication_detail/' + id);
   }
 
   deleteGroup(id): Observable<any[]> {
-    return this.http.put<any[]>(`${this.url}` + '/deactivate_group/' + id, {});
+    return this.http.put<any[]>(`${this.url}` + '/group/deactivate_group/' + id, {});
   }
 
   addGroup(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/group', data);
   }
 
+  deactivate_communication(id): Observable<any[]> {
+    console.log('>><<', id);
+
+    return this.http.put<any[]>(`${this.url}` + '/group/deactivate_communication/' + id, {})
+  }
 }

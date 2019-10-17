@@ -134,7 +134,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (salary_bracket_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": salary_bracket_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Salary Bracket update successfully", "data": salary_bracket_upadate });
     }
 
 })
