@@ -17,11 +17,11 @@ const routes: Routes = [
     children: [
       {
         path: 'employers',
-        loadChildren: () => import('./employer/employer.module').then(m => m.EmployerModule)
+        loadChildren: () => import('./employers/employer.module').then(m => m.EmployerModule)
       },
       {
         path: 'candidates',
-        loadChildren: () => import('./candidate/candidate.module').then(m => m.CandidateModule)
+        loadChildren: () => import('../shared-components/candidates/candidate.module').then(m => m.CandidateModule)
       }
     ]
   }

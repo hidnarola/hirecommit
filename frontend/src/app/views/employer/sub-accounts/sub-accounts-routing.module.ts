@@ -1,51 +1,54 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ViewSubAccountsComponent } from './view-sub-accounts/view-sub-accounts.component';
-import { SubAccountsDetailsComponent } from './sub-accounts-details/sub-accounts-details.component';
-import { AddSubAccountsComponent } from './add-sub-accounts/add-sub-accounts.component';
+import { SubAccountAddViewComponent } from './sub-account-add-view/sub-account-add-view.component';
+import { SubAccountsListComponent } from './sub-accounts-list/sub-accounts-list.component';
 
 const routes: Routes = [
   {
     path: '',
+    // redirectTo: 'list',
     data: {
       title: 'Sub Accounts'
     },
     children: [
       {
         path: '',
-        redirectTo: 'list'
+        redirectTo: 'list',
+        // data: {
+        //   title: 'Sub Accounts'
+        // },
+      },
+      {
+        path: 'list',
+        component: SubAccountsListComponent,
+        data: {
+          title: 'List'
+        }
       },
       {
         path: 'add',
-        component: AddSubAccountsComponent,
+        component: SubAccountAddViewComponent,
         data: {
           title: 'Add'
         }
       },
       {
         path: 'edit/:id',
-        component: AddSubAccountsComponent,
+        component: SubAccountAddViewComponent,
         data: {
           title: 'Edit'
         }
       },
       {
-        path: 'list',
-        component: ViewSubAccountsComponent,
-        data: {
-          title: 'List'
-        }
-      },
-      {
-        path: 'sub_accountdetail',
-        component: SubAccountsDetailsComponent,
+        path: 'view/:id',
+        component: SubAccountAddViewComponent,
         data: {
           title: 'View'
         }
       }
     ]
+  },
 
-  }
 ];
 
 @NgModule({
