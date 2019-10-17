@@ -51,9 +51,10 @@ export class AddSalarybracketComponent implements OnInit {
     });
 
     this.service.get_location().subscribe(res => {
-      this.currency = res['data']
+      this.currency = res['data'];
       res['data'].forEach(element => {
-        this.countryList.push({ 'label': element.country, 'value': element.id })
+        // console.log(element); return false;
+        this.countryList.push({ 'label': element.country, 'value': element.country_id });
       });
     });
 
@@ -65,10 +66,10 @@ export class AddSalarybracketComponent implements OnInit {
   }
   findCurrency(value) {
     this.currency.forEach(element => {
-      if (value.value === element.id) {
+      if (value.value === element.country_id) {
         this.detail.currency = element.currency;
       }
-    })
+    });
 
   }
 
@@ -79,8 +80,7 @@ export class AddSalarybracketComponent implements OnInit {
     } else if (from >= to) {
       this.error = true;
       this.error_msg = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
@@ -88,12 +88,10 @@ export class AddSalarybracketComponent implements OnInit {
     if (from > to) {
       this.error = true;
       this.error_msg = 'Can\'t greater than maximum salary!';
-    }
-    else if (from <= to) {
+    } else if (from <= to) {
       this.error = true;
       this.error_msg1 = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
@@ -147,7 +145,7 @@ export class AddSalarybracketComponent implements OnInit {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.AddSalaryBracket.reset();
-          this.router.navigate([this.cancel_link])
+          this.router.navigate([this.cancel_link]);
         }
       }, (err) => {
         console.log('error msg ==>', err['error']['message']);

@@ -34,16 +34,20 @@ export class OfferService {
         return this.http.put<any[]>(`${this.url}` + '/offer/edit_offer/' + id, data);
     }
 
-    get_location(country: string): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + `/get_location/${country}`);
-    }
+    // get_location(country: string): Observable<any[]> {
+    //     return this.http.get<any[]>(`${this.url}` + `/get_location/${country}`);
+    // }
 
     get_groups(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/groups_list');
+        return this.http.get<any[]>(`${this.url}` + '/group/groups_list');
     }
 
-    get_salary_brcaket(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.url}` + '/get_salary_bracket');
+    get_salary_bracket(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/salary_bracket/get_salary_bracket');
+    }
+
+    get_salary_country(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/salary_bracket/get_salary_country');
     }
 
     change_status(id, data): Observable<any[]> {
@@ -54,4 +58,13 @@ export class OfferService {
      get_candidate_list(): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/candidate');
     }
+
+    get_location(country): Observable <any[]> {
+        return this.http.get<any[]>(`${this.url}` + `/location/get_location/` + country);
+    }
+
+    get_customfield(): Observable <any[]> {
+        return this.http.get<any[]>(`${this.url}` + `/customfield`);
+    }
+
 }
