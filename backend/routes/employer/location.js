@@ -121,6 +121,7 @@ router.get('/get_location', async (req, res) => {
                 $group: {
                     "_id": "$country.alpha3Code",
                     "country": { $first: "$country.country" },
+                    "country_id": { $first: "$country._id" },
                     "id": { $first: "$_id" },
                     "currency": { $first: "$country.currency_code" }
                 }

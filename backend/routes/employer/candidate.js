@@ -308,7 +308,37 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 // })
 
 router.get('/', async (req, res) => {
-    var candidate_list = await Candidate.find({ "isAllow": true });
+    console.log('1', 1);
+
+    var aggregate = [
+        {
+            $match: {
+                "is_del": false,
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "user",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user"
+            }
+        },
+        {
+            $unwind: {
+                path: "$user",
+                preserveNullAndEmptyArrays: true
+            },
+        },
+        {
+            $match: {
+                "user.isAllow": true
+            }
+        }
+    ]
+    let candidate_list = await Candidate.aggregate(aggregate);
+
     if (candidate_list) {
         return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
     }
