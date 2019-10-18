@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { OfferService } from '../offer.service';
 import { CommonService } from '../../../../services/common.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -11,7 +11,7 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./offer-add-view.component.scss']
 })
 export class OfferAddViewComponent implements OnInit {
-form: FormGroup;
+  form: FormGroup;
   form_validation = false;
   offer_data: any = {};
   buttonTitle = 'Submit';
@@ -28,35 +28,35 @@ form: FormGroup;
   customfield: any = [];
   group_optoins: any = [];
   arrayItems: any = [];
-  key: any ;
+  key: any;
   custom_field: any = [];
-
   salary_duration_optoins = [
-    { label: 'Select', value: '' },
+    { label: 'Select Salary Duration', value: '' },
     { label: '1 week', value: '1week' },
     { label: '2 week', value: '2week' }
   ];
-  // salary_bracket_optoins = [{ label: 'Select', value: '' }];
   offer_type_optoins = [
-    { label: 'Select', value: '' },
+    { label: 'Select Offer Type', value: '' },
     { label: 'No Commit', value: 'noCommit' },
     { label: 'Candidate Commit', value: 'candidateCommit' },
     { label: 'Both Commit', value: 'bothCommit' }
   ];
-  // group_optoins = [{ label: 'Select', value: '' }];
   commitstatus_optoins = [
-    { label: 'Select', value: '' },
+    { label: 'Select Commit Status', value: '' },
     { label: 'High', value: 'high' },
     { label: 'Medium', value: 'medium' },
     { label: 'Low', value: 'low' }
   ];
   contryList: any;
   cancel_link = '/employer/offers/list';
+  show_spinner = false;
+  formData: FormData;
 
   constructor(
     private fb: FormBuilder,
     private service: OfferService,
-    private commonService: CommonService
+    private toastr: ToastrService,
+    private router: Router
   ) {
     // Form Controls
     this.form = this.fb.group({
@@ -64,10 +64,10 @@ form: FormGroup;
       email: new FormControl('', [Validators.required, Validators.email]),
       title: new FormControl('', [Validators.required]),
       salarytype: new FormControl('', [Validators.required]),
-      salaryduration: new FormControl({ value: '', disabled: true }),
+      salaryduration: new FormControl(''),
       country: new FormControl('', [Validators.required]),
       location: new FormControl('', [Validators.required]),
-      currency_type: new FormControl(),
+      currency_type: new FormControl('', [Validators.required]),
       salarybracket: new FormControl('', [Validators.required]),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
@@ -81,26 +81,26 @@ form: FormGroup;
     });
   }
 
-
-  findemail(e) {
-
+  // delivery property get method
+  get customfieldItem() {
+    return this.form.get('customfieldItem') as FormArray;
   }
 
   findData = (value) => {
     this.salarybracketList = [];
     this.country.forEach(element => {
       if (value.value === element.country_id) {
-        this.offer_data.currency_type = element.currency;
+        // this.offer_data.currency_type = element.currency;
+        this.form.controls.currency_type.setValue(element.currency);
       }
     });
 
     this.service.get_salary_bracket().subscribe((res) => {
-      this.salary_bracket =  res['data'];
-      console.log('get_salary_bracket : res.data ==> ', res[`data`]);
+      this.salary_bracket = res['data'];
       // this.salarybracketList = res[`data`];
       res['data'].forEach(element => {
-        if (value.value  === element.country._id) {
-          this.salarybracketList.push({ 'label': element.from + ' - ' + element.to , 'value': element.country._id });
+        if (value.value === element.country._id) {
+          this.salarybracketList.push({ 'label': element.from + ' - ' + element.to, 'value': element._id });
         }
       });
     }, (err) => {
@@ -108,84 +108,114 @@ form: FormGroup;
     });
 
     this.service.get_location(value.value).subscribe(res => {
-      console.log(res['data']);
       this.location = res[`data`].data;
-      // console.log('getLocaion : location ==> ', this.location);
-      // res['data'].forEach(element => {
-      //   console.log('log location : element ==> ', element);
-      //   if (value.value === element.country._id) {
-      //     this.locationList.push({ 'label': element.from + '-' + element.to , 'value': element.country._id });
-      //   }
-      // });
     }, (err) => {
       console.log(err);
     });
   }
 
+  //  On change of salary type
+  getSalaryType() {
+    console.log('this.form.controls.salaryType => ', this.form.value.salarytype);
+  }
+
   ngOnInit() {
     this.service.get_candidate_list().subscribe(res => {
-      console.log('res=>', res['data']);
-       this.candidate = res['data'];
+      this.candidate = res['data'];
       res['data'].forEach(element => {
-        this.candidateList.push({ 'label': element.firstname + ' ' + element.lastname , 'value': element.user_id });
+        this.candidateList.push({ 'label': element.firstname + ' ' + element.lastname, 'value': element.user_id });
       });
-      console.log('======>', this.candidateList);
     }, (err) => {
       console.log(err);
     });
 
     this.service.get_salary_country().subscribe(res => {
       this.country = res['data'];
-      // this.countryList = res[`data`];
       res['data'].forEach(element => {
         this.countryList.push({ 'label': element.country_name, 'value': element.country_id });
       });
-      console.log('------------------->',  this.countryList);
     }, (err) => {
       console.log(err);
     });
 
     this.service.get_customfield().subscribe(res => {
       this.customfield = res['data'];
-       const _array = [];
+      const _array = [];
       this.customfield.forEach((element, index) => {
         const new_customfield = {
-          'key': element.key
+          'key': element.key,
+          'value': ''
         };
         this.customfieldItem.setControl(index, this.fb.group({
-          key : [''],
+          value: [''],
+          key: [element.key]
         }));
         _array.push(new_customfield);
       });
-       this.offer_data.customfieldItem = _array;
-        console.log('log arrayitems ==> ', _array);
+      this.offer_data.customfieldItem = _array;
     }, (err) => {
       console.log(err);
     });
 
     this.service.get_groups().subscribe(res => {
       this.group_optoins = res['data'].data;
-      console.log('group_optoins',  this.group_optoins);
+      console.log('group_optoins', this.group_optoins);
     }, (err) => {
       console.log(err);
     });
   }
 
-  get customfieldItem() {
-    return this.form.get('customfieldItem') as FormArray;
-  }
-
   findEmail(value) {
     this.candidate.forEach(element => {
       if (value.value === element.user_id) {
-        this.offer_data.email = element.user.email;
+        this.form.controls.email.setValue(element.user.email);
       }
     });
   }
 
   onSubmit(flag) {
-    console.log('onSubmit : flag ==> ', flag);
-    console.log('onSubmit : offer_data ==> ', this.offer_data);
+    const _coustomisedFiledsArray = [];
+    this.form.value.customfieldItem.forEach((element) => {
+      if (element.value) {
+        _coustomisedFiledsArray.push({
+          key: element.key,
+          value: element.value
+        });
+      }
+    });
+    this.formData = new FormData();
+    const unwantedFields = ['candidate', 'customfieldItem', 'group', 'status', 'employer_id'];
+    const data = {
+      ...this.form.value,
+      user_id: this.form.value.candidate,
+      location: this.form.value.location._id,
+      groups: this.form.value.group._id,
+      customfeild: JSON.stringify(_coustomisedFiledsArray),
+    };
+    Object.keys(data).map(key => {
+      if (unwantedFields.includes(key)) {
+        delete data[key];
+      }
+    });
+
+    for (const key in data) {
+      if (key) {
+        const value = data[key];
+        this.formData.append(key, value);
+      }
+    }
+
+    if (flag) {
+      this.show_spinner = true;
+      this.service.add_offer(this.formData).subscribe((res) => {
+        this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+        this.router.navigate([this.cancel_link]);
+      }, (err) => {
+        console.log('err => ', err);
+        this.show_spinner = false;
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+      });
+    }
     this.form_validation = !flag;
   }
 

@@ -64,7 +64,7 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
 
             var reg_obj = {
                 "emp_id": user.data.emp_id,
@@ -104,6 +104,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+
 router.post('/get', async (req, res) => {
     var schema = {
 
@@ -113,7 +114,7 @@ router.post('/get', async (req, res) => {
 
     if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'name' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
 
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
@@ -338,7 +339,6 @@ router.put('/', async (req, res) => {
         obj.low_notreplied = req.body.low_notreplied
     }
     var id = req.body.id;
-    console.log('id', id);
 
     var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
 

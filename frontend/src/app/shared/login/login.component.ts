@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-adminlayout',
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
   constructor(
     public router: Router,
     private service: CommonService,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private toastr: ToastrService
   ) {
     this.formData = {};
     this.loginForm = this.fb.group({
@@ -38,6 +40,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', token);
         localStorage.setItem('user', res['role']);
         localStorage.setItem('userid', res['id']);
+        console.log('res => ', res);
+        this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         if (res['role'] === 'admin') {
           this.router.navigate(['admin']);
         } else if (res['role'] === 'employer') {
@@ -45,6 +49,9 @@ export class LoginComponent implements OnInit {
         } else if (res['role'] === 'candidate') {
           this.router.navigate(['candidate']);
         }
+      }, (err) => {
+        console.log('err => ', err);
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     }
   }

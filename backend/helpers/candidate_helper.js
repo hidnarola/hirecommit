@@ -1,7 +1,7 @@
 var ObjectId = require('mongodb').ObjectID;
 
 var candidate_helper = {};
-candidate_helper.get_all_approved_candidate = async (collection, id, search, start, length, recordsTotal, sort) => {
+candidate_helper.get_all_approved_candidate = async (collection, search, start, length, recordsTotal, sort) => {
   try {
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
@@ -21,7 +21,12 @@ candidate_helper.get_all_approved_candidate = async (collection, id, search, sta
         }
       },
       {
-        $unwind: "$user"
+        $unwind:
+        {
+          path: "$user",
+          preserveNullAndEmptyArrays: true
+        }
+
       },
       {
         $match: { "user.isAllow": true }
@@ -65,7 +70,7 @@ candidate_helper.get_all_approved_candidate = async (collection, id, search, sta
   }
 };
 
-candidate_helper.get_all_new_candidate = async (collection, id, search, start, length, recordsTotal, sort) => {
+candidate_helper.get_all_new_candidate = async (collection, search, start, length, recordsTotal, sort) => {
   try {
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
@@ -85,12 +90,15 @@ candidate_helper.get_all_new_candidate = async (collection, id, search, start, l
         }
       },
       {
-        $unwind: "$user"
+        $unwind:
+        {
+          path: "$user",
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $match: { "user.isAllow": false }
       }
-
     ]
 
     if (search && search.value != '') {

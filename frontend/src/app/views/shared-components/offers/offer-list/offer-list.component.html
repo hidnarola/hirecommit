@@ -23,18 +23,18 @@
                                 <th>Group</th>
                                 <th>Commit Status</th>
                                 <th>Custome Field 1</th>
-                                <th>Action</th>
+                                <!-- <th>Action</th> -->
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr *ngFor="let offer of offerData; let i = index;">
-                                <td>{{offer.createdAt}}</td>
+                                <td>{{offer.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.title}}</td>
                                 <td>{{offer.salarytype}}</td>
                                 <td>{{offer.salarybracket.from}} to {{offer.salarybracket.to}}</td>
-                                <td>{{offer.expirydate}}</td>
-                                <td>{{offer.joiningdate}}</td>
+                                <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>
                                     <label class="switch">
                                         <input [checked]="offer.status" type="checkbox"
@@ -45,19 +45,20 @@
                                 <td>{{offer.offertype}}</td>
                                 <td>{{offer.group.name}}</td>
                                 <td>{{offer.commitstatus}}</td>
-                                <td>{{offer.customfeild1}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
-                                            class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
-                                            class="icon-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
-                                            class="icon-trash"></i></button></td>
+                                <td>{{offer.customfeild[0].key}}</td>
+                                <!-- <td> -->
+                                <!-- <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
+                                            class="icon-eye"></i></button> -->
+                                <!-- <button type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
+                                            class="icon-pencil"></i></button> -->
+                                <!-- <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
+                                            class="icon-trash"></i></button> -->
+                                <!-- </td> -->
                             </tr>
                         </tbody>
                         <tbody *ngIf="offerData?.length == 0">
                             <tr>
-                                <td colspan="12" class="no-data-available">No data!</td>
+                                <td colspan="11" class="no-data-available">No data!</td>
                             </tr>
                         </tbody>
                     </table>
@@ -66,57 +67,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-<!-- <div class="animated fadeIn">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fa fa-align-justify"></i>
-                    List Of All Offers
-                </div>
-                <div class="card-body">
-                    <table datatable class="row-border hover table">
-                        <thead>
-                            <tr>
-                                <td>Employer Name</td>
-                                <th>Title</th>
-                                <th>Salary Bracket</th>
-                                <th>Salary Type</th>
-                                <th>Expiry Date</th>
-                                <th>Joining Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody *ngIf="offerList?.length != 0">
-                            <tr *ngFor="let data of offerList">
-                                <td>{{employer ? employer.username : '-'}}</td>
-                                <td>{{data.title}}</td>
-                                <td>{{data.salarybracket}}</td>
-                                <td>{{data.salarytype}}</td>
-                                <td>{{data.expirydate}}</td>
-                                <td>{{data.joiningdate}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-success"
-                                        [routerLink]="['/candidate/offers/view']"><i class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="onDelete(data._id)"><i
-                                            class="icon-trash"></i></button>
-                                    <span tooltip="Accept" placement="top" show-delay="500"><button type="button"
-                                            class="btn btn-sm btn-success"><i class="icon-check"></i></button></span>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody *ngIf="offerList?.length == 0">
-                            <tr>
-                                <td colspan="4" class="no-data-available">No data!</td>
-                            </tr>
-                        <tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->

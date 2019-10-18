@@ -10,6 +10,7 @@ var User = require('../../models/user');
 
 
 router.post('/get_new', async (req, res) => {
+
     var schema = {};
     req.checkBody(schema);
     var errors = req.validationErrors();
@@ -37,12 +38,7 @@ router.post('/get_new', async (req, res) => {
                 }
             },
             {
-                $unwind:
-                {
-                    path: "$user",
-                    preserveNullAndEmptyArrays: true
-                }
-
+                $unwind: "$user"
             },
             {
                 $match: { "user.isAllow": false }
@@ -61,8 +57,7 @@ router.post('/get_new', async (req, res) => {
         let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-
+        var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -136,7 +131,6 @@ router.post('/get_approved', async (req, res) => {
     }
 });
 
-
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
     var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id")
@@ -152,7 +146,6 @@ router.get('/:id', async (req, res) => {
     //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
     // }
 });
-
 
 router.put("/deactive_candidate/:id", async (req, res) => {
     var obj = {
@@ -171,7 +164,6 @@ router.put("/deactive_candidate/:id", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
     }
 });
-
 
 // router.put('/edit_approved_candidate/:id', async (req, res) => {
 
