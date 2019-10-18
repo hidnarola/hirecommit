@@ -12,6 +12,7 @@ var logger = config.logger;
 var group = require('../../models/group');
 var GroupDetail = require('../../models/group-detail');
 
+var User = require('../../models/user');
 
 
 
@@ -62,17 +63,33 @@ router.post("/", async (req, res) => {
 
     var errors = req.validationErrors();
     if (!errors) {
-        var reg_obj = {
-            "emp_id": req.userInfo.id,
-            "name": req.body.name,
-            "high_unopened": req.body.high_unopened,
-            "high_notreplied": req.body.high_notreplied,
-            "medium_unopened": req.body.medium_unopened,
-            "medium_notreplied": req.body.medium_notreplied,
-            "low_unopened": req.body.low_unopened,
-            "low_notreplied": req.body.medium_notreplied,
-            "is_del": false
-        };
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+
+            var reg_obj = {
+                "emp_id": user.data.emp_id,
+                "name": req.body.name,
+                "high_unopened": req.body.high_unopened,
+                "high_notreplied": req.body.high_notreplied,
+                "medium_unopened": req.body.medium_unopened,
+                "medium_notreplied": req.body.medium_notreplied,
+                "low_unopened": req.body.low_unopened,
+                "low_notreplied": req.body.medium_notreplied,
+            };
+        }
+        else {
+            var reg_obj = {
+                "emp_id": req.userInfo.id,
+                "name": req.body.name,
+                "high_unopened": req.body.high_unopened,
+                "high_notreplied": req.body.high_notreplied,
+                "medium_unopened": req.body.medium_unopened,
+                "medium_notreplied": req.body.medium_notreplied,
+                "low_unopened": req.body.low_unopened,
+                "low_notreplied": req.body.medium_notreplied,
+
+            };
+        }
         var interest_resp = await common_helper.insert(group, reg_obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -102,12 +119,20 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
+        }
+        else {
+            var user_id = req.userInfo.id
+        }
+
+
         var aggregate = [
             {
-                $match: {
-                    "is_del": false,
-                    "emp_id": new ObjectId(req.userInfo.id)
-                }
+                $match:
+                    { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
+
             }
         ]
 
@@ -124,7 +149,7 @@ router.post('/get', async (req, res) => {
         totalMatchingCountRecords = totalMatchingCountRecords.length;
         // var search={};
         console.log(req.body.search)
-        var resp_data = await groups_helper.get_all_groups(group, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await groups_helper.get_all_groups(group, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         console.log(resp_data);
 
         if (resp_data.status == 1) {
@@ -221,7 +246,7 @@ router.put("/communication/:id", async (req, res) => {
 });
 
 router.get('/communication_detail/:id', async (req, res) => {
-    var group_detail = await common_helper.find(GroupDetail, { group_id: new ObjectId(req.params.id) });
+    var group_detail = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
     console.log("group detail", group_detail);
 
     if (group_detail.status === 1) {
@@ -247,6 +272,7 @@ router.get('/:id', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
     }
 });
+
 router.put('/', async (req, res) => {
     var obj = {
     };
@@ -287,7 +313,6 @@ router.put('/', async (req, res) => {
 })
 
 
-
 router.put("/deactivate_group/:id", async (req, res) => {
     var obj = {
         is_del: true
@@ -308,9 +333,33 @@ router.put("/deactivate_group/:id", async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
     }
     else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2) {
-        logger.trace("User got successfully = ", resp_group_dataresp_group_data);
+        logger.trace("User got successfully = ", resp_group_data);
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No Data Found." });
     }
+});
+
+router.put("/deactivate_communication/:id", async (req, res) => {
+    var obj = {
+
+    }
+    var id = req.params.id;
+    console.log('req.params.id====?', req.params.id);
+
+    var resp_group_data = await common_helper.GroupDetail(GroupDetail, { "communication._id": new ObjectId(id) }, { "communication.is_del": true });
+    console.log('======resp_group_data', resp_group_data);
+
+    // if (resp_group_data.status == 0) {
+    //     logger.error("Error occured while fetching User = ", resp_group_data);
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while featching data.", "data": resp_group_data });
+    // }
+    // else if (resp_group_data.status == 1) {
+    logger.trace("User got successfully = ", resp_group_data);
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
+    // }
+    // else if (resp_group_data.status == 2) {
+    //     logger.trace("User got successfully = ", resp_group_data);
+    //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No Data Found." });
+    // }
 });
 
 

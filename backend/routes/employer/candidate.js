@@ -5,6 +5,7 @@ var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
 var Candidate = require('../../models/candidate-detail');
 var logger = config.logger;
+var User = require('../../models/user');
 
 
 
