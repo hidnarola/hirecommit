@@ -28,7 +28,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
   cancel_link = '/employer/salary_brackets/list';
-
+  obj: any;
   constructor(private fb: FormBuilder,
     private router: Router,
     private service: SalaryBracketService,
@@ -100,10 +100,15 @@ export class SalaryBracketAddViewComponent implements OnInit {
       this.panelTitle = 'Edit Salary Bracket';
       this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-        this.detail = res['data'];
-        // this.detail.country = res['data'][0].location;
-        // this.detail.currency = res['data'][0].location.country.currency_code;
-        console.log('subscribed!', res['data']);
+        // this.detail = res['data'];
+        // console.log(this.detail);
+        // console.log(res['data'].country.country);
+
+        this.detail.country = res['data'].country._id;
+        this.detail.currency = res['data'].country.currency_code;
+        this.detail.from = res['data'].from;
+        this.detail.to = res['data'].to;
+        console.log('subscribed!', this.detail.country);
       });
     } else {
       this.detail = {
@@ -129,7 +134,15 @@ export class SalaryBracketAddViewComponent implements OnInit {
 
     this.submitted = true;
     if (this.id && flag) {
-      this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
+      this.obj = {
+        'id': this.id,
+        'country': this.detail['country'],
+        'currency': this.detail['currency'],
+        'from': this.detail['from'],
+        'to': this.detail['to']
+      };
+
+      this.service.edit_salary_bracket(this.obj).subscribe(res => {
         console.log('edited successfully!!!');
         this.router.navigate([this.cancel_link]);
       });

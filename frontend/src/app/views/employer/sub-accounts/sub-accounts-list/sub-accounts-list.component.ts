@@ -19,7 +19,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   dtTrigger: Subject<any> = new Subject();
   sub_accounts: any = [];
   data: any[];
-  admin_rights = true;
+  admin_rights;
+  ckecked;
 
   // tslint:disable-next-line: max-line-length
   constructor(
@@ -67,7 +68,14 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   get_SubEmployer() { }
 
   checkValue(e) {
-    this.admin_rights = e.target.checked;
+    // console.log(' e.target.checked ==>',  e.target.checked);
+    if (e.target.checked === true) {
+      this.admin_rights = 'yes';
+      console.log(this.admin_rights);
+    } else if (e.target.checked === false) {
+      this.admin_rights = 'no';
+      console.log(this.admin_rights);
+    }
   }
 
   detail() {
@@ -98,14 +106,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     //  this.router.navigate(['/groups/addgroup']);
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next();
@@ -116,4 +116,12 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     this.dtTrigger.unsubscribe();
   }
 
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
 }
