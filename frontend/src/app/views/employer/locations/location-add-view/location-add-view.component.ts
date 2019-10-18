@@ -88,10 +88,8 @@ export class LocationAddViewComponent implements OnInit {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.addLocation.reset();
-          // this.router.navigate(['/employer/customfeild/list'])
         }
         this.submitted = false;
-        // this.router.navigate(['/employer/manage_location/view_location']);
       }, (err) => {
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
@@ -103,7 +101,7 @@ export class LocationAddViewComponent implements OnInit {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.addLocation.reset();
-            // this.router.navigate(['/employer/customfeild/list'])
+            this.router.navigate([this.cancel_link]);
           }
           this.submitted = false;
         }, (err) => {

@@ -33,7 +33,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   detail(id) {
-    this.router.navigate(['/employer/groups/group_details/' + id]);
+    this.router.navigate(['/employer/groups/communication/view/' + id]);
   }
 
   edit(id) {
@@ -61,7 +61,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onaddDetails(id) {
-    this.router.navigate(['/employer/groups/add_comunication/' + id]);
+    this.router.navigate(['/employer/groups/communication/edit/' + id]);
   }
 
   public bind() {

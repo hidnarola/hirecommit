@@ -30,6 +30,8 @@ export class CommunicationViewComponent implements OnInit {
     });
     this.service.get_detail(this.id).subscribe(res => {
       this._name = res['data']['data'];
+      console.log('>>', this._name);
+
       this.viewform = true;
     });
     this.service.get_communication_detail(this.id).subscribe(res => {
@@ -49,7 +51,7 @@ export class CommunicationViewComponent implements OnInit {
   // }
 
   edit(id) {
-    this.router.navigate(['/employer/groups/edit_comunication/' + id]);
+    this.router.navigate(['/employer/groups/communication/edit/' + id]);
   }
 
   onclick() { }
