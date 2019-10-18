@@ -6,8 +6,7 @@
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
 
                 </div>
-                <form class="form-horizontal" [formGroup]="addCustomFeild"
-                    (ngSubmit)="onSubmit(addCustomFeild.valid,id)">
+                <form class="form-horizontal" [formGroup]="addCustomFeild" (ngSubmit)="onSubmit(addCustomFeild.valid)">
                     <div class="card-body">
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="key">Custom Field </label>

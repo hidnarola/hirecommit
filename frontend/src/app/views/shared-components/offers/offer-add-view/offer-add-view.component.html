@@ -4,9 +4,9 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}} Offer</strong>
-                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
+                    <!-- <span class="input-group-text pull-right" [routerLink]="cancel_link">
                         <i class="icon-close"></i>
-                    </span>
+                    </span> -->
                 </div>
                 <form class="form-horizontal" [formGroup]="form">
 
@@ -246,9 +246,9 @@
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
-                            {{buttonTitle}} <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button type="reset" class="btn btn-sm btn-danger">
-                            Reset</button>
+                            Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+                        <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
+                            Cancel</button>
                     </div>
 
                 </form>
