@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { GroupService } from '../manage-groups.service';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-groups-list',
@@ -23,7 +24,8 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private service: GroupService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private confirmationService: ConfirmationService
   ) {
     console.log('employer - groups : view-groups component => ');
   }
@@ -41,14 +43,19 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   delete(id) {
-    this.service.deleteGroup(id).subscribe(res => {
-      if (res['status']) {
-        this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
-        this.rrerender();
-        this.bind();
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.deleteGroup(id).subscribe(res => {
+          if (res['status']) {
+            this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
+            this.rrerender();
+            this.bind();
+          }
+        }, (err) => {
+          this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        });
       }
-    }, (err) => {
-      this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
     });
   }
 

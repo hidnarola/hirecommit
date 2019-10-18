@@ -21,15 +21,12 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   data: any[];
   admin_rights = true;
 
-  // tslint:disable-next-line: max-line-length
   constructor(
     private router: Router,
     private service: SubAccountService,
     private confirmationService: ConfirmationService,
     private toastr: ToastrService
-  ) {
-    console.log('employer - sub accounts : view-sub-accounts component => ');
-  }
+  ) { }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -93,10 +90,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         });
       }
     });
-  }
-
-  onAdd() {
-    //  this.router.navigate(['/groups/addgroup']);
   }
 
   rrerender(): void {
