@@ -20,14 +20,10 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
   dtTrigger: Subject<any> = new Subject();
   Country: any;
   salary: any[];
-  location: any;
   unique: any = [];
   _country: any = [];
   c_name: any = [];
   sal: any = [];
-  salnew: any = [];
-
-  unq: any;
   constructor(private router: Router,
     private confirmationService: ConfirmationService,
     private service: SalaryBracketService,
@@ -37,12 +33,6 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit() {
     this.bind();
   }
-
-
-  detail() {
-    // this.router.navigate(['/groups/summarydetail']);
-  }
-
   edit(id) {
     this.router.navigate(['/employer/salary_brackets/edit/' + id]);
   }
@@ -52,7 +42,6 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.deactivate_salary_brcaket(id).subscribe(res => {
-          console.log('deactivate salary', res);
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
@@ -65,16 +54,13 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
-  onAdd() {
-    //  this.router.navigate(['/groups/addgroup']);
-  }
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
 
   public bind() {
-     this.dtOptions = {
+    this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
       serverSide: true,
@@ -82,12 +68,9 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_salary_brcaket(dataTablesParameters).subscribe(res => {
-          console.log('res data =>>', res);
           if (res['status'] === 1) {
             this.salary = res['salary'];
-            console.log('data==>', res);
             this.salary = this.salary.filter(x => x.is_del === false);
             this.Country = countries;
             const obj = [];
@@ -129,7 +112,7 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
     };
   }
 
- public GetCountry(country) {
+  public GetCountry(country) {
     this.c_name = this._country.filter(x => x.code === country);
     this.c_name = this.c_name[0].name;
     return this.c_name;

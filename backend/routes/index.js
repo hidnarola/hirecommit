@@ -476,6 +476,7 @@ router.post('/login', async (req, res) => {
           let update_resp = await common_helper.update(User, { "_id": user_resp.data._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
           let role = await common_helper.findOne(Role, { "_id": user_resp.data.role_id });
 
+
           var LoginJson = { id: user_resp.data._id, email: user_resp.email, role: role.data.role };
           var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
             expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME

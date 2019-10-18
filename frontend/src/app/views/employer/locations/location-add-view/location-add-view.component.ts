@@ -12,7 +12,7 @@ import { LocationService } from '../location.service';
 })
 export class LocationAddViewComponent implements OnInit {
 
-    Country: any = [];
+  Country: any = [];
   addLocation: FormGroup;
   submitted = false;
   location: any;
@@ -33,14 +33,12 @@ export class LocationAddViewComponent implements OnInit {
       country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required])
     });
-      this.route.params.subscribe((params: Params) => {
+    this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      // console.log(this.id);
     });
     this.getDetail(this.id);
     this.commonService.country_data().subscribe(res => {
       this.Country = res['data'];
-      // console.log('country_data ==>', this.Country);
     });
   }
 
@@ -67,7 +65,7 @@ export class LocationAddViewComponent implements OnInit {
   get f() { return this.addLocation.controls; }
 
   onSubmit(flag: boolean, id) {
-     this.submitted = true;
+    this.submitted = true;
     if (this.id && flag) {
       const res_data = {
         'id': this.id,
@@ -79,6 +77,7 @@ export class LocationAddViewComponent implements OnInit {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.addLocation.reset();
+          this.router.navigate([this.cancel_link]);
         }
         this.submitted = false;
       }, (err) => {
@@ -103,5 +102,4 @@ export class LocationAddViewComponent implements OnInit {
       }
     }
   }
-
 }

@@ -52,7 +52,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
-      columnDefs: [{ orderable: false, targets: 2 }],
+      columnDefs: [{ orderable: false, targets: 6 }],
       columns: [
         {
           data: 'firstname'

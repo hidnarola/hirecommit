@@ -1,11 +1,10 @@
 var ObjectId = require('mongodb').ObjectID;
 
-var salary_helper = {};
+var custom_helper = {};
 
 
-salary_helper.get_all_salary_bracket = async (collection, id, search, start, length, recordsTotal, sort) => {
+custom_helper.get_all_custom_field = async (collection, id, search, start, length, recordsTotal, sort) => {
   try {
-    // console.log(search);
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
@@ -16,27 +15,27 @@ salary_helper.get_all_salary_bracket = async (collection, id, search, start, len
         }
       },
 
-      {
-        $lookup:
-        {
-          from: "country_datas",
-          localField: "country",
-          foreignField: "_id",
-          as: "country"
-        }
-      },
-      {
-        $unwind: {
-          path: "$country",
-          preserveNullAndEmptyArrays: false
-        },
-      }
+      // {
+      //   $lookup:
+      //   {
+      //     from: "country_datas",
+      //     localField: "country",
+      //     foreignField: "_id",
+      //     as: "country"
+      //   }
+      // },
+      // {
+      //   $unwind: {
+      //     path: "$country",
+      //     preserveNullAndEmptyArrays: false
+      //   },
+      // }
     ]
 
     if (search && search != "") {
       aggregate.push({
         "$match":
-          { $or: [{ "country.country": RE }, { "country.currency_code": RE }, { "from": RE }, { "to": RE }] }
+          { $or: [{ "key": RE }] }
       });
     }
 
@@ -70,4 +69,4 @@ salary_helper.get_all_salary_bracket = async (collection, id, search, start, len
     return { "status": 0, "message": "Error occured while finding music", "error": err }
   }
 };
-module.exports = salary_helper;
+module.exports = custom_helper;

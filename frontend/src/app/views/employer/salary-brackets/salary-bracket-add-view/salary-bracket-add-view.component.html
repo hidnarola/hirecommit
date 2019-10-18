@@ -18,17 +18,15 @@
 
                                 <!-- [(ngModel)]="offer_data.country" -->
                                 <p-dropdown [options]="countryList" placeholder="Select Value" formControlName="country"
-                                    id="country" #country (onChange)="findCurrency($event)"></p-dropdown>
+                                    [(ngModel)]="detail.country" id="country" #country
+                                    (onChange)="findCurrency($event)"></p-dropdown>
 
                                 <span *ngIf="!AddSalaryBracket.get('country').valid && submitted"
                                     class="help-block">This field is
                                     required.</span>
                             </div>
                         </div>
-
-
-
-
+                        <!-- [(ngModel)]="detail.country.currency_code" -->
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="currency">Currency</label>
                             <div class="col-md-3">
@@ -38,6 +36,7 @@
 
                             </div>
                         </div>
+
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="from">From</label>

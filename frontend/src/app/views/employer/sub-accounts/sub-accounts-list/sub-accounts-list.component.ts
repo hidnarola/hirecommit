@@ -19,17 +19,15 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   dtTrigger: Subject<any> = new Subject();
   sub_accounts: any = [];
   data: any[];
-  admin_rights = true;
+  admin_rights;
+  ckecked;
 
-  // tslint:disable-next-line: max-line-length
   constructor(
     private router: Router,
     private service: SubAccountService,
     private confirmationService: ConfirmationService,
     private toastr: ToastrService
-  ) {
-    console.log('employer - sub accounts : view-sub-accounts component => ');
-  }
+  ) { }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -50,6 +48,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
+      columnDefs: [{ orderable: false, targets: 3 }],
       columns: [
         {
           data: 'username'
@@ -67,7 +66,14 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   get_SubEmployer() { }
 
   checkValue(e) {
-    this.admin_rights = e.target.checked;
+    // console.log(' e.target.checked ==>',  e.target.checked);
+    if (e.target.checked === true) {
+      this.admin_rights = 'yes';
+      console.log(this.admin_rights);
+    } else if (e.target.checked === false) {
+      this.admin_rights = 'no';
+      console.log(this.admin_rights);
+    }
   }
 
   detail() {
@@ -92,10 +98,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         });
       }
     });
-  }
-
-  onAdd() {
-    //  this.router.navigate(['/groups/addgroup']);
   }
 
   rrerender(): void {

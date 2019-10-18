@@ -3,13 +3,16 @@ var router = express.Router();
 var config = require('../../config')
 var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
+var user_helper = require('../../helpers/user_helper');
 var Candidate = require('../../models/candidate-detail');
 var logger = config.logger;
 var User = require('../../models/user');
+var Employer = require('../../models/employer-detail');
 
 
 
 router.post('/get_new', async (req, res) => {
+
     var schema = {};
     req.checkBody(schema);
     var errors = req.validationErrors();
@@ -37,12 +40,7 @@ router.post('/get_new', async (req, res) => {
                 }
             },
             {
-                $unwind:
-                {
-                    path: "$user",
-                    preserveNullAndEmptyArrays: true
-                }
-
+                $unwind: "$user"
             },
             {
                 $match: { "user.isAllow": false }
@@ -58,11 +56,10 @@ router.post('/get_new', async (req, res) => {
         }
 
 
-        let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
+        let totalMatchingCountRecords = await Employer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-
+        var resp_data = await candidate_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -95,21 +92,24 @@ router.post('/get_approved', async (req, res) => {
 
                 }
             },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            {
-                $unwind: "$user"
-            },
-            {
-                $match: { "user.isAllow": true }
-            }
+            // {
+            //     $lookup:
+            //     {
+            //         from: "user",
+            //         localField: "user_id",
+            //         foreignField: "_id",
+            //         as: "user"
+            //     }
+            // },
+            // {
+            //     $unwind: {
+            //         path: "$user",
+            //         preserveNullAndEmptyArrays: true
+            //     }
+            // },
+            // {
+            //     $match: { "user.isAllow": true }
+            // }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
@@ -124,7 +124,7 @@ router.post('/get_approved', async (req, res) => {
         let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await candidate_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -139,7 +139,7 @@ router.post('/get_approved', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id")
+    var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id")
     console.log('candidate_detail', candidate_detail);
 
     // if (candidate_detail.status == 0) {
@@ -153,12 +153,11 @@ router.get('/:id', async (req, res) => {
     // }
 });
 
-
 router.put("/deactive_candidate/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(Candidate, { "_id": req.params.id }, obj);
+    var resp_data = await common_helper.update(Employer, { "_id": req.params.id }, obj);
     var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
@@ -171,7 +170,6 @@ router.put("/deactive_candidate/:id", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
     }
 });
-
 
 // router.put('/edit_approved_candidate/:id', async (req, res) => {
 

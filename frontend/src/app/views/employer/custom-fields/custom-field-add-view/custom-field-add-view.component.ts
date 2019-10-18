@@ -24,9 +24,7 @@ export class CustomFieldAddViewComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router
-  ) {
-    console.log('employer - customfield: add-custom-field component => ');
-  }
+  ) { }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {

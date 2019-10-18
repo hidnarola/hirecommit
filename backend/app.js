@@ -78,7 +78,7 @@ var index = require('./routes/index');
 
 var admin = require('./routes/admin');
 
-var candidate = require('./routes/candidate');
+// var candidate = require('./routes/candidate');
 
 var employer = require('./routes/employer');
 //var customer = require('./routes/customer');
@@ -87,9 +87,9 @@ app.use('/', index);
 
 app.use('/admin', admin);
 
-app.use('/employer',employer);
+app.use('/employer', employer);
 
- app.use('/candidate', candidate);
+// app.use('/candidate', candidate);
 //app.use('/customer', customer);
 
 // catch 404 and forward to error handler

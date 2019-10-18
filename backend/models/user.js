@@ -19,8 +19,8 @@ const UserSchema = new Schema({
     ref: 'role'
   },
   admin_rights: {
-    type: Boolean,
-    default: false
+    type: String,
+    default: "no"
   },
   email_verified: {
     type: Boolean,
