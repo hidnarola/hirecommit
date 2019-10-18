@@ -11,6 +11,7 @@
 
                     <div class="card-body">
 
+
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="candidate">Select Candidate</label>
                             <div class="col-md-2">
@@ -42,6 +43,8 @@
                                 </div>
                             </div>
                         </div>
+
+
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="title">Title</label>
@@ -238,44 +241,6 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="customfield1">Custom Field 1</label>
-                            <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.customfield1" -->
-                                <input type="customfield1" class="form-control" placeholder="Enter customfield1"
-                                    autocomplete="customfield1" formControlName="customfield1" id="customfield1">
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['customfield1'].valid">
-                                    <!-- <span *ngIf="form.controls['customfield1'].errors['required']" class="text-danger">This field is required.</span> -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="customfield2">Custom Field 2</label>
-                            <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.customfield2" -->
-                                <input type="customfield2" class="form-control" placeholder="Enter customfield2" aut
-                                    ocomplete="customfield2" formControlName="customfield2" id="customfield2">
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['customfield2'].valid">
-                                    <!-- <span *ngIf="form.controls['customfield2'].errors['required']" class="text-danger">This field is required.</span> -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="customfield3">Custom Field 3</label>
-                            <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.customfield3" -->
-                                <input type="customfield3" class="form-control" placeholder="Enter customfield3"
-                                    autocomplete="customfield3" formControlName="customfield3" id="customfield3">
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['customfield3'].valid">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="notes">Notes</label>
                             <div class="col-md-6">
                                 <!-- [(ngModel)]="offer_data.notes" -->
@@ -286,12 +251,25 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <div class="form-group row" formArrayName="customfieldItem"
+                            *ngFor="let customfield of offer_data.customfieldItem; let i=index">
+                            <label class="col-md-3 col-form-label" for="customfield.key">{{customfield.key}}</label>
+                            <div class="col-md-6">
+                                <input type="text" formControlName="customfieldItem[i]" class="form-control"
+                                    placeholder="Enter value" id="key">
+                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls[customfieldItem].valid"> </div> -->
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)">
+                            <!-- <i class="fa fa-dot-circle-o"></i> -->
                             {{buttonTitle}}</button>
                         <button type="reset" class="btn btn-sm btn-danger">
+                            <!-- <i class="fa fa-ban"></i> -->
                             Reset</button>
                     </div>
 
@@ -299,7 +277,9 @@
             </div>
         </div>
     </div>
+    <!-- {{countryArr | json}} -->
 </div>
+
 
 
 
