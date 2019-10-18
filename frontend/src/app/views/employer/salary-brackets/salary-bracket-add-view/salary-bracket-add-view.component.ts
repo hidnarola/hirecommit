@@ -64,7 +64,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
 
   findCurrency(value) {
     this.currency.forEach(element => {
-      if (value.value === element.id) {
+      if (value.value === element.country_id) {
         this.detail.currency = element.currency;
       }
     });

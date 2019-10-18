@@ -8,6 +8,7 @@ var salary_helper = require('../../helpers/salary_helper');
 
 var logger = config.logger;
 var salary_bracket = require('../../models/salary_bracket');
+var User = require('../../models/user');
 
 
 router.post("/", async (req, res) => {
@@ -29,14 +30,26 @@ router.post("/", async (req, res) => {
 
     var errors = req.validationErrors();
     if (!errors) {
-        var reg_obj = {
-            "emp_id": req.userInfo.id,
-            "country": req.body.country,
-            "currency": req.body.currency,
-            "from": req.body.from,
-            "to": req.body.to,
-            //"location": req.body.location
-        };
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var reg_obj = {
+                "emp_id": user.data.emp_id,
+                "country": req.body.country,
+                "currency": req.body.currency,
+                "from": req.body.from,
+                "to": req.body.to,
+            }
+        }
+        else {
+            var reg_obj = {
+                "emp_id": req.userInfo.id,
+                "country": req.body.country,
+                "currency": req.body.currency,
+                "from": req.body.from,
+                "to": req.body.to,
+                //"location": req.body.location
+            };
+        }
         var interest_resp = await common_helper.insert(salary_bracket, reg_obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -65,12 +78,17 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
+        }
+        else {
+            var user_id = req.userInfo.id
+        }
+
         var aggregate = [
             {
-                $match: {
-                    "is_del": false,
-                    "emp_id": new ObjectId(req.userInfo.id)
-                }
+                $match: { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
             }
         ]
 
@@ -87,7 +105,7 @@ router.post('/get', async (req, res) => {
         totalMatchingCountRecords = totalMatchingCountRecords.length;
         console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
-        var resp_data = await salary_helper.get_all_salary_bracket(salary_bracket, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await salary_helper.get_all_salary_bracket(salary_bracket, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -120,7 +138,8 @@ router.get('/get_salary_bracket', async (req, res) => {
                 path: "$country",
                 preserveNullAndEmptyArrays: false
             },
-        }
+        },
+
     ]
 
     const salary_bracket_list = await salary_bracket.aggregate(aggregate);
@@ -133,6 +152,52 @@ router.get('/get_salary_bracket', async (req, res) => {
     // else {
     //     return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
     // }
+});
+
+router.get('/get_salary_country', async (req, res) => {
+    var aggregate = [
+        {
+            $match: {
+                "is_del": false
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "country_datas",
+                localField: "country",
+                foreignField: "_id",
+                as: "country"
+            }
+        },
+        {
+            $unwind: {
+                path: "$country",
+                preserveNullAndEmptyArrays: false
+            },
+        },
+        {
+            $group: {
+                "_id": "$country.alpha3Code",
+                "country_id": { $first: "$country._id" },
+                "country_name": { $first: "$country.country" },
+                "currency": { $first: "$country.currency_code" },
+                "code": { $first: "$country.country_code" }
+
+
+            }
+        }
+
+    ]
+
+    const salary_bracket_list = await salary_bracket.aggregate(aggregate);
+    if (salary_bracket_list && salary_bracket_list.length > 0) {
+        return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
+    }
+    else {
+        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+    }
+
 });
 
 

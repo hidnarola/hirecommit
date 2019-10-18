@@ -25,7 +25,7 @@ groups_helper.get_all_groups = async (collection, id, search, start, length, rec
             { "low_unopened": RE },
             { "low_notreplied": RE }
           ]
-        }
+        },
       });
     }
     if (sort) {

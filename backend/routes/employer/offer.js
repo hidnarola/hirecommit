@@ -10,6 +10,7 @@ var offer_helper = require('../../helpers/offer_helper');
 
 var logger = config.logger;
 var moment = require("moment")
+var User = require('../../models/user');
 
 
 
@@ -71,25 +72,52 @@ router.post("/add_offer", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
 
-        var reg_obj = {
-            "employer_id": req.userInfo.id,
-            "user_id": req.body.user_id,
-            "name": req.body.name,
-            "title": req.body.title,
-            "salarytype": req.body.salarytype,
-            "salaryduration": req.body.salaryduration,
-            "country": req.body.country,
-            "location": req.body.location,
-            "currency_type": req.body.currency_type,
-            "salarybracket": req.body.salarybracket,
-            "expirydate": req.body.expirydate,
-            "joiningdate": req.body.joiningdate,
-            //  "status": true,
-            "offertype": req.body.offertype,
-            "groups": req.body.group,
-            "commitstatus": req.body.commitstatus,
-            "customfeild": (req.body.customfeild),
-            "notes": req.body.notes,
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var obj = {
+                "emp_id": user.data.emp_id,
+                "user_id": req.body.user_id,
+                "name": req.body.name,
+                "title": req.body.title,
+                "salarytype": req.body.salarytype,
+                "salaryduration": req.body.salaryduration,
+                "country": req.body.country,
+                "location": req.body.location,
+                "currency_type": req.body.currency_type,
+                "salarybracket": req.body.salarybracket,
+                "expirydate": req.body.expirydate,
+                "joiningdate": req.body.joiningdate,
+                //  "status": true,
+                "offertype": req.body.offertype,
+                "groups": req.body.group,
+                "commitstatus": req.body.commitstatus,
+                "customfeild": (req.body.customfeild),
+                "notes": req.body.notes,
+
+            }
+        }
+        else {
+            var reg_obj = {
+                "employer_id": req.userInfo.id,
+                "user_id": req.body.user_id,
+                "name": req.body.name,
+                "title": req.body.title,
+                "salarytype": req.body.salarytype,
+                "salaryduration": req.body.salaryduration,
+                "country": req.body.country,
+                "location": req.body.location,
+                "currency_type": req.body.currency_type,
+                "salarybracket": req.body.salarybracket,
+                "expirydate": req.body.expirydate,
+                "joiningdate": req.body.joiningdate,
+                //  "status": true,
+                "offertype": req.body.offertype,
+                "groups": req.body.group,
+                "commitstatus": req.body.commitstatus,
+                "customfeild": (req.body.customfeild),
+                "notes": req.body.notes,
+            }
+
 
 
         };
@@ -286,13 +314,15 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
+        }
+        else {
+            var user_id = req.userInfo.id
+        }
         var aggregate = [
-            {
-                $match: {
-                    "is_del": false,
-                    "employer_id": new ObjectId(req.userInfo.id)
-                }
-            }
+            { $match: { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false } }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
@@ -306,7 +336,7 @@ router.post('/get', async (req, res) => {
         totalMatchingCountRecords = totalMatchingCountRecords.length;
         console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
-        var resp_data = await offer_helper.get_all_offer(Offer, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         console.log('resp_data', resp_data);
 
         if (resp_data.status == 1) {
