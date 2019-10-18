@@ -7,7 +7,7 @@ const GroupSchema = new Schema({
   emp_id: {
     type: mongoose.Types.ObjectId,
     ref: 'user',
-    required: true
+    // required: true
   },
   name: {
     type: String,

@@ -13,7 +13,7 @@ var User = require('../../models/user');
 var async = require('async');
 var mail_helper = require('../../helpers/mail_helper');
 var Sub_Employer_Detail = require('../../models/sub-employer-detail');
-
+const random_pass_word = require('secure-random-password');
 
 
 router.post("/", async (req, res) => {
@@ -37,25 +37,46 @@ router.post("/", async (req, res) => {
             "admin_rights": req.body.admin_rights,
             "is_del": false,
             "emp_id": req.userInfo.id,
+            "email_verified": true,
+            "role_id": "5d9d99003a0c78039c6dd00f"
 
         };
+        var user_data = await common_helper.findOne(User, { "email": req.body.email })
 
-        var interest_resps = await common_helper.insert(User, reg_obj);
-        reg_obj.user_id = interest_resps.data._id;
-        var interest_resp = await common_helper.insert(Sub_Employer_Detail, reg_obj);
+        if (user_data.status == 2) {
+            var passwords = random_pass_word.randomPassword({ length: 8, characters: random_pass_word.lower + random_pass_word.upper + random_pass_word.digits + random_pass_word.symbols })
+            reg_obj.password = passwords
+            var interest_resps = await common_helper.insert(User, reg_obj);
+            reg_obj.user_id = interest_resps.data._id;
+            var interest_resp = await common_helper.insert(Sub_Employer_Detail, reg_obj);
 
-        if (interest_resp.status == 0) {
-            logger.debug("Error = ", interest_resp.error);
-            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-        } else {
-            res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resps })
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+                let mail_resp = await mail_helper.send("sub_emp", {
+                    "to": req.body.email,
+                    "subject": "Invited to be Sub employee"
+                }, {
+                    "email": req.body.email,
+                    "password": passwords
+                });
+                console.log('mail_resp', mail_resp);
+
+                res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resps })
+            }
         }
+        else {
+            res.status(config.BAD_REQUEST).json({ message: "Email already exists" });
+        }
+
     }
     else {
         logger.error("Validation Error = ", errors);
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
+
 
 router.post('/get', async (req, res) => {
 
@@ -105,7 +126,6 @@ router.post('/get', async (req, res) => {
 });
 
 router.put("/deactive_sub_account", async (req, res) => {
-
     var obj = {
         is_del: true
     }
@@ -160,7 +180,6 @@ router.put('/:id', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    console.log('id', id);
 
     var sub_account_detail = await Sub_Employer_Detail.findOne({ "_id": new ObjectId(id) }).populate('user_id')
     console.log('sub_account_detail', sub_account_detail);

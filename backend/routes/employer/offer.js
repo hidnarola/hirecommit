@@ -5,6 +5,7 @@ var config = require('../../config')
 var Offer = require('../../models/offer');
 var ObjectId = require('mongoose').Types.ObjectId;
 var common_helper = require('../../helpers/common_helper');
+var cron = require('node-cron');
 
 var offer_helper = require('../../helpers/offer_helper');
 
@@ -15,17 +16,17 @@ var User = require('../../models/user');
 
 
 //Offer
-router.post("/add_offer", async (req, res) => {
+router.post("/", async (req, res) => {
 
     var schema = {
-        "email": {
-            notEmpty: true,
-            errorMessage: "Email is required"
-        },
-        "name": {
-            notEmpty: true,
-            errorMessage: "Name is required"
-        },
+        // "email": {
+        //     notEmpty: true,
+        //     errorMessage: "Email is required"
+        // },
+        // "name": {
+        //     notEmpty: true,
+        //     errorMessage: "Name is required"
+        // },
         "title": {
             notEmpty: true,
             errorMessage: "Title is required"
@@ -73,11 +74,11 @@ router.post("/add_offer", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var obj = {
-                "emp_id": user.data.emp_id,
+                "employer_id": user.data.emp_id,
                 "user_id": req.body.user_id,
-                "name": req.body.name,
+                // "name": req.body.name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
@@ -91,7 +92,7 @@ router.post("/add_offer", async (req, res) => {
                 "offertype": req.body.offertype,
                 "groups": req.body.group,
                 "commitstatus": req.body.commitstatus,
-                "customfeild": (req.body.customfeild),
+                "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
 
             }
@@ -100,7 +101,7 @@ router.post("/add_offer", async (req, res) => {
             var reg_obj = {
                 "employer_id": req.userInfo.id,
                 "user_id": req.body.user_id,
-                "name": req.body.name,
+                // "name": req.body.name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
@@ -114,15 +115,18 @@ router.post("/add_offer", async (req, res) => {
                 "offertype": req.body.offertype,
                 "groups": req.body.group,
                 "commitstatus": req.body.commitstatus,
-                "customfeild": (req.body.customfeild),
+                "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
             }
 
 
 
         };
+        console.log('reg_obj', reg_obj);
 
         var interest_resp = await common_helper.insert(Offer, reg_obj);
+        console.log('interest_resp', interest_resp);
+
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
@@ -137,8 +141,7 @@ router.post("/add_offer", async (req, res) => {
 });
 
 
-router.post("/get_cron", async (req, res) => {
-
+cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
         [
             {

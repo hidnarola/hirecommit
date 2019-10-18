@@ -15,7 +15,7 @@ const LocationSchema = new Schema({
     emp_id: {
         type: mongoose.Types.ObjectId,
         ref: 'user',
-        required: true
+        // required: true
     },
     is_del: {
         type: Boolean,

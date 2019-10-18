@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var obj = {
                 "emp_id": user.data.emp_id,
                 "key": req.body.key,
@@ -74,7 +74,7 @@ router.post("/get", async (req, res) => {
     user_id = req.userInfo.id;
     //var totalMatchingCountRecords = await common_helper.count(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false });
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-    if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+    if (user && user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
         var user_id = user.data.emp_id
     }
     else {

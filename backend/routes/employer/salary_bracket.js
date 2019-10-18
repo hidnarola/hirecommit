@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var reg_obj = {
                 "emp_id": user.data.emp_id,
                 "country": req.body.country,
@@ -103,7 +103,6 @@ router.post('/get', async (req, res) => {
 
         let totalMatchingCountRecords = await salary_bracket.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
-        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
         var resp_data = await salary_helper.get_all_salary_bracket(salary_bracket, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
@@ -265,11 +264,8 @@ router.put("/deactive_salary_bracket/:id", async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var salary_brcaket_detail = await common_helper.findOne(salary_bracket, { "_id": ObjectId(id) })
-    if (salary_brcaket_detail.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
-    }
-    else if (salary_brcaket_detail.status == 1) {
+    var salary_brcaket_detail = await salary_bracket.findOne({ "_id": ObjectId(id) }).populate("country")
+    if (salary_brcaket_detail) {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Salary Bracket fetched successfully", "data": salary_brcaket_detail });
     }
     else {

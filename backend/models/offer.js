@@ -20,11 +20,11 @@ const OfferSchema = new Schema({
   },
   email: {
     type: String,
-    required: true
+    // required: true
   },
   name: {
     type: String,
-    required: true
+    // required: true
   },
   title: {
     type: String,
@@ -77,10 +77,10 @@ const OfferSchema = new Schema({
     require: true
   },
 
-  customField: [
-    {
-      customField
-    }
+  customfeild: [
+
+    customField
+
   ],
   notes: {
     type: String
