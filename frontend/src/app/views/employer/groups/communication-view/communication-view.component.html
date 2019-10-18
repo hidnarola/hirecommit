@@ -1,0 +1,48 @@
+<div class="animated fadeIn">
+    <div class="row" *ngIf='viewform'>
+        <div class="col-sm-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Group Detail
+
+                    <button type="button" id="add" (click)="onclick()" class="b pull-right"><i
+                            class="pull-right icon-close"></i></button>
+                </div>
+                <h4 class="ml-4 mt-3"> {{_name[0].name}}</h4>
+                <div class="card-body" *ngFor="let data of communication">
+                    <table class="table">
+
+                        <tbody>
+                            <tr>
+                                <td>Communication Name</td>
+                                <td>{{data.communicationname}}</td>
+                            </tr>
+                            <tr>
+                                <td>Trigger</td>
+                                <td> {{data.trigger}} </td>
+                            </tr>
+                            <tr>
+                                <td>Day</td>
+                                <td>{{data.day}}</td>
+                            </tr>
+                            <tr>
+                                <td>Priority</td>
+                                <td>{{data.priority}}</td>
+                            </tr>
+                            <tr>
+                                <td>Message</td>
+                                <td [innerHTML]=data.message></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <button type="button" class="btn btn-sm btn-danger" style="float: right;"
+                        (click)="cancel()">Delete</button>
+                    <button type="button" class="btn btn-sm btn-success mr-2" style="float: right;"
+                        (click)="edit()">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

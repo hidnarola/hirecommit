@@ -7,7 +7,9 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { MglTimelineModule } from 'angular-mgl-timeline';
 
 @NgModule({
-  declarations: [TimelineComponent],
+  declarations: [
+    TimelineComponent,
+  ],
   imports: [
     CommonModule,
     EmployerRoutingModule,

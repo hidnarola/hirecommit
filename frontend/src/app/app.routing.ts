@@ -5,7 +5,6 @@ import { LoginComponent } from './shared/login/login.component';
 import { ForgotPasswordComponent } from './shared/forgot-password/forgot-password.component';
 import { RegisterComponent } from './shared/register/register.component';
 import { SignUpComponent } from './shared/sign-up/sign-up.component';
-// import { AuthGuardService } from './services/auth/auth-guard.service';
 import { RoleGuardService } from './services/auth/role-guard.service';
 import { LoginGuard } from './shared/guard/login.guard';
 import { EmailconfermationComponent } from './shared/emailconfermation/emailconfermation.component';
@@ -41,6 +40,14 @@ export const routes: Routes = [
     canActivate: [RoleGuardService],
     data: {
       expectedRole: 'candidate'
+    }
+  },
+  {
+    path: 'sub_employer',
+    loadChildren: () => import('./views/sub-employer/sub-employer.module').then(m => m.SubEmployerModule),
+    canActivate: [RoleGuardService],
+    data: {
+      expectedRole: 'sub-employer'
     }
   },
   { path: '**', component: P404Component }

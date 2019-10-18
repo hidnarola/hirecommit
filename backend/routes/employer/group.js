@@ -163,6 +163,45 @@ router.post('/get', async (req, res) => {
     }
 });
 
+router.put('/', async (req, res) => {
+    var obj = {
+    };
+
+    if (req.body.name && req.body.name != "") {
+        obj.name = req.body.name
+    }
+    if (req.body.high_unopened && req.body.high_unopened != "") {
+        obj.high_unopened = req.body.high_unopened
+    }
+    if (req.body.high_notreplied && req.body.high_notreplied != "") {
+        obj.high_notreplied = req.body.high_notreplied
+    }
+    if (req.body.medium_unopened && req.body.medium_unopened != "") {
+        obj.medium_unopened = req.body.medium_unopened
+    }
+    if (req.body.medium_unopened && req.body.medium_unopened != "") {
+        obj.medium_unopened = req.body.medium_unopened
+    }
+    if (req.body.low_unopened && req.body.low_unopened != "") {
+        obj.low_unopened = req.body.low_unopened
+    }
+    if (req.body.low_notreplied && req.body.low_notreplied != "") {
+        obj.low_notreplied = req.body.low_notreplied
+    }
+    var id = req.body.id;
+
+    var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
+
+    if (group_upadate.status == 0) {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+    }
+    else if (group_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group update successfully", "data": group_upadate });
+    }
+
+})
+
+
 router.post("/communication/:id", async (req, res) => {
     var schema =
         [{

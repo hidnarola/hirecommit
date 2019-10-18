@@ -1,0 +1,51 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    New Candidate Detail
+                    <i class="icon-close" [routerLink]="cancel_link"></i>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Candidate Name</td>
+                                <td>Samppa Nori</td>
+                            </tr>
+                            <tr>
+                                <td>Candidate Email</td>
+                                <td>vik@narola.email</td>
+                            </tr>
+                            <tr>
+                                <td>Phone</td>
+                                <td>9274512415</td>
+                            </tr>
+                            <tr>
+                                <td>PAN</td>
+                                <td>748x69dwsae14</td>
+                            </tr>
+                            <tr>
+                                <td>PAN Image</td>
+                                <td><img src="assets/img/brand/download.jpg" style="width:70px; height: 50px;" /></td>
+                            </tr>
+                            <tr>
+                                <td>Date Of Register</td>
+                                <td>05-09-2019</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="float: right;">
+                        <button type="button" *ngIf="!approval" class="btn btn-sm btn-success"
+                            (click)="approve()">Approve</button>
+                        <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
+                            (click)="unapprove()">Unapprove</button>
+
+                        <button type="button" class="btn btn-sm btn-danger" [routerLink]="cancel_link">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
