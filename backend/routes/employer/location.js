@@ -9,6 +9,7 @@ var logger = config.logger;
 var async = require('async');
 
 var location = require('../../models/location');
+var User = require('../../models/user');
 
 
 //manage Location
@@ -27,11 +28,22 @@ router.post("/", async (req, res) => {
 
     var errors = req.validationErrors();
     if (!errors) {
-        var reg_obj = {
-            "country": req.body.country,
-            "city": req.body.city,
-            "emp_id": req.userInfo.id
-        };
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.data.role_id = ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var reg_obj = {
+                "emp_id": user.data.emp_id,
+                "country": req.body.country,
+                "city": req.body.city,
+            }
+        }
+        else {
+            var reg_obj = {
+                "country": req.body.country,
+                "city": req.body.city,
+                "emp_id": req.userInfo.id
+            };
+        }
+
         var interest_resp = await common_helper.insert(location, reg_obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -60,12 +72,19 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
+        }
+        else {
+            var user_id = req.userInfo.id
+        }
+
         var aggregate = [
             {
-                $match: {
-                    "is_del": false,
-                    "emp_id": new ObjectId(req.userInfo.id)
-                }
+                $match:
+                    { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
+
             }
         ]
 
@@ -82,7 +101,7 @@ router.post('/get', async (req, res) => {
         totalMatchingCountRecords = totalMatchingCountRecords.length;
         console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
-        var resp_data = await location_helper.get_all_location(location, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await location_helper.get_all_location(location, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -139,7 +158,10 @@ router.get('/get_location', async (req, res) => {
 
 
 router.get('/get_location/:country', async (req, res) => {
-    var location_list = await common_helper.find(location, { country: req.params.country });
+    var location_list = await common_helper.find(location, {
+        "emp_id": new ObjectId(req.userInfo.id),
+        "is_del": false, country: req.params.country
+    });
     if (location_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list });
     }

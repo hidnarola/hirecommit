@@ -1,0 +1,18 @@
+.b{
+    border: 0px;
+    background-color:#f0f3f5;
+}
+
+  /*
+   server-side-angular-way.component.css
+*/
+.no-data-available {
+    text-align: center;
+  }
+
+  /*
+     src/styles.css (i.e. your global style)
+  */
+  .dataTables_empty {
+    display: none;
+  }

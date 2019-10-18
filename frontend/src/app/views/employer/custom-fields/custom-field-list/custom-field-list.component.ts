@@ -19,20 +19,18 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
 
-  constructor(
-    private confirmationService: ConfirmationService,
+  constructor(private confirmationService: ConfirmationService,
     private toastr: ToastrService,
     private service: CustomFieldService,
-    private router: Router
-  ) {
-    console.log('employer - customfield: list-custom-field component => ');
-  }
+    private router: Router) { }
 
   ngOnInit() {
+    console.log(' list field component');
     this.bind();
   }
 
   public bind() {
+    console.log(' bind function ');
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
@@ -41,9 +39,15 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
+        console.log('dataTablesParameters', dataTablesParameters);
         this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
+          console.log(' res 1 ===>', res);
+
           if (res['status'] === 1) {
             this.data = res['data'];
+            console.log('custom_data==>', res);
+
+
             callback({ recordsTotal: res['recordsTotal']['recordsTotal'], recordsFiltered: res['recordsTotal']['recordsTotal'], data: [] });
           }
         }, err => {
@@ -65,14 +69,22 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
+        console.log('idid', id);
+
         this.service.delete_custom_field(id).subscribe(res => {
+          console.log('deleted', res);
+
           if (res['data']['status'] === 1) {
+
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+
           }
           this.rrerender();
         }, (err) => {
+          console.log('error msg ==>', err['error']['message']);
+
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
-        });
+        })
       }
     });
   }
@@ -98,5 +110,8 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
+
+
+
 
 }

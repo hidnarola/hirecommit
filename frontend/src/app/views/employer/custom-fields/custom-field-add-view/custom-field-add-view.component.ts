@@ -68,6 +68,7 @@ export class CustomFieldAddViewComponent implements OnInit {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.addCustomFeild.reset();
           }
+          this.router.navigate(['/employer/custom_fields/list']);
         }, (err) => {
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });

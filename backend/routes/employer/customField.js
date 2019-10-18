@@ -74,8 +74,12 @@ router.post("/get", async (req, res) => {
     user_id = req.userInfo.id;
     //var totalMatchingCountRecords = await common_helper.count(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false });
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-    console.log('user', user);
-
+    if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        var user_id = user.data.emp_id
+    }
+    else {
+        var user_id = req.userInfo.id
+    }
     var totalMatchingCountRecords = await common_helper.count(CustomField, { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false });
     var sortOrderColumnIndex = req.body.order[0].column;
     let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data; // column name
@@ -98,6 +102,24 @@ router.post("/get", async (req, res) => {
     }
 });
 
+
+router.get("/", async (req, res) => {
+    user_id = req.userInfo.id
+    var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+
+    var resp_data = await common_helper.find(CustomField, { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false });
+    if (resp_data.status == 0) {
+        logger.error("Error occurred while fetching User = ", resp_data);
+        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+    }
+    else if (resp_data.status == 2) {
+        res.status(config.BAD_REQUEST).json({ "message": "No data found" });
+    }
+    else {
+        logger.trace("User got successfully = ", resp_data);
+        res.status(config.OK_STATUS).json(resp_data);
+    }
+});
 
 router.get("/:id", async (req, res) => {
     var resp_datas = await common_helper.findOnes(CustomField, { "_id": new ObjectId(req.params.id) });
@@ -133,5 +155,10 @@ router.put("/delete/:id", async (req, res) => {
         res.json({ "message": "Custom Field deleted successfully", "data": interest_resp })
     }
 });
+
+
+
+
+
 
 module.exports = router;
