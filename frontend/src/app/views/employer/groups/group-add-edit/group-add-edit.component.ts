@@ -17,7 +17,7 @@ export class GroupAddEditComponent implements OnInit {
   id: any;
   groupData: any = {};
   isEdit = false;
-  buttonTitle = 'Add';
+
   panelTitle = 'Add Group';
   editedData: any;
 
@@ -31,16 +31,13 @@ export class GroupAddEditComponent implements OnInit {
 
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      this.buttonTitle = 'Update';
+
       this.panelTitle = 'Edit Group';
-      console.log('params id', this.id);
     });
 
     this.service.get_detail(this.id).subscribe(res => {
       this.groupData = res['data']['data']
       this.groupData = this.groupData[0];
-      console.log('groupData >> ', this.groupData);
-
     })
 
     this.addGroup = this.fb.group({
@@ -58,10 +55,8 @@ export class GroupAddEditComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmited = true;
-    console.log('p1==>', this.id);
     if (this.id && this.id != 0) {
-
-      console.log('edit==>', this.id);
+      ;
 
       let obj = {
         "id": this.id,
@@ -74,7 +69,7 @@ export class GroupAddEditComponent implements OnInit {
         low_notreplied: this.groupData['low_notreplied'],
 
       }
-      console.log('Edited!!', obj);
+
       this.service.edit_group(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.isFormSubmited = false;
@@ -87,7 +82,7 @@ export class GroupAddEditComponent implements OnInit {
       });
     }
     else {
-      this.buttonTitle = 'Add';
+
       this.panelTitle = 'Add Group';
       if (valid) {
 
@@ -105,8 +100,5 @@ export class GroupAddEditComponent implements OnInit {
     }
   }
 
-  reset() {
-    this.isFormSubmited = false;
-  }
 }
 

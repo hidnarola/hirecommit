@@ -20,7 +20,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   sub_accounts: any = [];
   data: any[];
   admin_rights;
-  ckecked;
+  obj: any;
 
   constructor(
     private router: Router,
@@ -40,6 +40,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_sub_account(dataTablesParameters).subscribe(res => {
+          console.log('>>', res);
+
           if (res['status']) {
             this.data = res['user'];
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -76,18 +78,13 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
-  detail() {
-    this.router.navigate(['/employer/sub_accounts/sub_accountdetail']);
-  }
-
-  edit(id) {
-    this.router.navigate(['/employer/sub_accounts/edit/' + id]);
-  }
-
   delete(user_id) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
+        // this.obj = {
+        //   'id': user_id
+        // }
         this.service.decativate_sub_account(user_id).subscribe(res => {
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

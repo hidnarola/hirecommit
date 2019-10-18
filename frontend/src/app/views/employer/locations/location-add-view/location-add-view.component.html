@@ -4,9 +4,8 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
-                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
-                        <i class="icon-close"></i>
-                    </span>
+
+
                 </div>
                 <form class="form-horizontal" [formGroup]="addLocation" (ngSubmit)="onSubmit(addLocation.valid,id)">
                     <div class="card-body">
@@ -14,11 +13,13 @@
                         <div class="form-group row">
                             <label multiple class="col-md-3 col-form-label" for="country">Country</label>
                             <div class="col-md-4">
-                                <select class='select-option form-control' formControlName="country"
-                                    [(ngModel)]="detail.country">
-                                    <option class='option' *ngFor='let option of Country' [value]="option._id">
+                                <select class='select-option form-control' formControlName="country">
+                                    <option placeholder="Select Country" class='option' *ngFor='let option of Country'
+                                        [value]="option._id">
                                         {{option.country}}</option>
                                 </select>
+
+
                                 <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->
                                 <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">This
                                     field is required.</span>
@@ -44,10 +45,10 @@
                     <div class="w-100 card-footer text-right">
                         <button type="submit" class="btn btn-sm btn-primary">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
-                            {{buttonTitle}}</button>
-                        <button type="reset" class="btn btn-sm btn-danger">
+                            Submit</button>
+                        <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
                             <!-- <i class="fa fa-ban"></i> -->
-                            Reset</button>
+                            Cancel</button>
                     </div>
                 </form>
             </div>

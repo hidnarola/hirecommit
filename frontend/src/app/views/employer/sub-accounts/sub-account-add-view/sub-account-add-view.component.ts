@@ -16,7 +16,7 @@ export class SubAccountAddViewComponent implements OnInit {
   admin_rights = false;
   id: any;
   panelTitle: string;
-  buttonTitle: string;
+
   detail: any = [];
   update_data_id: any;
   obj: any;
@@ -44,7 +44,7 @@ export class SubAccountAddViewComponent implements OnInit {
   getDetail(id) {
     if (this.id) {
       this.panelTitle = 'Edit';
-      this.buttonTitle = 'Update';
+
       this.service.view_sub_acc_detail(id).subscribe(res => {
         if (res['data']['user_id']['admin_rights'] === 'no') {
           this.detail = {
@@ -74,7 +74,7 @@ export class SubAccountAddViewComponent implements OnInit {
         admin_rights: false
       };
       this.panelTitle = 'Add';
-      this.buttonTitle = 'Add';
+
       this.addAccount.reset();
     }
   }
@@ -101,6 +101,8 @@ export class SubAccountAddViewComponent implements OnInit {
           admin_rights: 'yes'
         };
       }
+      console.log("obj==>", this.obj);
+
       this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
         console.log('edited !!', res);
         this.submitted = false;

@@ -38,9 +38,11 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
+          console.log('res', res);
+
           if (res['status'] === 1) {
-            this.data = res['data'];
-            callback({ recordsTotal: res['recordsTotal']['recordsTotal'], recordsFiltered: res['recordsTotal']['recordsTotal'], data: [] });
+            this.data = res['salary'];
+            callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
           }
         }, err => {
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });

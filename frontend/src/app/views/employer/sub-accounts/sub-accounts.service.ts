@@ -37,6 +37,6 @@ export class SubAccountService {
   }
 
   decativate_sub_account(id): Observable<any[]> {
-    return this.http.put<any[]>(`${this.url}` + '/sub_account/deactive_sub_account', { 'id': id });
+    return this.http.put<any[]>(`${this.url}` + '/sub_account/deactive_sub_account', id);
   }
 }
