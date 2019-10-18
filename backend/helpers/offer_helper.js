@@ -17,7 +17,7 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
         $lookup:
         {
           from: "group",
-          localField: "group",
+          localField: "groups",
           foreignField: "_id",
           as: "group"
         }
@@ -25,7 +25,7 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
       {
         $unwind: {
           path: "$group",
-          preserveNullAndEmptyArrays: true
+          // preserveNullAndEmptyArrays: true
         }
       },
       {

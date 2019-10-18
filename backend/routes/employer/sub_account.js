@@ -61,7 +61,6 @@ router.post("/", async (req, res) => {
                     "email": req.body.email,
                     "password": passwords
                 });
-                console.log('mail_resp', mail_resp);
 
                 res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resps })
             }
@@ -125,6 +124,7 @@ router.post('/get', async (req, res) => {
     }
 });
 
+
 router.put("/deactive_sub_account", async (req, res) => {
     var obj = {
         is_del: true
@@ -144,6 +144,7 @@ router.put("/deactive_sub_account", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
     }
 });
+
 
 router.put('/:id', async (req, res) => {
 
@@ -175,7 +176,6 @@ router.put('/:id', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
     }
 })
-
 
 
 router.get('/:id', async (req, res) => {
