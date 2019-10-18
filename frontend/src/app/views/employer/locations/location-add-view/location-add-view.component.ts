@@ -12,7 +12,7 @@ import { LocationService } from '../location.service';
 })
 export class LocationAddViewComponent implements OnInit {
 
-  Country: any = [];
+    Country: any = [];
   addLocation: FormGroup;
   submitted = false;
   location: any;
@@ -22,35 +22,25 @@ export class LocationAddViewComponent implements OnInit {
   panelTitle: string;
   buttonTitle: string;
   cancel_link = '/employer/locations/list';
-
-  constructor(
-    private router: Router,
+  constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
     private service: LocationService,
-    private route: ActivatedRoute
-  ) {
-    console.log('employer - locations : add-location component => ');
-  }
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
       country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required])
     });
-    this.route.params.subscribe((params: Params) => {
+      this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
+      // console.log(this.id);
     });
     this.getDetail(this.id);
-
-    // this.Country = countries;
-    // const obj = [];
-    // for (const [key, value] of Object.entries(countries)) {
-    //   obj.push({ 'code': key, 'name': value });
-    // }
-    // this.Country = obj;
     this.commonService.country_data().subscribe(res => {
       this.Country = res['data'];
+      // console.log('country_data ==>', this.Country);
     });
   }
 
@@ -61,6 +51,7 @@ export class LocationAddViewComponent implements OnInit {
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
       });
+
     } else {
       this.detail = {
         _id: null,
@@ -76,7 +67,7 @@ export class LocationAddViewComponent implements OnInit {
   get f() { return this.addLocation.controls; }
 
   onSubmit(flag: boolean, id) {
-    this.submitted = true;
+     this.submitted = true;
     if (this.id && flag) {
       const res_data = {
         'id': this.id,
