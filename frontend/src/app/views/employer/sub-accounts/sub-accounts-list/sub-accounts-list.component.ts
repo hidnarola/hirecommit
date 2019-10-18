@@ -40,7 +40,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_sub_account(dataTablesParameters).subscribe(res => {
-          console.log('>>', res);
 
           if (res['status']) {
             this.data = res['user'];
@@ -68,13 +67,10 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   get_SubEmployer() { }
 
   checkValue(e) {
-    // console.log(' e.target.checked ==>',  e.target.checked);
     if (e.target.checked === true) {
       this.admin_rights = 'yes';
-      console.log(this.admin_rights);
     } else if (e.target.checked === false) {
       this.admin_rights = 'no';
-      console.log(this.admin_rights);
     }
   }
 
@@ -82,9 +78,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        // this.obj = {
-        //   'id': user_id
-        // }
         this.service.decativate_sub_account(user_id).subscribe(res => {
           if (res['status'] === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
