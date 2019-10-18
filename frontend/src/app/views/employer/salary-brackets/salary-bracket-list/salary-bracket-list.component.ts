@@ -20,31 +20,19 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
   dtTrigger: Subject<any> = new Subject();
   Country: any;
   salary: any[];
-  location: any;
   unique: any = [];
   _country: any = [];
   c_name: any = [];
   sal: any = [];
-  salnew: any = [];
-  unq: any;
-
-  constructor(
-    private router: Router,
+  constructor(private router: Router,
     private confirmationService: ConfirmationService,
     private service: SalaryBracketService,
-    private toastr: ToastrService
-  ) {
-    console.log('employer - salary bracket: view-salarybracket component => ');
-  }
+    private toastr: ToastrService) { }
+
 
   ngOnInit() {
     this.bind();
   }
-
-  detail() {
-    // this.router.navigate(['/groups/summarydetail']);
-  }
-
   edit(id) {
     this.router.navigate(['/employer/salary_brackets/edit/' + id]);
   }
@@ -58,18 +46,14 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
           this.rrerender();
-        }, (err) => {
-          console.log('error', err['error']['message']);
 
+        }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });
   }
 
-  onAdd() {
-    //  this.router.navigate(['/groups/addgroup']);
-  }
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
@@ -100,14 +84,14 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
               this._country.push(this.unique[0]);
             });
             this._country = this._country.filter(this.onlyUnique);
+
+
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
-      columnDefs: [{ orderable: false, targets: 4 }],
-
       columns: [
         {
           data: 'country.country'
@@ -122,8 +106,7 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
           data: 'to'
         },
         {
-          data: 'action',
-
+          data: 'action'
         }
       ]
     };
@@ -135,15 +118,6 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
     return this.c_name;
   }
 
-  rrerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
-  }
-
   ngAfterViewInit(): void {
     this.dtTrigger.next();
   }
@@ -151,6 +125,15 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
   ngOnDestroy() {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+  }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
   }
 
 }

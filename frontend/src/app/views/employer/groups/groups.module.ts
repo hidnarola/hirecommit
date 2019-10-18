@@ -9,6 +9,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { DataTablesModule } from 'angular-datatables';
     ReactiveFormsModule,
     CKEditorModule,
     HttpClientModule,
-    DataTablesModule
-  ]
+    DataTablesModule,
+    ConfirmDialogModule
+  ],
+  providers: [ConfirmationService]
 })
 export class GroupsModule { }

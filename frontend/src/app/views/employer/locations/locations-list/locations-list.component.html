@@ -24,7 +24,8 @@
                                 <td>{{data.country.country}}</td>
                                 <td>
 
-                                    <button type="button" class="btn btn-sm btn-primary" (click)="edit(data._id)"><i
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        [routerLink]="['/employer/locations/edit/',data._id]"><i
                                             class="icon-pencil"></i></button>
                                     <button type="button" class="btn btn-sm btn-danger" (click)="delete(data._id)"><i
                                             class="icon-trash"></i></button></td>

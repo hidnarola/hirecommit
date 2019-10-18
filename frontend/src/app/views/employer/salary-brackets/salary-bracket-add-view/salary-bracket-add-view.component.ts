@@ -14,11 +14,8 @@ export class SalaryBracketAddViewComponent implements OnInit {
   countryList: any = [];
   AddSalaryBracket: FormGroup;
   submitted = false;
-  Country: any = [];
   currency: any = [];
   location: any = {};
-  unique: any = [];
-  _country: any = [];
   id: any;
   salary: any;
   detail: any = [];
@@ -28,46 +25,45 @@ export class SalaryBracketAddViewComponent implements OnInit {
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
   cancel_link = '/employer/salary_brackets/list';
-
-  constructor(
-    private fb: FormBuilder,
+  obj: any;
+  constructor(private fb: FormBuilder,
     private router: Router,
     private service: SalaryBracketService,
     private route: ActivatedRoute,
-    private toastr: ToastrService
-  ) {
-    console.log('employer - salary bracket: add-salarybracket component => ');
-  }
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
-      location: new FormControl('', [Validators.required]),
+      country: new FormControl('', [Validators.required]),
       currency: new FormControl(),
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required])
     });
+
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
+
     this.service.get_location().subscribe(res => {
       this.currency = res['data'];
       res['data'].forEach(element => {
-        this.countryList.push({ 'label': element.country, 'value': element.id });
+        this.countryList.push({ 'label': element.country, 'value': element.country_id });
       });
     });
+
     this.getDetail(this.id);
   }
 
   findCities() {
     this.detail.currency = this.detail.country.country.currency_code;
   }
-
   findCurrency(value) {
     this.currency.forEach(element => {
       if (value.value === element.country_id) {
         this.detail.currency = element.currency;
       }
     });
+
   }
 
   onBlurMethod(from, to) {
@@ -81,7 +77,6 @@ export class SalaryBracketAddViewComponent implements OnInit {
       this.error = false;
     }
   }
-
   onBlur(from, to) {
     if (from > to) {
       this.error = true;
@@ -94,14 +89,16 @@ export class SalaryBracketAddViewComponent implements OnInit {
     }
   }
 
+
   getDetail(id) {
     if (id) {
       this.panelTitle = 'Edit Salary Bracket';
       this.buttonTitle = 'Update';
       this.service.get_salary_bracket_detail(id).subscribe(res => {
-        this.detail = res['data']['data'];
-        // this.detail.country = res['data'][0].location;
-        // this.detail.currency = res['data'][0].location.country.currency_code;
+        this.detail.country = res['data'].country._id;
+        this.detail.currency = res['data'].country.currency_code;
+        this.detail.from = res['data'].from;
+        this.detail.to = res['data'].to;
       });
     } else {
       this.detail = {
@@ -112,10 +109,11 @@ export class SalaryBracketAddViewComponent implements OnInit {
         to: null,
       };
       this.panelTitle = 'Add Salary Bracket';
-      this.buttonTitle = 'submit';
+      this.buttonTitle = 'Add';
       this.AddSalaryBracket.reset();
     }
   }
+
 
   get f() {
     return this.AddSalaryBracket.controls;
@@ -124,10 +122,19 @@ export class SalaryBracketAddViewComponent implements OnInit {
   onSubmit(flag: boolean, id) {
     this.submitted = true;
     if (this.id && flag) {
-      this.service.edit_salary_bracket(id, this.AddSalaryBracket.value).subscribe(res => {
+      this.obj = {
+        'id': this.id,
+        'country': this.detail['country'],
+        'currency': this.detail['currency'],
+        'from': this.detail['from'],
+        'to': this.detail['to']
+      };
+
+      this.service.edit_salary_bracket(this.obj).subscribe(res => {
+        this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         this.router.navigate([this.cancel_link]);
       }, (err) => {
-        this.toastr.error(err['error']['message'].msg, 'Error!', { timeOut: 3000 });
+        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
     } else if (!this.id && flag) {
       this.submitted = !flag;
@@ -141,6 +148,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
       }, (err) => {
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
+
       if (flag) {
         this.AddSalaryBracket.reset();
       }

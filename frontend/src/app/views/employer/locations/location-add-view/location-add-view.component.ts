@@ -22,16 +22,11 @@ export class LocationAddViewComponent implements OnInit {
   panelTitle: string;
   buttonTitle: string;
   cancel_link = '/employer/locations/list';
-
-  constructor(
-    private router: Router,
+  constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
     private service: LocationService,
-    private route: ActivatedRoute
-  ) {
-    console.log('employer - locations : add-location component => ');
-  }
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
@@ -42,13 +37,6 @@ export class LocationAddViewComponent implements OnInit {
       this.id = params['id'];
     });
     this.getDetail(this.id);
-
-    // this.Country = countries;
-    // const obj = [];
-    // for (const [key, value] of Object.entries(countries)) {
-    //   obj.push({ 'code': key, 'name': value });
-    // }
-    // this.Country = obj;
     this.commonService.country_data().subscribe(res => {
       this.Country = res['data'];
     });
@@ -61,6 +49,7 @@ export class LocationAddViewComponent implements OnInit {
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
       });
+
     } else {
       this.detail = {
         _id: null,
@@ -88,6 +77,7 @@ export class LocationAddViewComponent implements OnInit {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.addLocation.reset();
+          this.router.navigate([this.cancel_link]);
         }
         this.submitted = false;
       }, (err) => {
@@ -112,5 +102,4 @@ export class LocationAddViewComponent implements OnInit {
       }
     }
   }
-
 }

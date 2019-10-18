@@ -71,13 +71,6 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.country = countries;
   }
 
-  detail() {
-    // this.router.navigate(['/groups/summarydetail']);
-  }
-
-  edit(id) {
-    this.router.navigate(['/employer/locations/edit/' + id]);
-  }
 
   delete(id) {
     this.confirmationService.confirm({
@@ -98,31 +91,6 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
-
-  public bind() {
-    // this.service.view_location().subscribe(res => {
-    //   this.locations = res['data']['data'];
-    //   this.locations = this.locations.filter(x => x.is_del === false);
-    //   this.Country = countries;
-    //   const obj = [];
-    //   for (const [key, value] of Object.entries(countries)) {
-    //     obj.push({ 'code': key, 'name': value });
-    //   }
-    //   this.Country = obj;
-    //   this.locations.forEach(element => {
-    //     const fetch_country = element.country;
-    //     this.unique = this.Country.filter(x => x.code === fetch_country);
-    //     this._country.push(this.unique[0]);
-    //   });
-    //   this._country = this._country.filter(this.onlyUnique);
-    // });
-  }
-
-  // public GetCountry(country) {
-  //   this.c_name = this._country.filter(x => x.code === country);
-  //   this.c_name = this.c_name[0].name;
-  //   return this.c_name;
-  // }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

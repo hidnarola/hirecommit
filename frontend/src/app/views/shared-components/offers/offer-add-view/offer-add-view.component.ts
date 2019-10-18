@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { OfferService } from '../offer.service';
@@ -11,8 +11,7 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./offer-add-view.component.scss']
 })
 export class OfferAddViewComponent implements OnInit {
-
-  form: FormGroup;
+form: FormGroup;
   form_validation = false;
   offer_data: any = {};
   buttonTitle = 'Submit';
@@ -29,7 +28,9 @@ export class OfferAddViewComponent implements OnInit {
   customfield: any = [];
   group_optoins: any = [];
   arrayItems: any = [];
-  key: any;
+  key: any ;
+  custom_field: any = [];
+
   salary_duration_optoins = [
     { label: 'Select', value: '' },
     { label: '1 week', value: '1week' },
@@ -74,13 +75,12 @@ export class OfferAddViewComponent implements OnInit {
       offertype: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
       commitstatus: new FormControl('', [Validators.required]),
-      customfield1: new FormControl(''),
-      customfield2: new FormControl(''),
-      customfield3: new FormControl(''),
       notes: new FormControl(''),
-      employer_id: new FormControl('')
+      employer_id: new FormControl(''),
+      customfieldItem: this.fb.array([])
     });
   }
+
 
   findemail(e) {
 
@@ -95,12 +95,12 @@ export class OfferAddViewComponent implements OnInit {
     });
 
     this.service.get_salary_bracket().subscribe((res) => {
-      this.salary_bracket = res['data'];
+      this.salary_bracket =  res['data'];
       console.log('get_salary_bracket : res.data ==> ', res[`data`]);
       // this.salarybracketList = res[`data`];
       res['data'].forEach(element => {
-        if (value.value === element.country._id) {
-          this.salarybracketList.push({ 'label': element.from + ' - ' + element.to, 'value': element.country._id });
+        if (value.value  === element.country._id) {
+          this.salarybracketList.push({ 'label': element.from + ' - ' + element.to , 'value': element.country._id });
         }
       });
     }, (err) => {
@@ -125,9 +125,9 @@ export class OfferAddViewComponent implements OnInit {
   ngOnInit() {
     this.service.get_candidate_list().subscribe(res => {
       console.log('res=>', res['data']);
-      this.candidate = res['data'];
+       this.candidate = res['data'];
       res['data'].forEach(element => {
-        this.candidateList.push({ 'label': element.firstname + ' ' + element.lastname, 'value': element.user_id });
+        this.candidateList.push({ 'label': element.firstname + ' ' + element.lastname , 'value': element.user_id });
       });
       console.log('======>', this.candidateList);
     }, (err) => {
@@ -140,29 +140,39 @@ export class OfferAddViewComponent implements OnInit {
       res['data'].forEach(element => {
         this.countryList.push({ 'label': element.country_name, 'value': element.country_id });
       });
-      console.log('------------------->', this.countryList);
+      console.log('------------------->',  this.countryList);
     }, (err) => {
       console.log(err);
     });
 
     this.service.get_customfield().subscribe(res => {
       this.customfield = res['data'];
-      // this.customfield.forEach(element => {
-      //   this.key = element.key;
-      // this.arrayItems.push({ element.key: [''] });
-      // });
-      // console.log('log arrayitems ==> ', this.arrayItems);
-      // console.log('------------------->',  this.customfield);
+       const _array = [];
+      this.customfield.forEach((element, index) => {
+        const new_customfield = {
+          'key': element.key
+        };
+        this.customfieldItem.setControl(index, this.fb.group({
+          key : [''],
+        }));
+        _array.push(new_customfield);
+      });
+       this.offer_data.customfieldItem = _array;
+        console.log('log arrayitems ==> ', _array);
     }, (err) => {
       console.log(err);
     });
 
     this.service.get_groups().subscribe(res => {
       this.group_optoins = res['data'].data;
-      console.log('group_optoins', this.group_optoins);
+      console.log('group_optoins',  this.group_optoins);
     }, (err) => {
       console.log(err);
     });
+  }
+
+  get customfieldItem() {
+    return this.form.get('customfieldItem') as FormArray;
   }
 
   findEmail(value) {
