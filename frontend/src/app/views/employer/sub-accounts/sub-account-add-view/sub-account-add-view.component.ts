@@ -19,6 +19,7 @@ export class SubAccountAddViewComponent implements OnInit {
   buttonTitle: string;
   detail: any = [];
   update_data_id: any;
+  obj: any;
   cancel_link = '/employer/sub_accounts/list';
 
   constructor(
@@ -45,11 +46,24 @@ export class SubAccountAddViewComponent implements OnInit {
       this.panelTitle = 'Edit';
       this.buttonTitle = 'Update';
       this.service.view_sub_acc_detail(id).subscribe(res => {
-        this.detail = {
-          name: res['data']['username'],
-          email: res['data']['user_id']['email'],
-          admin_rights: res['data']['user_id']['admin_rights']
-        };
+        if (res['data']['user_id']['admin_rights'] === 'no') {
+          this.detail = {
+            name: res['data']['username'],
+            email: res['data']['user_id']['email'],
+            admin_rights: false
+          };
+        } else if (res['data']['user_id']['admin_rights'] === 'yes') {
+          this.detail = {
+            name: res['data']['username'],
+            email: res['data']['user_id']['email'],
+            admin_rights: true
+          };
+        }
+        // this.detail = {
+        //   name: res['data']['username'],
+        //   email: res['data']['user_id']['email'],
+        //   admin_rights: res['data']['user_id']['admin_rights']
+        // };
         this.update_data_id = res['data']['user_id']['_id'];
       });
     } else {
@@ -74,8 +88,21 @@ export class SubAccountAddViewComponent implements OnInit {
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
-
-      this.service.edit_sub_account(this.update_data_id, this.detail).subscribe(res => {
+      if (this.detail['admin_rights'] === false) {
+        this.obj = {
+          name: this.detail['name'],
+          email: this.detail['email'],
+          admin_rights: 'no'
+        };
+      } else if (this.detail['admin_rights'] === true) {
+        this.obj = {
+          name: this.detail['name'],
+          email: this.detail['email'],
+          admin_rights: 'yes'
+        };
+      }
+      this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
+        console.log('edited !!', res);
         this.submitted = false;
         this.router.navigate([this.cancel_link]);
         this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
@@ -84,7 +111,20 @@ export class SubAccountAddViewComponent implements OnInit {
       });
     } else {
       if (flag) {
-        this.service.add_sub_account(this.addAccount.value).subscribe(res => {
+        if (this.addAccount.value['admin_rights'] === false) {
+          this.obj = {
+            name: this.addAccount.value['name'],
+            email: this.addAccount.value['email'],
+            admin_rights: 'no'
+          };
+        } else if (this.addAccount.value['admin_rights'] === true) {
+          this.obj = {
+            name: this.addAccount.value['name'],
+            email: this.addAccount.value['email'],
+            admin_rights: 'yes'
+          };
+        }
+        this.service.add_sub_account(this.obj).subscribe(res => {
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.addAccount.reset();

@@ -21,12 +21,13 @@
                         </thead>
                         <tbody *ngIf="data?.length != 0">
                             <tr *ngFor="let acc of data; let i =index">
-                                <!-- <div *ngIf="acc.is_del === false"> -->
+                                <!-- {{data | json}} -->
                                 <td>{{acc.username}}</td>
                                 <td>{{acc.user.email}}</td>
                                 <td>
                                     <label class="switch">
-                                        <input [checked]="acc.user.admin_rights" type="checkbox"
+
+                                        <input [checked]="acc.user.admin_rights === 'yes'" type="checkbox"
                                             (change)="checkValue($event)">
                                         <span class="slider round"></span>
                                     </label>
