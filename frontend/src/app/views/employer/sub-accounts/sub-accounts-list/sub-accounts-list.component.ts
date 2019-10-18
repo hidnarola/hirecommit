@@ -50,6 +50,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
+      columnDefs: [{ orderable: false, targets: 3 }],
       columns: [
         {
           data: 'username'
