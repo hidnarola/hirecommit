@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Employer Summary
+                    <i class="fa fa-align-justify"></i> Offers
                     <p class="pull-right"></p>
                     <i class="pull-right icon-plus" [routerLink]="['/employer/offers/add']"> Add
                         Offer</i>
@@ -18,7 +18,7 @@
                                 <th>Salary Bracket</th>
                                 <th>Expiry Date</th>
                                 <th>Joining Date</th>
-                                <th>Status</th>
+                                <!-- <th>Status</th> -->
                                 <th>Offer Type</th>
                                 <th>Group</th>
                                 <th>Commit Status</th>
@@ -35,13 +35,13 @@
                                 <td>{{offer.salarybracket.from}} to {{offer.salarybracket.to}}</td>
                                 <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</td>
-                                <td>
+                                <!-- <td>
                                     <label class="switch">
                                         <input [checked]="offer.status" type="checkbox"
                                             (change)="checkValue(offer._id, $event)">
                                         <span class="slider round"></span>
                                     </label>
-                                </td>
+                                </td> -->
                                 <td>{{offer.offertype}}</td>
                                 <td>{{offer.group.name}}</td>
                                 <td>{{offer.commitstatus}}</td>

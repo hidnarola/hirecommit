@@ -94,13 +94,15 @@
     border-radius: 50%;
   }
 
-
-
 .navbar-toggler-icon {
     display: none;
 }
 
-table tbody tr td,
-table thead tr th{
-  text-align: center;
+// table tbody tr td,
+// table thead tr th{
+//   text-align: center;
+// }
+
+button {
+    margin: 0 8px 0px 0px;
 }

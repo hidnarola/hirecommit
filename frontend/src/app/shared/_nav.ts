@@ -78,12 +78,14 @@ export const employer: NavData[] = [
     icon: 'icon-people',
     children: [
       {
-        name: 'Approved Candidate',
-        url: 'candidates/approved_candidate'
+        name: 'Approved Candidates',
+        url: 'candidates/approved_candidate',
+        icon: 'fa fa-check-square-o'
       },
       {
-        name: 'New Candidate',
-        url: 'candidates/new_candidate'
+        name: 'New Candidates',
+        url: 'candidates/new_candidate',
+        icon: 'fa fa-user-circle'
       }
     ]
   },
@@ -111,11 +113,11 @@ export const employer: NavData[] = [
     url: 'locations/list',
     icon: 'icon-location-pin',
   },
-  {
-    name: 'Timeline',
-    url: 'timeline',
-    icon: 'icon-user'
-  }
+  // {
+  //   name: 'Timeline',
+  //   url: 'timeline',
+  //   icon: 'icon-user'
+  // }
 ];
 
 export const candidate: NavData[] = [

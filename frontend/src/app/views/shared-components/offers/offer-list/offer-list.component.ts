@@ -69,9 +69,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'joining_date'
         },
-        {
-          data: 'status'
-        },
+        // {
+        //   data: 'status'
+        // },
         {
           data: 'offer_type'
         },
