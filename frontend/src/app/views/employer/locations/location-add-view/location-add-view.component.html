@@ -21,7 +21,7 @@
 
 
                                 <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->
-                                <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">This
+                                <span *ngIf="!addLocation.get('country').valid && submitted" class="text-danger">This
                                     field is required.</span>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                 <input type="text" class="form-control" placeholder="Enter location" autocomplete="city"
                                     [(ngModel)]="detail.city" formControlName="city" id="city">
 
-                                <span *ngIf="!addLocation.get('city').valid && submitted" class="help-block">
+                                <span *ngIf="!addLocation.get('city').valid && submitted" class="text-danger">
                                     <span *ngIf="addLocation.get('city').errors['required']">This field is
                                         required.</span>
                                 </span>
