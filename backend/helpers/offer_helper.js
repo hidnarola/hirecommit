@@ -1,6 +1,8 @@
 var ObjectId = require('mongoose').Types.ObjectId;
 
 var offer_helper = {};
+
+
 offer_helper.get_all_offer = async (collection, id, search, start, length, recordsTotal, sort) => {
 
   try {
@@ -10,7 +12,8 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
       {
         $match: {
           "is_del": false,
-          "employer_id": new ObjectId(id)
+
+          $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(id) }],
         }
       },
       {
