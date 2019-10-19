@@ -12,6 +12,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public sidebarMinimized = true;
   private changes: MutationObserver;
   public element: HTMLElement;
+  currentYear = new Date().getFullYear();
 
   constructor(
     private router: Router,

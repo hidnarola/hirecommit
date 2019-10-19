@@ -4,25 +4,25 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}} Offer</strong>
-                    <span class="input-group-text pull-right" [routerLink]="cancel_link"><i
-                            class="icon-close"></i></span>
+                    <!-- <span class="input-group-text pull-right" [routerLink]="cancel_link">
+                        <i class="icon-close"></i>
+                    </span> -->
                 </div>
                 <form class="form-horizontal" [formGroup]="form">
 
                     <div class="card-body">
 
-
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="candidate">Select Candidate</label>
                             <div class="col-md-2">
-                                <p-dropdown [options]="candidateList" placeholder="Select Name"
+                                <p-dropdown [options]="candidateList" placeholder="Select Candidate"
                                     formControlName="candidate" id="candidate" #candidate
                                     (onChange)="findEmail($event)">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['candidate'].valid">
-                                    <span *ngIf="form.controls['candidate'].errors['required']" class="text-danger">This
-                                        field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['candidate'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -30,9 +30,8 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="email">Email</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.email" -->
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    [(ngModel)]="offer_data.email" formControlName="email" id="email">
+                                    formControlName="email" id="email">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
@@ -44,18 +43,15 @@
                             </div>
                         </div>
 
-
-
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="title">Title</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.title" -->
                                 <input type="title" class="form-control" placeholder="Enter Name" autocomplete="title"
                                     formControlName="title" id="title">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['title'].valid">
-                                    <span *ngIf="form.controls['title'].errors['required']" class="text-danger">This
-                                        field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['title'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -65,22 +61,20 @@
                             <div class="col-md-6">
                                 <div class="custom-radio-wrap">
                                     <div class="custom-control custom-radio">
-                                        <!-- [(ngModel)]="offer_data.salarytype" -->
                                         <input type="radio" id="annual" class="custom-control-input" value="annual"
-                                            name="salarytype" formControlName="salarytype">
+                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
                                         <label class="custom-control-label" for="annual">Annual</label>
                                     </div>
                                     <div class="custom-control custom-radio">
-                                        <!-- [(ngModel)]="offer_data.salarytype" -->
                                         <input type="radio" id="hourly" class="custom-control-input" value="hourly"
-                                            name="salarytype" formControlName="salarytype">
+                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
                                         <label class="custom-control-label" for="hourly">Hourly</label>
                                     </div>
                                 </div>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['salarytype'].valid">
-                                    <span *ngIf="form.controls['salarytype'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['salarytype'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -88,33 +82,22 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salaryduration">Hourly Salary Duration</label>
                             <div class="col-md-6">
-                                <!-- {{form.controls['salarytype'].value}} -->
-                                <!-- [(ngModel)]="offer_data.salaryduration" -->
                                 <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration"
                                     id="salaryduration" [disabled]="!(form.controls['salarytype'].value === 'hourly')">
                                 </p-dropdown>
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salaryduration'].valid">
-                                    <!-- <span
-                          *ngIf="form.controls['salaryduration'].errors['required']" class="text-danger">This field is required.</span> -->
-                                </div>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="country">Country</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.country" -->
-                                <!-- <p-dropdown [options]="contryList" placeholder="Select Name" formControlName="country" id="country"
-                  (onChange)="findData($event)">
-                </p-dropdown> -->
                                 <p-dropdown [options]="countryList" placeholder="Select Country"
                                     formControlName="country" id="country" #country (onChange)="findData($event)">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
-                                    <span *ngIf="form.controls['country'].errors['required']" class="text-danger">This
-                                        field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['country'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -122,13 +105,12 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="location">Location</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.location" -->
                                 <p-dropdown [options]="location" optionLabel="city" optionValue="_id"
                                     formControlName="location" id="location" placeholder="Select location"></p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['location'].valid">
-                                    <span *ngIf="form.controls['location'].errors['required']" class="text-danger">This
-                                        field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['location'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -136,15 +118,14 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="currency_type">Currency Type</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.currency_type" -->
-                                <input type="text" id="currency_type" [(ngModel)]="offer_data.currency_type"
-                                    name="currency_type" formControlName="currency_type" class="form-control"
+                                <input type="text" id="currency_type" name="currency_type"
+                                    formControlName="currency_type" class="form-control"
                                     placeholder="Select CurrencyType" disabled>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['currency_type'].valid">
-                                    <span *ngIf="form.controls['location'].errors['currency_type']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['currency_type'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -152,15 +133,14 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket">Salary Bracket</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.salarybracket" -->
                                 <p-dropdown [options]="salarybracketList" formControlName="salarybracket"
                                     id="salarybracket" placeholder="Select SalaryBracket">
                                 </p-dropdown>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salarybracket'].valid">
-                                    <span *ngIf="form.controls['salarybracket'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -168,13 +148,13 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="expirydate">Expiry Date</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.expirydate" -->
-                                <p-calendar formControlName="expirydate" id="expirydate">
+                                <p-calendar dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" formControlName="expirydate"
+                                    id="expirydate">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
-                                    <span *ngIf="form.controls['expirydate'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -182,14 +162,14 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="joiningdate">Joining Date</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.joiningdate" -->
-                                <p-calendar formControlName="joiningdate" id="joiningdate">
+                                <p-calendar dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" formControlName="joiningdate"
+                                    id="joiningdate">
                                 </p-calendar>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">
-                                    <span *ngIf="form.controls['joiningdate'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['joiningdate'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -197,13 +177,12 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="offertype">Offer Type</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.offertype" -->
                                 <p-dropdown [options]="offer_type_optoins" formControlName="offertype" id="offertype">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['offertype'].valid">
-                                    <span *ngIf="form.controls['offertype'].errors['required']" class="text-danger">This
-                                        field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['offertype'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -211,14 +190,13 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="group">Group</label>
                             <div class="col-md-6">
-                                <!-- (ngModel)]="offer_data.group" -->
                                 <p-dropdown [options]="group_optoins" optionLabel="name" optionValue="_id"
                                     formControlName="group" placeholder="Select Group" id="group">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
-                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">This
-                                        field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -227,15 +205,14 @@
                             <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
                             </label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.commitstatus" -->
                                 <p-dropdown [options]="commitstatus_optoins" formControlName="commitstatus"
                                     id="commitstatus">
                                 </p-dropdown>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['commitstatus'].valid">
-                                    <span *ngIf="form.controls['commitstatus'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                    <span *ngIf="form.controls['commitstatus'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -243,7 +220,6 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="notes">Notes</label>
                             <div class="col-md-6">
-                                <!-- [(ngModel)]="offer_data.notes" -->
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
                                     autocomplete="notes" formControlName="notes" id="notes" maxlength="300" rows="4"
                                     style=" overflow-y: scroll;"></textarea>
@@ -252,133 +228,33 @@
                             </div>
                         </div>
 
-
-                        <div class="form-group row" formArrayName="customfieldItem"
-                            *ngFor="let customfield of offer_data.customfieldItem; let i=index">
-                            <label class="col-md-3 col-form-label" for="customfield.key">{{customfield.key}}</label>
-                            <div class="col-md-6">
-                                <input type="text" formControlName="customfieldItem[i]" class="form-control"
-                                    placeholder="Enter value" id="key">
-                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls[customfieldItem].valid"> </div> -->
+                        <ng-container formArrayName="customfieldItem">
+                            <div class="form-group row" formGroupName="{{i}}"
+                                *ngFor="let customfield of offer_data.customfieldItem; let i=index">
+                                <label class="col-md-3 col-form-label" for="customfield.key">
+                                    {{customfield.key}}
+                                </label>
+                                <div class="col-md-6">
+                                    <input type="text" formControlName="value" class="form-control"
+                                        placeholder="Enter value" id="value">
+                                </div>
                             </div>
-                        </div>
+                        </ng-container>
+
                     </div>
 
                     <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)">
-                            <!-- <i class="fa fa-dot-circle-o"></i> -->
-                            {{buttonTitle}}</button>
-                        <button type="reset" class="btn btn-sm btn-danger">
-                            <!-- <i class="fa fa-ban"></i> -->
-                            Reset</button>
+                        <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)"
+                            [disabled]="show_spinner">
+                            Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+                        <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
+                            Cancel</button>
                     </div>
 
                 </form>
             </div>
         </div>
     </div>
-    <!-- {{countryArr | json}} -->
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <div class="animated fadeIn">
-    <div class="row">
-        <div class="col-sm-12 col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <strong>Detail</strong>
-                    <i class="icon-close" [routerLink]="cancel_link"></i>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <tbody>
-
-                            <tr>
-                                <td>Employer Name</td>
-                                <td>Samppa Nori</td>
-                            </tr>
-                            <tr>
-                                <td>Title</td>
-                                <td>vik@narola.email</td>
-                            </tr>
-
-                            <tr>
-                                <td>Salary Bracket</td>
-                                <td>15000-30000(INR)</td>
-                            </tr>
-                            <tr>
-
-                            <tr>
-                                <td>Salary Type</td>
-                                <td>Hourly</td>
-                            </tr>
-                            <tr>
-                                <td>Expiry Date</td>
-                                <td>15-09-2019</td>
-                            </tr>
-                            <tr>
-                                <td>Joining Date</td>
-                                <td>1-10-2019</td>
-                            </tr>
-                            <tr>
-                                <td>Custom Field 1</td>
-                                <td>abc</td>
-                            </tr>
-                            <tr>
-                                <td>Custom Field 2</td>
-                                <td>abc</td>
-                            </tr>
-                            <tr>
-                                <td>Custom Field 3</td>
-                                <td>abc</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p><strong>Note:</strong> - If you are intrested for this offer, So please select accept and submit.
-                    </p>
-                    <form class="form-horizontal" [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <div class="col-md-4 col-form-label">
-                                    <div class="form-check form-check-inline mr-1">
-                                        <input class="form-check-input" type="radio" formControlName="offerstatus"
-                                            value="accept">
-                                        <label class="form-check-label" for="accept">Accept</label>
-                                    </div>
-                                    <br>
-                                    <span *ngIf="!registerForm.get('offerstatus').valid && submitted" class="help-block"
-                                        style="color: red">Please select one from here then click the submit!</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <button type="button" class="btn btn-sm btn-danger" [routerLink]="cancel_link"
-                            style="float: right;">
-                            Cancel</button>
-                        <button type="submit" class="btn btn-sm btn-primary mr-2" style="float: right;">
-                            Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
+<!-- {{form.value | json}} -->

@@ -4,9 +4,7 @@
             <div class="card">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
-                    <span class="input-group-text pull-right" [routerLink]="cancel_link">
-                        <i class="icon-close"></i>
-                    </span>
+
                 </div>
                 <form class="form-horizontal" [formGroup]="AddSalaryBracket"
                     (ngSubmit)="onSubmit(AddSalaryBracket.valid,id)">
@@ -17,8 +15,8 @@
                             <div class="col-md-2">
 
                                 <!-- [(ngModel)]="offer_data.country" -->
-                                <p-dropdown [options]="countryList" placeholder="Select Value" formControlName="country"
-                                    [(ngModel)]="detail.country" id="country" #country
+                                <p-dropdown [options]="countryList" placeholder="Select Country"
+                                    formControlName="country" [(ngModel)]="detail.country" id="country" #country
                                     (onChange)="findCurrency($event)"></p-dropdown>
 
                                 <span *ngIf="!AddSalaryBracket.get('country').valid && submitted"
@@ -32,7 +30,7 @@
                             <div class="col-md-3">
                                 <input type="text" id="currency" [(ngModel)]="detail.currency"
                                     formControlName="currency" name="currency" class="form-control"
-                                    placeholder="Country currency" disabled>
+                                    placeholder="Currency" disabled>
 
                             </div>
                         </div>
@@ -68,10 +66,10 @@
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-sm btn-primary">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
-                            {{buttonTitle}}</button>
-                        <button type="reset" class="btn btn-sm btn-danger">
+                            Submit</button>
+                        <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
                             <!-- <i class="fa fa-ban"></i> -->
-                            Reset</button>
+                            Cancel</button>
                     </div>
                 </form>
             </div>

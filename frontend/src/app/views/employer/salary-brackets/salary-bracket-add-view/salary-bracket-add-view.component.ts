@@ -20,7 +20,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
   salary: any;
   detail: any = [];
   panelTitle: string;
-  buttonTitle: string;
+
   error = false;
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
@@ -93,7 +93,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
   getDetail(id) {
     if (id) {
       this.panelTitle = 'Edit Salary Bracket';
-      this.buttonTitle = 'Update';
+
       this.service.get_salary_bracket_detail(id).subscribe(res => {
         this.detail.country = res['data'].country._id;
         this.detail.currency = res['data'].country.currency_code;
@@ -109,7 +109,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
         to: null,
       };
       this.panelTitle = 'Add Salary Bracket';
-      this.buttonTitle = 'Add';
+
       this.AddSalaryBracket.reset();
     }
   }

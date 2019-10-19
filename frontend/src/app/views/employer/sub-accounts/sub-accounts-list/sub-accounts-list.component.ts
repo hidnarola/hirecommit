@@ -20,7 +20,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   sub_accounts: any = [];
   data: any[];
   admin_rights;
-  ckecked;
+  obj: any;
 
   constructor(
     private router: Router,
@@ -40,6 +40,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_sub_account(dataTablesParameters).subscribe(res => {
+
           if (res['status']) {
             this.data = res['user'];
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -66,22 +67,11 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   get_SubEmployer() { }
 
   checkValue(e) {
-    // console.log(' e.target.checked ==>',  e.target.checked);
     if (e.target.checked === true) {
       this.admin_rights = 'yes';
-      console.log(this.admin_rights);
     } else if (e.target.checked === false) {
       this.admin_rights = 'no';
-      console.log(this.admin_rights);
     }
-  }
-
-  detail() {
-    this.router.navigate(['/employer/sub_accounts/sub_accountdetail']);
-  }
-
-  edit(id) {
-    this.router.navigate(['/employer/sub_accounts/edit/' + id]);
   }
 
   delete(user_id) {

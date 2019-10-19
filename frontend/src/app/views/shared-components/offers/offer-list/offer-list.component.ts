@@ -47,10 +47,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }, err => {
           console.log('err => ', err);
-          //   callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
-      columnDefs: [{ orderable: false, targets: 11 }],
+      // columnDefs: [{ orderable: false, targets: 11 }],
       columns: [
         {
           data: 'created_at'
@@ -70,9 +69,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'joining_date'
         },
-        {
-          data: 'status'
-        },
+        // {
+        //   data: 'status'
+        // },
         {
           data: 'offer_type'
         },
@@ -85,9 +84,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           data: 'custom_field1'
         },
-        {
-          data: 'actions'
-        }
+        // {
+        //   data: 'actions'
+        // }
       ]
     };
   }

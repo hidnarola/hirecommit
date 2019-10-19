@@ -30,7 +30,7 @@ export class ChangepasswordComponent implements OnInit {
     }, { validator: this.checkPasswords });
   }
 
-  onClose() {
+  send() {
     this.router.navigate(['/employer/offers/list']);
   }
 

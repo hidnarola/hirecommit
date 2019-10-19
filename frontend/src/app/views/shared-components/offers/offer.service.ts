@@ -15,7 +15,7 @@ export class OfferService {
 
     // Employer Services
     add_offer(data) {
-        return this.http.post(`${this.employer_url}` + '/offer/add_offer', data);
+        return this.http.post(`${this.employer_url}` + '/offer', data);
     }
 
     view_offer(params): Observable<any[]> {
