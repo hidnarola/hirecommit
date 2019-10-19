@@ -24,7 +24,7 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
         $unwind:
         {
           path: "$user",
-          preserveNullAndEmptyArrays: true
+          // preserveNullAndEmptyArrays: true
         }
 
       },

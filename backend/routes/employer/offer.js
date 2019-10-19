@@ -542,7 +542,6 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
-    console.log('offer_upadate', offer_upadate);
 
     if (offer_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
