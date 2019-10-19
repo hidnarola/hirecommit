@@ -146,26 +146,12 @@ router.put("/deactive_sub_account", async (req, res) => {
 });
 
 
-router.put('/:id', async (req, res) => {
-
-    var reg_obj = {};
-
-    if (req.body.name && req.body.name != "") {
-        reg_obj.username = req.body.name;
+router.put('/', async (req, res) => {
+    var reg_obj = {
+        "admin_rights": req.body.admin_rights
     }
-    if (req.body.email && req.body.email != "") {
-        reg_obj.email = req.body.email;
-    }
-    if (req.body.admin_rights && req.body.admin_rights != "") {
-        reg_obj.admin_rights = req.body.admin_rights;
-    }
-    console.log('req.body.admin_rights', req.body.admin_rights);
+    var sub_account_upadate = await common_helper.update(User, { "_id": id }, reg_obj)
 
-    var id = req.params.id;
-    var sub_account_upadates = await common_helper.update(User, { "_id": id }, reg_obj)
-    console.log('sub_account_upadates===>', sub_account_upadates);
-
-    var sub_account_upadate = await common_helper.update(Sub_Employer_Detail, { "user_id": id }, reg_obj)
     if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
