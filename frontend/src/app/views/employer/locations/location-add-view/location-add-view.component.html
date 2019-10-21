@@ -13,11 +13,15 @@
                         <div class="form-group row">
                             <label multiple class="col-md-3 col-form-label" for="country">Country</label>
                             <div class="col-md-4">
-                                <select class='select-option form-control' formControlName="country">
+
+                                <!-- <select class='select-option form-control' formControlName="country">
                                     <option placeholder="Select Country" class='option' *ngFor='let option of Country'
                                         [value]="option._id">
                                         {{option.country}}</option>
-                                </select>
+                                </select> -->
+
+                                <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
+                                    [(ngModel)]="cnt" id="country"></p-dropdown>
 
 
                                 <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->

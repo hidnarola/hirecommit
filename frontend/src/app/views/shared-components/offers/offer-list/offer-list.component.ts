@@ -10,8 +10,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./offer-list.component.scss']
 })
 export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  checked1: boolean = true;
   @ViewChild(DataTableDirective, { static: false })
+
+
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
