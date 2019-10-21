@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import * as env from '../../environments/environment';
 import jwt_decode from 'jwt-decode';
+import { AES, enc } from 'crypto-ts';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,10 @@ import jwt_decode from 'jwt-decode';
 export class CommonService {
   // private url = 'http://localhost:3000';
   private url = env.environment.API_URL;
+  private secretKey = 'myhardpassword';
+  private profileDetail = new BehaviorSubject(null);
+  getprofileDetail = this.profileDetail.asObservable();
+
 
   constructor(private http: HttpClient, private route: Router) { }
 
@@ -58,6 +63,19 @@ export class CommonService {
     // decode the token to get its payload
     userDetails = jwt_decode(token);
     return userDetails;
+  }
+
+  async encrypt(message: any) {
+    return AES.encrypt(message, this.secretKey).toString();
+  }
+
+  async decrypt(ciphertext: any) {
+    return AES.decrypt(ciphertext.toString(), this.secretKey).toString(enc.Utf8);
+  }
+
+  async setProfileDetail(profileData: any) {
+    localStorage.setItem("profile", await this.encrypt(JSON.stringify(profileData)))
+    this.profileDetail.next(profileData);
   }
 
 

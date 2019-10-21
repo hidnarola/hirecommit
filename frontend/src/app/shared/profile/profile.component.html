@@ -8,8 +8,8 @@
                     <div class="card-body" style="margin: 8px 30px 31px 48px;">
                         <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail"
                             height="150px" width="150px">
-                        <h2 style="padding-left: 30px;">Hire Commit</h2>
-                        <label style="padding-left: 30px;"> Email: <a href="/"> HireCommit@gmail.com</a></label>
+                        <h2 style="padding-left: 30px;">{{profileData.username}}</h2>
+                        <label style="padding-left: 30px;"> Email: <a href="/">{{profileData.email}} </a></label>
                     </div>
                 </div>
             </div>
@@ -28,20 +28,31 @@
                                     </tr>
                                     <tr>
                                         <td>Company Name</td>
-                                        <td>Hire Commit </td>
+                                        <td>{{profileData.companyname}} </td>
                                     </tr>
                                     <tr>
                                         <td>Website</td>
-                                        <td>hirecommit@gmail.com</td>
+                                        <td>{{profileData.website ? profileData.website :  '-' }}</td>
                                     </tr>
+
+                                    <tr>
+                                        <td>Country</td>
+                                        <td>{{profileData.country}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Business Type</td>
+                                        <td>{{profileData.businesstype}}</td>
+                                    </tr>
+
                                     <tr>
                                         <td>Company Person Name</td>
-                                        <td>ABC</td>
+                                        <td>{{profileData.username}}</td>
                                     </tr>
 
                                     <tr>
                                         <td>Contact Number</td>
-                                        <td>+91-6565656565</td>
+                                        <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
                                     </tr>
                                 </tbody>
                             </table>

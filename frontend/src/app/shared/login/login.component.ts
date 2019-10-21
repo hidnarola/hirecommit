@@ -40,7 +40,9 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', token);
         localStorage.setItem('user', res['role']);
         localStorage.setItem('userid', res['id']);
-        console.log('res => ', res);
+        console.log(' log res => ', res);
+        const userData = { ...res[`data`], ...res[`userDetails`][0].userDetail }
+        this.service.setProfileDetail(userData);
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         if (res['role'] === 'admin') {
           this.router.navigate(['admin']);

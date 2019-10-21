@@ -11,7 +11,7 @@ import { LocationService } from '../location.service';
   styleUrls: ['./location-add-view.component.scss']
 })
 export class LocationAddViewComponent implements OnInit {
-
+  cnt: any;
   Country: any = [];
   addLocation: FormGroup;
   submitted = false;
@@ -38,16 +38,22 @@ export class LocationAddViewComponent implements OnInit {
     });
     this.getDetail(this.id);
     this.commonService.country_data().subscribe(res => {
-      this.Country = res['data'];
+      res['data'].forEach(element => {
+        this.Country.push({ 'label': element.country, 'value': element._id });
+      });
     });
   }
 
+  //issue
   getDetail(id: string) {
     if (this.id) {
       this.panelTitle = 'Edit Location';
-      this.buttonTitle = 'Update';
+
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
+        this.cnt = res['data']['data'].country;
+        console.log(' this.cnt ', this.cnt);
+
       });
 
     } else {

@@ -13,15 +13,19 @@
                         <div class="form-group row">
                             <label multiple class="col-md-3 col-form-label" for="country">Country</label>
                             <div class="col-md-4">
-                                <select class='select-option form-control' formControlName="country">
+
+                                <!-- <select class='select-option form-control' formControlName="country">
                                     <option placeholder="Select Country" class='option' *ngFor='let option of Country'
                                         [value]="option._id">
                                         {{option.country}}</option>
-                                </select>
+                                </select> -->
+
+                                <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
+                                    [(ngModel)]="cnt" id="country"></p-dropdown>
 
 
                                 <!-- <select ng-model="selected" ng-options="f.name for f in Country | orderBy:'name'"></select>-->
-                                <span *ngIf="!addLocation.get('country').valid && submitted" class="help-block">This
+                                <span *ngIf="!addLocation.get('country').valid && submitted" class="text-danger">This
                                     field is required.</span>
                             </div>
                         </div>
@@ -35,7 +39,7 @@
                                 <input type="text" class="form-control" placeholder="Enter location" autocomplete="city"
                                     [(ngModel)]="detail.city" formControlName="city" id="city">
 
-                                <span *ngIf="!addLocation.get('city').valid && submitted" class="help-block">
+                                <span *ngIf="!addLocation.get('city').valid && submitted" class="text-danger">
                                     <span *ngIf="addLocation.get('city').errors['required']">This field is
                                         required.</span>
                                 </span>

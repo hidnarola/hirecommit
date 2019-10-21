@@ -28,17 +28,15 @@ export class GroupAddEditComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-
       this.panelTitle = 'Edit Group';
     });
 
     this.service.get_detail(this.id).subscribe(res => {
       this.groupData = res['data']['data']
       this.groupData = this.groupData[0];
-    })
+    });
 
     this.addGroup = this.fb.group({
       name: new FormControl('', [Validators.required]),
@@ -55,9 +53,7 @@ export class GroupAddEditComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmited = true;
-    if (this.id && this.id != 0) {
-      ;
-
+    if (this.id && this.id !== 0) {
       let obj = {
         "id": this.id,
         name: this.groupData['name'],
@@ -67,8 +63,7 @@ export class GroupAddEditComponent implements OnInit {
         medium_notreplied: this.groupData['medium_notreplied'],
         low_unopened: this.groupData['low_unopened'],
         low_notreplied: this.groupData['low_notreplied'],
-
-      }
+      };
 
       this.service.edit_group(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
@@ -80,9 +75,7 @@ export class GroupAddEditComponent implements OnInit {
       }, (err) => {
         this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
-    }
-    else {
-
+    } else {
       this.panelTitle = 'Add Group';
       if (valid) {
 

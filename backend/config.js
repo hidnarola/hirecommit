@@ -33,7 +33,7 @@ module.exports = {
   "INTERNAL_SERVER_ERROR": 500,
 
   // Other configuration
-  "website_url": process.env.WEBSITE_URL,
+  "WEBSITE_URL": process.env.WEBSITE_URL,
   "ASSETS_PATH": process.env.ASSETS_PATH,
   "base_url": process.env.BASE + ':' + process.env.NODE_PORT,
   "IS_HTTPS": process.env.IS_HTTPS,

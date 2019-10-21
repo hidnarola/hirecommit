@@ -10,12 +10,14 @@ import * as env from '../../../../environments/environment';
 export class CandidateService {
     // private url = 'http://localhost:3000/admin';
     private url = env.environment.API_URL + 'employer';
+    private admin_url = env.environment.API_URL + 'admin';
     constructor(private http: HttpClient, private route: Router) { }
 
     myObservableArray: Observable<any[]> = new Observable<any[]>();
     employer = new BehaviorSubject(null);
     employerList = this.employer.asObservable();
 
+    // emoployer services
     checkHere() {
         return this.employer.next({});
     }
@@ -47,4 +49,16 @@ export class CandidateService {
     get_approved_candidate(params): Observable<any[]> {
         return this.http.post<any[]>(`${this.url}` + '/candidate/get_approved', { ...params });
     }
+    // emoployer services
+
+
+    // admin services
+    get_new_candidate_admin(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.admin_url}` + '/candidate/get_new', { ...params });
+    }
+
+    get_approved_candidate_admin(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.admin_url}` + '/candidate/get_approved', { ...params });
+    }
+    // admin services
 }

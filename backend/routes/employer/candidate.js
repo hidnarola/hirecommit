@@ -124,7 +124,7 @@ router.post('/get_approved', async (req, res) => {
         let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await candidate_helper.get_all_approved_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {

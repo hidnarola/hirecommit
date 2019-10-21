@@ -18,7 +18,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   sub_accounts: any = [];
-  data: any[];
+  data: any = [];
   admin_rights;
   obj: any;
 
@@ -43,6 +43,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
 
           if (res['status']) {
             this.data = res['user'];
+
+
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
@@ -62,6 +64,11 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         }
       ]
     };
+
+  }
+
+  edit() {
+    console.log('function called => ');
   }
 
   get_SubEmployer() { }
@@ -89,6 +96,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       }
     });
   }
+
+  changeRights(e) { }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

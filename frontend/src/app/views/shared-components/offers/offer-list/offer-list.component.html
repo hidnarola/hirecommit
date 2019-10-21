@@ -5,8 +5,10 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Offers
                     <p class="pull-right"></p>
-                    <i class="pull-right icon-plus" [routerLink]="['/employer/offers/add']"> Add
-                        Offer</i>
+                    <div class="pull-right btn-div">
+                        <a [routerLink]="['/employer/offers/add']"><i class=" icon-plus"></i>
+                            <span>Add</span></a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
@@ -36,11 +38,7 @@
                                 <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <!-- <td>
-                                    <label class="switch">
-                                        <input [checked]="offer.status" type="checkbox"
-                                            (change)="checkValue(offer._id, $event)">
-                                        <span class="slider round"></span>
-                                    </label>
+                                    <p-inputSwitch></p-inputSwitch>
                                 </td> -->
                                 <td>{{offer.offertype}}</td>
                                 <td>{{offer.group.name}}</td>

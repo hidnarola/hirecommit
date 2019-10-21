@@ -67,7 +67,7 @@ user_helper.get_all_sub_user = async (collection, id, search, start, length, rec
 };
 
 
-user_helper.get_all_approved_employer = async (collection, id, search, start, length, recordsTotal, sort) => {
+user_helper.get_all_approved_employer = async (collection, search, start, length, recordsTotal, sort) => {
   try {
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
@@ -87,7 +87,10 @@ user_helper.get_all_approved_employer = async (collection, id, search, start, le
         }
       },
       {
-        $unwind: "$user"
+        $unwind: {
+          path: "$user",
+          // preserveNullAndEmptyArrays: true
+        }
       },
       {
         $match: { "user.isAllow": true }
@@ -131,7 +134,7 @@ user_helper.get_all_approved_employer = async (collection, id, search, start, le
   }
 };
 
-user_helper.get_all_new_employer = async (collection, id, search, start, length, recordsTotal, sort) => {
+user_helper.get_all_new_employer = async (collection, search, start, length, recordsTotal, sort) => {
   try {
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
