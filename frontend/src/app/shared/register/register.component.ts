@@ -23,6 +23,11 @@ export class RegisterComponent implements OnInit {
   imgurl: any = '';
   Country: any = [];
   codeList: any;
+  Document_optoins = [
+    { label: 'Select Document Type', value: '' },
+    { label: 'Pan Card', value: 'Pan Card' },
+    { label: 'Adhar Card', value: 'Adhar Card' }
+  ];
   // tslint:disable-next-line: max-line-length
 
   constructor(
@@ -45,7 +50,7 @@ export class RegisterComponent implements OnInit {
       documenttype: new FormControl('', [Validators.required]),
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
       confirmpassword: new FormControl('', [Validators.required]),
-      isChecked: new FormControl('', [Validators.required])
+      isChecked: new FormControl(false, [Validators.required])
     }, { validator: this.checkPasswords });
 
     // this.documentImage = this.fb.group({
@@ -85,10 +90,8 @@ export class RegisterComponent implements OnInit {
   }
 
   getCode(e) {
-    // console.log('e', e.value);
     this.code.forEach(element => {
       if (e.value === element._id) {
-
         this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
       }
     });
@@ -108,6 +111,8 @@ export class RegisterComponent implements OnInit {
   }
 
   checkValue(e) {
+    console.log('e>>', e);
+
     this.marked = e
   }
 

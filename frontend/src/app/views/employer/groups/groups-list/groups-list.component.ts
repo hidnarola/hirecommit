@@ -63,9 +63,6 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['/groups/addgroup']);
   }
 
-  onclick() {
-    this.router.navigate(['/employer/groups/add']);
-  }
 
   onaddDetails(id) {
     this.router.navigate(['/employer/groups/communication/edit/' + id]);

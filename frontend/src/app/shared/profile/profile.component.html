@@ -1,64 +1,58 @@
 <div class="animated fadeIn">
-
-    <div class="row">
-
-        <div class="col-md-4 well">
+    <div class="row profiledata-info">
+        <div class="col-md-3 well">
             <div class="row">
                 <div class="card text-black col-sm-12">
-                    <div class="card-body" style="margin: 8px 30px 31px 48px;">
-                        <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail"
-                            height="150px" width="150px">
-                        <h2 style="padding-left: 30px;">{{profileData.username}}</h2>
-                        <label style="padding-left: 30px;"> Email: <a href="/">{{profileData.email}} </a></label>
+                    <div class="card-body">
+                        <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
+                        <h2>{{profileData.username}}</h2>
+                        <label> Email: <a href="/">{{profileData.email}} </a></label>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-8 well">
+        <div class="col-md-9 well">
             <div class="row">
                 <div class="col-md-12">
-                    <form role="form">
-                        <div class="card-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            <h5> Company Details</h5>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td>Company Name</td>
-                                        <td>{{profileData.companyname}} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Website</td>
-                                        <td>{{profileData.website ? profileData.website :  '-' }}</td>
-                                    </tr>
+                    <div class="card">
+                        <form role="form">
+                            <div class="card-header"><strong>Company Details</strong></div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Company Name</td>
+                                            <td>{{profileData.companyname}} </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Website</td>
+                                            <td>{{profileData.website ? profileData.website :  '-' }}</td>
+                                        </tr>
 
-                                    <tr>
-                                        <td>Country</td>
-                                        <td>{{profileData.country}}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>Country</td>
+                                            <td>{{profileData.country}}</td>
+                                        </tr>
 
-                                    <tr>
-                                        <td>Business Type</td>
-                                        <td>{{profileData.businesstype}}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>Business Type</td>
+                                            <td>{{profileData.businesstype}}</td>
+                                        </tr>
 
-                                    <tr>
-                                        <td>Company Person Name</td>
-                                        <td>{{profileData.username}}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>Company Person Name</td>
+                                            <td>{{profileData.username}}</td>
+                                        </tr>
 
-                                    <tr>
-                                        <td>Contact Number</td>
-                                        <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </form>
+                                        <tr>
+                                            <td>Contact Number</td>
+                                            <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

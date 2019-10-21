@@ -105,19 +105,15 @@
                 </div>
                 <div class="form-group col-md-6">
                   <label for="documenttype">Document Type</label>
-                  <select id="documenttype" name="documenttype" class="form-control" formControlName="documenttype"
-                    [(ngModel)]="registerData.documenttype" name="documenttype">
-                    <option value="0">Please select</option>
-                    <option value="PAN Card">PAN Card</option>
-                    <option value="Aadhar Card">Aadhar Card</option>
-                    <option value="Voter ID">Voter ID</option>
-                  </select>
+                  <p-dropdown [options]="Document_optoins" formControlName="documenttype" id="documenttype">
+                  </p-dropdown>
                   <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmited">
                     <span *ngIf="registerForm.controls['documenttype'].errors['required']">Please select your
                       country.</span>
                   </div>
                 </div>
               </div>
+
               <div class="row">
                 <div class="form-group col-md-6">
                   <label for="documentimage">Document Image</label>
@@ -183,9 +179,11 @@
                   <a href="#">privacy policy</a>
                   and
                   <a href="#">terms of use</a>
+                  {{registerForm.controls['isChecked'].valid |json}}
                   <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmited">
-                    <span *ngIf="registerForm.controls['isChecked'].errors['required']">Please accept terms and
-                      condition.</span>
+                    {{registerForm.controls['isChecked'].errors |json}}
+                    <span *ngIf="registerForm.controls['isChecked'].errors['required']">
+                      Accept terms and conditions.</span>
                   </div>
                 </label>
               </div>
