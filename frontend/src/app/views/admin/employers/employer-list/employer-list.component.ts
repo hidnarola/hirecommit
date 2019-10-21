@@ -1,62 +1,133 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { EmployerService } from '../employer.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-employer-list',
   templateUrl: './employer-list.component.html',
   styleUrls: ['./employer-list.component.scss']
 })
-export class EmployerListComponent implements OnInit {
-
-  employer: any = [];
-  name: any;
-  data: any;
+export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
+  employer_data: any[];
+  userDetail: any = [];
+  employer_type = 'Approved';
 
   constructor(
-    private router: Router,
+    private route: Router,
+    private router: ActivatedRoute,
     private service: EmployerService
-  ) { }
+  ) {
+    console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
+    if (this.router.snapshot.data.type === 'new') {
+      this.employer_type = 'New';
+    }
+  }
 
   ngOnInit() {
-    this.service.getemployer().subscribe(res => {
-      this.employer = res['data'];
-      this.employer = this.employer.filter(x => x.user_id.isAllow === false);
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 5,
+      serverSide: true,
+      processing: true,
+      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+      destroy: true,
+      ajax: (dataTablesParameters: any, callback) => {
+        if (this.router.snapshot.data.type === 'approved') {
+          this.service.get_approved_employer(dataTablesParameters).subscribe(res => {
+            console.log('res of approved employer => ', res);
+            if (res['status'] === 1) {
+              this.employer_data = res['user'];
+              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+            }
+          }, err => {
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+          });
+        } else if (this.router.snapshot.data.type === 'new') {
+          this.service.get_new_employer(dataTablesParameters).subscribe(res => {
+            console.log('res of new employer => ', res);
+            if (res['status'] === 1) {
+              this.employer_data = res['user'];
+              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+            }
+          }, err => {
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+          });
+        }
+      },
+      columnDefs: [{ orderable: false, targets: 5 }],
+      columns: [
+        {
+          data: 'firstname'
+        }, {
+          data: 'lastname'
+        }, {
+          data: 'email'
+        }, {
+          data: 'country'
+        }, {
+          data: 'coampany_name'
+        }, {
+          data: 'action'
+        }
+      ]
+    };
+  }
+
+
+  // buttonInRowClick(event: any): void {
+  //   event.stopPropagation();
+  //   console.log('Button in the row clicked.');
+  // }
+
+  // wholeRowClick(): void {
+  //   console.log('Whole row clicked.');
+  // }
+
+  // nextButtonClickEvent(): void {
+  //   // do next particular records like  101 - 200 rows.
+  //   // we are calling to api
+  //   console.log('next clicked');
+  // }
+
+  // previousButtonClickEvent(): void {
+  //   // do previous particular the records like  0 - 100 rows.
+  //   // we are calling to API
+  // }
+
+  // aprrov(id) {
+  //   this.service.aprroved_employer(id).subscribe(res => { });
+  // }
+
+  // detail(id) {
+  //   this.route.navigate(['admin/employers/detail/' + id]);
+  // }
+
+  // delete(id) {
+  //   this.service.deactivate_employer(id).subscribe(res => { });
+  // }
+
+  rrerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
     });
   }
 
-  buttonInRowClick(event: any): void {
-    event.stopPropagation();
-    console.log('Button in the row clicked.');
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
   }
 
-  wholeRowClick(): void {
-    console.log('Whole row clicked.');
-  }
-
-  nextButtonClickEvent(): void {
-    // do next particular records like  101 - 200 rows.
-    // we are calling to api
-    console.log('next clicked');
-  }
-
-  previousButtonClickEvent(): void {
-    // do previous particular the records like  0 - 100 rows.
-    // we are calling to API
-  }
-
-  aprrov(id) {
-    this.service.aprroved_employer(id).subscribe(res => { });
-  }
-
-  getEmployerlist() { }
-
-  detail(id) {
-    this.router.navigate(['admin/employers/detail/' + id]);
-  }
-
-  delete(id) {
-    this.service.deactivate_employer(id).subscribe(res => { });
+  ngOnDestroy() {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
 
 }

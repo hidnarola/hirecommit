@@ -13,8 +13,8 @@ export class CommunicationViewComponent implements OnInit {
   _name: any;
   _details: any = [];
   data: any;
-  viewform = false;
   communication: any = [];
+  cancel_link = '/employer/groups/list';
 
   constructor
     (private router: Router,
@@ -32,7 +32,6 @@ export class CommunicationViewComponent implements OnInit {
       this._name = res['data']['data'];
       console.log('>>', this._name);
 
-      this.viewform = true;
     });
     this.service.get_communication_detail(this.id).subscribe(res => {
       this._details = res['data']['data'];
@@ -50,9 +49,7 @@ export class CommunicationViewComponent implements OnInit {
   //   this.router.navigate(['/employer/groups/list']);
   // }
 
-  edit(id) {
-    this.router.navigate(['/employer/groups/communication/edit/' + id]);
-  }
+  edit(flag) { }
 
   onclick() { }
 
