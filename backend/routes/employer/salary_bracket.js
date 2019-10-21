@@ -79,7 +79,7 @@ router.post('/get', async (req, res) => {
             [sortOrderColumn]: sortOrder
         }
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id
         }
         else {
@@ -88,7 +88,22 @@ router.post('/get', async (req, res) => {
 
         var aggregate = [
             {
-                $match: { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
+                $match: { "emp_id": new ObjectId(user_id), "is_del": false }
+            },
+            {
+                $lookup:
+                {
+                    from: "country_datas",
+                    localField: "country",
+                    foreignField: "_id",
+                    as: "country"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$country",
+                    // preserveNullAndEmptyArrays: false
+                },
             }
         ]
 
@@ -100,6 +115,7 @@ router.post('/get', async (req, res) => {
             });
 
         }
+        console.log('aggregate', aggregate);
 
         let totalMatchingCountRecords = await salary_bracket.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
