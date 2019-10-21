@@ -16,6 +16,6 @@ if (host === 'localhost') {
 export const environment = {
   production: false,
   // API_URL: str + host + ':' + port + '/'
-  // API_URL: 'http://192.168.100.23:3000/',
-  API_URL: ' http://13.235.235.178:3000/'
+  API_URL: 'http://192.168.100.23:3000/',
+  // API_URL: ' http://13.235.235.178:3000/'
 };
