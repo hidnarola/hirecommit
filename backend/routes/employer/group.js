@@ -192,7 +192,14 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
+    const reqData = req.body.data;
+    console.log('reqData======>>>>', reqData);
 
+    const grp_data = {
+        group_id: req.params.id,
+        communication: reqData
+    };
+    var response = await common_helper.update(GroupDetail, { "group_id": req.params.id }, grp_data);
     if (group_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
@@ -303,7 +310,9 @@ router.get('/communication_detail/:id', async (req, res) => {
 router.get('/:id', async (req, res) => {
     var group_detail = await common_helper.find(group, { _id: ObjectId(req.params.id) });
     if (group_detail.status === 1) {
-        return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
+        var group_details = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
+
+        return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail, communication: group_details });
     }
     else if (group_detail.status === 2) {
         return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });

@@ -28,11 +28,12 @@ var User = require('./../models/user');
 var Candidate_Detail = require('./../models/candidate-detail');
 var Employer_Detail = require('./../models/employer-detail');
 var CountryData = require('./../models/country_data');
+var BusinessType = require('./../models/business_type');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
-// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+//var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -396,6 +397,8 @@ router.post("/employer_register", async (req, res) => {
           } else {
 
             var interest_user_resp = await common_helper.insert(User, user_reg_obj);
+            console.log('interest_user_resp', interest_user_resp);
+
             if (interest_user_resp.status === 1) {
               var reg_obj = {
                 "country": req.body.country,
@@ -408,6 +411,8 @@ router.post("/employer_register", async (req, res) => {
                 "user_id": new ObjectId(interest_user_resp.data.id)
               };
               var interest_resp = await common_helper.insert(Employer_Detail, reg_obj);
+              console.log('interest_resp==>', interest_resp);
+
               var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
                 config.ACCESS_TOKEN_SECRET_KEY, {
                 expiresIn: 60 * 60 * 24 * 3
@@ -488,7 +493,6 @@ router.post('/login', async (req, res) => {
           logger.info("Token generated");
 
 
-          let user_resp = await common_helper.findOne(User, { "email": req.body.email })
           var userDetails = await User.aggregate([
             {
               $match: {
@@ -501,12 +505,35 @@ router.post('/login', async (req, res) => {
                 from: "employerDetail",
                 localField: "_id",
                 foreignField: "user_id",
-                as: "user"
+                as: "employee"
               }
             },
             {
-              $unwind: "$user"
+              $lookup:
+              {
+                from: "candidateDetail",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "candidate"
+              }
             },
+            {
+              $addFields: {
+                userDetail: {
+                  $concatArrays: ["$candidate", "$employee"]
+                }
+              }
+            },
+            {
+              $unwind: {
+                path: "$userDetail"
+              }
+            },
+            {
+              $project: {
+                "userDetail": "$userDetail"
+              }
+            }
           ])
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": role.data.role, id: user_resp.data._id });
         }
@@ -769,6 +796,23 @@ async function getCountry(req, res) {
     });
   }
 }
+
+router.get('/business_type/:country', async (req, res) => {
+  try {
+    const country = await BusinessType.find({ "country": req.params.country }).lean();
+    return res.status(config.OK_STATUS).json({
+      success: true, message: 'country list fetched successfully.',
+      data: country
+    });
+  } catch (error) {
+    return res.status(config.INTERNAL_SERVER_ERROR).send({
+      success: false,
+      message: 'Error in Fetching country data', data: country
+    });
+  }
+})
+
+
 
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
