@@ -11,13 +11,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { GroupAddComponent } from './group-add/group-add.component';
+import { GroupEditComponent } from './group-edit/group-edit.component';
 
 @NgModule({
   declarations: [
     GroupsListComponent,
     GroupAddEditComponent,
     CommunicationViewComponent,
-    CommunicationAddEditComponent
+    CommunicationAddEditComponent,
+    GroupAddComponent,
+    GroupEditComponent
   ],
   imports: [
     CommonModule,

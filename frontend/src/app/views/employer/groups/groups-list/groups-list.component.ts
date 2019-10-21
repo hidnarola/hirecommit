@@ -92,9 +92,11 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
       columns: [
         {
           data: 'name'
-        }, {
+        },
+        {
           data: 'high_unopened'
-        }, {
+        },
+        {
           data: 'high_notreplied'
         },
         {
