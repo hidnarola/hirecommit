@@ -15,7 +15,7 @@
                                 <input type="text" class="form-control" placeholder="Enter Name" autocomplete="name"
                                     [(ngModel)]="detail.name" formControlName="name" id="name">
 
-                                <span *ngIf="!addAccount.get('name').valid && submitted" class="help-block">
+                                <span *ngIf="!addAccount.get('name').valid && submitted" class="text-danger">
                                     <span *ngIf="addAccount.get('name').errors['required']">This field is
                                         required!</span>
                                 </span>
@@ -27,7 +27,7 @@
                             <div class="col-md-4">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
                                     [(ngModel)]="detail.email" formControlName="email" id="email">
-                                <span *ngIf="!addAccount.get('email').valid && submitted" class="help-block">Please
+                                <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">Please
                                     enter a valid email!</span>
                             </div>
                         </div>

@@ -16,16 +16,16 @@
                                 <input type="text" class="form-control" placeholder="Enter group name"
                                     autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
                                 <div class="error" *ngIf="!addGroup.controls['name'].valid && isFormSubmited">
-                                    <span *ngIf="addGroup.controls['name'].errors['required']">Group name is
-                                        required.</span>
+                                    <span *ngIf="addGroup.controls['name'].errors['required']">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="d-block text-left col-md-3 col-form-label" for="commitStatus">
-                                <h5>Commit
-                                    Status</h5>
+                                <h5>Commit Status</h5>
                             </label>
                         </div>
 

@@ -12,11 +12,11 @@
                             <tr>
                                 <th>Candidate Name</th>
                                 <th>Candidate Email</th>
-                                <th>Phone</th>
-                                <th>PAN NO</th>
-                                <th>Date registered</th>
+                                <th>Contact No </th>
+                                <th>ID Proof</th>
+                                <th style="width: 15%;">Date of registration</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th style="width: 12%;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,7 +25,7 @@
                                 <td>{{data.user.email}}</td>
                                 <td>{{data.countrycode}} {{data.contactno}}</td>
                                 <td>{{data.documenttype}}</td>
-                                <td>{{data.createdAt.split('T')[0]}}</td>
+                                <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{data.status}}</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-success" (click)="detail(data._id)"><i

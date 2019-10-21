@@ -5,8 +5,10 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Offers
                     <p class="pull-right"></p>
-                    <i class="pull-right icon-plus" [routerLink]="['/employer/offers/add']"> Add
-                        Offer</i>
+                    <div class="pull-right btn-div">
+                        <a href=""><i class=" icon-plus" [routerLink]="['/employer/offers/add']"></i>
+                            <span>Add</span></a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
