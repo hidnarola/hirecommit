@@ -5,9 +5,12 @@ import { ProfileComponent } from './profile/profile.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [ ChangepasswordComponent, ProfileComponent ],
+  declarations: [ChangepasswordComponent, ProfileComponent],
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+
   ]
 })
 export class SharedModule { }

@@ -82,23 +82,23 @@ export class SubAccountAddViewComponent implements OnInit {
   get f() { return this.addAccount.controls; }
 
   checkValue(e) {
-    this.admin_rights = e.target.checked;
+
   }
 
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
-      if (this.detail['admin_rights'] === false) {
+      if (this.detail['admin_rights'] === 'no') {
         this.obj = {
           name: this.detail['name'],
           email: this.detail['email'],
-          admin_rights: 'no'
+          admin_rights: false
         };
-      } else if (this.detail['admin_rights'] === true) {
+      } else if (this.detail['admin_rights'] === 'yes') {
         this.obj = {
           name: this.detail['name'],
           email: this.detail['email'],
-          admin_rights: 'yes'
+          admin_rights: true
         };
       }
       console.log("obj==>", this.obj);

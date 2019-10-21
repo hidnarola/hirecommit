@@ -8,6 +8,7 @@ import { OfferAddViewComponent } from './offer-add-view/offer-add-view.component
 import { DataTablesModule } from 'angular-datatables';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { CalendarModule } from 'primeng/calendar';
     TooltipModule,
     DataTablesModule,
     DropdownModule,
-    CalendarModule
+    CalendarModule, InputSwitchModule
   ]
 })
 export class OffersModule { }

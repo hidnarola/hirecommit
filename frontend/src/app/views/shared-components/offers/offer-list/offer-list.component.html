@@ -38,11 +38,7 @@
                                 <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <!-- <td>
-                                    <label class="switch">
-                                        <input [checked]="offer.status" type="checkbox"
-                                            (change)="checkValue(offer._id, $event)">
-                                        <span class="slider round"></span>
-                                    </label>
+                                    <p-inputSwitch></p-inputSwitch>
                                 </td> -->
                                 <td>{{offer.offertype}}</td>
                                 <td>{{offer.group.name}}</td>

@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sign-up',
@@ -15,17 +16,19 @@ export class SignUpComponent implements OnInit {
   protected aFormGroup: FormGroup;
   public isFormSubmited;
   public formData: any;
+  code: any;
   step2 = false;
   step3 = false;
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
   private stepper: Stepper;
-
+  Country: any = [];
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
     private service: CommonService,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    public toastr: ToastrService
   ) {
     this.formData = {};
     this.registerForm = this.fb.group({
@@ -70,7 +73,9 @@ export class SignUpComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
+
         } else if (res['data'].status === 1) {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({
             type: 'success',
             text: res['message']
@@ -86,10 +91,26 @@ export class SignUpComponent implements OnInit {
       linear: false,
       animation: true
     });
+
+    this.service.country_data().subscribe(res => {
+      this.code = res['data'];
+      res['data'].forEach(element => {
+        this.Country.push({ 'label': element.country, 'value': element._id });
+      });
+    });
   }
 
-  onLogin() {
-    this.router.navigate(['/login']);
+  getCode(e) {
+    this.code.forEach(element => {
+      if (e.value === element._id) {
+
+        this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+      }
+    });
   }
+
+  // onLogin() {
+  //   this.router.navigate(['/login']);
+  // }
 
 }

@@ -22,7 +22,8 @@ import { ResetPasswordComponent } from './shared/reset-password/reset-password.c
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { ToastrModule } from 'ngx-toastr';
 import { Interceptor } from './shared/interceptor';
-
+import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
 export function getToken(): string {
   return localStorage.getItem('token');
 }
@@ -33,8 +34,9 @@ export function getToken(): string {
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-
+    DropdownModule,
     HttpClientModule,
+    CheckboxModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: getToken

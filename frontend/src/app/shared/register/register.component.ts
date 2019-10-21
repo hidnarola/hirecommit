@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./register.scss']
 })
 export class RegisterComponent implements OnInit {
-
+  code: any = [];
   registerForm: FormGroup;
   documentImage: FormGroup;
   public registerData: any;
@@ -21,6 +21,8 @@ export class RegisterComponent implements OnInit {
   isChecked = false;
   marked = false;
   imgurl: any = '';
+  Country: any = [];
+  codeList: any;
   // tslint:disable-next-line: max-line-length
 
   constructor(
@@ -51,7 +53,18 @@ export class RegisterComponent implements OnInit {
     // });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.service.country_data().subscribe(res => {
+      console.log('>>>', res['data']);
+
+      this.code = res['data'];
+
+      res['data'].forEach(element => {
+        this.Country.push({ 'label': element.country, 'value': element._id });
+      });
+    });
+
+  }
 
   onFileChange(event) {
     this.fileFormData = new FormData();
@@ -71,6 +84,16 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  getCode(e) {
+    // console.log('e', e.value);
+    this.code.forEach(element => {
+      if (e.value === element._id) {
+
+        this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+      }
+    });
+  }
+
   _handleReaderLoaded(e) {
     const reader = e.target;
     this.imgurl = reader.result;
@@ -85,7 +108,7 @@ export class RegisterComponent implements OnInit {
   }
 
   checkValue(e) {
-    this.marked = e.target.checked;
+    this.marked = e
   }
 
   onSubmit(valid) {
