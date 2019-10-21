@@ -25,11 +25,14 @@
                                 <td>{{acc.username}}</td>
                                 <td>{{acc.user.email}}</td>
                                 <td>
-                                    <label class="switch">
+                                    <p-inputSwitch [(ngModel)]="acc.user.admin_rights"
+                                        (onChange)="changeRights($event)">
+                                    </p-inputSwitch>
+                                    <!-- <label class="switch">
                                         <input [checked]="acc.user.admin_rights === 'yes'" type="checkbox"
                                             disabled="true">
                                         <span class="slider round"></span>
-                                    </label>
+                                    </label> -->
                                 </td>
                                 <td>
                                     <!-- <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i

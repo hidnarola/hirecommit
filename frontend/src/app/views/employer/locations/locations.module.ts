@@ -8,7 +8,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DataTablesModule } from 'angular-datatables';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     LocationsRoutingModule,
     ReactiveFormsModule,
     DataTablesModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DropdownModule
   ],
   providers: [ConfirmationService]
 })

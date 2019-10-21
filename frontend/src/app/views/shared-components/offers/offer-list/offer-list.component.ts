@@ -10,8 +10,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./offer-list.component.scss']
 })
 export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  checked1: boolean = true;
   @ViewChild(DataTableDirective, { static: false })
+
+
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
@@ -29,7 +31,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2,
+      pageLength: 5,
       serverSide: true,
       processing: true,
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },

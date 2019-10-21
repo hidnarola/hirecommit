@@ -54,11 +54,11 @@ export class CandidateService {
 
     // admin services
     get_new_candidate_admin(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/candidate/get_new', { ...params });
+        return this.http.post<any[]>(`${this.admin_url}` + '/candidate/get_new', { ...params });
     }
 
     get_approved_candidate_admin(params): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/candidate/get_approved', { ...params });
+        return this.http.post<any[]>(`${this.admin_url}` + '/candidate/get_approved', { ...params });
     }
     // admin services
 }

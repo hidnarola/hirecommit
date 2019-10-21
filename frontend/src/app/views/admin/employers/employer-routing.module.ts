@@ -18,78 +18,50 @@ const routes: Routes = [
         path: 'approved_employer',
         component: EmployerListComponent,
         data: {
-          title: 'Approved Employer'
+          title: 'Approved Employer',
+          type: 'approved'
         },
       },
       {
         path: 'approved_employer/add',
         component: EmployerViewComponent,
         data: {
-          title: 'Add Approved Employer'
+          title: 'Add Approved Employer',
+          type: 'approved'
         }
       },
       {
         path: 'approved_employer/view/:id',
         component: EmployerViewComponent,
         data: {
-          title: 'View Approved Employer'
+          title: 'View Approved Employer',
+          type: 'approved'
         }
       },
-      // children: [
-      //   {
-      //     path: 'add',
-      //     component: EmployerViewComponent,
-      //     data: {
-      //       title: 'Add'
-      //     }
-      //   },
-      //   {
-      //     path: 'view/:id',
-      //     component: EmployerViewComponent,
-      //     data: {
-      //       title: 'View'
-      //     }
-      //   },
-      // ]
-      // },
       {
         path: 'new_employer',
         component: EmployerListComponent,
         data: {
-          title: 'New Employer'
+          title: 'New Employer',
+          type: 'new'
         },
       },
       {
         path: 'new_employer/add',
         component: EmployerViewComponent,
         data: {
-          title: 'Add New Employer'
+          title: 'Add New Employer',
+          type: 'new'
         }
       },
       {
         path: 'new_employer/view/:id',
         component: EmployerViewComponent,
         data: {
-          title: 'View New Employer'
+          title: 'View New Employer',
+          type: 'new'
         }
       },
-      // children: [
-      //   {
-      //     path: 'add',
-      //     component: EmployerViewComponent,
-      //     data: {
-      //       title: 'Add'
-      //     }
-      //   },
-      //   {
-      //     path: 'view/:id',
-      //     component: EmployerViewComponent,
-      //     data: {
-      //       title: 'View'
-      //     }
-      //   },
-      // ]
-      // }
     ]
   }
 ];

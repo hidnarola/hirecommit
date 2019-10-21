@@ -88,13 +88,12 @@
                   <div class="form-group row mt-5">
                     <label class="col-md-4 col-form-label" for="country">Country</label>
                     <div class="col-md-8">
-                      <select id="country" name="country" class="form-control" [(ngModel)]="formData.country"
-                        name="country" formControlName="country">
-                        <option value="0">Please select</option>
-                        <option value="India">India</option>
-                        <option value="USA">USA</option>
-                        <option value="Shri Lanka">Shri Lanka</option>
-                      </select>
+                      <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
+                        id="country" (onChange)="getCode($event)">
+                      </p-dropdown>
+
+
+
                       <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
                         <span *ngIf="registerForm.controls['country'].errors['required']">Please select your
                           country.</span>
@@ -175,13 +174,8 @@
                     </div>
                     <div class="d-flex">
                       <div class="country-code">
-                        <select id="countrycode" name="countrycode" class="form-control"
-                          [(ngModel)]="formData.countrycode" name="countrycode" formControlName="countrycode">
-                          <option value="+91" selected="selected">+91</option>
-                          <option value="+92">+92</option>
-                          <option value="+44">+44</option>
-                          <option value="+1">+93</option>
-                        </select>
+                        <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
+                          formControlName="countrycode" name="countrycode">
                         <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
                             <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country code.</span>
                           </div> -->

@@ -51,6 +51,7 @@
     "bs-stepper": "^1.7.0",
     "chart.js": "^2.8.0",
     "core-js": "^2.6.9",
+    "crypto-ts": "^1.0.2",
     "datatables.net": "^1.10.19",
     "datatables.net-dt": "^1.10.19",
     "flag-icon-css": "^3.3.0",

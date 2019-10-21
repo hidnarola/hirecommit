@@ -35,11 +35,16 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="admin_rights">Admin Rights?</label>
                             <div class="col-md-6">
+
+                                <p-inputSwitch formControlName="admin_rights" [(ngModel)]="detail.admin_rights"
+                                    (onChange)="checkValue($event)">
+                                </p-inputSwitch>
+                                <!-- 
                                 <label class="switch">
-                                    <input type="checkbox" formControlName="admin_rights"
+                                    <input type="checkbox"
                                         [(ngModel)]="detail.admin_rights" (change)="checkValue($event)">
                                     <span class="slider round"></span>
-                                </label>
+                                </label> -->
                             </div>
                         </div>
                     </div>
