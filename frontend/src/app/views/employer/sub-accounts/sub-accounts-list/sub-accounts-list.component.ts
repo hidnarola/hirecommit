@@ -67,6 +67,10 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
 
   }
 
+  edit() {
+    console.log('function called => ');
+  }
+
   get_SubEmployer() { }
 
   checkValue(e) {

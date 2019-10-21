@@ -88,12 +88,22 @@
                   <div class="form-group row mt-5">
                     <label class="col-md-4 col-form-label" for="country">Country</label>
                     <div class="col-md-8">
-                      <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
-                        id="country" (onChange)="getCode($event)"></p-dropdown>
-                      <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
-                        <span *ngIf="registerForm.controls['country'].errors['required']">Please select your
-                          country.</span>
-                      </div>
+                      <<<<<<< HEAD <p-dropdown [options]="Country" placeholder="Select Country"
+                        formControlName="country" id="country" (onChange)="getCode($event)">
+                        </p-dropdown>
+                        =======
+                        <select id="country" name="country" class="form-control" [(ngModel)]="formData.country"
+                          name="country" formControlName="country">
+                          <option value="0">Please select</option>
+                          <option value="India">India</option>
+                          <option value="USA">USA</option>
+                          <option value="Shri Lanka">Shri Lanka</option>
+                        </select>
+                        >>>>>>> 55110e87af35d5e289b2ea81f63554ff3538e456
+                        <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
+                          <span *ngIf="registerForm.controls['country'].errors['required']">Please select your
+                            country.</span>
+                        </div>
                     </div>
                   </div>
 
@@ -130,8 +140,11 @@
                       [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
                       required="required">
                     <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['companyname'].errors['required']">Company Name is
-                        required.</span>
+                      <<<<<<< HEAD <span *ngIf="registerForm.controls['companyname'].errors['required']">Company Name is
+                        =======
+                        <span *ngIf="registerForm.controls['companyname'].errors['required']">Company name is
+                          >>>>>>> 55110e87af35d5e289b2ea81f63554ff3538e456
+                          required.</span>
                     </div>
                   </div>
 
@@ -143,56 +156,60 @@
                     </div>
                     <input type="text" class="form-control" placeholder="Website" formControlName="website">
                   </div>
-                  <p class="pull-left" style="color: rgb(167, 167, 167); font-size: 100%;">leave blank if unavailable
-                  </p>
-                  <br><br>
+                  <<<<<<< HEAD <p class="pull-left" style="color: rgb(167, 167, 167); font-size: 100%;">leave blank if
+                    unavailable
+                    =======
+                    <p class="pull-left" style="color: rgb(167, 167, 167); font-size: 100%;">Leave blank if unavailable
+                      >>>>>>> 55110e87af35d5e289b2ea81f63554ff3538e456
+                    </p>
+                    <br><br>
 
-                  <h5>Contact Details</h5>
+                    <h5>Contact Details</h5>
 
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="icon-user"></i>
+                        </span>
+                      </div>
+                      <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
+                        name="username" formControlName="username" required="required">
+                      <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmited">
+                        <span *ngIf="registerForm.controls['username'].errors['required']">User name is required.</span>
+                      </div>
                     </div>
-                    <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
-                      name="username" formControlName="username" required="required">
-                    <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['username'].errors['required']">User name is required.</span>
-                    </div>
-                  </div>
 
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-phone"></i>
-                      </span>
-                    </div>
-                    <div class="d-flex">
-                      <div class="country-code">
-                        <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
-                          formControlName="countrycode" name="countrycode">
-                        <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="icon-phone"></i>
+                        </span>
+                      </div>
+                      <div class="d-flex">
+                        <div class="country-code">
+                          <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
+                            formControlName="countrycode" name="countrycode">
+                          <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
                             <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country code.</span>
                           </div> -->
-                      </div>
-                      <div class="contact-number">
-                        <input type="text" class="form-control" placeholder="10-digit number"
-                          [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
-                          required="required">
-                        <div class="error pull-left"
-                          *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
-                          <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is
-                            required.</span>
-                          <span
-                            *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
-                            10 digits of mobile number.</span>
-                          <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers
-                            0-9.</span>
+                        </div>
+                        <div class="contact-number">
+                          <input type="text" class="form-control" placeholder="10-digit number"
+                            [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
+                            required="required">
+                          <div class="error pull-left"
+                            *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
+                            <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is
+                              required.</span>
+                            <span
+                              *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
+                              10 digits of mobile number.</span>
+                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers
+                              0-9.</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
                 </div>
                 <button type="submit" class="btn btn-primary mt-5"
                   (click)="onSubmit(registerForm.valid)">Submit</button>

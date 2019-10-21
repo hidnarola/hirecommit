@@ -325,7 +325,67 @@ router.post('/get', async (req, res) => {
             var user_id = req.userInfo.id
         }
         var aggregate = [
-            { $match: { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false } }
+            { $match: { $or: [{ "employer_id": new ObjectId(req.userInfo.id) }, { "employer_id": new ObjectId(user.data.emp_id) }], "is_del": false } },
+            {
+                $lookup:
+                {
+                    from: "group",
+                    localField: "groups",
+                    foreignField: "_id",
+                    as: "group"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$group",
+                    // preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "employer_id",
+                    foreignField: "_id",
+                    as: "employer_id"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employer_id",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "location",
+                    localField: "location",
+                    foreignField: "_id",
+                    as: "location"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$location",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "salary_bracket",
+                    localField: "salarybracket",
+                    foreignField: "_id",
+                    as: "salarybracket"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$salarybracket",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
@@ -337,10 +397,8 @@ router.post('/get', async (req, res) => {
         }
         let totalMatchingCountRecords = await Offer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
-        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
         var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        console.log('resp_data', resp_data);
 
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
@@ -484,7 +542,6 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
-    console.log('offer_upadate', offer_upadate);
 
     if (offer_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });

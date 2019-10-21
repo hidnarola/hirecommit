@@ -20,7 +20,7 @@
                                     (onChange)="findCurrency($event)"></p-dropdown>
 
                                 <span *ngIf="!AddSalaryBracket.get('country').valid && submitted"
-                                    class="help-block">This field is
+                                    class="text-danger">This field is
                                     required.</span>
                             </div>
                         </div>
@@ -42,10 +42,10 @@
                                 <input type="number" #from (blur)="onBlur(from.value,to.value)" id="from"
                                     [(ngModel)]="detail.from" name="from" class="form-control" placeholder="from"
                                     formControlName="from">
-                                <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="help-block">This
+                                <span *ngIf="!AddSalaryBracket.get('from').valid && submitted" class="text-danger">This
                                     field is
                                     required.
-                                </span><span *ngIf="error" class="help-block">{{error_msg1}}</span>
+                                </span><span *ngIf="error" class="text-danger">{{error_msg1}}</span>
                             </div>
                         </div>
 
@@ -55,10 +55,10 @@
                             <div class="col-md-4">
                                 <input type="number" #to (blur)="onBlurMethod(from.value,to.value)" id="to" name="to"
                                     [(ngModel)]="detail.to" class="form-control" placeholder="to" formControlName="to">
-                                <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="help-block">This
+                                <span *ngIf="!AddSalaryBracket.get('to').valid && submitted" class="text-danger">This
                                     field is required.
                                 </span>
-                                <span *ngIf="error" class="help-block">{{error_msg}}</span>
+                                <span *ngIf="error" class="text-danger">{{error_msg}}</span>
                             </div>
                             <!-- <p-slider [(ngModel)]="rangeValues" [range]="true"></p-slider> -->
                         </div>
