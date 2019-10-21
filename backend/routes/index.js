@@ -202,7 +202,7 @@ router.post("/candidate_register", async (req, res) => {
               "subject": "HC - Email Confirmation"
             }, {
               // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-              "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+              "confirm_url": config.WEBSITE_URL + 'confirmation/' + reset_token
             });
             if (mail_resp.status === 0) {
               res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -424,7 +424,7 @@ router.post("/employer_register", async (req, res) => {
                 "subject": "HireCommit - Email Confirmation"
               }, {
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
-                "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
               });
               if (mail_resp.status === 0) {
                 res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -446,7 +446,6 @@ router.post("/employer_register", async (req, res) => {
   }
 });
 
-//HCP login
 router.post('/login', async (req, res) => {
   var schema = {
     'email': {
@@ -487,7 +486,29 @@ router.post('/login', async (req, res) => {
           delete user_resp.data.last_login_date;
           delete user_resp.data.created_at;
           logger.info("Token generated");
-          res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken, "role": role.data.role, id: user_resp.data._id });
+
+
+          let user_resp = await common_helper.findOne(User, { "email": req.body.email })
+          var userDetails = await User.aggregate([
+            {
+              $match: {
+                "email": req.body.email
+              }
+            },
+            {
+              $lookup:
+              {
+                from: "employerDetail",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "user"
+              }
+            },
+            {
+              $unwind: "$user"
+            },
+          ])
+          res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": role.data.role, id: user_resp.data._id });
         }
         else {
           res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
@@ -573,7 +594,7 @@ router.post('/forgot_password', async (req, res) => {
           "to": user.data.email,
           "subject": "HireCommit - Reset Password"
         }, {
-          "reset_link": "http://localhost:4200" + "/reset-password/" + reset_token
+          "reset_link": config.WEBSITE_URL + "reset-password/" + reset_token
         });
         if (mail_resp.status === 0) {
           res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending mail", "error": mail_resp.error });
