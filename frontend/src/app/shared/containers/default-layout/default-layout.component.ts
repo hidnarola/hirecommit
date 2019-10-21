@@ -1,7 +1,8 @@
 import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { admin, employer, candidate } from '../../_nav';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,11 +14,14 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   private changes: MutationObserver;
   public element: HTMLElement;
   currentYear = new Date().getFullYear();
-
+  userDetail;
   constructor(
     private router: Router,
-    @Inject(DOCUMENT) _document?: any
+    private activatedRoute: ActivatedRoute,
+    private commonService: CommonService,
+    @Inject(DOCUMENT) _document?: any,
   ) {
+     this.userDetail = this.commonService.getLoggedUserDetail();
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -29,7 +33,14 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   changepassword() {
-    this.router.navigate(['employer/change-password']);
+    console.log(this.userDetail.role);
+    if (this.userDetail.role === 'admin') {
+      this.router.navigate(['admin/change-password']);
+    } else if (this.userDetail.role === 'employer') {
+      this.router.navigate(['employer/change-password']);
+    } else if (this.userDetail.role === 'candidate') {
+      this.router.navigate(['candidate/change-password']);
+    }
   }
 
   logout() {

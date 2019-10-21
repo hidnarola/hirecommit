@@ -23,16 +23,13 @@ export class OfferService {
     }
 
     offer_detail(id): Observable<any[]> {
-        return this.http.get<any[]>(`${this.employer_url}` + '/offer/offer_detail/' + id);
+        return this.http.get<any[]>(`${this.employer_url}` + '/offer/details/' + id);
     }
 
     deactivate_employer_offer(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.employer_url}` + '/offer/deactive_offer/' + id, null);
     }
 
-    edit_offer(id, data): Observable<any[]> {
-        return this.http.put<any[]>(`${this.employer_url}` + '/offer/edit_offer/' + id, data);
-    }
 
     // get_location(country: string): Observable<any[]> {
     //     return this.http.get<any[]>(`${this.employer_url}` + `/get_location/${country}`);
@@ -48,6 +45,11 @@ export class OfferService {
 
     get_salary_country(): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + '/salary_bracket/get_salary_country');
+    }
+
+
+    update_offer(data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.employer_url}` + '/offer', data);
     }
 
     change_status(id, data): Observable<any[]> {
@@ -76,8 +78,11 @@ export class OfferService {
     deactivate_candidate_offer(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.candidate_url}` + '/deactive_offer/' + id, null);
     }
+
     get_employer(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.candidate_url}` + '/get_employer/' + id);
     }
+
+
     // Candidate Service
 }
