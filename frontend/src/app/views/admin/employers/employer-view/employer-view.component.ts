@@ -12,7 +12,6 @@ export class EmployerViewComponent implements OnInit {
   id: any;
   employer_detail: any;
   name: any = [];
-  form = false;
   buttonValue: any;
   buttonValue1: String;
   cancel_link = '/admin/employers/list';
@@ -31,7 +30,6 @@ export class EmployerViewComponent implements OnInit {
     });
     this.service.getemployerDetail(this.id).subscribe(res => {
       this.employer_detail = res['data'];
-      this.form = true;
       if (this.employer_detail.user_id.isAllow === false) {
         this.buttonValue = 'Approve';
         this.buttonValue1 = 'unapprove';

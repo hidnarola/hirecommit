@@ -29,7 +29,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 2,
+      pageLength: 5,
       serverSide: true,
       processing: true,
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },

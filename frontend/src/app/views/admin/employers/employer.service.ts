@@ -25,11 +25,17 @@ export class EmployerService {
   }
 
   getemployerDetail(id): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + '/employer_detail/' + id);
+    return this.http.get<any[]>(`${this.url}` + '/employer/' + id);
   }
 
-  addemployer(data): Observable<any[]> {
-    return this.http.post<any[]>(`${this.url}` + 'employer', data);
+  // get new employer
+  get_new_employer(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/employer/get_new', data);
+  }
+
+  // get approved employer
+  get_approved_employer(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/employer/get_approved', data);
   }
 
   deactivate_employer(id): Observable<any[]> {
