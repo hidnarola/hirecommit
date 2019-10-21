@@ -10,12 +10,10 @@ salary_helper.get_all_salary_bracket = async (collection, id, search, start, len
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
       {
-        $match: {
-          "is_del": false,
-          "emp_id": new ObjectId(id)
-        }
-      },
 
+        $match: { "emp_id": new ObjectId(id), "is_del": false }
+
+      },
       {
         $lookup:
         {
@@ -28,7 +26,7 @@ salary_helper.get_all_salary_bracket = async (collection, id, search, start, len
       {
         $unwind: {
           path: "$country",
-          preserveNullAndEmptyArrays: false
+          // preserveNullAndEmptyArrays: false
         },
       }
     ]
@@ -39,6 +37,8 @@ salary_helper.get_all_salary_bracket = async (collection, id, search, start, len
           { $or: [{ "country.country": RE }, { "country.currency_code": RE }, { "from": RE }, { "to": RE }] }
       });
     }
+
+    console.log('aggregate', aggregate);
 
     // console.log(aggregate);
     if (sort) {

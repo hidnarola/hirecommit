@@ -10,8 +10,12 @@ const EmployerDetailSchema = new Schema({
   },
   businesstype: {
     type: String,
-    required: true
+    // ref: 'business_type'
   },
+  // businesstype: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'business_type'
+  // },
   companyname: {
     type: String,
     required: true
@@ -40,9 +44,9 @@ const EmployerDetailSchema = new Schema({
     default: false
   },
   createdate: {
-      type: Date,
-      default: Date.now
+    type: Date,
+    default: Date.now
   }
 });
 
-module.exports = mongoose.model('employerDetail', EmployerDetailSchema,'employerDetail');
+module.exports = mongoose.model('employerDetail', EmployerDetailSchema, 'employerDetail');

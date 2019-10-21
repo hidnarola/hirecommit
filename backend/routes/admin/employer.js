@@ -59,7 +59,7 @@ router.post('/get_new', async (req, res) => {
         let totalMatchingCountRecords = await Employer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await user_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -92,24 +92,24 @@ router.post('/get_approved', async (req, res) => {
 
                 }
             },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "user",
-            //         localField: "user_id",
-            //         foreignField: "_id",
-            //         as: "user"
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         path: "$user",
-            //         preserveNullAndEmptyArrays: true
-            //     }
-            // },
-            // {
-            //     $match: { "user.isAllow": true }
-            // }
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    // preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $match: { "user.isAllow": true }
+            }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
@@ -121,10 +121,11 @@ router.post('/get_approved', async (req, res) => {
         }
 
 
-        let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
+        let totalMatchingCountRecords = await Employer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
+        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
-        var resp_data = await candidate_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await user_helper.get_all_approved_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -153,6 +154,7 @@ router.get('/:id', async (req, res) => {
     // }
 });
 
+
 router.put("/deactive_candidate/:id", async (req, res) => {
     var obj = {
         is_del: true
@@ -170,6 +172,7 @@ router.put("/deactive_candidate/:id", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
     }
 });
+
 
 // router.put('/edit_approved_candidate/:id', async (req, res) => {
 
