@@ -49,46 +49,50 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log('err => ', err);
         });
       },
-      // columnDefs: [{ orderable: false, targets: 11 }],
+      columnDefs: [{ orderable: false, targets: 10 }], // 11
       columns: [
         {
-          data: 'created_at'
+          data: 'createdAt'
         },
         {
           data: 'title'
         },
         {
-          data: 'salary_type'
+          data: 'salarytype'
         },
         {
-          data: 'salary_bracket'
+          data: 'salarybracket.from'
         },
         {
-          data: 'expiry_date'
+          data: 'expirydate'
         },
         {
-          data: 'joining_date'
+          data: 'joiningdate'
         },
         // {
         //   data: 'status'
         // },
         {
-          data: 'offer_type'
+          data: 'offertype'
         },
         {
-          data: 'group'
+          data: 'group.name'
         },
         {
-          data: 'commit_status'
+          data: 'commitstatus'
         },
         {
-          data: 'custom_field1'
+          data: 'customfeild[0].key'
         },
-        // {
-        //   data: 'actions'
-        // }
+        {
+          data: 'actions'
+        }
       ]
     };
+  }
+
+  edit (id) {
+    this.route.navigate(['/employer/offers/edit/' + id]);
   }
 
   onDelete(id) {

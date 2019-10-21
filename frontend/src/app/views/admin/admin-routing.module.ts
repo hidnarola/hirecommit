@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
+import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
       {
         path: 'candidates',
         loadChildren: () => import('../shared-components/candidates/candidate.module').then(m => m.CandidateModule)
-      }
+      },
+      { path: 'change-password', component: ChangepasswordComponent },
     ]
   }
 ];
