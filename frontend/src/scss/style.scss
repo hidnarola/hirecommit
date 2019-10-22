@@ -114,7 +114,17 @@ body .ui-confirmdialog .ui-dialog-content .ui-confirmdialog-icon{position: absol
 .ui-button-text-icon-right .ui-button-icon-right { line-height:20px;}
 body .ui-button:enabled:focus {outline:0 none; outline-offset:0px; box-shadow:none;}
 
-.signup-box .card-body{ height:610px;}
 .country-code-box-wrap{ align-items:flex-start;}
 .country-code-box-wrap i.icon-phone{ line-height:22px;}
 .country-code-box-wrap .country-code>input{ width:60px;}
+
+.country-code-box-wrap .d-flex{ width:calc(100% - 40px);}
+.country-code-box-wrap .d-flex .country-code{ width:22%;flex: initial;}
+.country-code-box-wrap .d-flex .contact-number{ width:calc(78% - 15px); margin:0 0 0 auto;flex: initial;}
+
+.signup-box h4{ margin:0 0 15px; font-weight:600; text-align:left;font-size: 16px; color: #666;}
+.signup-box .ui-dropdown{ width:100%;}
+html .main .card.signup-box .card-body .bs-stepper .content .row.form-inner,
+html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-height:inherit !important; padding:40px 0 20px;}
+.step-form-btn button{ padding:5px 30px; margin: 0 auto; display:block;}
+.custom-margin{ margin:-4px 0;}

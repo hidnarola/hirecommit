@@ -5,10 +5,12 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Groups
                     <p class="pull-right"></p>
-                    <button class="btn-div-wrap pull-right" [routerLink]="['/employer/groups/add']">
+                    <button class="pull-right btn btn-sm btn-primary custom-margin"
+                        [routerLink]="['/employer/groups/add']">
                         <i class="icon-plus"></i>
-                        <strong>ADD</strong>
+                        Add
                     </button>
+
                 </div>
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
