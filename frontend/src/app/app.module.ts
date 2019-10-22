@@ -24,6 +24,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { Interceptor } from './shared/interceptor';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FileUploadModule } from 'primeng/fileupload';
 export function getToken(): string {
   return localStorage.getItem('token');
 }
@@ -37,6 +38,7 @@ export function getToken(): string {
     DropdownModule,
     HttpClientModule,
     CheckboxModule,
+    FileUploadModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: getToken

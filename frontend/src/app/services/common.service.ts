@@ -78,9 +78,7 @@ export class CommonService {
     this.profileDetail.next(profileData);
   }
 
-  get_Business_Type(data): Observable<any[]> {
-    console.log('country name from service => ', data);
-
+  get_Type(data): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}` + 'business_type/' + data)
   }
 

@@ -98,7 +98,8 @@
                   <div class="form-group row">
                     <label class="col-md-4 col-form-label" for="businesstype">Business Type</label>
 
-                    <p-dropdown [options]="Business_Type" formControlName="businesstype" id="businesstype">
+                    <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
+                      formControlName="businesstype" id="businesstype">
                     </p-dropdown>
                     <div class="error" *ngIf="!registerForm.controls['businesstype'].valid && isFormSubmited">
                       <span *ngIf="registerForm.controls['businesstype'].errors['required']">Please select business

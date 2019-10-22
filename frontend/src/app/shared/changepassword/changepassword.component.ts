@@ -49,7 +49,7 @@ export class ChangepasswordComponent implements OnInit {
       this.service.change_password(this.submitform.value).subscribe(res => {
         this.isFormSubmited = false;
         if (res['status'] === 1) {
-          this.toastr.success(res['message'], 'Error!', { timeOut: 3000 });
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.router.navigate(['/employer/offers/list']);
         }
       }, (err) => {
