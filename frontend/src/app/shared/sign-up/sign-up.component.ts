@@ -21,16 +21,17 @@ export class SignUpComponent implements OnInit {
   marked = false;
   step2 = false;
   step3 = false;
+  Business_Type: any = [];
+  //local
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
-  Business_Type = [
-    { label: 'Select Business Type', value: '' },
-    { label: 'Private', value: 'Private' },
-    { label: 'Individual', value: 'Individual' },
-    { label: 'Partnership', value: 'Partnership' }
-  ];
+  //live
   // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
   private stepper: Stepper;
-  Country: any = [];
+  Country = [
+    { label: 'Select Business Type', value: '' },
+    { label: 'India', value: 'India' },
+    { label: 'United States', value: 'Us' },
+  ];
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -97,7 +98,6 @@ export class SignUpComponent implements OnInit {
 
   checkValue(e) {
     console.log('e>>', e);
-
     this.marked = e
   }
 
@@ -108,21 +108,38 @@ export class SignUpComponent implements OnInit {
       animation: true
     });
 
-    this.service.country_data().subscribe(res => {
-      this.code = res['data'];
-      res['data'].forEach(element => {
-        this.Country.push({ 'label': element.country, 'value': element._id });
-      });
-    });
+    // this.service.country_data().subscribe(res => {
+    //   this.code = res['data'];
+    //   res['data'].forEach(element => {
+    //     this.Country.push({ 'label': element.country, 'value': element._id });
+    //   });
+    // });
   }
 
   getCode(e) {
-    this.code.forEach(element => {
-      if (e.value === element._id) {
+    console.log('element of country =>', e.value);
+    this.Business_Type = [];
+    this.service.get_Business_Type(e.value).subscribe(res => {
+      console.log('Business types of selected country =>', res['data']);
+      res['data'].forEach(element => {
+        this.Business_Type.push({ 'label': element.name, 'value': element._id });
+      });
+      console.log('drop dowm of selected country =>', this.Business_Type);
 
-        this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+      if (e.value === 'India') {
+        this.registerForm.controls['countrycode'].setValue('+91')
       }
-    });
+      else {
+        this.registerForm.controls['countrycode'].setValue('+1')
+      }
+
+    })
+
+    // this.code.forEach(element => {
+    //   if (e.value === element._id) {
+    //     this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+    //   }
+    // });
   }
 
   // onLogin() {
