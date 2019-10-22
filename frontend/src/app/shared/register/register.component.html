@@ -53,11 +53,8 @@
                 </div>
                 <div class="form-group col-md-6">
                   <label for="country">Country</label>
-
-                  <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country" id="country"
-                    (onChange)="getCode($event)">
-
-
+                  <p-dropdown [options]="countryList" placeholder="Select Country" formControlName="country" #country
+                    id="country" (onChange)="getCode($event)" [(ngModel)]="registerData.country" [required]>
                   </p-dropdown>
                   <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
                     <span *ngIf="registerForm.controls['country'].errors['required']">This Field is required.</span>
@@ -65,6 +62,7 @@
                 </div>
 
               </div>
+
               <div class="row">
                 <div class="form-group col-md-6">
                   <label for="contactno">Contact Number</label>
@@ -102,14 +100,13 @@
                         </div>
                       </div>
                     </div>
-
-
                   </div>
                 </div>
+
                 <div class="form-group col-md-6">
                   <label for="documenttype">Document Type</label>
                   <p-dropdown [options]="Document_optoins" placeholder="Select Document Types"
-                    formControlName="documenttype" id="documenttype" required="required">
+                    formControlName="documenttype" [(ngModel)]="registerData.documenttype" id="documenttype" [required]>
                   </p-dropdown>
                   <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmited">
                     <span *ngIf="registerForm.controls['documenttype'].errors['required']">This Field is required.
@@ -127,13 +124,13 @@
                         <i class="icon-doc"></i>
                       </span>
                     </div>
-                    <input type="file" [(ngModel)]="registerData.documentImage" name="documentImage"
-                      formControlName="documentImage" class="form-control" placeholder="Select any image file"
-                      (change)="onFileChange($event)" value=''>
-                    <div class="error" *ngIf="!registerForm.controls['documentImage'].valid && isFormSubmited">
+                    <input type="file" accept="image/*" name="documentImage" [(ngModel)]="registerData.documentImage"
+                      [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Select any image file"
+                      (change)="onFileChange($event)">
+                    <!-- <div class="error" *ngIf="!registerForm.controls['documentImage'].valid && isFormSubmited">
                       <span *ngIf="!registerForm.controls['documentImage'].errors['required']">This Field is required.
                       </span>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>

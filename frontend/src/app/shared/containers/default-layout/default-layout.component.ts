@@ -21,7 +21,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     @Inject(DOCUMENT) _document?: any,
   ) {
-     this.userDetail = this.commonService.getLoggedUserDetail();
+    this.userDetail = this.commonService.getLoggedUserDetail();
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -42,6 +42,18 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.router.navigate(['candidate/change-password']);
     }
   }
+  profile() {
+    console.log(this.userDetail.role);
+    // if (this.userDetail.role === 'admin') {
+    //   this.router.navigate(['admin/profile']);
+    // } else 
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate(['employer/profile']);
+    } else if (this.userDetail.role === 'candidate') {
+      this.router.navigate(['candidate/profile']);
+    }
+  }
+
 
   logout() {
     localStorage.removeItem('token');

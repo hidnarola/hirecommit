@@ -38,7 +38,8 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
-          console.log('res', res);
+          console.log('custom feild res =>>', res);
+
           if (res['status'] === 1) {
             this.data = res['salary'];
             callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
@@ -46,7 +47,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         }, err => {
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
-      }, columnDefs: [{ orderable: false, targets: 1 }],
+      }, columnDefs: [{ orderable: false, targets: 2 }],
       columns: [
         // {
         //   data: 'index'

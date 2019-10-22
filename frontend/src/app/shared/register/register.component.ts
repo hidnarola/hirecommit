@@ -12,22 +12,23 @@ import { ToastrService } from 'ngx-toastr';
 export class RegisterComponent implements OnInit {
   code: any = [];
   registerForm: FormGroup;
-  documentImage: FormGroup;
+  // documentImage: FormGroup;
   public registerData: any;
   fileFormData;
-  file: File = null;
+  file: File;
   public isFormSubmited;
   formData;
   isChecked;
   marked = false;
-  imgurl: any = '';
-  Country = [
+  imgurl;
+
+  countryList = [
     { label: 'Select Country', value: '' },
     { label: 'India', value: 'India' },
-    { label: 'United States', value: 'Us' }
+    { label: 'United States America', value: 'Us' }
   ];
   codeList: any;
-  Document_optoins: any = []
+  Document_optoins: any = [];
 
   // tslint:disable-next-line: max-line-length
 
@@ -42,11 +43,14 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
-      documentImage: new FormControl('', [Validators.required]),
+      // documentImage: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      countrycode: new FormControl('', [Validators.required]),
-      contactno: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
       country: new FormControl('', [Validators.required]),
+      countrycode: new FormControl('', [Validators.required]),
+      contactno: new FormControl('',
+      Validators.compose([Validators.required,
+        Validators.pattern(/^-?(0|[1-9]\d*)?$/),
+        Validators.maxLength(10), Validators.minLength(10)])),
       documenttype: new FormControl('', [Validators.required]),
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
       confirmpassword: new FormControl('', [Validators.required]),
@@ -58,41 +62,48 @@ export class RegisterComponent implements OnInit {
     // });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.formData =  new FormData();
+   }
 
-  onFileChange(event) {
-    this.fileFormData = new FormData();
-    const reader = new FileReader();
-    if (event.target.files && event.target.files.length > 0) {
-      this.file = event.target.files[0];
-      console.log('uploaded file =>', this.file.name);
-      console.log('ater splite =>', this.file.name.split('.')[1]);
-      // if (this.file.name.split('.')[1] === 'png' || this.file.name.split('.')[1] === 'jpg' || this.file.name.split('.')[1] === 'jpeg') {
-
-      this.fileFormData.append('filename', this.file);
-      reader.readAsDataURL(this.file);
-      reader.onload = this._handleReaderLoaded.bind(this);
-      // reader.onload = () => {
-      //   this.documentImage.patchValue({
-      //     documentimage: reader.result
-      //  });
-      this.imgurl = reader.result;
-      // need to run CD since file load runs outside of zone
-      this.cd.markForCheck();
-      // }
-      // else {
-      //   console.log('image type is not valuid, please enter image in format of PNG, JPG or JPEG!');
-
-      // }
-
-    }
+onFileChange(e) {
+  if (e.target.files && e.target.files.length > 0) {
+    this.file = e.target.files[0];
   }
+}
+
+  // onFileChange(event) {
+  //   this.fileFormData = new FormData();
+  //   const reader = new FileReader();
+  //   if (event.target.files && event.target.files.length > 0) {
+  //     this.file = event.target.files;
+  //     console.log('uploaded file =>', this.file.name);
+  //     console.log('ater splite =>', this.file.name.split('.')[1]);
+  //     // if (this.file.name.split('.')[1] === 'png' || this.file.name.split('.')[1] === 'jpg' || this.file.name.split('.')[1] === 'jpeg') {
+
+  //     this.fileFormData.append('filename', this.file);
+  //     reader.readAsDataURL(this.file);
+  //     reader.onload = this._handleReaderLoaded.bind(this);
+  //     // reader.onload = () => {
+  //     //   this.documentImage.patchValue({
+  //     //     documentimage: reader.result
+  //     //  });
+  //     this.imgurl = reader.result;
+  //     // need to run CD since file load runs outside of zone
+  //     this.cd.markForCheck();
+  //     // }
+  //     // else {
+  //     //   console.log('image type is not valuid, please enter image in format of PNG, JPG or JPEG!');
+
+  //     // }
+
+  //   }
+  // }
 
   getCode(e) {
-
-    console.log("element of country =>>", e.value);
-    this.Document_optoins = [];
+    console.log('element of country =>>', e.value);
     this.service.get_Type(e.value).subscribe(res => {
+      console.log('response', res);
       console.log('Document Types of selected country =>', res['document']);
       res['document'].forEach(element => {
         this.Document_optoins.push({ 'label': element.name, 'value': element._id });
@@ -100,19 +111,12 @@ export class RegisterComponent implements OnInit {
       console.log('drop dowm of selected country =>', this.Document_optoins);
 
       if (e.value === 'India') {
-        this.registerForm.controls['countrycode'].setValue('+91')
-      }
-      else {
-        this.registerForm.controls['countrycode'].setValue('+1')
+        this.registerForm.controls['countrycode'].setValue('+91');
+      } else {
+        this.registerForm.controls['countrycode'].setValue('+1');
       }
 
-    })
-
-    // this.code.forEach(element => {
-    //   if (e.value === element._id) {
-    //     this.registerForm.controls['countrycode'].setValue('+' + element.country_code);
-    //   }
-    // });
+    });
   }
 
   _handleReaderLoaded(e) {
@@ -131,31 +135,26 @@ export class RegisterComponent implements OnInit {
   checkValue(e) {
     console.log('e>>', e);
     this.marked = e;
-    // this.isChecked = e;
   }
 
   onSubmit(valid) {
-    console.log('this.marked ===>', this.marked);
-    console.log('this.registerForm ===>', this.registerForm);
-    console.log('this.registerForm.isChecked  ===>', this.registerForm.controls['isChecked'].valid);
+    console.log('this.registerForm.value ==> ', this.registerForm.value, this.formData);
 
     this.isFormSubmited = true;
     if (valid && this.marked) {
-      this.registerData.documentImage = this.imgurl;
-      console.log('this.registerData', this.registerData);
-
-      this.formData = new FormData();
-      // tslint:disable-next-line: forin
-      for (const key in this.registerData) {
-        const value = this.registerData[key];
-        this.formData.append(key, value);
+      // this.registerData.documentImage = this.file;
+      // console.log('this.registerData', this.registerData);
+      console.log('submit : registerData ==> ', this.registerForm.value);
+      // this.formData = new FormData();
+      // tslint:disable-next-line: forin+
+      const data = this.registerForm.value;
+      this.formData.append('documentImage', this.file);
+      for (const key in data) {
+        if (key) {
+          const value = data[key];
+          this.formData.append(key, value);
+        }
       }
-      // if (this.fileFormData.get('filename')) {
-      //   this.formData.append('documentimage', this.imgurl);
-      // }
-      //  this.registerForm.controls.documentImage.setValue(this.imgurl)
-      // this.documentImage.controls.documentimage.setValue(this.imgurl);
-      console.log('this.formData =>>', this.formData);
 
       this.service.candidate_signup(this.formData).subscribe(res => {
         this.isFormSubmited = false;
@@ -167,7 +166,7 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/login']);
         }
       }, (err) => {
-        this.toastr.error(err['error'].message[0].msg, 'Error!', { timeOut: 3000 });
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }

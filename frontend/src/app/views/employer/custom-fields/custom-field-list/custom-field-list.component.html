@@ -6,9 +6,11 @@
                     <i class="fa fa-align-justify"></i> Custom Fields
                     <p class="pull-right"></p>
 
-                    <button class="btn-div-wrap pull-right" [routerLink]="['/employer/custom_fields/add']">
+
+                    <button class="pull-right btn btn-sm btn-primary custom-margin"
+                        [routerLink]="['/employer/custom_fields/add']">
                         <i class="icon-plus"></i>
-                        <strong>ADD</strong>
+                        Add
                     </button>
 
                 </div>
@@ -26,7 +28,7 @@
 
                         <tbody *ngIf="data?.length != 0">
                             <tr *ngFor="let d of data; let i = index;">
-                                <!-- <td>{{i+1}}</td> -->
+                                <td>{{d.serial_number}} </td>
                                 <td>{{d.key}}</td>
 
                                 <td>

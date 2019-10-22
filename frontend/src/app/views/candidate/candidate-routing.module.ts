@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
-
+import { ProfileComponent } from '../../shared/profile/profile.component';
 const routes: Routes = [
   {
     path: '',
@@ -18,7 +18,8 @@ const routes: Routes = [
       {
         path: 'offers',
         loadChildren: () => import('../shared-components/offers/offers.module').then(m => m.OffersModule)
-      }
+      },
+      { path: 'profile', component: ProfileComponent }
     ]
   }
 ];
