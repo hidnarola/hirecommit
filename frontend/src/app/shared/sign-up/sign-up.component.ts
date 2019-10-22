@@ -83,7 +83,7 @@ export class SignUpComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
-
+          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
         } else if (res['data'].status === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({
@@ -92,6 +92,8 @@ export class SignUpComponent implements OnInit {
           });
           this.router.navigate(['/login']);
         } else { }
+      }, (err) => {
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }
@@ -119,7 +121,7 @@ export class SignUpComponent implements OnInit {
   getCode(e) {
     console.log('element of country =>', e.value);
     this.Business_Type = [];
-    this.service.get_Business_Type(e.value).subscribe(res => {
+    this.service.get_Type(e.value).subscribe(res => {
       console.log('Business types of selected country =>', res['data']);
       res['data'].forEach(element => {
         this.Business_Type.push({ 'label': element.name, 'value': element._id });

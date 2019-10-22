@@ -5,10 +5,12 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Custom Fields
                     <p class="pull-right"></p>
-                    <div class="btn-div-wrap pull-right">
-                        <i class="icon-plus" [routerLink]="['/employer/custom_fields/add']"></i>
-                        <strong>Add</strong>
-                    </div>
+
+                    <button class="btn-div-wrap pull-right" [routerLink]="['/employer/custom_fields/add']">
+                        <i class="icon-plus"></i>
+                        <strong>ADD</strong>
+                    </button>
+
                 </div>
                 <div class="card-body">
                     <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
@@ -24,7 +26,7 @@
 
                         <tbody *ngIf="data?.length != 0">
                             <tr *ngFor="let d of data; let i = index;">
-                                <td>{{i+1}}</td>
+                                <td> </td>
                                 <td>{{d.key}}</td>
 
                                 <td>

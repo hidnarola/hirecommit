@@ -29,6 +29,7 @@ var Candidate_Detail = require('./../models/candidate-detail');
 var Employer_Detail = require('./../models/employer-detail');
 var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
+var DocumentType = require('./../models/document_type');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
@@ -803,9 +804,10 @@ async function getCountry(req, res) {
 router.get('/business_type/:country', async (req, res) => {
   try {
     const country = await BusinessType.find({ "country": req.params.country }).lean();
+    const document = await DocumentType.find({ "country": req.params.country }).lean();
     return res.status(config.OK_STATUS).json({
       success: true, message: 'country list fetched successfully.',
-      data: country
+      data: country, document
     });
   } catch (error) {
     return res.status(config.INTERNAL_SERVER_ERROR).send({
@@ -814,6 +816,10 @@ router.get('/business_type/:country', async (req, res) => {
     });
   }
 })
+
+
+
+
 
 
 
