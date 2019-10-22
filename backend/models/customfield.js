@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const CustomFieldSchema = new Schema({
+  serial_number: {
+    type: Number,
+    default: 1
+  },
   emp_id:
   {
     type: mongoose.Schema.Types.ObjectId, ref: 'user',

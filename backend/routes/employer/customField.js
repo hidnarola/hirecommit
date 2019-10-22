@@ -24,16 +24,22 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        const country = await CustomField.findOne({ "emp_id": req.userInfo.id }).lean();
+        if (country && country.serial_number) {
+            var serial_number = country.serial_number + 1
+        }
         if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var obj = {
                 "emp_id": user.data.emp_id,
                 "key": req.body.key,
+                "serial_number": serial_number
             };
         }
         else {
             var obj = {
                 "emp_id": req.userInfo.id,
                 "key": req.body.key,
+                "serial_number": serial_number
             };
 
         }
@@ -143,6 +149,22 @@ router.get("/", async (req, res) => {
         res.status(config.OK_STATUS).json(resp_data);
     }
 });
+
+router.get('/first', async (req, res) => {
+    try {
+        const country = await CustomField.findOne({ "emp_id": req.userInfo.id }).lean();
+        return res.status(config.OK_STATUS).json({
+            success: true, message: 'country list fetched successfully.',
+            data: country
+        });
+    } catch (error) {
+        return res.status(config.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: 'Error in Fetching country data', data: country
+        });
+    }
+})
+
 
 router.get("/:id", async (req, res) => {
     var resp_datas = await common_helper.findOnes(CustomField, { "_id": new ObjectId(req.params.id) });
