@@ -68,6 +68,10 @@ export class OfferService {
     get_customfield(): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + `/customfield`);
     }
+
+    get_first_custom_field(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.employer_url}` + `/customfield/first`);
+    }
     // Employer Services
 
     // Candidate Service
