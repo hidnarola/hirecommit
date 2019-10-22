@@ -5,7 +5,7 @@ import { GroupsListComponent } from './groups-list/groups-list.component';
 import { GroupAddEditComponent } from './group-add-edit/group-add-edit.component';
 import { CommunicationViewComponent } from './communication-view/communication-view.component';
 import { CommunicationAddEditComponent } from './communication-add-edit/communication-add-edit.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
@@ -13,6 +13,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { GroupAddComponent } from './group-add/group-add.component';
 import { GroupEditComponent } from './group-edit/group-edit.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
@@ -26,11 +27,13 @@ import { GroupEditComponent } from './group-edit/group-edit.component';
   imports: [
     CommonModule,
     GroupsRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
     CKEditorModule,
     HttpClientModule,
     DataTablesModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    InputSwitchModule
   ],
   providers: [ConfirmationService]
 })

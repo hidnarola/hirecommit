@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,11 +22,18 @@ export class SignUpComponent implements OnInit {
   marked = false;
   step2 = false;
   step3 = false;
-  Business_Type: any = [];
+  Business_Type = [
+    { label: 'Select Business Type', value: '' },
+    { label: 'Private', value: 'Private' },
+    { label: 'Individual', value: 'Individual' },
+    { label: 'Partnership', value: 'Partnership' }
+  ];
+
   // local
-  siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
+  // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // live
-  // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
+  siteKey = environment.captcha_site_key;
+
   private stepper: Stepper;
   Country = [
     { label: 'Select Business Type', value: '' },
@@ -57,23 +65,23 @@ export class SignUpComponent implements OnInit {
   }
 
   next1() {
-    this.isFormSubmited = true;
-    // tslint:disable-next-line: max-line-length
-    if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
-      this.isFormSubmited = false;
-      this.step2 = true;
-      this.stepper.next();
-    }
+    // this.isFormSubmited = true;
+    // // tslint:disable-next-line: max-line-length
+    // if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
+    //   this.isFormSubmited = false;
+    //   this.step2 = true;
+    this.stepper.next();
+    // }
   }
 
   next2() {
-    this.isFormSubmited = true;
-    // tslint:disable-next-line: max-line-length
-    if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
-      this.isFormSubmited = false;
-      this.step3 = true;
-      this.stepper.next();
-    }
+    // this.isFormSubmited = true;
+    // // tslint:disable-next-line: max-line-length
+    // if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
+    //   this.isFormSubmited = false;
+    //   this.step3 = true;
+    this.stepper.next();
+    // }
   }
 
   onSubmit(valid) {
@@ -83,7 +91,7 @@ export class SignUpComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
-          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
+          this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['data'].status === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({

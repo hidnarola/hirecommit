@@ -5,10 +5,12 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Groups
                     <p class="pull-right"></p>
-                    <button class="btn-div-wrap pull-right" [routerLink]="['/employer/groups/add']">
+                    <button class="pull-right btn btn-sm btn-primary custom-margin"
+                        [routerLink]="['/employer/groups/add']">
                         <i class="icon-plus"></i>
-                        <strong>ADD</strong>
+                        Add
                     </button>
+
                 </div>
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
@@ -37,9 +39,9 @@
                                 <td>{{group.low_unopened}}</td>
                                 <td>{{group.low_notreplied}}</td>
                                 <td>
-                                    <!-- <button type="button" class="btn btn-sm btn-success"
+                                    <button type="button" class="btn btn-sm btn-success"
                                         [routerLink]="['/employer/groups/view/', group._id]"><i
-                                            class="icon-eye"></i></button> -->
+                                            class="icon-eye"></i></button>
                                     <button type="button" class="btn btn-sm btn-primary"
                                         [routerLink]="['/employer/groups/edit/', group._id]"><i
                                             class="icon-pencil"></i></button>

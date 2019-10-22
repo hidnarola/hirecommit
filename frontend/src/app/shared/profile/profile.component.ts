@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from '../../services/common.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -8,9 +9,22 @@ import { CommonService } from '../../services/common.service';
 })
 export class ProfileComponent implements OnInit {
   profileData: any = {};
-  constructor(private service: CommonService) { }
+  userType: any;
+  constructor(private service: CommonService, private router: ActivatedRoute) {
+
+    // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
+    // if (this.router.snapshot.data.type === 'candidate') {
+    //   this.userType = 'Candidate';
+
+    this.userType = localStorage.getItem('user');
+    console.log('get user from local storage => ', this.userType);
+
+    // }
+  }
 
   ngOnInit() {
+    console.log('user>>', localStorage.getItem['user']);
+
     this.service.getprofileDetail.subscribe(async res => {
       if (res) {
         this.profileData = res;
@@ -20,7 +34,7 @@ export class ProfileComponent implements OnInit {
 
         if (profile) {
           this.profileData = JSON.parse(profile);
-          console.log("profileData==>", this.profileData);
+          console.log('profileData==>', this.profileData);
         } else {
           console.log('profile data not found');
         }

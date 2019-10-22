@@ -192,19 +192,32 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
+    console.log('req.body.data=====', req.body.data);
+
     const reqData = req.body.data;
     console.log('reqData======>>>>', reqData);
 
     const grp_data = {
-        group_id: req.params.id,
-        communication: reqData
+        group_id: req.body.id,
+        communication: JSON.parse(reqData)
     };
-    var response = await common_helper.update(GroupDetail, { "group_id": req.params.id }, grp_data);
+    console.log('grp_data', grp_data);
+    var find_communication = await common_helper.findOne(GroupDetail, { "group_id": req.body.id })
+    if (find_communication.status == 1) {
+        var response = await common_helper.update(GroupDetail, { "group_id": req.body.id }, grp_data);
+        console.log('response', response);
+    }
+    else {
+        var response = await common_helper.insert(GroupDetail, grp_data);
+        console.log('response', response);
+    }
+
+
     if (group_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (group_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group update successfully", "data": group_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group update successfully", "data": group_upadate, "communication": response });
     }
 
 })
