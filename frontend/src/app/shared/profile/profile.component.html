@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-    <div class="row profiledata-info">
+    <div *ngIf="userType === 'employer'" class="row profiledata-info">
         <div class="col-md-3 well">
             <div class="row">
                 <div class="card text-black col-sm-12">
@@ -48,6 +48,57 @@
                                             <td>Contact Number</td>
                                             <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
                                         </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //candidate -->
+    <div *ngIf="userType === 'candidate'" class="row profiledata-info">
+        <div class="col-md-3 well">
+            <div class="row">
+                <div class="card text-black col-sm-12">
+                    <div class="card-body">
+                        <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
+                        <h2>{{profileData.firstname}} {{profileData.lastname}}</h2>
+                        <label> Email: <a href="/">{{profileData.email}} </a></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 well">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form role="form">
+                            <div class="card-header"><strong>Personal Details</strong></div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Country</td>
+                                            <td>{{profileData.country}} </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Contact Number</td>
+                                            <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Document Type</td>
+                                            <td>{{profileData.documenttype}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Document Image</td>
+                                            <td><img src="{{profileData.documentimage}}"></td>
+                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>

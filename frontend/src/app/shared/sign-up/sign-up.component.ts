@@ -83,7 +83,7 @@ export class SignUpComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
-          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
+          this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['data'].status === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({
