@@ -173,15 +173,16 @@
                 </div>
               </div>
               <div class="custome-checkbox">
-                <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" required="required"
+                <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)"
                   [formControl]="registerForm.controls['isChecked']"></p-checkbox>
                 <label for="signing-agree">By signing up you agree to our
                   <a href="#">privacy policy</a>
                   and
                   <a href="#">terms of use</a>
-                  {{registerForm.controls['isChecked'].valid |json}}
+                  {{!registerForm.controls['isChecked'].valid | json}}
+                  {{isFormSubmited}}
+                  {{registerForm.controls['isChecked'].errors | json}}
                   <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmited">
-                    {{registerForm.controls['isChecked'].errors |json}}
                     <span *ngIf="registerForm.controls['isChecked'].errors['required']">
                       Accept terms and conditions.</span>
                   </div>
