@@ -17,14 +17,14 @@ export class SignUpComponent implements OnInit {
   public isFormSubmited;
   public formData: any;
   code: any;
-  isChecked = false;
+  isChecked;
   marked = false;
   step2 = false;
   step3 = false;
   Business_Type: any = [];
-  //local
+  // local
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
-  //live
+  // live
   // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
   private stepper: Stepper;
   Country = [
@@ -98,7 +98,7 @@ export class SignUpComponent implements OnInit {
 
   checkValue(e) {
     console.log('e>>', e);
-    this.marked = e
+    this.marked = e;
   }
 
 
@@ -127,13 +127,12 @@ export class SignUpComponent implements OnInit {
       console.log('drop dowm of selected country =>', this.Business_Type);
 
       if (e.value === 'India') {
-        this.registerForm.controls['countrycode'].setValue('+91')
-      }
-      else {
-        this.registerForm.controls['countrycode'].setValue('+1')
+        this.registerForm.controls['countrycode'].setValue('+91');
+      } else {
+        this.registerForm.controls['countrycode'].setValue('+1');
       }
 
-    })
+    });
 
     // this.code.forEach(element => {
     //   if (e.value === element._id) {

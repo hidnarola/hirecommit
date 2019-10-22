@@ -4,34 +4,38 @@
             <div class="card">
                 <div class="card-header">
                     New Candidate Detail
-                    <i class="icon-close" [routerLink]="cancel_link"></i>
+                    <i class="icon-close" *ngIf="candidate_type === 'Approved'" style="float: right;"
+                        [routerLink]="cancel_link2"></i>
+                    <i class="icon-close" *ngIf="candidate_type === 'New'" style="float: right;"
+                        [routerLink]="cancel_link1"></i>
                 </div>
                 <div class="card-body">
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td>Candidate Name</td>
-                                <td>Samppa Nori</td>
+                                <td>{{candidate_detail.firstname}} {{candidate_detail.lastname}}</td>
                             </tr>
                             <tr>
                                 <td>Candidate Email</td>
-                                <td>vik@narola.email</td>
+                                <td>{{candidate_detail['user_id'].email}}</td>
                             </tr>
                             <tr>
                                 <td>Phone</td>
-                                <td>9274512415</td>
+                                <td>{{candidate_detail.contactno}}</td>
                             </tr>
                             <tr>
-                                <td>PAN</td>
-                                <td>748x69dwsae14</td>
+                                <td>Document Type</td>
+                                <td>{{candidate_detail.documenttype}}</td>
                             </tr>
                             <tr>
-                                <td>PAN Image</td>
-                                <td><img src="assets/img/brand/download.jpg" style="width:70px; height: 50px;" /></td>
+                                <td>Document Image</td>
+                                <td><img src="{{candidate_detail.documentimage}}" style="width:70px; height: 50px;" />
+                                </td>
                             </tr>
                             <tr>
                                 <td>Date Of Register</td>
-                                <td>05-09-2019</td>
+                                <td>{{candidate_detail.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -42,7 +46,10 @@
                         <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
                             (click)="unapprove()">Unapprove</button>
 
-                        <button type="button" class="btn btn-sm btn-danger" [routerLink]="cancel_link">Cancel</button>
+                        <button type="button" *ngIf="candidate_type === 'Approved'" class="btn btn-sm btn-danger"
+                            [routerLink]="cancel_link2">Cancel</button>
+                        <button type="button" *ngIf="candidate_type === 'New'" class="btn btn-sm btn-danger"
+                            [routerLink]="cancel_link1">Cancel</button>
                     </div>
                 </div>
             </div>
