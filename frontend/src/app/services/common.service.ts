@@ -74,14 +74,12 @@ export class CommonService {
   }
 
   async setProfileDetail(profileData: any) {
-    localStorage.setItem("profile", await this.encrypt(JSON.stringify(profileData)))
+    localStorage.setItem('profile', await this.encrypt(JSON.stringify(profileData)));
     this.profileDetail.next(profileData);
   }
 
-  get_Business_Type(data): Observable<any[]> {
-    console.log('country name from service => ', data);
-
-    return this.http.get<any[]>(`${this.url}` + 'business_type/' + data)
+  get_Type(data): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + 'business_type/' + data);
   }
 
 

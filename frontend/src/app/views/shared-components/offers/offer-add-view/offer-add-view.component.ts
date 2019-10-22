@@ -67,7 +67,6 @@ export class OfferAddViewComponent implements OnInit {
   form: FormGroup;
   form_validation = false;
   offer_data: any = {};
-  buttonTitle;
   panelTitle;
   user_detail: any = {};
   candidate: any = [];
@@ -109,7 +108,7 @@ export class OfferAddViewComponent implements OnInit {
   formData: FormData;
 
   // get country list
-   async findData(value) {
+  async findData(value) {
 
     this.salarybracketList = [];
     this.country.forEach(element => {
@@ -118,33 +117,33 @@ export class OfferAddViewComponent implements OnInit {
         this.form.controls.currency_type.setValue(element.currency);
       }
     });
-     const promise = new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       this.service.get_location(value.value).subscribe(
-      async res => {
-        this.location = await res[`data`].data;
-        console.log('location', this.location);
-        this.salary_bracket = await res['salary'].data;
-        this.salary_bracket.forEach(element => {
-          this.salarybracketList.push({
-            label: element.from + ' - ' + element.to,
-            value: element._id
+        async res => {
+          this.location = await res[`data`].data;
+          console.log('location', this.location);
+          this.salary_bracket = await res['salary'].data;
+          this.salary_bracket.forEach(element => {
+            this.salarybracketList.push({
+              label: element.from + ' - ' + element.to,
+              value: element._id
+            });
           });
-        });
 
-        if (this.route.snapshot.data.title === 'Edit') {
-           const locationById = this.location.find(x => x._id === this.resData.location._id);
+          if (this.route.snapshot.data.title === 'Edit') {
+            const locationById = this.location.find(x => x._id === this.resData.location._id);
             this.form.controls.location.setValue(locationById);
 
-           const salarybracketById  = this.salarybracketList.find(x => x.value === this.resData.salarybracket._id);
-           this.form.controls.salarybracket.setValue(salarybracketById.value);
+            const salarybracketById = this.salarybracketList.find(x => x.value === this.resData.salarybracket._id);
+            this.form.controls.salarybracket.setValue(salarybracketById.value);
 
-        }
-        resolve(this.salarybracketList);
-      },
-      err => {
-        console.log(err);
-        reject(err);
-      });
+          }
+          resolve(this.salarybracketList);
+        },
+        err => {
+          console.log(err);
+          reject(err);
+        });
     });
     return promise;
   }
@@ -175,11 +174,11 @@ export class OfferAddViewComponent implements OnInit {
       .then(res => {
         if (this.route.snapshot.data.title === 'Edit') {
           this.panelTitle = 'Edit';
-          this.buttonTitle = 'Update';
+
           this.getDetail();
         } else {
           this.panelTitle = 'Add';
-          this.buttonTitle = 'Add';
+
         }
       });
   }
@@ -200,17 +199,17 @@ export class OfferAddViewComponent implements OnInit {
         this.form.controls.salarytype.setValue(res['data'].salarytype);
         this.form.controls['salaryduration'].setValue(this.resData.salaryduration);
         this.getCountryDetail(this.resData.country);
-        this.findData({'value': this.resData.country});
-        this.form.controls['expirydate'].setValue(new Date (this.resData.expirydate));
+        this.findData({ 'value': this.resData.country });
+        this.form.controls['expirydate'].setValue(new Date(this.resData.expirydate));
         this.form.controls['joiningdate'].setValue(new Date(this.resData.joiningdate));
         this.form.controls['offertype'].setValue(this.resData.offertype);
         this.groupDetail(this.resData.groups);
         this.form.controls['commitstatus'].setValue(this.resData.commitstatus);
         this.form.controls['notes'].setValue(this.resData.notes);
-          const _array = [];
-          this.resData['customfeild'].forEach((element, index) => {
+        const _array = [];
+        this.resData['customfeild'].forEach((element, index) => {
 
-        const new_customfield = {
+          const new_customfield = {
             key: element.key,
             value: element.value
           };
@@ -223,8 +222,8 @@ export class OfferAddViewComponent implements OnInit {
           );
           this.customfieldItem.updateValueAndValidity();
           _array.push(new_customfield);
-          });
-          this.offer_data.customfieldItem = _array;
+        });
+        this.offer_data.customfieldItem = _array;
       },
       err => {
         console.log(err);
@@ -233,7 +232,7 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   createdItem = (data: any) => {
-     return this.fb.group({
+    return this.fb.group({
       key: [data.key],
       value: [data.value]
     });
@@ -243,10 +242,10 @@ export class OfferAddViewComponent implements OnInit {
   async getCandidateList() {
     console.log('get candidate list function==> ');
     const promise = new Promise((resolve, reject) => {
-    this.service.get_candidate_list().subscribe(
-      async res => {
-        this.candidate = await res['data'];
-        // res['data'].forEach(element => {
+      this.service.get_candidate_list().subscribe(
+        async res => {
+          this.candidate = await res['data'];
+          // res['data'].forEach(element => {
           for (const element of res['data']) {
             this.candidateList.push({
               label: element.firstname + ' ' + element.lastname,
@@ -255,10 +254,10 @@ export class OfferAddViewComponent implements OnInit {
           }
           console.log(' : this.candidate list ==> ', this.candidateList);
           resolve(this.candidate);
-      }, err => {
-        console.log('getCandidateList : err ==> ', err);
-        reject(err);
-      });
+        }, err => {
+          console.log('getCandidateList : err ==> ', err);
+          reject(err);
+        });
     });
     return promise;
   }
@@ -335,7 +334,7 @@ export class OfferAddViewComponent implements OnInit {
     );
   }
 
-  async groupDetail (id) {
+  async groupDetail(id) {
     const groupById = this.group_optoins.find(x => x._id === id);
     this.form.controls.group.setValue(groupById);
   }
@@ -349,80 +348,80 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   onSubmit(flag) {
-      const _coustomisedFiledsArray = [];
-      this.form.value.customfieldItem.forEach(element => {
-        // if (element.value) {
-          _coustomisedFiledsArray.push({
-            key: element.key,
-            value: element.value
-          });
-        // }
+    const _coustomisedFiledsArray = [];
+    this.form.value.customfieldItem.forEach(element => {
+      // if (element.value) {
+      _coustomisedFiledsArray.push({
+        key: element.key,
+        value: element.value
       });
-      this.formData = new FormData();
-      const unwantedFields = [
-        'candidate',
-        'customfieldItem',
-        'group',
-        'status',
-        'employer_id'
-      ];
-      const data = {
-        ...this.form.value,
-        user_id: this.form.value.candidate,
-        location: this.form.value.location._id,
-        groups: this.form.value.group._id,
-        customfeild: JSON.stringify(_coustomisedFiledsArray)
-      };
-      Object.keys(data).map(key => {
-        if (unwantedFields.includes(key)) {
-          delete data[key];
-        }
-      });
-
-      for (const key in data) {
-        if (key) {
-          const value = data[key];
-          this.formData.append(key, value);
-        }
+      // }
+    });
+    this.formData = new FormData();
+    const unwantedFields = [
+      'candidate',
+      'customfieldItem',
+      'group',
+      'status',
+      'employer_id'
+    ];
+    const data = {
+      ...this.form.value,
+      user_id: this.form.value.candidate,
+      location: this.form.value.location._id,
+      groups: this.form.value.group._id,
+      customfeild: JSON.stringify(_coustomisedFiledsArray)
+    };
+    Object.keys(data).map(key => {
+      if (unwantedFields.includes(key)) {
+        delete data[key];
       }
+    });
 
-      if (flag) {
-          if (this.route.snapshot.data.title === 'Edit') {
-            this.show_spinner = true;
-             this.formData.append('id', this.id );
-            console.log('this.formData ==> ', this.formData);
-            this.service.update_offer(this.formData).subscribe(
-              res => {
-                this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-                this.router.navigate([this.cancel_link]);
-              },
-              err => {
-                console.log('err => ', err);
-                this.show_spinner = false;
-                this.toastr.error(err['error']['message'], 'Error!', {
-                  timeOut: 3000
-                });
-              }
-            );
-          } else {
-            this.show_spinner = true;
-            console.log('this.formData ==> ', this.formData);
-            this.service.add_offer(this.formData).subscribe(
-              res => {
-                this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-                this.router.navigate([this.cancel_link]);
-              },
-              err => {
-                console.log('err => ', err);
-                this.show_spinner = false;
-                this.toastr.error(err['error']['message'], 'Error!', {
-                  timeOut: 3000
-                });
-              }
-            );
-          }
-
+    for (const key in data) {
+      if (key) {
+        const value = data[key];
+        this.formData.append(key, value);
       }
-      this.form_validation = !flag;
     }
+
+    if (flag) {
+      if (this.route.snapshot.data.title === 'Edit') {
+        this.show_spinner = true;
+        this.formData.append('id', this.id);
+        console.log('this.formData ==> ', this.formData);
+        this.service.update_offer(this.formData).subscribe(
+          res => {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.router.navigate([this.cancel_link]);
+          },
+          err => {
+            console.log('err => ', err);
+            this.show_spinner = false;
+            this.toastr.error(err['error']['message'], 'Error!', {
+              timeOut: 3000
+            });
+          }
+        );
+      } else {
+        this.show_spinner = true;
+        console.log('this.formData ==> ', this.formData);
+        this.service.add_offer(this.formData).subscribe(
+          res => {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.router.navigate([this.cancel_link]);
+          },
+          err => {
+            console.log('err => ', err);
+            this.show_spinner = false;
+            this.toastr.error(err['error']['message'], 'Error!', {
+              timeOut: 3000
+            });
+          }
+        );
+      }
+
+    }
+    this.form_validation = !flag;
+  }
 }

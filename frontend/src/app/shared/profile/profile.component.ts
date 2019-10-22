@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
 
         if (profile) {
           this.profileData = JSON.parse(profile);
-          console.log("profileData==>", this.profileData);
+          console.log('profileData==>', this.profileData);
         } else {
           console.log('profile data not found');
         }

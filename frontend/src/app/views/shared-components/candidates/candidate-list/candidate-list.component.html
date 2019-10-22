@@ -28,12 +28,20 @@
                                 <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{data.status}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-success" (click)="detail(data._id)"><i
-                                            class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        (click)="onDelete(data.user_id._id)"><i class="icon-trash"></i></button>
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                        (click)="onApproved(data.user_id._id)"><i class="icon-check"></i></button>
+                                    <button type="button" *ngIf="candidate_type === 'Approved'"
+                                        class="btn btn-sm btn-success"
+                                        [routerLink]="['/admin/candidates/approved_candidate/view/',data._id]">
+                                        <i class="icon-eye"></i></button>
+                                    <button type="button" *ngIf="candidate_type === 'New'"
+                                        class="btn btn-sm btn-success"
+                                        [routerLink]="['/admin/candidates/new_candidate/view/',data._id]">
+                                        <i class="icon-eye"></i></button>
+
+                                    <!-- <button type="button" class="btn btn-sm btn-danger"
+                                        (click)="onDelete(data.user_id._id)"><i class="icon-trash"></i></button> -->
+                                    <button type="button" *ngIf="candidate_type === 'New'"
+                                        class="btn btn-sm btn-primary" (click)="onApproved(data.user_id._id)"><i
+                                            class="icon-check"></i></button>
                                 </td>
                             </tr>
                         </tbody>
