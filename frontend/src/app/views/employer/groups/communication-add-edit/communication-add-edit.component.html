@@ -3,7 +3,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong style="font-size: 20px;">Add Communication : {{_name[0].name}}</strong>
+                    <strong style="font-size: 20px;">Add Communication :
+                        <!-- {{_name[0].name}} -->
+                    </strong>
 
                 </div>
                 <form class="form-horizontal" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm.valid)">
@@ -20,7 +22,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group row">
-                                            <label class="col-md-2 col-form-label" for="name">Comunication Name</label>
+                                            <label class="col-md-2 col-form-label" for="name">Communication Name</label>
                                             <div class="col-md-4">
                                                 <input type="text" class="form-control" placeholder="Enter name"
                                                     formControlName="communicationname" id="communicationname">

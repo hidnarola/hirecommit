@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -17,15 +18,22 @@ export class SignUpComponent implements OnInit {
   public isFormSubmited;
   public formData: any;
   code: any;
-  isChecked = false;
+  isChecked;
   marked = false;
   step2 = false;
   step3 = false;
-  Business_Type: any = [];
-  //local
-  siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
-  //live
-  // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
+  Business_Type = [
+    { label: 'Select Business Type', value: '' },
+    { label: 'Private', value: 'Private' },
+    { label: 'Individual', value: 'Individual' },
+    { label: 'Partnership', value: 'Partnership' }
+  ];
+
+  // local
+  // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
+  // live
+  siteKey = environment.captcha_site_key;
+
   private stepper: Stepper;
   Country = [
     { label: 'Select Business Type', value: '' },
@@ -100,7 +108,7 @@ export class SignUpComponent implements OnInit {
 
   checkValue(e) {
     console.log('e>>', e);
-    this.marked = e
+    this.marked = e;
   }
 
 
@@ -129,13 +137,12 @@ export class SignUpComponent implements OnInit {
       console.log('drop dowm of selected country =>', this.Business_Type);
 
       if (e.value === 'India') {
-        this.registerForm.controls['countrycode'].setValue('+91')
-      }
-      else {
-        this.registerForm.controls['countrycode'].setValue('+1')
+        this.registerForm.controls['countrycode'].setValue('+91');
+      } else {
+        this.registerForm.controls['countrycode'].setValue('+1');
       }
 
-    })
+    });
 
     // this.code.forEach(element => {
     //   if (e.value === element._id) {

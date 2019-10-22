@@ -74,12 +74,12 @@ export class CommonService {
   }
 
   async setProfileDetail(profileData: any) {
-    localStorage.setItem("profile", await this.encrypt(JSON.stringify(profileData)))
+    localStorage.setItem('profile', await this.encrypt(JSON.stringify(profileData)));
     this.profileDetail.next(profileData);
   }
 
   get_Type(data): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}` + 'business_type/' + data)
+    return this.http.get<any[]>(`${this.url}` + 'business_type/' + data);
   }
 
 

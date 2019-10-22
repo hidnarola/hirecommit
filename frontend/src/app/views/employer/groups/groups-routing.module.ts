@@ -31,16 +31,16 @@ const routes: Routes = [
       },
       {
         path: 'add',
-        // component: GroupAddEditComponent,
         component: GroupAddComponent,
+        // component: GroupAddEditComponent,
         data: {
           title: 'Add'
         }
       },
       {
         path: 'edit/:id',
-        // component: GroupEditComponent,
-        component: GroupAddEditComponent,
+        component: GroupEditComponent,
+        // component: GroupAddEditComponent,
         data: {
           title: 'Edit'
         }
@@ -68,7 +68,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'communication/view/:id',
+        path: 'view/:id',
         component: CommunicationViewComponent,
         data: {
           title: 'View Communication'

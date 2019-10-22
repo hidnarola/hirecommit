@@ -93,7 +93,6 @@
                   </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-form-label" for="businesstype">Business Type</label>
-
                     <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
                       formControlName="businesstype" id="businesstype">
                     </p-dropdown>
@@ -183,14 +182,16 @@
                   </div>
                   <div class="input-group mb-3">
                     <div class="custome-checkbox">
-                      <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" required="required"
-                        [formControl]="registerForm.controls['isChecked']"></p-checkbox>
+                      <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"
+                        [required]>
+                      </p-checkbox>
+
                       <label for="signing-agree">By signing up you agree to our
                         <a href="#">privacy policy</a>
                         and
                         <a href="#">terms of use</a>
                         <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmited">
-                          <span *ngIf="!registerForm.controls['isChecked'].errors['required']">
+                          <span *ngIf="registerForm.controls['isChecked'].errors['required']">
                             Accept terms and conditions.</span>
                         </div>
                       </label>
