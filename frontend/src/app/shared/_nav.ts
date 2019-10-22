@@ -71,24 +71,24 @@ export const employer: NavData[] = [
     url: 'offers/list',
     icon: 'icon-grid'
   },
-  {
-    name: 'Candidates',
-    // name: 'Manage Candidate',
-    url: 'candidates',
-    icon: 'icon-people',
-    children: [
-      {
-        name: 'Approved Candidates',
-        url: 'candidates/approved_candidate',
-        icon: 'fa fa-check-square-o'
-      },
-      {
-        name: 'New Candidates',
-        url: 'candidates/new_candidate',
-        icon: 'fa fa-user-circle'
-      }
-    ]
-  },
+  // {
+  //   name: 'Candidates',
+  //   // name: 'Manage Candidate',
+  //   url: 'candidates',
+  //   icon: 'icon-people',
+  //   children: [
+  //     {
+  //       name: 'Approved Candidates',
+  //       url: 'candidates/approved_candidate',
+  //       icon: 'fa fa-check-square-o'
+  //     },
+  //     {
+  //       name: 'New Candidates',
+  //       url: 'candidates/new_candidate',
+  //       icon: 'fa fa-user-circle'
+  //     }
+  //   ]
+  // },
   {
     name: 'Sub accounts',
     // name: 'Manage Sub-accounts',
@@ -113,6 +113,11 @@ export const employer: NavData[] = [
     url: 'locations/list',
     icon: 'icon-location-pin',
   },
+  {
+    name: 'Custom Field',
+    url: 'custom_fields',
+    icon: 'icon-paper-clip'
+  }
   // {
   //   name: 'Timeline',
   //   url: 'timeline',

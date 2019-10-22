@@ -17,9 +17,17 @@ export class SignUpComponent implements OnInit {
   public isFormSubmited;
   public formData: any;
   code: any;
+  isChecked = false;
+  marked = false;
   step2 = false;
   step3 = false;
   siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
+  Business_Type = [
+    { label: 'Select Business Type', value: '' },
+    { label: 'Private', value: 'Private' },
+    { label: 'Individual', value: 'Individual' },
+    { label: 'Partnership', value: 'Partnership' }
+  ];
   // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
   private stepper: Stepper;
   Country: any = [];
@@ -42,7 +50,8 @@ export class SignUpComponent implements OnInit {
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
       contactno: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
-      recaptcha: new FormControl('', [Validators.required])
+      recaptcha: new FormControl('', [Validators.required]),
+      isChecked: new FormControl('', [Validators.required])
     });
   }
 
@@ -85,6 +94,13 @@ export class SignUpComponent implements OnInit {
       });
     }
   }
+
+  checkValue(e) {
+    console.log('e>>', e);
+
+    this.marked = e
+  }
+
 
   ngOnInit() {
     this.stepper = new Stepper(document.querySelector('#stepper1'), {

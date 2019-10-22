@@ -126,7 +126,6 @@ router.post('/get', async (req, res) => {
 
 
 router.get('/get_location', async (req, res) => {
-
     try {
         var aggregate = [
             {

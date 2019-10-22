@@ -63,9 +63,6 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['/groups/addgroup']);
   }
 
-  onclick() {
-    this.router.navigate(['/employer/groups/add']);
-  }
 
   onaddDetails(id) {
     this.router.navigate(['/employer/groups/communication/edit/' + id]);
@@ -92,9 +89,11 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
       columns: [
         {
           data: 'name'
-        }, {
+        },
+        {
           data: 'high_unopened'
-        }, {
+        },
+        {
           data: 'high_notreplied'
         },
         {
