@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,14 +22,18 @@ export class SignUpComponent implements OnInit {
   marked = false;
   step2 = false;
   step3 = false;
-  siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   Business_Type = [
     { label: 'Select Business Type', value: '' },
     { label: 'Private', value: 'Private' },
     { label: 'Individual', value: 'Individual' },
     { label: 'Partnership', value: 'Partnership' }
   ];
-  // siteKey = '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc';
+
+  // local
+  // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
+  // live
+  siteKey = environment.captcha_site_key;
+
   private stepper: Stepper;
   Country: any = [];
   constructor(

@@ -24,7 +24,8 @@ export class GroupEditComponent implements OnInit {
   editedData: any;
   isEdit: Boolean = false;
   arr: FormArray;
-  dynamic_address = 0;
+  is_communication_added: boolean = false;
+  formData: FormData;
 
   constructor(
     public fb: FormBuilder,
@@ -33,7 +34,6 @@ export class GroupEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
-
     // form controls
     this.groupForm = this.fb.group({
       name: new FormControl('', [Validators.required]),
@@ -43,7 +43,7 @@ export class GroupEditComponent implements OnInit {
       medium_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      customfieldItem: this.fb.array([])
+      communicationFieldItems: this.fb.array([])
     });
 
     // check for add or edit
@@ -58,50 +58,110 @@ export class GroupEditComponent implements OnInit {
       console.log('res => ', res, res['data']['data']);
       this.groupData = res['data']['data'][0];
       this.communicationData = res['communication']['data'];
-      console.log('this.groupData => ', this.groupData, this.communicationData);
+      console.log('this.groupData => ', this.groupData);
+      console.log(' this.communicationData => ', this.communicationData);
+
+      // set communication
+      if (this.communicationData && this.communicationData.length > 0) {
+        console.log('communicaiondata found => ');
+        const _array = [];
+        this.communicationData.forEach((element, index) => {
+          console.log('element => ', element);
+          const new_communication = {
+            'communicationname': element.communicationname,
+            'trigger': element.trigger,
+            'priority': element.priority,
+            'day': element.day,
+            'message': element.message,
+          };
+          this.communicationFieldItems.setControl(index, this.fb.group({
+            communicationname: ['', Validators.required],
+            trigger: ['', Validators.required],
+            priority: ['', Validators.required],
+            day: ['', Validators.required],
+            message: ['']
+            // message: ['', Validators.required]
+          }));
+          _array.push(new_communication);
+        });
+        this.communicationData = _array;
+      } else {
+        console.log('no communicaiondata found => ');
+        // this.add_new_communication();
+      }
+      // set communication
+
     });
-    // this.createItem();
+
   }
 
   ngOnInit() { }
 
   get f() { return this.groupForm.controls; }
-  // delivery property get method
-  get customfieldItem() {
-    return this.groupForm.get('customfieldItem') as FormArray;
+  // custom field items controls
+  get communicationFieldItems() {
+    return this.groupForm.get('communicationFieldItems') as FormArray;
   }
 
-  addItem() {
-    let index = 0;
-    if (this.communicationData) {
-      index = this.communicationData.length;
+  // Update form validation
+  updateValidation() {
+    this.groupForm.updateValueAndValidity();
+  }
+
+  // On change of communication
+  changeCommunication(e) {
+    console.log('e => ', e);
+    if (e.checked) {
+      this.add_new_communication();
     } else {
       this.communicationData = [];
+      console.log('communicationFieldItems => ', this.communicationFieldItems);
+      console.log('this.groupForm => ', this.groupForm);
+      this.communicationFieldItems.setControl(0, this.fb.group({}));
+      this.updateValidation();
+      this.isFormSubmited = false;
     }
-    const new_location = {
-      'communicationname': index === 0 ? '' : this.communicationData[index - 1].communicationname,
-      'trigger': index === 0 ? '' : this.communicationData[index - 1].trigger,
-      'priority': index === 0 ? '' : this.communicationData[index - 1].priority,
-      'day': index === 0 ? '' : this.communicationData[index - 1].day,
-      'message': index === 0 ? '' : this.communicationData[index - 1].message,
+  }
+
+  // add new communication
+  add_new_communication(data_index = null) {
+    let index = 0;
+    if (data_index == null) {
+      if (this.communicationData && this.communicationData.length > 0) {
+        index = this.communicationData.length;
+      } else {
+        this.communicationData = [];
+      }
+    } else {
+      if (this.communicationData && this.communicationData.length > 0) {
+        index = this.communicationData.length;
+      }
+    }
+    const new_communication = {
+      'communicationname': '',
+      'trigger': '',
+      'priority': '',
+      'day': '',
+      'message': '',
     };
-    this.dynamic_address = index;
-    this.customfieldItem.setControl(index, this.fb.group({
+
+    this.communicationFieldItems.setControl(index, this.fb.group({
       communicationname: ['', Validators.required],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', Validators.required],
-      message: ['', Validators.required]
+      message: ['']
+      // message: ['', Validators.required]
     }));
 
-    this.communicationData.push(new_location);
-    this.groupForm.updateValueAndValidity();
+    this.communicationData.push(new_communication);
+    this.updateValidation();
   }
 
-  // Remove delivery location
-  removeItem(id: number) {
-    delete this.communicationData[id];
-    this.customfieldItem.removeAt(id);
+  // Remove communication
+  remove_communication(index: number) {
+    delete this.communicationData[index];
+    this.communicationFieldItems.removeAt(index);
     const array = [];
     for (let i = 0; i < this.communicationData.length; i++) {
       if (this.communicationData[i] !== undefined) {
@@ -109,28 +169,7 @@ export class GroupEditComponent implements OnInit {
       }
     }
     this.communicationData = array;
-    this.dynamic_address = this.dynamic_address - 1;
   }
-
-  // createItem() {
-  //   this.customfieldItem.setControl(index, this.fb.group({
-  //     communicationname: ['', Validators.required],
-  //     trigger: ['', Validators.required],
-  //     priority: ['', Validators.required],
-  //     day: ['', Validators.required],
-  //     message: ['', Validators.required]
-  //   }));
-  // }
-
-  // addItem(i) {
-  //   this.arr = this.communicationForm.get('arr') as FormArray;
-  //   this.arr.push(this.createItem());
-  // }
-
-  // removeItem(i) {
-  //   this.arr = this.communicationForm.get('arr') as FormArray;
-  //   this.arr.removeAt(this.communicationForm[i]);
-  // }
 
   public onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
@@ -141,9 +180,27 @@ export class GroupEditComponent implements OnInit {
 
   onSubmit(valid) {
     console.log('valid => ', valid);
+    console.log('this.groupform => ', this.groupForm);
     this.isFormSubmited = true;
+    this.formData = new FormData();
+    console.log('this.communicationData => ', this.communicationData);
     if (valid) {
       if (this.isEdit) {
+        const communication_array = [];
+        if (this.communicationData.length > 0) {
+          this.communicationData.forEach(element => {
+            communication_array.push({
+              communicationname: element.communicationname,
+              trigger: element.trigger,
+              priority: element.priority,
+              day: element.day,
+              message: element.message
+            });
+          });
+        } else {
+          communication_array.push();
+        }
+
         const obj = {
           id: this.id,
           name: this.groupData['name'],
@@ -153,9 +210,19 @@ export class GroupEditComponent implements OnInit {
           medium_notreplied: this.groupData['medium_notreplied'],
           low_unopened: this.groupData['low_unopened'],
           low_notreplied: this.groupData['low_notreplied'],
+          data: JSON.stringify(communication_array)
         };
 
-        this.service.edit_group(obj).subscribe(res => {
+        console.log('obj => ', obj);
+
+        for (const key in obj) {
+          if (key) {
+            const value = obj[key];
+            this.formData.append(key, value);
+          }
+        }
+
+        this.service.edit_group(this.formData).subscribe(res => {
           if (res['data']['status'] === 1) {
             this.isFormSubmited = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -170,9 +237,4 @@ export class GroupEditComponent implements OnInit {
 
   }
 
-
-
-  editGroup(flag) {
-
-  }
 }

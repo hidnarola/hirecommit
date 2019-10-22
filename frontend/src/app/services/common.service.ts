@@ -74,7 +74,7 @@ export class CommonService {
   }
 
   async setProfileDetail(profileData: any) {
-    localStorage.setItem("profile", await this.encrypt(JSON.stringify(profileData)))
+    localStorage.setItem('profile', await this.encrypt(JSON.stringify(profileData)));
     this.profileDetail.next(profileData);
   }
 
