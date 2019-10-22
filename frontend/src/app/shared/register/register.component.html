@@ -1,6 +1,5 @@
 <div class="app-body">
   <main class="main d-flex align-items-center">
-
     <div class="candidate-signup">
       <div class="card-group ">
         <div class="card mx-4">
@@ -20,7 +19,7 @@
                     <input type="text" class="form-control" placeholder="Your First Name" formControlName="firstname"
                       [(ngModel)]="registerData.firstname" name="firstname" required="required">
                     <div class="error" *ngIf="!registerForm.controls['firstname'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['firstname'].errors.required">First name is required.</span>
+                      <span *ngIf="registerForm.controls['firstname'].errors.required">This Field is required.</span>
                     </div>
                   </div>
                 </div>
@@ -30,7 +29,7 @@
                     <input type="text" class="form-control" placeholder="Your Last Name" formControlName="lastname"
                       [(ngModel)]="registerData.lastname" name="lastname" required="required">
                     <div class="error" *ngIf="!registerForm.controls['lastname'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['lastname'].errors.required">Last name is required.</span>
+                      <span *ngIf="registerForm.controls['lastname'].errors.required">This Field is required.</span>
                     </div>
                   </div>
                 </div>
@@ -47,7 +46,7 @@
                     <input type="text" class="form-control" placeholder="Your Email ID" formControlName="email"
                       [(ngModel)]="registerData.email" name="email" email required="required">
                     <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['email'].errors.required">Email is required.</span>
+                      <span *ngIf="registerForm.controls['email'].errors.required">This Field is required.</span>
                       <span *ngIf="registerForm.controls['email'].errors.email">Email must be in valid format.</span>
                     </div>
                   </div>
@@ -57,9 +56,11 @@
 
                   <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country" id="country"
                     (onChange)="getCode($event)">
+
+
                   </p-dropdown>
                   <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
-                    <span *ngIf="registerForm.controls['country'].errors['required']">Please select your country.</span>
+                    <span *ngIf="registerForm.controls['country'].errors['required']">This Field is required.</span>
                   </div>
                 </div>
 
@@ -74,11 +75,13 @@
                         <div class="input-group-prepend">
 
                           <input type="text" class="form-control" placeholder="Code" formControlName="countrycode"
-                            name="countrycode">
+                            name="countrycode" [(ngModel)]="registerData.countrycode" required="required">
+
 
                           <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmited">
-                                <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country code.</span>
-                              </div> -->
+                            <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country
+                              code.</span> -->
+                          <!-- </div> -->
                         </div>
                       </div>
 
@@ -88,8 +91,8 @@
                             formControlName="contactno" [(ngModel)]="registerData.contactno" name="contactno"
                             required="required">
                           <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
-                            <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is
-                              required.</span>
+                            <span *ngIf="registerForm.controls['contactno'].errors['required']">This Field is required.
+                            </span>
                             <span
                               *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
                               10 digits of mobile number.</span>
@@ -105,11 +108,12 @@
                 </div>
                 <div class="form-group col-md-6">
                   <label for="documenttype">Document Type</label>
-                  <p-dropdown [options]="Document_optoins" formControlName="documenttype" id="documenttype">
+                  <p-dropdown [options]="Document_optoins" placeholder="Select Document Types"
+                    formControlName="documenttype" id="documenttype" required="required">
                   </p-dropdown>
                   <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmited">
-                    <span *ngIf="registerForm.controls['documenttype'].errors['required']">Please select your
-                      country.</span>
+                    <span *ngIf="registerForm.controls['documenttype'].errors['required']">This Field is required.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -127,8 +131,8 @@
                       formControlName="documentImage" class="form-control" placeholder="Select any image file"
                       (change)="onFileChange($event)" value=''>
                     <div class="error" *ngIf="!registerForm.controls['documentImage'].valid && isFormSubmited">
-                      <span *ngIf="!registerForm.controls['documentImage'].errors['required']">DocumentImage is
-                        required.</span>
+                      <span *ngIf="!registerForm.controls['documentImage'].errors['required']">This Field is required.
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -146,7 +150,7 @@
                       formControlName="password" [(ngModel)]="registerData.password" name="password"
                       required="required">
                     <div class="error" *ngIf="!registerForm.controls['password'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['password'].errors['required']">Password is required.</span>
+                      <span *ngIf="registerForm.controls['password'].errors['required']">This Field is required.</span>
                       <span *ngIf="registerForm.controls['password'].errors['minlength']">Password must be more then 8
                         characters.</span>
                     </div>
@@ -164,24 +168,24 @@
                       formControlName="confirmpassword" [(ngModel)]="registerData.confirmpassword"
                       name="confirmpassword" required="required">
                     <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid && isFormSubmited">
-                      <span *ngIf="registerForm.controls['confirmpassword'].errors['required']">Password is
+                      <span *ngIf="registerForm.controls['confirmpassword'].errors['required']">This Field is
                         required.</span>
-                      <span *ngIf="registerForm.controls['confirmpassword'].errors['mismatch']">Password and confirm
+                      <span *ngIf="registerForm.controls['confirmpassword'].errors['mismatch']">Password and Confirm
                         password should be same.</span>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="custome-checkbox">
-                <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" required="required"
-                  [formControl]="registerForm.controls['isChecked']"></p-checkbox>
+                <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"
+                  [required]>
+                </p-checkbox>
+
                 <label for="signing-agree">By signing up you agree to our
                   <a href="#">privacy policy</a>
                   and
                   <a href="#">terms of use</a>
-                  {{registerForm.controls['isChecked'].valid |json}}
                   <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmited">
-                    {{registerForm.controls['isChecked'].errors |json}}
                     <span *ngIf="registerForm.controls['isChecked'].errors['required']">
                       Accept terms and conditions.</span>
                   </div>

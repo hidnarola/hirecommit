@@ -123,10 +123,6 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   }
 
-  detail(id) {
-    this.route.navigate([this.userDetail.role + '/candidates/view/' + id]);
-  }
-
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first

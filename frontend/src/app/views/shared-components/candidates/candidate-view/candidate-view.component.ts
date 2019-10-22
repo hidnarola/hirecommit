@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { CandidateService } from '../candidate.service';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-candidate-view',
@@ -8,16 +10,44 @@ import { Router } from '@angular/router';
 })
 export class CandidateViewComponent implements OnInit {
 
+  id: any;
+  candidate_detail: any = [];
   approval: boolean = false;
-  cancel_link = '/admin/candidates/new_candidate';
+  userDetail: any = [];
+  candidate_type = 'Approved';
+  cancel_link1 = '/admin/candidates/new_candidate';
+  cancel_link2 = '/admin/candidates/approved_candidate';
+
+
 
   constructor(
-    private router: Router
+    private router: Router,
+    private service: CandidateService,
+    private route: ActivatedRoute,
+    private commonService: CommonService,
+    private activatedRoute: ActivatedRoute
   ) {
+    this.userDetail = this.commonService.getLoggedUserDetail();
+    console.log('===>', this.activatedRoute.snapshot.data.type);
+
+    if (this.activatedRoute.snapshot.data.type === 'new') {
+      this.candidate_type = 'New';
+    }
+
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+    });
     console.log('admin- candidate: newcandidate - detail component => ');
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.service.get_candidate_Detail(this.id).subscribe(res => {
+      this.candidate_detail = res['data'];
+      // console.log(this.candidate_detail);
+    }, (err) => {
+      console.log(err);
+    });
+  }
 
   approve() {
     this.approval = true;

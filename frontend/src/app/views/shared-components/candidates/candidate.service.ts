@@ -49,6 +49,10 @@ export class CandidateService {
     get_approved_candidate(params): Observable<any[]> {
         return this.http.post<any[]>(`${this.url}` + '/candidate/get_approved', { ...params });
     }
+
+    get_candidate_Detail(id): Observable<any[]> {
+        return this.http.get<any[]>(`${this.admin_url}` + '/candidate/' + id);
+    }
     // emoployer services
 
 

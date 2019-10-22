@@ -78,6 +78,10 @@ export class CommonService {
     this.profileDetail.next(profileData);
   }
 
+  get_Type(data): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + 'business_type/' + data);
+  }
+
 
   // myObservableArray: Observable<any[]> = new Observable<any[]>();
   // employer = new BehaviorSubject(null);

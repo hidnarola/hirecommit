@@ -29,10 +29,14 @@ var Candidate_Detail = require('./../models/candidate-detail');
 var Employer_Detail = require('./../models/employer-detail');
 var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
+var DocumentType = require('./../models/document_type');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
+// live
 var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+
+//local
 //var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
@@ -473,7 +477,7 @@ router.post('/login', async (req, res) => {
       res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": user_resp.error });
     }
     else if (user_resp.status === 1) {
-      if (user_resp.data.email_verified) {
+      if (user_resp.data.email_verified == true) {
         logger.trace("valid token. Generating token");
         if ((bcrypt.compareSync(req.body.password, user_resp.data.password) && req.body.email.toLowerCase() == user_resp.data.email)) {
           var refreshToken = jwt.sign({ id: user_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
@@ -800,9 +804,10 @@ async function getCountry(req, res) {
 router.get('/business_type/:country', async (req, res) => {
   try {
     const country = await BusinessType.find({ "country": req.params.country }).lean();
+    const document = await DocumentType.find({ "country": req.params.country }).lean();
     return res.status(config.OK_STATUS).json({
       success: true, message: 'country list fetched successfully.',
-      data: country
+      data: country, document
     });
   } catch (error) {
     return res.status(config.INTERNAL_SERVER_ERROR).send({
@@ -811,6 +816,10 @@ router.get('/business_type/:country', async (req, res) => {
     });
   }
 })
+
+
+
+
 
 
 

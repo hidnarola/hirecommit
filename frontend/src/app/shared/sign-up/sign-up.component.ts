@@ -18,7 +18,7 @@ export class SignUpComponent implements OnInit {
   public isFormSubmited;
   public formData: any;
   code: any;
-  isChecked = false;
+  isChecked;
   marked = false;
   step2 = false;
   step3 = false;
@@ -35,7 +35,11 @@ export class SignUpComponent implements OnInit {
   siteKey = environment.captcha_site_key;
 
   private stepper: Stepper;
-  Country: any = [];
+  Country = [
+    { label: 'Select Business Type', value: '' },
+    { label: 'India', value: 'India' },
+    { label: 'United States', value: 'Us' },
+  ];
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -87,7 +91,7 @@ export class SignUpComponent implements OnInit {
         this.isFormSubmited = false;
         this.formData = {};
         if (res['status'] === 0) {
-
+          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
         } else if (res['data'].status === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({
@@ -96,14 +100,15 @@ export class SignUpComponent implements OnInit {
           });
           this.router.navigate(['/login']);
         } else { }
+      }, (err) => {
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }
 
   checkValue(e) {
     console.log('e>>', e);
-
-    this.marked = e
+    this.marked = e;
   }
 
 
@@ -113,21 +118,37 @@ export class SignUpComponent implements OnInit {
       animation: true
     });
 
-    this.service.country_data().subscribe(res => {
-      this.code = res['data'];
-      res['data'].forEach(element => {
-        this.Country.push({ 'label': element.country, 'value': element._id });
-      });
-    });
+    // this.service.country_data().subscribe(res => {
+    //   this.code = res['data'];
+    //   res['data'].forEach(element => {
+    //     this.Country.push({ 'label': element.country, 'value': element._id });
+    //   });
+    // });
   }
 
   getCode(e) {
-    this.code.forEach(element => {
-      if (e.value === element._id) {
+    console.log('element of country =>', e.value);
+    this.Business_Type = [];
+    this.service.get_Type(e.value).subscribe(res => {
+      console.log('Business types of selected country =>', res['data']);
+      res['data'].forEach(element => {
+        this.Business_Type.push({ 'label': element.name, 'value': element._id });
+      });
+      console.log('drop dowm of selected country =>', this.Business_Type);
 
-        this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+      if (e.value === 'India') {
+        this.registerForm.controls['countrycode'].setValue('+91');
+      } else {
+        this.registerForm.controls['countrycode'].setValue('+1');
       }
+
     });
+
+    // this.code.forEach(element => {
+    //   if (e.value === element._id) {
+    //     this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+    //   }
+    // });
   }
 
   // onLogin() {
