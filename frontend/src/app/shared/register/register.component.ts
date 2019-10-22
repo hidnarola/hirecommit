@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
   file: File = null;
   public isFormSubmited;
   formData;
-  isChecked = false;
+  isChecked;
   marked = false;
   imgurl: any = '';
   Country: any = [];
@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit {
       documenttype: new FormControl('', [Validators.required]),
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
       confirmpassword: new FormControl('', [Validators.required]),
-      isChecked: new FormControl(false, [Validators.required])
+      isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
 
     // this.documentImage = this.fb.group({
@@ -92,7 +92,7 @@ export class RegisterComponent implements OnInit {
   getCode(e) {
     this.code.forEach(element => {
       if (e.value === element._id) {
-        this.registerForm.controls['countrycode'].setValue('+' + element.country_code)
+        this.registerForm.controls['countrycode'].setValue('+' + element.country_code);
       }
     });
   }
@@ -112,11 +112,15 @@ export class RegisterComponent implements OnInit {
 
   checkValue(e) {
     console.log('e>>', e);
-
-    this.marked = e
+    this.marked = e;
+    // this.isChecked = e;
   }
 
   onSubmit(valid) {
+    console.log('this.marked ===>', this.marked);
+    console.log('this.registerForm ===>', this.registerForm);
+    console.log('this.registerForm.isChecked  ===>', this.registerForm.controls['isChecked'].valid);
+
     this.isFormSubmited = true;
     if (valid && this.marked) {
       this.registerData.documentImage = this.imgurl;
@@ -147,4 +151,3 @@ export class RegisterComponent implements OnInit {
   }
 
 }
-
