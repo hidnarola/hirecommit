@@ -32,7 +32,10 @@ var BusinessType = require('./../models/business_type');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
+// live
 var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+
+//local
 //var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
@@ -473,7 +476,7 @@ router.post('/login', async (req, res) => {
       res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": user_resp.error });
     }
     else if (user_resp.status === 1) {
-      if (user_resp.data.email_verified) {
+      if (user_resp.data.email_verified == true) {
         logger.trace("valid token. Generating token");
         if ((bcrypt.compareSync(req.body.password, user_resp.data.password) && req.body.email.toLowerCase() == user_resp.data.email)) {
           var refreshToken = jwt.sign({ id: user_resp.data._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
