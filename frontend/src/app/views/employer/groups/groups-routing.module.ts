@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { GroupsListComponent } from './groups-list/groups-list.component';
-import { CommunicationViewComponent } from './communication-view/communication-view.component';
-import { CommunicationAddEditComponent } from './communication-add-edit/communication-add-edit.component';
-import { GroupAddEditComponent } from './group-add-edit/group-add-edit.component';
 import { GroupAddComponent } from './group-add/group-add.component';
 import { GroupEditComponent } from './group-edit/group-edit.component';
 
@@ -32,7 +29,6 @@ const routes: Routes = [
       {
         path: 'add',
         component: GroupAddComponent,
-        // component: GroupAddEditComponent,
         data: {
           title: 'Add'
         }
@@ -40,40 +36,17 @@ const routes: Routes = [
       {
         path: 'edit/:id',
         component: GroupEditComponent,
-        // component: GroupAddEditComponent,
         data: {
           title: 'Edit'
         }
       },
-      // {
-      //   path: 'view/:id',
-      //   // component: GroupEditComponent,
-      //   component: GroupAddEditComponent,
-      //   data: {
-      //     title: 'View'
-      //   }
-      // },
-      {
-        path: 'communication/add',
-        component: CommunicationAddEditComponent,
-        data: {
-          title: 'Add Communication'
-        }
-      },
-      {
-        path: 'communication/edit/:id',
-        component: CommunicationAddEditComponent,
-        data: {
-          title: 'Edit Communication'
-        }
-      },
       {
         path: 'view/:id',
-        component: CommunicationViewComponent,
+        component: GroupEditComponent,
         data: {
-          title: 'View Communication'
+          title: 'View'
         }
-      }
+      },
     ]
   },
 ];

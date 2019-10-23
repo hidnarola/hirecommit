@@ -27,7 +27,8 @@
                                 <th>Offer Type</th>
                                 <th>Group</th>
                                 <th>Commit Status</th>
-                                <th>Custome Field 1</th>
+                                <th>{{first_custom_field}}</th>
+                                <!-- <th>Custom Field 1</th> -->
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -46,7 +47,7 @@
                                 <td>{{offer.offertype}}</td>
                                 <td>{{offer.group.name}}</td>
                                 <td>{{offer.commitstatus}}</td>
-                                <td>{{offer.customfeild[0].key}}</td>
+                                <td>{{offer.customfeild[0].value}}</td>
                                 <td>
                                     <!-- <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
                                             class="icon-eye"></i></button> -->

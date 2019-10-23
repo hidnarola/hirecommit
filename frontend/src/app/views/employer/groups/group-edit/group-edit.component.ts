@@ -57,12 +57,15 @@ export class GroupEditComponent implements OnInit {
     this.service.get_detail(this.id).subscribe(res => {
       console.log('res => ', res, res['data']['data']);
       this.groupData = res['data']['data'][0];
-      this.communicationData = res['communication']['data'];
+      if (res['communication']['data'][0]['communication']) {
+        this.communicationData = res['communication']['data'][0]['communication'];
+      }
       console.log('this.groupData => ', this.groupData);
       console.log(' this.communicationData => ', this.communicationData);
 
       // set communication
       if (this.communicationData && this.communicationData.length > 0) {
+        this.is_communication_added = true;
         console.log('communicaiondata found => ');
         const _array = [];
         this.communicationData.forEach((element, index) => {
