@@ -17,7 +17,7 @@ var User = require('../../models/user');
 
 
 router.get("/groups_list", async (req, res) => {
-    var group_list = await common_helper.find(group, { is_del: false });
+    var group_list = await common_helper.find(group, { is_del: false, "emp_id": new ObjectId(req.userInfo.id) });
     if (group_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
     }
@@ -75,6 +75,8 @@ router.post("/", async (req, res) => {
                 "medium_notreplied": req.body.medium_notreplied,
                 "low_unopened": req.body.low_unopened,
                 "low_notreplied": req.body.medium_notreplied,
+                "start": req.body.start,
+                "end": req.body.end
             };
         }
         else {
@@ -87,6 +89,8 @@ router.post("/", async (req, res) => {
                 "medium_notreplied": req.body.medium_notreplied,
                 "low_unopened": req.body.low_unopened,
                 "low_notreplied": req.body.medium_notreplied,
+                "start": req.body.start,
+                "end": req.body.end
 
             };
         }
@@ -149,9 +153,7 @@ router.post('/get', async (req, res) => {
         let totalMatchingCountRecords = await group.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
         // var search={};
-        console.log(req.body.search)
         var resp_data = await groups_helper.get_all_groups(group, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        console.log(resp_data);
 
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
@@ -192,24 +194,19 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
-    console.log('req.body.data=====', req.body.data);
 
     const reqData = req.body.data;
-    console.log('reqData======>>>>', reqData);
 
     const grp_data = {
         group_id: req.body.id,
         communication: JSON.parse(reqData)
     };
-    console.log('grp_data', grp_data);
     var find_communication = await common_helper.findOne(GroupDetail, { "group_id": req.body.id })
     if (find_communication.status == 1) {
         var response = await common_helper.update(GroupDetail, { "group_id": req.body.id }, grp_data);
-        console.log('response', response);
     }
     else {
         var response = await common_helper.insert(GroupDetail, grp_data);
-        console.log('response', response);
     }
 
 
@@ -307,7 +304,6 @@ router.put("/communication/:id", async (req, res) => {
 
 router.get('/communication_detail/:id', async (req, res) => {
     var group_detail = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
-    console.log("group detail", group_detail);
 
     if (group_detail.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
@@ -380,10 +376,8 @@ router.put("/deactivate_group/:id", async (req, res) => {
     }
     var id = req.params.id;
     var resp_group_data = await common_helper.update(group, { "_id": id }, obj);
-    console.log(resp_group_data.status);
 
     var resp_groupdetail_data = await common_helper.update(GroupDetail, { "group_id": id }, obj);
-    console.log(resp_groupdetail_data.status);
 
     if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_group_data);
@@ -404,10 +398,8 @@ router.put("/deactivate_communication/:id", async (req, res) => {
 
     }
     var id = req.params.id;
-    console.log('req.params.id====?', req.params.id);
 
     var resp_group_data = await common_helper.GroupDetail(GroupDetail, { "communication._id": new ObjectId(id) }, { "communication.is_del": true });
-    console.log('======resp_group_data', resp_group_data);
 
     // if (resp_group_data.status == 0) {
     //     logger.error("Error occured while fetching User = ", resp_group_data);

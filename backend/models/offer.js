@@ -8,6 +8,16 @@ const customField = new Schema({
   value: String
 })
 
+var CommunicationSchema = new Schema({
+  communicationname: { type: String, required: true },
+  trigger: { type: String, required: true },
+  day: { type: Number, required: true },
+  priority: { type: String, required: true },
+  message: { type: String },
+  is_del: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
 // Create Schema
 const OfferSchema = new Schema({
   employer_id: {
@@ -48,6 +58,8 @@ const OfferSchema = new Schema({
   currency_type: {
     type: String
   },
+  communication: [{ type: CommunicationSchema }],
+
   salarybracket: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'salary_bracket'

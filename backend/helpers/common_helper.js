@@ -150,7 +150,6 @@ common_helper.count = async (collection, data = {}) => {
 }
 
 common_helper.findOne = async (collection, data = {}, type = 1) => {
-    // console.log(data);
     try {
         var data = await collection.findOne(data).lean();
         if (data || (data && data.length > 0)) {
