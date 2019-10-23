@@ -161,15 +161,15 @@ router.get('/get_location', async (req, res) => {
 })
 
 
-router.get('/get_location/:country', async (req, res) => {
+router.get('/get_locations', async (req, res) => {
     var location_list = await common_helper.find(location, {
         "emp_id": new ObjectId(req.userInfo.id),
-        "is_del": false, country: req.params.country
+        "is_del": false
     });
 
     var salary_list = await common_helper.find(Salary, {
         "emp_id": new ObjectId(req.userInfo.id),
-        "is_del": false, country: req.params.country,
+        "is_del": false
         // "salary_type": req.body.salary_type
     });
     if (location_list.status === 1) {
