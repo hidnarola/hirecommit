@@ -16,18 +16,18 @@ location_helper.get_all_location = async (collection, id, search, start, length,
           "emp_id": new ObjectId(id)
         }
       },
-      {
-        $lookup:
-        {
-          from: "country_datas",
-          localField: "country",
-          foreignField: "_id",
-          as: "country"
-        }
-      },
-      {
-        $unwind: "$country",
-      },
+      // {
+      //   $lookup:
+      //   {
+      //     from: "country_datas",
+      //     localField: "country",
+      //     foreignField: "_id",
+      //     as: "country"
+      //   }
+      // },
+      // {
+      //   $unwind: "$country",
+      // },
     ]
 
 

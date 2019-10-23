@@ -129,18 +129,18 @@ router.get('/get_location', async (req, res) => {
                     "emp_id": new ObjectId(req.userInfo.id)
                 }
             },
-            {
-                $lookup:
-                {
-                    from: "country_datas",
-                    localField: "country",
-                    foreignField: "_id",
-                    as: "country"
-                }
-            },
-            {
-                $unwind: "$country",
-            },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "country_datas",
+            //         localField: "country",
+            //         foreignField: "_id",
+            //         as: "country"
+            //     }
+            // },
+            // {
+            //     $unwind: "$country",
+            // },
             {
                 $group: {
                     "_id": "$country.alpha3Code",
