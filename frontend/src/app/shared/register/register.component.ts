@@ -39,7 +39,6 @@ export class RegisterComponent implements OnInit {
     public fb: FormBuilder,
     private cd: ChangeDetectorRef
   ) {
-    this.registerData = {};
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
@@ -48,7 +47,7 @@ export class RegisterComponent implements OnInit {
       country: new FormControl('', [Validators.required]),
       countrycode: new FormControl('', [Validators.required]),
       contactno: new FormControl('',
-      Validators.compose([Validators.required,
+        Validators.compose([Validators.required,
         Validators.pattern(/^-?(0|[1-9]\d*)?$/),
         Validators.maxLength(10), Validators.minLength(10)])),
       documenttype: new FormControl('', [Validators.required]),
@@ -63,14 +62,14 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.formData =  new FormData();
-   }
-
-onFileChange(e) {
-  if (e.target.files && e.target.files.length > 0) {
-    this.file = e.target.files[0];
+    this.formData = new FormData();
   }
-}
+
+  onFileChange(e) {
+    if (e.target.files && e.target.files.length > 0) {
+      this.file = e.target.files[0];
+    }
+  }
 
   // onFileChange(event) {
   //   this.fileFormData = new FormData();
@@ -143,7 +142,7 @@ onFileChange(e) {
     this.isFormSubmited = true;
     if (valid && this.marked) {
       // this.registerData.documentImage = this.file;
-      // console.log('this.registerData', this.registerData);
+      console.log('this.registerData', this.registerData);
       console.log('submit : registerData ==> ', this.registerForm.value);
       // this.formData = new FormData();
       // tslint:disable-next-line: forin+
