@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 export class SignUpComponent implements OnInit {
   registerForm: FormGroup;
   protected aFormGroup: FormGroup;
-  public isFormSubmited;
+  public isFormSubmitted;
   public formData: any;
   code: any;
   isChecked;
@@ -65,30 +65,30 @@ export class SignUpComponent implements OnInit {
   }
 
   next1() {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
     if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
-      this.isFormSubmited = false;
+      this.isFormSubmitted = false;
       this.step2 = true;
-    this.stepper.next();
+      this.stepper.next();
     }
   }
 
   next2() {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
     if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
-      this.isFormSubmited = false;
+      this.isFormSubmitted = false;
       this.step3 = true;
-    this.stepper.next();
+      this.stepper.next();
     }
   }
 
   onSubmit(valid) {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid) {
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         this.formData = {};
         if (res['status'] === 0) {
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });

@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   public registerData: any;
   fileFormData;
   file: File = null;
-  public isFormSubmited;
+  public isFormSubmitted;
   formData;
   isChecked;
   marked = false;
@@ -152,7 +152,7 @@ export class RegisterComponent implements OnInit {
   onSubmit(valid) {
     // console.log('this.registerForm.value ==> ', this.registerForm.value, this.formData);
 
-    // this.isFormSubmited = true;
+    // this.isFormSubmitted = true;
     // if (valid && this.marked) {
     //   // this.registerData.documentImage = this.file;
     //   // console.log('this.registerData', this.registerData);
@@ -169,7 +169,7 @@ export class RegisterComponent implements OnInit {
     //   }
 
     //   this.service.candidate_signup(this.formData).subscribe(res => {
-    //     this.isFormSubmited = false;
+    //     this.isFormSubmitted = false;
     //     this.registerData = {};
     //     if (res['status'] === 0) {
     //       this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
@@ -182,7 +182,7 @@ export class RegisterComponent implements OnInit {
     //   });
     // }
 
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid && this.marked) {
       this.formData = new FormData();
       // tslint:disable-next-line: forin
@@ -197,7 +197,7 @@ export class RegisterComponent implements OnInit {
 
       this.service.candidate_signup(this.formData).subscribe(res => {
         console.log(res);
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         this.registerData = {};
         if (res['status'] === 0) {
           this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });

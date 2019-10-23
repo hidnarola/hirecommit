@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ForgotPasswordComponent implements OnInit {
   form: FormGroup;
-  public isFormSubmited;
+  public isFormSubmitted;
   public formData: any;
   constructor(
     private router: Router,
@@ -31,10 +31,10 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   sendMail(valid) {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid) {
       this.service.forgot_password(this.form.value).subscribe(res => {
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         this.formData = {};
         if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
