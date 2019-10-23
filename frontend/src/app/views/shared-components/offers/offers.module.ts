@@ -9,6 +9,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,9 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     TooltipModule,
     DataTablesModule,
     DropdownModule,
-    CalendarModule, InputSwitchModule
+    CalendarModule,
+    InputSwitchModule,
+    CKEditorModule,
   ]
 })
 export class OffersModule { }

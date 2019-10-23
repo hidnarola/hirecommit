@@ -16,7 +16,7 @@
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
                                     autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
-                                <div class="error" *ngIf="!groupForm.controls['name'].valid && isFormSubmited">
+                                <div class="error" *ngIf="!groupForm.controls['name'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['name'].errors['required']">
                                         This field is required.
                                     </span>
@@ -39,7 +39,8 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!groupForm.controls['high_unopened'].valid && isFormSubmited">
+                                <div class="error"
+                                    *ngIf="!groupForm.controls['high_unopened'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['high_unopened'].errors['required']">
                                         This field is required.
                                     </span>
@@ -60,7 +61,7 @@
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error"
-                                    *ngIf="!groupForm.controls['high_notreplied'].valid && isFormSubmited">
+                                    *ngIf="!groupForm.controls['high_notreplied'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['high_notreplied'].errors['required']">
                                         This field is required.
                                     </span>
@@ -81,7 +82,7 @@
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error"
-                                    *ngIf="!groupForm.controls['medium_unopened'].valid && isFormSubmited">
+                                    *ngIf="!groupForm.controls['medium_unopened'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['medium_unopened'].errors['required']">
                                         This field is required.
                                     </span>
@@ -102,7 +103,7 @@
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error"
-                                    *ngIf="!groupForm.controls['medium_notreplied'].valid && isFormSubmited">
+                                    *ngIf="!groupForm.controls['medium_notreplied'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['medium_notreplied'].errors['required']">
                                         This field is required.
                                     </span>
@@ -122,7 +123,7 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!groupForm.controls['low_unopened'].valid && isFormSubmited">
+                                <div class="error" *ngIf="!groupForm.controls['low_unopened'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['low_unopened'].errors['required']">
                                         This field is required.
                                     </span>
@@ -143,7 +144,7 @@
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="error"
-                                    *ngIf="!groupForm.controls['low_notreplied'].valid && isFormSubmited">
+                                    *ngIf="!groupForm.controls['low_notreplied'].valid && isFormSubmitted">
                                     <span *ngIf="groupForm.controls['low_notreplied'].errors['required']">
                                         This field is required.
                                     </span>
@@ -187,7 +188,7 @@
                                                     <input type="text" class="form-control" placeholder="Enter name"
                                                         formControlName="communicationname" id="communicationname"
                                                         [(ngModel)]="customfield.communicationname">
-                                                    <div *ngIf="isFormSubmited && groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
                                                         style="color: red;">
                                                         <div
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required']">
@@ -207,7 +208,7 @@
                                                         <option value="beforeExpiry">Before Expiry</option>
                                                         <option value="afterExpiry">After Expiry</option>
                                                     </select>
-                                                    <div *ngIf="isFormSubmited && groupForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors"
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors"
                                                         style="color: red;">
                                                         <div
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors['required']">
@@ -222,7 +223,7 @@
                                                     <input type="text" id="day" name="day" class="form-control"
                                                         placeholder="Enter Days" formControlName="day"
                                                         [(ngModel)]="customfield.day">
-                                                    <div *ngIf="isFormSubmited && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
                                                         style="color: red;">
                                                         <div
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
@@ -241,7 +242,7 @@
                                                         <option value="Medium">Medium</option>
                                                         <option value="Low">Low</option>
                                                     </select>
-                                                    <div *ngIf="isFormSubmited && groupForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors"
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors"
                                                         style="color: red;">
                                                         <div
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors['required']">

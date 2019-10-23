@@ -33,6 +33,22 @@ router.post('/get_new', async (req, res) => {
             {
                 $lookup:
                 {
+                    from: "country_datas",
+                    localField: "userDetail.country",
+                    foreignField: "_id",
+                    as: "country"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$country",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
                     from: "user",
                     localField: "user_id",
                     foreignField: "_id",
@@ -95,6 +111,22 @@ router.post('/get_approved', async (req, res) => {
             {
                 $lookup:
                 {
+                    from: "country_datas",
+                    localField: "userDetail.country",
+                    foreignField: "_id",
+                    as: "country"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$country",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
                     from: "user",
                     localField: "user_id",
                     foreignField: "_id",
@@ -139,7 +171,7 @@ router.post('/get_approved', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id")
+    var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id").populate("country");
 
     // if (candidate_detail.status == 0) {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
@@ -318,6 +350,22 @@ router.get('/', async (req, res) => {
             $match: {
                 "is_del": false,
             }
+        },
+        {
+            $lookup:
+            {
+                from: "country_datas",
+                localField: "userDetail.country",
+                foreignField: "_id",
+                as: "country"
+            }
+        },
+
+        {
+            $unwind: {
+                path: "$country",
+                preserveNullAndEmptyArrays: true
+            },
         },
         {
             $lookup:

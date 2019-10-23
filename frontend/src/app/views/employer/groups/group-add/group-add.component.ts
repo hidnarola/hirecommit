@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class GroupAddComponent implements OnInit {
 
   addGroup: FormGroup;
-  isFormSubmited = false;
+  isFormSubmitted = false;
   cancel_link = '/employer/groups/list';
   groupData: any = {};
   editedData: any;
@@ -45,12 +45,12 @@ export class GroupAddComponent implements OnInit {
 
   onSubmit(valid) {
     console.log('valid => ', valid);
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid) {
       this.service.addGroup(this.addGroup.value).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
-          this.isFormSubmited = false;
+          this.isFormSubmitted = false;
           this.addGroup.reset();
           this.router.navigate(['/employer/groups/list'])
         }

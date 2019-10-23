@@ -80,6 +80,22 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
       {
         $lookup:
         {
+          from: "country_datas",
+          localField: "country",
+          foreignField: "_id",
+          as: "country"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$country",
+          preserveNullAndEmptyArrays: true
+        },
+      },
+      {
+        $lookup:
+        {
           from: "user",
           localField: "user_id",
           foreignField: "_id",
@@ -143,6 +159,22 @@ user_helper.get_all_new_employer = async (collection, search, start, length, rec
         $match: {
           "is_del": false,
         }
+      },
+      {
+        $lookup:
+        {
+          from: "country_datas",
+          localField: "country",
+          foreignField: "_id",
+          as: "country"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$country",
+          preserveNullAndEmptyArrays: true
+        },
       },
       {
         $lookup:

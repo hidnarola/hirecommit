@@ -16,14 +16,14 @@ var User = require('../../models/user');
 //manage Location
 router.post("/", async (req, res) => {
     var schema = {
-        "country": {
-            notEmpty: true,
-            errorMessage: "Country is required"
-        },
-        "city": {
-            notEmpty: true,
-            errorMessage: "City is required"
-        }
+        // "country": {
+        //     notEmpty: true,
+        //     errorMessage: "Country is required"
+        // },
+        // "city": {
+        //     notEmpty: true,
+        //     errorMessage: "City is required"
+        // }
     };
     req.checkBody(schema);
 
@@ -129,18 +129,18 @@ router.get('/get_location', async (req, res) => {
                     "emp_id": new ObjectId(req.userInfo.id)
                 }
             },
-            {
-                $lookup:
-                {
-                    from: "country_datas",
-                    localField: "country",
-                    foreignField: "_id",
-                    as: "country"
-                }
-            },
-            {
-                $unwind: "$country",
-            },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "country_datas",
+            //         localField: "country",
+            //         foreignField: "_id",
+            //         as: "country"
+            //     }
+            // },
+            // {
+            //     $unwind: "$country",
+            // },
             {
                 $group: {
                     "_id": "$country.alpha3Code",
@@ -161,15 +161,15 @@ router.get('/get_location', async (req, res) => {
 })
 
 
-router.get('/get_location/:country', async (req, res) => {
+router.get('/get_locations', async (req, res) => {
     var location_list = await common_helper.find(location, {
         "emp_id": new ObjectId(req.userInfo.id),
-        "is_del": false, country: req.params.country
+        "is_del": false
     });
 
     var salary_list = await common_helper.find(Salary, {
         "emp_id": new ObjectId(req.userInfo.id),
-        "is_del": false, country: req.params.country,
+        "is_del": false
         // "salary_type": req.body.salary_type
     });
     if (location_list.status === 1) {

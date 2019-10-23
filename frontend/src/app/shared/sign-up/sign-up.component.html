@@ -46,7 +46,7 @@
                       </div>
                       <input type="text" class="form-control" placeholder="yourname@companyname.com"
                         [(ngModel)]="formData.email" name="email" formControlName="email" required="required">
-                      <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmited">
+                      <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
                         <span *ngIf="registerForm.controls['email'].errors.required">Email is required.</span>
                         <span *ngIf="registerForm.controls['email'].errors.email">Email must be in valid format.</span>
                       </div>
@@ -62,7 +62,7 @@
                       </div>
                       <input type="password" [(ngModel)]="formData.password" name="password" class="form-control"
                         placeholder="Min 8 char,1 letter & 1 number" formControlName="password" required="required">
-                      <div class="error mb-2 mt-1" *ngIf="!registerForm.controls['password'].valid && isFormSubmited">
+                      <div class="error mb-2 mt-1" *ngIf="!registerForm.controls['password'].valid && isFormSubmitted">
                         <span *ngIf="registerForm.controls['password'].errors['required']">Password is required.</span>
                         <span *ngIf="registerForm.controls['password'].errors['minlength']">Password must be more then 8
                           characters.</span>
@@ -73,7 +73,7 @@
                     <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
                       [(ngModel)]="formData.recaptcha" name="recaptcha">
                     </ngx-recaptcha2>
-                    <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmited">
+                    <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
                       <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
                     </div>
                   </div>
@@ -96,7 +96,7 @@
                       <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
                         id="country" (onChange)="getCode($event)">
                       </p-dropdown>
-                      <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmited">
+                      <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmitted">
                         <span *ngIf="registerForm.controls['country'].errors['required']">Please select your
                           country.</span>
                       </div>
@@ -106,7 +106,7 @@
                       <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
                         formControlName="businesstype" id="businesstype">
                       </p-dropdown>
-                      <div class="error" *ngIf="!registerForm.controls['businesstype'].valid && isFormSubmited">
+                      <div class="error" *ngIf="!registerForm.controls['businesstype'].valid && isFormSubmitted">
                         <span *ngIf="registerForm.controls['businesstype'].errors['required']">Please select business
                           type.</span>
                       </div>
@@ -131,7 +131,7 @@
                       <input type="text" class="form-control" placeholder="Company Name"
                         [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
                         required="required">
-                      <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmited">
+                      <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmitted">
                         <span *ngIf="registerForm.controls['companyname'].errors['required']">Company name is
                           required.</span>
                       </div>
@@ -160,7 +160,7 @@
                       </div>
                       <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
                         name="username" formControlName="username" required="required">
-                      <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmited">
+                      <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
                         <span *ngIf="registerForm.controls['username'].errors['required']">User name is
                           required.</span>
                       </div>
@@ -182,7 +182,7 @@
                             [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
                             required="required">
                           <div class="error pull-left"
-                            *ngIf="!registerForm.controls['contactno'].valid && isFormSubmited">
+                            *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
                             <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is
                               required.</span>
                             <span
@@ -206,7 +206,7 @@
                         <a href="#">privacy policy</a>
                         and
                         <a href="#">terms of use</a>
-                        <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmited">
+                        <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
                           <span *ngIf="registerForm.controls['isChecked'].errors['required']">
                             Accept terms and conditions.</span>
                         </div>

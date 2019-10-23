@@ -32,41 +32,41 @@ router.post("/", async (req, res) => {
     if (!errors) {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         var sal_bracket = await common_helper.find(salary_bracket, { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false, $or: [{ "from": { "$le": req.body.from, "$ge": req.body.end } }], $or: [{ "to": { "$le": req.body.from, "$ge": req.body.end } }], $or: [{ "start": { "$le": req.body.from, "$ge": req.body.end } }], $or: [{ "end": { "$le": req.body.from, "$ge": req.body.end } }] })
-        if (sal_bracket.status == 2) {
-            if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
-                var reg_obj = {
-                    "emp_id": user.data.emp_id,
-                    "country": req.body.country,
-                    "currency": req.body.currency,
-                    "from": req.body.from,
-                    "to": req.body.to,
-                    "start": req.body.start,
-                    "end": req.body.end
-                }
-            }
-            else {
-                var reg_obj = {
-                    "emp_id": req.userInfo.id,
-                    "country": req.body.country,
-                    "currency": req.body.currency,
-                    "from": req.body.from,
-                    "to": req.body.to,
-                    "start": req.body.start,
-                    "end": req.body.end
-                    //"location": req.body.location
-                };
-            }
-            var interest_resp = await common_helper.insert(salary_bracket, reg_obj);
-            if (interest_resp.status == 0) {
-                logger.debug("Error = ", interest_resp.error);
-                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-            } else {
-                res.json({ "message": "Sub-Account Added successfully", "data": interest_resp })
+        // if (sal_bracket.status == 2) {
+        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var reg_obj = {
+                "emp_id": user.data.emp_id,
+                "country": req.body.country,
+                "currency": req.body.currency,
+                "from": req.body.from,
+                "to": req.body.to,
+                "start": req.body.start,
+                "end": req.body.end
             }
         }
         else {
-            res.status(config.BAD_REQUEST).json({ message: "Please enter another salary type or time period" });
+            var reg_obj = {
+                "emp_id": req.userInfo.id,
+                "country": req.body.country,
+                "currency": req.body.currency,
+                "from": req.body.from,
+                "to": req.body.to,
+                "start": req.body.start,
+                "end": req.body.end
+                //"location": req.body.location
+            };
         }
+        var interest_resp = await common_helper.insert(salary_bracket, reg_obj);
+        if (interest_resp.status == 0) {
+            logger.debug("Error = ", interest_resp.error);
+            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        } else {
+            res.json({ "message": "Sub-Account Added successfully", "data": interest_resp })
+        }
+        // }
+        // else {
+        //     res.status(config.BAD_REQUEST).json({ message: "Please enter another salary type or time period" });
+        // }
 
     }
     else {

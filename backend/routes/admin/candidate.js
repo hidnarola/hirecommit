@@ -31,6 +31,22 @@ router.post('/get_new', async (req, res) => {
             {
                 $lookup:
                 {
+                    from: "country_datas",
+                    localField: "country",
+                    foreignField: "_id",
+                    as: "country"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$country",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
                     from: "user",
                     localField: "user_id",
                     foreignField: "_id",
@@ -93,6 +109,22 @@ router.post('/get_approved', async (req, res) => {
             {
                 $lookup:
                 {
+                    from: "country_datas",
+                    localField: "country",
+                    foreignField: "_id",
+                    as: "country"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$country",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
                     from: "user",
                     localField: "user_id",
                     foreignField: "_id",
@@ -134,7 +166,7 @@ router.post('/get_approved', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id")
+    var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id").populate("country")
 
     // if (candidate_detail.status == 0) {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
@@ -343,5 +375,23 @@ router.get('/', async (req, res) => {
     }
 
 });
+
+
+router.put('/', async (req, res) => {
+    var reg_obj = {
+        "isAllow": true
+    }
+    var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
+
+    if (sub_account_upadate.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No dat  a found" });
+    }
+    else if (sub_account_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Approved successfully", "data": sub_account_upadate });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    }
+})
 
 module.exports = router;

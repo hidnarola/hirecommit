@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class ChangepasswordComponent implements OnInit {
   form: FormGroup;
   submitform: FormGroup;
-  public isFormSubmited;
+  public isFormSubmitted;
   public formData: any;
   token: any;
 
@@ -39,7 +39,7 @@ export class ChangepasswordComponent implements OnInit {
   }
 
   submit(valid) {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid) {
       this.submitform = new FormGroup({
         token: new FormControl(this.token),
@@ -47,7 +47,7 @@ export class ChangepasswordComponent implements OnInit {
         newpassword: new FormControl(this.form.value.newpassword)
       });
       this.service.change_password(this.submitform.value).subscribe(res => {
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.router.navigate(['/employer/offers/list']);

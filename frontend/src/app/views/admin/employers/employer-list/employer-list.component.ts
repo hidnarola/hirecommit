@@ -16,6 +16,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   employer_data: any[];
+  country: any;
   userDetail: any = [];
   employer_type = 'Approved';
 
@@ -45,6 +46,9 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res of approved employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
+              this.country = res['user'][0].country.country;
+              console.log('country>>', this.country);
+
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -55,6 +59,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res of new employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
+
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {

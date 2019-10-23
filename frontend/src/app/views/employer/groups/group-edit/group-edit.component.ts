@@ -15,7 +15,7 @@ export class GroupEditComponent implements OnInit {
   public Editor = ClassicEditor;
   groupForm: FormGroup;
   communicationForm: FormGroup;
-  isFormSubmited = false;
+  isFormSubmitted = false;
   cancel_link = '/employer/groups/list';
   id: any;
   groupData: any = [];
@@ -55,13 +55,10 @@ export class GroupEditComponent implements OnInit {
 
     this.id = this.route.snapshot.params.id;
     this.service.get_detail(this.id).subscribe(res => {
-      console.log('res => ', res, res['data']['data']);
       this.groupData = res['data']['data'][0];
-      if (res['communication']['data'][0]['communication']) {
+      if (res['communication']['data'] && res['communication']['data'].length > 0) {
         this.communicationData = res['communication']['data'][0]['communication'];
       }
-      console.log('this.groupData => ', this.groupData);
-      console.log(' this.communicationData => ', this.communicationData);
 
       // set communication
       if (this.communicationData && this.communicationData.length > 0) {
@@ -93,7 +90,6 @@ export class GroupEditComponent implements OnInit {
         // this.add_new_communication();
       }
       // set communication
-
     });
 
   }
@@ -101,7 +97,8 @@ export class GroupEditComponent implements OnInit {
   ngOnInit() { }
 
   get f() { return this.groupForm.controls; }
-  // custom field items controls
+
+  // communbication field items controls
   get communicationFieldItems() {
     return this.groupForm.get('communicationFieldItems') as FormArray;
   }
@@ -122,7 +119,7 @@ export class GroupEditComponent implements OnInit {
       console.log('this.groupForm => ', this.groupForm);
       this.communicationFieldItems.setControl(0, this.fb.group({}));
       this.updateValidation();
-      this.isFormSubmited = false;
+      this.isFormSubmitted = false;
     }
   }
 
@@ -182,11 +179,8 @@ export class GroupEditComponent implements OnInit {
   }
 
   onSubmit(valid) {
-    console.log('valid => ', valid);
-    console.log('this.groupform => ', this.groupForm);
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     this.formData = new FormData();
-    console.log('this.communicationData => ', this.communicationData);
     if (valid) {
       if (this.isEdit) {
         const communication_array = [];
@@ -216,8 +210,6 @@ export class GroupEditComponent implements OnInit {
           data: JSON.stringify(communication_array)
         };
 
-        console.log('obj => ', obj);
-
         for (const key in obj) {
           if (key) {
             const value = obj[key];
@@ -227,7 +219,7 @@ export class GroupEditComponent implements OnInit {
 
         this.service.edit_group(this.formData).subscribe(res => {
           if (res['data']['status'] === 1) {
-            this.isFormSubmited = false;
+            this.isFormSubmitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.groupForm.reset();
           }

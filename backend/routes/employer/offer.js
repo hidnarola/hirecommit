@@ -315,7 +315,11 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
+        console.log('req.userInfo.id==>', req.userInfo.id);
+
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        console.log('user', user);
+
         if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id
         }
@@ -323,7 +327,7 @@ router.post('/get', async (req, res) => {
             var user_id = req.userInfo.id
         }
         var aggregate = [
-            { $match: { $or: [{ "employer_id": new ObjectId(req.userInfo.id) }, { "employer_id": new ObjectId(user.data.emp_id) }], "is_del": false } },
+            { $match: { $or: [{ "employer_id": new ObjectId(req.userInfo.id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
             {
                 $lookup:
                 {
