@@ -14,7 +14,7 @@ export class ResetPasswordComponent implements OnInit {
   form: FormGroup;
   submitform: FormGroup;
   params_token: any;
-  public isFormSubmited;
+  public isFormSubmitted;
   public formData: any;
   // tslint:disable-next-line: max-line-length
 
@@ -39,14 +39,14 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   confirm(valid) {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid) {
       this.submitform = new FormGroup({
         token: new FormControl(this.params_token.token),
         password: new FormControl(this.form.value.password)
       });
       this.service.reset_password(this.submitform.value).subscribe(res => {
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         this.formData = {};
         if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });

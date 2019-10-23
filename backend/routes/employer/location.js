@@ -16,14 +16,14 @@ var User = require('../../models/user');
 //manage Location
 router.post("/", async (req, res) => {
     var schema = {
-        "country": {
-            notEmpty: true,
-            errorMessage: "Country is required"
-        },
-        "city": {
-            notEmpty: true,
-            errorMessage: "City is required"
-        }
+        // "country": {
+        //     notEmpty: true,
+        //     errorMessage: "Country is required"
+        // },
+        // "city": {
+        //     notEmpty: true,
+        //     errorMessage: "City is required"
+        // }
     };
     req.checkBody(schema);
 
@@ -129,18 +129,18 @@ router.get('/get_location', async (req, res) => {
                     "emp_id": new ObjectId(req.userInfo.id)
                 }
             },
-            {
-                $lookup:
-                {
-                    from: "country_datas",
-                    localField: "country",
-                    foreignField: "_id",
-                    as: "country"
-                }
-            },
-            {
-                $unwind: "$country",
-            },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "country_datas",
+            //         localField: "country",
+            //         foreignField: "_id",
+            //         as: "country"
+            //     }
+            // },
+            // {
+            //     $unwind: "$country",
+            // },
             {
                 $group: {
                     "_id": "$country.alpha3Code",

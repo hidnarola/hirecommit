@@ -24,7 +24,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: ActivatedRoute,
     private service: EmployerService
   ) {
-    console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
+    // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     if (this.router.snapshot.data.type === 'new') {
       this.employer_type = 'New';
     }

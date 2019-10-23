@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   public registerData: any;
   fileFormData;
   file: File = null;
-  public isFormSubmited;
+  public isFormSubmitted;
   formData;
   isChecked;
   marked = false;
@@ -63,8 +63,8 @@ export class RegisterComponent implements OnInit {
       console.log('candidate registration country>', res['data']);
       res['data'].forEach(element => {
         this.countryList.push({ 'label': element.country, 'value': element._id });
-      })
-    })
+      });
+    });
     this.formData = new FormData();
 
   }
@@ -75,36 +75,10 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  // onFileChange(event) {
-  //   this.fileFormData = new FormData();
-  //   const reader = new FileReader();
-  //   if (event.target.files && event.target.files.length > 0) {
-  //     this.file = event.target.files;
-  //     console.log('uploaded file =>', this.file.name);
-  //     console.log('ater splite =>', this.file.name.split('.')[1]);
-  //     // if (this.file.name.split('.')[1] === 'png' || this.file.name.split('.')[1] === 'jpg' || this.file.name.split('.')[1] === 'jpeg') {
-
-  //     this.fileFormData.append('filename', this.file);
-  //     reader.readAsDataURL(this.file);
-  //     reader.onload = this._handleReaderLoaded.bind(this);
-  //     // reader.onload = () => {
-  //     //   this.documentImage.patchValue({
-  //     //     documentimage: reader.result
-  //     //  });
-  //     this.imgurl = reader.result;
-  //     // need to run CD since file load runs outside of zone
-  //     this.cd.markForCheck();
-  //     // }
-  //     // else {
-  //     //   console.log('image type is not valuid, please enter image in format of PNG, JPG or JPEG!');
-  //     // }
-  //   }
-  // }
-
   getCode(e) {
     console.log('element of country =>>', e.value);
 
-    this.countryID = this.alldata.find(x => x._id === e.value)
+    this.countryID = this.alldata.find(x => x._id === e.value);
     console.log('countryID', this.countryID.country);
     this.Document_optoins = [];
     this.service.get_Type(this.countryID.country).subscribe(res => {
@@ -125,11 +99,6 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  // _handleReaderLoaded(e) {
-  //   const reader = e.target;
-  //   // this.imgurl = reader.result;
-  // }
-
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
     const confirmpassword = g.get('confirmpassword').value;
@@ -144,39 +113,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(valid) {
-    // console.log('this.registerForm.value ==> ', this.registerForm.value, this.formData);
-
-    // this.isFormSubmited = true;
-    // if (valid && this.marked) {
-    //   // this.registerData.documentImage = this.file;
-    //   // console.log('this.registerData', this.registerData);
-    //   console.log('submit : registerData ==> ', this.registerForm.value);
-    //   // this.formData = new FormData();
-    //   // tslint:disable-next-line: forin+
-    //   const data = this.registerForm.value;
-    //   this.formData.append('documentImage', this.file);
-    //   for (const key in data) {
-    //     if (key) {
-    //       const value = data[key];
-    //       this.formData.append(key, value);
-    //     }
-    //   }
-
-    //   this.service.candidate_signup(this.formData).subscribe(res => {
-    //     this.isFormSubmited = false;
-    //     this.registerData = {};
-    //     if (res['status'] === 0) {
-    //       this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
-    //     } else if (res['status'] === 1) {
-    //       this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-    //       this.router.navigate(['/login']);
-    //     }
-    //   }, (err) => {
-    //     this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
-    //   });
-    // }
-
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid && this.marked) {
       this.formData = new FormData();
       // tslint:disable-next-line: forin
@@ -191,7 +128,7 @@ export class RegisterComponent implements OnInit {
 
       this.service.candidate_signup(this.formData).subscribe(res => {
         console.log(res);
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         this.registerData = {};
         if (res['status'] === 0) {
           this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });

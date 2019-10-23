@@ -1,20 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder,
-  FormArray
-} from '@angular/forms';
-import {
-  Router,
-  ActivatedRoute,
-  Params,
-  ActivatedRouteSnapshot
-} from '@angular/router';
+import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { Router, ActivatedRoute, Params, ActivatedRouteSnapshot } from '@angular/router';
 import { OfferService } from '../offer.service';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+import { GroupService } from '../../../employer/groups/manage-groups.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -22,48 +13,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./offer-add-view.component.scss']
 })
 export class OfferAddViewComponent implements OnInit {
+  public Editor = ClassicEditor;
   resData: any;
-  constructor(
-    private fb: FormBuilder,
-    private service: OfferService,
-    private toastr: ToastrService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    // Form Controls
-    this.form = this.fb.group({
-      candidate: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      title: new FormControl('', [Validators.required]),
-      salarytype: new FormControl('', [Validators.required]),
-      salaryduration: new FormControl(''),
-      country: new FormControl('', [Validators.required]),
-      location: new FormControl('', [Validators.required]),
-      currency_type: new FormControl('', [Validators.required]),
-      salarybracket: new FormControl('', [Validators.required]),
-      expirydate: new FormControl('', [Validators.required]),
-      joiningdate: new FormControl('', [Validators.required]),
-      status: new FormControl(),
-      offertype: new FormControl('', [Validators.required]),
-      group: new FormControl('', [Validators.required]),
-      commitstatus: new FormControl('', [Validators.required]),
-      notes: new FormControl(''),
-      employer_id: new FormControl(''),
-      customfieldItem: this.fb.array([])
-    });
-
-    this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
-    });
-    console.log('this.router => ', this.route.snapshot.data.title);
-  }
-
-  // delivery property get method
-  get customfieldItem() {
-    return this.form.get('customfieldItem') as FormArray;
-  }
-  get f() { return this.form.controls['customfieldItem'] as FormArray; }
-
   form: FormGroup;
   form_validation = false;
   offer_data: any = {};
@@ -84,18 +35,20 @@ export class OfferAddViewComponent implements OnInit {
   custom_field: any = [];
   id: any;
   is_Edit: boolean = false;
-
+  // salary duration options
   salary_duration_optoins = [
     { label: 'Select Salary Duration', value: '' },
     { label: '1 week', value: '1week' },
     { label: '2 week', value: '2week' }
   ];
+  // offer type options
   offer_type_optoins = [
     { label: 'Select Offer Type', value: '' },
     { label: 'No Commit', value: 'noCommit' },
     { label: 'Candidate Commit', value: 'candidateCommit' },
     { label: 'Both Commit', value: 'bothCommit' }
   ];
+  // commit status options
   commitstatus_optoins = [
     { label: 'Select Commit Status', value: '' },
     { label: 'High', value: 'high' },
@@ -106,6 +59,62 @@ export class OfferAddViewComponent implements OnInit {
   cancel_link = '/employer/offers/list';
   show_spinner = false;
   formData: FormData;
+  communicationData: any = [];
+  is_disabled_btn = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private service: OfferService,
+    private toastr: ToastrService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private groupService: GroupService
+  ) {
+    // Form Controls
+    this.form = this.fb.group({
+      candidate: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      title: new FormControl('', [Validators.required]),
+      salarytype: new FormControl('', [Validators.required]),
+      salaryduration: new FormControl(''),
+      country: new FormControl('', [Validators.required]),
+      location: new FormControl('', [Validators.required]),
+      currency_type: new FormControl('', [Validators.required]),
+      salarybracket: new FormControl('', [Validators.required]),
+      expirydate: new FormControl('', [Validators.required]),
+      joiningdate: new FormControl('', [Validators.required]),
+      status: new FormControl(),
+      offertype: new FormControl('', [Validators.required]),
+      group: new FormControl('', [Validators.required]),
+      commitstatus: new FormControl('', [Validators.required]),
+      notes: new FormControl(''),
+      employer_id: new FormControl(''),
+      customfieldItem: this.fb.array([]),
+      communicationFieldItems: this.fb.array([])
+    });
+
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+    });
+    console.log('this.router => ', this.route.snapshot.data.title);
+  }
+
+  get f() { return this.form.controls; }
+
+  // custom field items controls
+  get customfieldItem() {
+    return this.form.get('customfieldItem') as FormArray;
+  }
+
+  // communication field items controls
+  get communicationFieldItems() {
+    return this.form.get('communicationFieldItems') as FormArray;
+  }
+
+  // Update form validation
+  updateValidation() {
+    this.form.updateValueAndValidity();
+  }
 
   // get country list
   async findData(value) {
@@ -156,7 +165,6 @@ export class OfferAddViewComponent implements OnInit {
     );
   }
 
-
   ngOnInit() {
     //   To get candidates list
     this.getCandidateList()
@@ -189,10 +197,34 @@ export class OfferAddViewComponent implements OnInit {
         console.log('offer detail ===> api res==>', res);
         this.resData = res[`data`];
         console.log('Response ====>', this.resData);
-        console.log(
-          'candidate id - resp : resData.user_id ==> ',
-          this.resData.user_id
-        );
+        // set communication
+        console.log('check herre => ', res['communication']);
+        if (res['data']['communication'] && res['data']['communication'].length > 0) {
+          console.log('in function => ');
+          this.communicationData = res['data']['communication'];
+          const _communication_array = [];
+          this.communicationData.forEach((element, index) => {
+            console.log('element => ', element);
+            const new_communication = {
+              'communicationname': element.communicationname,
+              'trigger': element.trigger,
+              'priority': element.priority,
+              'day': element.day,
+              'message': element.message,
+            };
+            this.communicationFieldItems.setControl(index, this.fb.group({
+              communicationname: ['', Validators.required],
+              trigger: ['', Validators.required],
+              priority: ['', Validators.required],
+              day: ['', Validators.required],
+              message: ['']
+              // message: ['', Validators.required]
+            }));
+            _communication_array.push(new_communication);
+          });
+          this.communicationData = _communication_array;
+        }
+        // set communication
         this.form.controls['candidate'].setValue(this.resData.user_id);
         this.getCandidateDetail(this.resData.user_id);
         this.form.controls['title'].setValue(this.resData.title);
@@ -208,7 +240,6 @@ export class OfferAddViewComponent implements OnInit {
         this.form.controls['notes'].setValue(this.resData.notes);
         const _array = [];
         this.resData['customfeild'].forEach((element, index) => {
-
           const new_customfield = {
             key: element.key,
             value: element.value
@@ -229,13 +260,6 @@ export class OfferAddViewComponent implements OnInit {
         console.log(err);
       }
     );
-  }
-
-  createdItem = (data: any) => {
-    return this.fb.group({
-      key: [data.key],
-      value: [data.value]
-    });
   }
 
   // get candidate details
@@ -339,6 +363,112 @@ export class OfferAddViewComponent implements OnInit {
     this.form.controls.group.setValue(groupById);
   }
 
+  // on change of group
+  // changeGroup() {
+  //   console.log('this.form.value.group._id => ', this.form.value.group._id);
+  //   // this.add_new_communication();
+  //   // this.communicationDetail(this.form.value.group._id);
+  // }
+
+  // // get communication detail by id
+  // communicationDetail(id) {
+  //   this.communicationData = [];
+  //   console.log('function called => ');
+  //   this.groupService.get_detail(id).subscribe(res => {
+  //     console.log('res of communication details by id => ', res);
+  //     if (res['communication']['data'] && res['communication']['data'].length > 0) {
+  //       this.communicationData = res['communication']['data'][0]['communication'];
+  //       // set communication
+  //       const _array = [];
+  //       this.communicationData.forEach((element, index) => {
+  //         console.log('element => ', element);
+  //         const new_communication = {
+  //           'communicationname': element.communicationname,
+  //           'trigger': element.trigger,
+  //           'priority': element.priority,
+  //           'day': element.day,
+  //           'message': element.message,
+  //         };
+  //         this.communicationFieldItems.setControl(index, this.fb.group({
+  //           communicationname: ['', Validators.required],
+  //           trigger: ['', Validators.required],
+  //           priority: ['', Validators.required],
+  //           day: ['', Validators.required],
+  //           message: ['']
+  //           // message: ['', Validators.required]
+  //         }));
+  //         _array.push(new_communication);
+  //       });
+  //       this.communicationData = _array;
+  //       // set communication
+  //     } else {
+  //       this.add_new_communication();
+  //     }
+  //   });
+
+  // }
+
+  // add more communication
+  addMoreCommunication() {
+    this.is_disabled_btn = true;
+    this.add_new_communication();
+  }
+
+  // add new communication
+  add_new_communication(data_index = null) {
+    let index = 0;
+    if (data_index == null) {
+      if (this.communicationData && this.communicationData.length > 0) {
+        index = this.communicationData.length;
+      } else {
+        this.communicationData = [];
+      }
+    } else {
+      if (this.communicationData && this.communicationData.length > 0) {
+        index = this.communicationData.length;
+      }
+    }
+    const new_communication = {
+      'communicationname': '',
+      'trigger': '',
+      'priority': '',
+      'day': '',
+      'message': '',
+    };
+
+    this.communicationFieldItems.setControl(index, this.fb.group({
+      communicationname: ['', Validators.required],
+      trigger: ['', Validators.required],
+      priority: ['', Validators.required],
+      day: ['', Validators.required],
+      message: ['']
+      // message: ['', Validators.required]
+    }));
+
+    this.communicationData.push(new_communication);
+    this.updateValidation();
+  }
+
+  // Remove communication
+  remove_communication(index: number) {
+    delete this.communicationData[index];
+    this.communicationFieldItems.removeAt(index);
+    const array = [];
+    for (let i = 0; i < this.communicationData.length; i++) {
+      if (this.communicationData[i] !== undefined) {
+        array.push(this.communicationData[i]);
+      }
+    }
+    this.communicationData = array;
+  }
+
+  public onReady(editor) {
+    editor.ui.getEditableElement().parentElement.insertBefore(
+      editor.ui.view.toolbar.element,
+      editor.ui.getEditableElement()
+    );
+  }
+
   findEmail(value) {
     this.candidate.forEach(element => {
       if (value.value === element.user_id) {
@@ -347,31 +477,51 @@ export class OfferAddViewComponent implements OnInit {
     });
   }
 
+  // submit offers
   onSubmit(flag) {
-    const _coustomisedFiledsArray = [];
+    // customised fields
+    const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {
       // if (element.value) {
-      _coustomisedFiledsArray.push({
+      _coustomisedFieldsArray.push({
         key: element.key,
         value: element.value
       });
       // }
     });
+    // communication records
+    const communication_array = [];
+    if (this.communicationData.length > 0) {
+      this.communicationData.forEach(element => {
+        communication_array.push({
+          communicationname: element.communicationname,
+          trigger: element.trigger,
+          priority: element.priority,
+          day: element.day,
+          message: element.message
+        });
+      });
+    } else {
+      communication_array.push();
+    }
     this.formData = new FormData();
     const unwantedFields = [
       'candidate',
       'customfieldItem',
       'group',
       'status',
-      'employer_id'
+      'employer_id',
+      'communicationFieldItems'
     ];
     const data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
       location: this.form.value.location._id,
       groups: this.form.value.group._id,
-      customfeild: JSON.stringify(_coustomisedFiledsArray)
+      customfeild: JSON.stringify(_coustomisedFieldsArray),
+      data: JSON.stringify(communication_array)
     };
+    console.log('data => ', data);
     Object.keys(data).map(key => {
       if (unwantedFields.includes(key)) {
         delete data[key];
@@ -424,4 +574,5 @@ export class OfferAddViewComponent implements OnInit {
     }
     this.form_validation = !flag;
   }
+
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CandidateService } from '../candidate.service';
 import { CommonService } from '../../../../services/common.service';
+import * as env from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-candidate-view',
@@ -18,7 +19,7 @@ export class CandidateViewComponent implements OnInit {
   email: any;
   cancel_link1 = '/admin/candidates/new_candidate';
   cancel_link2 = '/admin/candidates/approved_candidate';
-
+  image = env.environment.imageUrl;
 
 
   constructor(

@@ -14,6 +14,22 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
       {
         $lookup:
         {
+          from: "country_datas",
+          localField: "country",
+          foreignField: "_id",
+          as: "country"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$country",
+          preserveNullAndEmptyArrays: true
+        },
+      },
+      {
+        $lookup:
+        {
           from: "user",
           localField: "user_id",
           foreignField: "_id",
@@ -79,6 +95,22 @@ candidate_helper.get_all_new_candidate = async (collection, search, start, lengt
         $match: {
           "is_del": false,
         }
+      },
+      {
+        $lookup:
+        {
+          from: "country_datas",
+          localField: "country",
+          foreignField: "_id",
+          as: "country"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$country",
+          preserveNullAndEmptyArrays: true
+        },
       },
       {
         $lookup:

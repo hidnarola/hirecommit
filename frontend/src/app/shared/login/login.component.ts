@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  public isFormSubmited;
+  public isFormSubmitted;
   public formData: any;
 
   constructor(
@@ -31,10 +31,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() { }
 
   onSubmit(valid) {
-    this.isFormSubmited = true;
+    this.isFormSubmitted = true;
     if (valid) {
       this.service.login(this.loginForm.value).subscribe(res => {
-        this.isFormSubmited = false;
+        this.isFormSubmitted = false;
         this.formData = {};
         const token = res['token'];
         localStorage.setItem('token', token);
