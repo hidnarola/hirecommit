@@ -13,6 +13,7 @@ var fileUpload = require('express-fileupload');
 var expressValidator = require('express-validator');
 var cors = require('cors');
 //var cron_jobs = require('./crons/index');
+var compression = require('compression')
 
 var swaggerUi = require('swagger-ui-express'),
   swaggerDocument = require('./swagger.json');
@@ -50,6 +51,9 @@ var options = {
     authAction: { JWT: { name: "JWT", schema: { type: "apiKey", in: "header", name: "x-access-token", description: "" }, value: "<JWT>" } }
   }
 };
+
+
+app.use(compression())
 
 app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 // Support cross origin request

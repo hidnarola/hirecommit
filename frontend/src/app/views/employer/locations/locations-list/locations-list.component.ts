@@ -49,6 +49,8 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.service.view_location(dataTablesParameters).subscribe(res => {
+          console.log('location response =>>', res);
+
           if (res['status'] === 1) {
             this.locations = res['location'];
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -57,13 +59,15 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },
-      columnDefs: [{ orderable: false, targets: 2 }],
+      columnDefs: [{ orderable: false, targets: 1 }],
       columns: [
         {
           data: 'city'
-        }, {
-          data: 'country.country'
-        }, {
+        },
+        // {
+        //   data: 'country.country'
+        // },
+        {
           data: 'action'
         }
       ]

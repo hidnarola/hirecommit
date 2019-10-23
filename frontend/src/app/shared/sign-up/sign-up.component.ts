@@ -17,11 +17,13 @@ export class SignUpComponent implements OnInit {
   protected aFormGroup: FormGroup;
   public isFormSubmited;
   public formData: any;
+  countryID: any;
   code: any;
   isChecked;
   marked = false;
   step2 = false;
   step3 = false;
+  alldata: any;
   Business_Type = [
     { label: 'Select Business Type', value: '' },
     { label: 'Private', value: 'Private' },
@@ -35,11 +37,7 @@ export class SignUpComponent implements OnInit {
   siteKey = environment.captcha_site_key;
 
   private stepper: Stepper;
-  Country = [
-    { label: 'Select Business Type', value: '' },
-    { label: 'India', value: 'India' },
-    { label: 'United States', value: 'Us' },
-  ];
+  Country: any = [];
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -64,13 +62,35 @@ export class SignUpComponent implements OnInit {
     });
   }
 
+  ngOnInit() {
+    this.stepper = new Stepper(document.querySelector('#stepper1'), {
+      linear: false,
+      animation: true
+    });
+
+    this.service.country_registration().subscribe(res => {
+      this.alldata = res['data'];
+      console.log('employer registration country>', res['data']);
+      res['data'].forEach(element => {
+        this.Country.push({ 'label': element.country, 'value': element._id });
+      })
+    })
+
+    // this.service.country_data().subscribe(res => {
+    //   this.code = res['data'];
+    //   res['data'].forEach(element => {
+    //     this.Country.push({ 'label': element.country, 'value': element._id });
+    //   });
+    // });
+  }
+
   next1() {
     this.isFormSubmited = true;
     // tslint:disable-next-line: max-line-length
     if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
       this.isFormSubmited = false;
       this.step2 = true;
-    this.stepper.next();
+      this.stepper.next();
     }
   }
 
@@ -80,7 +100,7 @@ export class SignUpComponent implements OnInit {
     if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
       this.isFormSubmited = false;
       this.step3 = true;
-    this.stepper.next();
+      this.stepper.next();
     }
   }
 
@@ -112,31 +132,23 @@ export class SignUpComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-    this.stepper = new Stepper(document.querySelector('#stepper1'), {
-      linear: false,
-      animation: true
-    });
 
-    // this.service.country_data().subscribe(res => {
-    //   this.code = res['data'];
-    //   res['data'].forEach(element => {
-    //     this.Country.push({ 'label': element.country, 'value': element._id });
-    //   });
-    // });
-  }
 
   getCode(e) {
     console.log('element of country =>', e.value);
+
+    this.countryID = this.alldata.find(x => x._id === e.value)
+    console.log('countryID', this.countryID.country);
+
     this.Business_Type = [];
-    this.service.get_Type(e.value).subscribe(res => {
+    this.service.get_Type(this.countryID.country).subscribe(res => {
       console.log('Business types of selected country =>', res['data']);
       res['data'].forEach(element => {
         this.Business_Type.push({ 'label': element.name, 'value': element._id });
       });
       console.log('drop dowm of selected country =>', this.Business_Type);
 
-      if (e.value === 'India') {
+      if (this.countryID.country === 'India') {
         this.registerForm.controls['countrycode'].setValue('+91');
       } else {
         this.registerForm.controls['countrycode'].setValue('+1');

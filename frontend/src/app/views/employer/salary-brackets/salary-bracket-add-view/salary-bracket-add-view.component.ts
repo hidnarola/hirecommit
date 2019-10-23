@@ -34,8 +34,8 @@ export class SalaryBracketAddViewComponent implements OnInit {
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
-      country: new FormControl('', [Validators.required]),
-      currency: new FormControl(),
+      // country: new FormControl('', [Validators.required]),
+      // currency: new FormControl(),
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required])
     });

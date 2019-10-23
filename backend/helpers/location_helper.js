@@ -9,7 +9,6 @@ var location_helper = {};
 location_helper.get_all_location = async (collection, id, search, start, length, recordsTotal, sort) => {
   try {
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
-    console.log(RE);
     var aggregate = [
       {
         $match: {
@@ -39,7 +38,6 @@ location_helper.get_all_location = async (collection, id, search, start, length,
       });
     }
 
-    // console.log(aggregate);
     if (sort) {
       aggregate.push({
         "$sort": sort

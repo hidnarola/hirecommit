@@ -20,15 +20,12 @@ export class RegisterComponent implements OnInit {
   formData;
   isChecked;
   marked = false;
-
-  countryList = [
-    { label: 'Select Country', value: '' },
-    { label: 'India', value: 'India' },
-    { label: 'United States America', value: 'Us' }
-  ];
+  imgurl;
+  alldata: any;
+  countryList: any = [];
   codeList: any;
   Document_optoins: any = [];
-
+  countryID: any;
   // tslint:disable-next-line: max-line-length
 
   constructor(
@@ -38,7 +35,6 @@ export class RegisterComponent implements OnInit {
     public fb: FormBuilder,
     private cd: ChangeDetectorRef
   ) {
-    this.registerData = {};
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
@@ -47,7 +43,7 @@ export class RegisterComponent implements OnInit {
       country: new FormControl('', [Validators.required]),
       countrycode: new FormControl('', [Validators.required]),
       contactno: new FormControl('',
-      Validators.compose([Validators.required,
+        Validators.compose([Validators.required,
         Validators.pattern(/^-?(0|[1-9]\d*)?$/),
         Validators.maxLength(10), Validators.minLength(10)])),
       documenttype: new FormControl('', [Validators.required]),
@@ -62,41 +58,39 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.formData =  new FormData();
-   }
+    this.service.country_registration().subscribe(res => {
+      this.alldata = res['data'];
+      console.log('candidate registration country>', res['data']);
+      res['data'].forEach(element => {
+        this.countryList.push({ 'label': element.country, 'value': element._id });
+      });
+    });
+    this.formData = new FormData();
 
-onFileChange(e) {
-  // if (e.target.files && e.target.files.length > 0) {
-  //   this.file = e.target.files[0];
-  // }
-  this.fileFormData = new FormData();
-    const reader = new FileReader();
+  }
+
+  onFileChange(e) {
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
-      this.fileFormData.append('filename', this.file);
-
-      reader.readAsDataURL(this.file);
-      reader.onload = () => {
-        this.documentImage.patchValue({
-          documentimage: reader.result
-       });
-        // need to run CD since file load runs outside of zone
-        this.cd.markForCheck();
-      };
     }
-}
+  }
 
   getCode(e) {
     console.log('element of country =>>', e.value);
-    this.service.get_Type(e.value).subscribe(res => {
-      console.log('response', res);
+
+    this.countryID = this.alldata.find(x => x._id === e.value);
+    console.log('countryID', this.countryID.country);
+    this.Document_optoins = [];
+    this.service.get_Type(this.countryID.country).subscribe(res => {
+      console.log('response', res['document']);
       console.log('Document Types of selected country =>', res['document']);
       this.Document_optoins = [];
       res['document'].forEach(element => {
         this.Document_optoins.push({ 'label': element.name, 'value': element._id });
       });
-      console.log('drop dowm of selected country =>', this.Document_optoins);
-      if (e.value === 'India') {
+      console.log('drop down of selected country =>', this.Document_optoins);
+
+      if (this.countryID.country === 'India') {
         this.registerForm.controls['countrycode'].setValue('+91');
       } else {
         this.registerForm.controls['countrycode'].setValue('+1');
@@ -121,7 +115,7 @@ onFileChange(e) {
   onSubmit(valid) {
     this.isFormSubmited = true;
     if (valid && this.marked) {
-      this.formData  = new FormData();
+      this.formData = new FormData();
       // tslint:disable-next-line: forin
       for (const key in this.registerData) {
         const value = this.registerData[key];
@@ -137,13 +131,13 @@ onFileChange(e) {
         this.isFormSubmited = false;
         this.registerData = {};
         if (res['status'] === 0) {
-          this.toastr.error(res['message'], 'Error!', {timeOut: 3000});
+          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
         } else if (res['status'] === 1) {
-          this.toastr.success(res['message'], 'Success!', {timeOut: 3000});
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.router.navigate(['/login']);
         }
       }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', {timeOut: 3000});
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }
