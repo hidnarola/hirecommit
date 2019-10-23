@@ -26,9 +26,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   ngOnInit() { }
 
-  Onclick() {
-    this.router.navigate(['/login']);
-  }
+
 
   sendMail(valid) {
     this.isFormSubmitted = true;

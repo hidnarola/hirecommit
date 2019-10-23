@@ -39,7 +39,6 @@ custom_helper.get_all_custom_field = async (collection, id, search, start, lengt
       });
     }
 
-    // console.log(aggregate);
     if (sort) {
       aggregate.push({
         "$sort": sort

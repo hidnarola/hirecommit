@@ -33,7 +33,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   changepassword() {
-    console.log(this.userDetail.role);
+    // console.log(this.userDetail.role);
     if (this.userDetail.role === 'admin') {
       this.router.navigate(['admin/change-password']);
     } else if (this.userDetail.role === 'employer') {
@@ -43,10 +43,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     }
   }
   profile() {
-    console.log(this.userDetail.role);
+    // console.log(this.userDetail.role);
     // if (this.userDetail.role === 'admin') {
     //   this.router.navigate(['admin/profile']);
-    // } else 
+    // } else
     if (this.userDetail.role === 'employer') {
       this.router.navigate(['employer/profile']);
     } else if (this.userDetail.role === 'candidate') {

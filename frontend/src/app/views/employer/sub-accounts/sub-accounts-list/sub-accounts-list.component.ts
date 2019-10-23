@@ -43,6 +43,16 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
 
           if (res['status']) {
             this.data = res['user'];
+            this.data.forEach(element => {
+              console.log(element);
+              this.obj = {
+                username : element.username,
+                email: element.user.email,
+                admin_rights: element.user.admin_rights,
+                user_id : element.user_id
+              };
+              console.log('====>', this.obj);
+            });
 
 
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -97,7 +107,28 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     });
   }
 
-  changeRights(e) { }
+  changeRights(e, id) {
+    console.log(e.checked, id);
+    if (e.checked === false) {
+      this.obj = {
+        'id': id,
+        'admin_rights': 'no'
+      };
+      this.toastr.success('Admin Rights Revoke.' , 'Success!', { timeOut: 1000 });
+    } else if (e.checked === true) {
+      this.obj = {
+        'id': id,
+        'admin_rights': 'yes'
+      };
+      this.toastr.success('Admin Rights Granted.' , 'Success!', { timeOut: 1000 });
+    }
+    this.service.admin_rigth(this.obj).subscribe(res => {
+      console.log(res);
+    }, (err) => {
+      console.log(err);
+    });
+
+  }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

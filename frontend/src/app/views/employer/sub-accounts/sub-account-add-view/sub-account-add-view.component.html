@@ -27,8 +27,8 @@
                             <div class="col-md-4">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
                                     [(ngModel)]="detail.email" formControlName="email" id="email">
-                                <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">Please
-                                    enter a valid email!</span>
+                                <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">Email must
+                                    be in valid format.</span>
                             </div>
                         </div>
 
@@ -39,12 +39,6 @@
                                 <p-inputSwitch formControlName="admin_rights" [(ngModel)]="detail.admin_rights"
                                     (onChange)="checkValue($event)">
                                 </p-inputSwitch>
-                                <!-- 
-                                <label class="switch">
-                                    <input type="checkbox"
-                                        [(ngModel)]="detail.admin_rights" (change)="checkValue($event)">
-                                    <span class="slider round"></span>
-                                </label> -->
                             </div>
                         </div>
                     </div>

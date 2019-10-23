@@ -110,7 +110,6 @@ router.post('/get', async (req, res) => {
 
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
-        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
         var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
@@ -150,7 +149,7 @@ router.put('/', async (req, res) => {
     var reg_obj = {
         "admin_rights": req.body.admin_rights
     }
-    var sub_account_upadate = await common_helper.update(User, { "_id": id }, reg_obj)
+    var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
 
     if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
@@ -168,7 +167,6 @@ router.get('/:id', async (req, res) => {
     var id = req.params.id;
 
     var sub_account_detail = await Sub_Employer_Detail.findOne({ "_id": new ObjectId(id) }).populate('user_id')
-    console.log('sub_account_detail', sub_account_detail);
 
     // if (sub_account_detail.status == 0) {
     //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });

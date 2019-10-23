@@ -115,21 +115,6 @@
                 </div>
               </div>
 
-              <!-- <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="documentimage">Document Image</label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-doc"></i>
-                      </span>
-                    </div>
-                    <input type="file" accept="image/*" name="documentImage" [(ngModel)]="registerData.documentImage"
-                      [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Select any image file"
-                      (change)="onFileChange($event)">
-                  </div>
-                </div>
-              </div> -->
               <div class="row">
                 <div class="form-group col-md-6">
                   <label for="documentimage">Document Image</label>
@@ -204,11 +189,14 @@
               <div class="btm-btn">
                 <button type="submit" class="btn btn-block btn-primary">Create Account</button>
               </div>
+              <div class="col-10">
+                <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
+                  Back to Login</button>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-
   </main>
 </div>

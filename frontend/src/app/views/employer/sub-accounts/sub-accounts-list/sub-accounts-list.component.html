@@ -29,7 +29,7 @@
                                 <td>{{acc.user.email}}</td>
                                 <td>
                                     <p-inputSwitch [(ngModel)]="acc.user.admin_rights"
-                                        (onChange)="changeRights($event)">
+                                        (onChange)="changeRights($event, acc.user._id)">
                                     </p-inputSwitch>
                                     <!-- <label class="switch">
                                         <input [checked]="acc.user.admin_rights === 'yes'" type="checkbox"
@@ -38,12 +38,10 @@
                                     </label> -->
                                 </td>
                                 <td>
-                                    <!-- <button type="button" class="btn btn-sm btn-success" (click)="detail()"><i
-                        class="icon-eye"></i></button> -->
-                                    <button type="button" class="btn btn-sm btn-primary"
+                                    <!-- <button type="button" class="btn btn-sm btn-primary"
                                         [routerLink]="['/employer/sub_accounts/edit/',acc._id]" (click)="edit()">
                                         <i class="icon-pencil"></i>
-                                    </button>
+                                    </button> -->
                                     <button type="button" class="btn btn-sm btn-danger"
                                         (click)="delete(acc.user._id)"><i class="icon-trash"></i></button>
                                 </td>

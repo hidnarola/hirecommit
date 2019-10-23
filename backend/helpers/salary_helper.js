@@ -5,8 +5,6 @@ var salary_helper = {};
 
 salary_helper.get_all_salary_bracket = async (collection, id, search, start, length, recordsTotal, sort) => {
   try {
-    // console.log(search);
-
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
       {
@@ -38,9 +36,6 @@ salary_helper.get_all_salary_bracket = async (collection, id, search, start, len
       });
     }
 
-    console.log('aggregate', aggregate);
-
-    // console.log(aggregate);
     if (sort) {
       aggregate.push({
         "$sort": sort

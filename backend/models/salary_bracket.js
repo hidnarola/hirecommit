@@ -25,7 +25,15 @@ const Salary_Bracket_Schema = new Schema({
     type: Boolean,
     default: false
   },
-
+  salary_type: {
+    type: String
+  },
+  start: {
+    type: Date
+  },
+  end: {
+    type: Date
+  },
   createdAt: {
     type: Date,
     default: Date.now

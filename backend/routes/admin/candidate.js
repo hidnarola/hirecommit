@@ -118,7 +118,6 @@ router.post('/get_approved', async (req, res) => {
 
         let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
-        console.log('totalMatchingCountRecords', totalMatchingCountRecords);
 
         var resp_data = await candidate_helper.get_all_approved_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
 
@@ -136,7 +135,6 @@ router.post('/get_approved', async (req, res) => {
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
     var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id")
-    console.log('candidate_detail', candidate_detail);
 
     // if (candidate_detail.status == 0) {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
@@ -212,11 +210,9 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 
 // router.get('/manage_candidate/new_request_detail/:id', async (req, res) => {
 //     var id = req.params.id;
-//     // console.log(id);
 
 //     var candidate_detail = await common_helper.findOne(Candidate, { "_id": id })
 
-//     // console.log(candidate_detail);
 
 //     if (candidate_detail.status == 0) {
 //         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
@@ -277,10 +273,8 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 //         documentimage: req.body.documentimage,
 //     };
 //     var id = req.params.id;
-//     // console.log(id);
 
 //     var candidate_upadate = await common_helper.update(Candidate, { "_id": id }, reg_obj)
-//     // console.log(candidate_upadate);
 
 //     if (candidate_upadate.status == 0) {
 //         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
@@ -311,7 +305,6 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 // })
 
 router.get('/', async (req, res) => {
-    console.log('1', 1);
 
     var aggregate = [
         {

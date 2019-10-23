@@ -31,7 +31,6 @@ router.post("/", async (req, res) => {
     if (!errors) {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
-            console.log('1', 1);
             var reg_obj = {
                 "emp_id": user.data.emp_id,
                 "country": req.body.country,
@@ -39,7 +38,6 @@ router.post("/", async (req, res) => {
             }
         }
         else {
-            console.log('2', 2);
             var reg_obj = {
                 "country": req.body.country,
                 "city": req.body.city,
@@ -76,7 +74,6 @@ router.post('/get', async (req, res) => {
             [sortOrderColumn]: sortOrder
         }
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        console.log('user', user);
 
         if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
 
@@ -108,10 +105,8 @@ router.post('/get', async (req, res) => {
 
         let totalMatchingCountRecords = await location.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
-        console.log('totalMatchingCountRecords===>', totalMatchingCountRecords);
 
         var resp_data = await location_helper.get_all_location(location, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        console.log('resp_data', resp_data);
 
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
@@ -158,7 +153,6 @@ router.get('/get_location', async (req, res) => {
         ];
 
         const location_list = await location.aggregate(aggregate);
-        console.log('location_list=====>', location_list);
 
         return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list });
     } catch (error) {
@@ -175,7 +169,8 @@ router.get('/get_location/:country', async (req, res) => {
 
     var salary_list = await common_helper.find(Salary, {
         "emp_id": new ObjectId(req.userInfo.id),
-        "is_del": false, country: req.params.country
+        "is_del": false, country: req.params.country,
+        // "salary_type": req.body.salary_type
     });
     if (location_list.status === 1) {
         return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list, salary: salary_list });
