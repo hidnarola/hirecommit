@@ -56,8 +56,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear();
+    // localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
 

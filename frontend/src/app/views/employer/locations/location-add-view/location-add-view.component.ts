@@ -12,7 +12,6 @@ import { LocationService } from '../location.service';
 })
 export class LocationAddViewComponent implements OnInit {
   decyptCountry: any;
-  LocationAdd: any;
   cnt: any;
   Country: any = [];
   addLocation: FormGroup;
@@ -23,6 +22,7 @@ export class LocationAddViewComponent implements OnInit {
   detail: any = [];
   panelTitle: string;
   buttonTitle: string;
+  cnt1: any;
   cancel_link = '/employer/locations/list';
   constructor(private router: Router,
     private toastr: ToastrService,
@@ -41,19 +41,21 @@ export class LocationAddViewComponent implements OnInit {
     });
     this.getDetail(this.id);
 
-    this.commonService.getprofileDetail.subscribe(async res => {
-      if (res) {
-        this.decyptCountry = res;
-      } else {
-        const _country = await this.commonService.decrypt(localStorage.getItem('profile'));
-        if (_country) {
-          this.decyptCountry = JSON.parse(_country);
-          console.log('decyptCountry==>', this.decyptCountry.country);
-        } else {
-          console.log(' country data not found');
-        }
-      }
-    });
+    //country
+    // this.commonService.getprofileDetail.subscribe(async res => {
+    //   if (res) {
+    //     this.decyptCountry = res;
+    //   } else {
+    //     const _country = await this.commonService.decrypt(localStorage.getItem('profile'));
+    //     if (_country) {
+    //       this.decyptCountry = JSON.parse(_country);
+    //       this.cnt1 = this.decyptCountry.country;
+    //       console.log('decyptCountry==>', this.decyptCountry.country);
+    //     } else {
+    //       console.log(' country data not found');
+    //     }
+    //   }
+    // });
     // this.commonService.country_data().subscribe(res => {
     //   res['data'].forEach(element => {
     //     this.Country.push({ 'label': element.country, 'value': element._id });
@@ -68,7 +70,7 @@ export class LocationAddViewComponent implements OnInit {
 
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
-        this.cnt = res['data']['data'].country;
+        // this.cnt = res['data']['data'].country;
         console.log(' edited data ', this.detail);
 
       });
@@ -77,10 +79,10 @@ export class LocationAddViewComponent implements OnInit {
       this.detail = {
         _id: null,
         city: null,
-        country: null,
+        // country: null,
       };
       this.panelTitle = 'Add Location';
-      this.buttonTitle = 'Add';
+
       this.addLocation.reset();
     }
   }
@@ -92,7 +94,7 @@ export class LocationAddViewComponent implements OnInit {
     if (this.id && flag) {
       const res_data = {
         'id': this.id,
-        'country': this.detail.country,
+        // 'country': this.detail.country,
         'city': this.detail.city
       };
       this.service.edit_location(res_data).subscribe(res => {
@@ -108,13 +110,8 @@ export class LocationAddViewComponent implements OnInit {
       });
     } else {
       if (flag) {
-
-        this.LocationAdd = {
-          'country': localStorage.getItem('country'),
-          'city': this.addLocation.value['city']
-        }
-        console.log('>>', this.LocationAdd);
-        this.service.add(this.LocationAdd).subscribe(res => {
+        console.log('>>', this.addLocation.value);
+        this.service.add(this.addLocation.value).subscribe(res => {
           this.location = res;
           if (res['data']['status'] === 1) {
             this.submitted = false;

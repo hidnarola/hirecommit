@@ -27,6 +27,7 @@ export class ProfileComponent implements OnInit {
       this.service.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;
+          console.log('from profile +>>', this.profileData);
         } else {
           const profile = await this.service.decrypt(localStorage.getItem('profile'));
           console.log('profile==>', profile);
