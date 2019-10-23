@@ -60,6 +60,7 @@ export class OfferAddViewComponent implements OnInit {
   show_spinner = false;
   formData: FormData;
   communicationData: any = [];
+  is_disabled_btn = false;
 
   constructor(
     private fb: FormBuilder,
@@ -196,13 +197,34 @@ export class OfferAddViewComponent implements OnInit {
         console.log('offer detail ===> api res==>', res);
         this.resData = res[`data`];
         console.log('Response ====>', this.resData);
-        console.log(
-          'candidate id - resp : resData.user_id ==> ',
-          this.resData.user_id
-        );
-        if (res['communication'] && res['communication'].length > 0) {
-          this.communicationData = res['communication'];
+        // set communication
+        console.log('check herre => ', res['communication']);
+        if (res['data']['communication'] && res['data']['communication'].length > 0) {
+          console.log('in function => ');
+          this.communicationData = res['data']['communication'];
+          const _communication_array = [];
+          this.communicationData.forEach((element, index) => {
+            console.log('element => ', element);
+            const new_communication = {
+              'communicationname': element.communicationname,
+              'trigger': element.trigger,
+              'priority': element.priority,
+              'day': element.day,
+              'message': element.message,
+            };
+            this.communicationFieldItems.setControl(index, this.fb.group({
+              communicationname: ['', Validators.required],
+              trigger: ['', Validators.required],
+              priority: ['', Validators.required],
+              day: ['', Validators.required],
+              message: ['']
+              // message: ['', Validators.required]
+            }));
+            _communication_array.push(new_communication);
+          });
+          this.communicationData = _communication_array;
         }
+        // set communication
         this.form.controls['candidate'].setValue(this.resData.user_id);
         this.getCandidateDetail(this.resData.user_id);
         this.form.controls['title'].setValue(this.resData.title);
@@ -385,6 +407,12 @@ export class OfferAddViewComponent implements OnInit {
   //   });
 
   // }
+
+  // add more communication
+  addMoreCommunication() {
+    this.is_disabled_btn = true;
+    this.add_new_communication();
+  }
 
   // add new communication
   add_new_communication(data_index = null) {
