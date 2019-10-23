@@ -77,7 +77,6 @@ export class RegisterComponent implements OnInit {
 
   getCode(e) {
     console.log('element of country =>>', e.value);
-
     this.countryID = this.alldata.find(x => x._id === e.value);
     console.log('countryID', this.countryID.country);
     this.Document_optoins = [];

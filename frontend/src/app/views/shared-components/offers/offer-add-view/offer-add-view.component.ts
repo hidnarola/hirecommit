@@ -61,6 +61,7 @@ export class OfferAddViewComponent implements OnInit {
   formData: FormData;
   communicationData: any = [];
   is_disabled_btn = false;
+  profileData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -68,7 +69,8 @@ export class OfferAddViewComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private commonService: CommonService
   ) {
     // Form Controls
     this.form = this.fb.group({
@@ -77,7 +79,7 @@ export class OfferAddViewComponent implements OnInit {
       title: new FormControl('', [Validators.required]),
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
-      country: new FormControl('', [Validators.required]),
+      // country: new FormControl('', [Validators.required]),
       location: new FormControl('', [Validators.required]),
       currency_type: new FormControl('', [Validators.required]),
       salarybracket: new FormControl('', [Validators.required]),
@@ -91,6 +93,12 @@ export class OfferAddViewComponent implements OnInit {
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([])
+    });
+
+    this.commonService.getDecryptedProfileDetail().then(res => {
+      console.log('const : res => ', res);
+      this.profileData = res;
+      this.getLocation(this.profileData.country);
     });
 
     this.route.params.subscribe((params: Params) => {
@@ -118,9 +126,10 @@ export class OfferAddViewComponent implements OnInit {
 
   // get country list
   async findData(value) {
-
+    console.log('value.value => ', value.value);
     this.salarybracketList = [];
     this.country.forEach(element => {
+      console.log('value.value === element.country_id => ', value.value === element.country_id);
       if (value.value === element.country_id) {
         // this.offer_data.currency_type = element.currency;
         this.form.controls.currency_type.setValue(element.currency);
@@ -129,6 +138,41 @@ export class OfferAddViewComponent implements OnInit {
     const promise = new Promise((resolve, reject) => {
       this.service.get_location(value.value).subscribe(
         async res => {
+          console.log('res for location => ', res);
+          this.location = await res[`data`].data;
+          console.log('location', this.location);
+          this.salary_bracket = await res['salary'].data;
+          this.salary_bracket.forEach(element => {
+            this.salarybracketList.push({
+              label: element.from + ' - ' + element.to,
+              value: element._id
+            });
+          });
+
+          if (this.route.snapshot.data.title === 'Edit') {
+            const locationById = this.location.find(x => x._id === this.resData.location._id);
+            this.form.controls.location.setValue(locationById);
+
+            const salarybracketById = this.salarybracketList.find(x => x.value === this.resData.salarybracket._id);
+            this.form.controls.salarybracket.setValue(salarybracketById.value);
+
+          }
+          resolve(this.salarybracketList);
+        },
+        err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+    return promise;
+  }
+
+  // get location
+  getLocation(value) {
+    const promise = new Promise((resolve, reject) => {
+      this.service.get_location(value).subscribe(
+        async res => {
+          console.log('res for location => ', res);
           this.location = await res[`data`].data;
           console.log('location', this.location);
           this.salary_bracket = await res['salary'].data;

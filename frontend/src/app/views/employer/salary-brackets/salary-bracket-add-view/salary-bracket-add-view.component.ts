@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SalaryBracketService } from '../salary-bracket.service';
 import { ToastrService } from 'ngx-toastr';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-salary-bracket-add-view',
@@ -20,17 +21,20 @@ export class SalaryBracketAddViewComponent implements OnInit {
   salary: any;
   detail: any = [];
   panelTitle: string;
-
+  decyptCountry: any;
   error = false;
   error_msg = 'can\'t be less then minimum salary!';
   error_msg1 = 'can\'t be greater then maximum salary!';
   cancel_link = '/employer/salary_brackets/list';
   obj: any;
+  addSalary: any;
+  cnt1: any;
   constructor(private fb: FormBuilder,
     private router: Router,
     private service: SalaryBracketService,
     private route: ActivatedRoute,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private commonService: CommonService) { }
 
   ngOnInit() {
     this.AddSalaryBracket = new FormGroup({
@@ -52,6 +56,21 @@ export class SalaryBracketAddViewComponent implements OnInit {
     });
 
     this.getDetail(this.id);
+
+    this.commonService.getprofileDetail.subscribe(async res => {
+      if (res) {
+        this.decyptCountry = res;
+      } else {
+        const _country = await this.commonService.decrypt(localStorage.getItem('profile'));
+        if (_country) {
+          this.decyptCountry = JSON.parse(_country);
+          this.cnt1 = this.decyptCountry.country;
+          console.log('decyptCountry==>', this.decyptCountry.country);
+        } else {
+          console.log(' country data not found');
+        }
+      }
+    });
   }
 
   findCities() {
@@ -138,7 +157,13 @@ export class SalaryBracketAddViewComponent implements OnInit {
       });
     } else if (!this.id && flag) {
       this.submitted = !flag;
-      this.service.add_salary_brcaket(this.AddSalaryBracket.value).subscribe(res => {
+      this.addSalary = {
+        'country': this.cnt1,
+        'currency': 'INR',
+        'from': this.AddSalaryBracket.value['from'],
+        'to': this.AddSalaryBracket.value['to']
+      }
+      this.service.add_salary_brcaket(this.addSalary).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.submitted = false;
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
