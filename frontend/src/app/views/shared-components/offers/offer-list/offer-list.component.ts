@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   checked1: boolean = true;
   @ViewChild(DataTableDirective, { static: false })
+  first_custom_field: any;
 
 
   dtElement: DataTableDirective;
@@ -26,6 +27,19 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: Router
   ) {
     console.log('candidate: offerlist component => ');
+    this.getCustomField();
+  }
+
+  // get first custom field
+  getCustomField() {
+    this.service.get_first_custom_field().subscribe(res => {
+      console.log('res for first custom field => ', res);
+      if (res['data']) {
+        this.first_custom_field = res['data']['key'];
+      } else {
+        this.first_custom_field = 'Custom Field 1';
+      }
+    });
   }
 
   ngOnInit() {
@@ -93,7 +107,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  edit (id) {
+  edit(id) {
     this.route.navigate(['/employer/offers/edit/' + id]);
   }
 

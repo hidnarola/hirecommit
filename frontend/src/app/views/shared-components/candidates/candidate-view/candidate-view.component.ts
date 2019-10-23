@@ -15,6 +15,7 @@ export class CandidateViewComponent implements OnInit {
   approval: boolean = false;
   userDetail: any = [];
   candidate_type = 'Approved';
+  email: any;
   cancel_link1 = '/admin/candidates/new_candidate';
   cancel_link2 = '/admin/candidates/approved_candidate';
 
@@ -43,7 +44,8 @@ export class CandidateViewComponent implements OnInit {
   ngOnInit() {
     this.service.get_candidate_Detail(this.id).subscribe(res => {
       this.candidate_detail = res['data'];
-      // console.log(this.candidate_detail);
+      this.email = this.candidate_detail['user_id']['email'];
+      // console.log(this.candidate_detail, this.email);
     }, (err) => {
       console.log(err);
     });

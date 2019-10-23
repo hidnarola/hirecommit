@@ -77,11 +77,12 @@ html body .card-body .dataTables_wrapper div.dataTables_paginate a.paginate_butt
 .dataTables_paginate a:first-child{ border-radius:0 4px 4px ;}
 .dataTables_paginate a:last-child{ border-radius:0 4px 4px 0;}
 html body .card-body .dataTables_wrapper div.dataTables_paginate a.paginate_button:hover,
-html body .card-body .dataTables_wrapper div.dataTables_paginate a.paginate_button.current{ z-index:1; color:#fff !important; background-color:#20a8d8; border:0; background: #20a8d8; border-radius: 0;}
+html body .card-body .dataTables_wrapper div.dataTables_paginate a.paginate_button.current{ z-index:1; color:#fff !important; background-color:#1b8eb7; border:0; background: #1b8eb7; border-radius: 0;}
 
-.btn-div-wrap{ background-color:#20a8d8; border-radius:100px; display: inline-block; padding:4px 15px 5px; text-transform:uppercase;}
-.btn-div-wrap i{ color:#fff; line-height:20px; display:inline-block; vertical-align:top; padding:2px 3px 0 0;}
-.btn-div-wrap strong{ font-weight:500; color: #fff; line-height:20px; display:inline-block; vertical-align:top;}
+.btn-div-wrap{ background-color:#20a8d8; border-radius:100px; display: inline-block; padding:5px 15px 4px; text-transform:uppercase; border:0;}
+.btn-div-wrap i{ color:#fff; line-height:20px; display:inline-block; vertical-align:top; padding:0 4px 0 0;}
+.btn-div-wrap strong{ font-weight:500; color: #fff; line-height:18px; display:inline-block; vertical-align:top;}
+.btn-div-wrap:hover{ background:#1b8eb7;}
 table.dataTable.no-footer {margin-bottom:20px;}
 
 .form-control {display: block; width: 100%; height: calc(2.0625rem + 2px); padding: .375rem .75rem; font-size: .875rem; line-height: 1.5; color: #5c6873; background-color: #fff; background-clip: padding-box; border: 1px solid #e4e7ea; border-radius: .25rem; transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out; }
@@ -91,7 +92,7 @@ body .ui-dropdown .ui-dropdown-trigger{ background:transparent;}
 body .candidate-signup .card-body .custome-checkbox label{padding: 0 0 0 5px; vertical-align:top;}
 .form-group  label{ display:block;}
 body .candidate-signup .card-body .ui-dropdown {border: 0;width: 100%;}
-.error { width:100%; color:red;} 
+.error { width:100%; color:red; text-align:left;} 
 .input-group-prepend{ flex-wrap:wrap;}
 .contact-number .input-group-prepend{ margin-left:5px;;}
 body .custome-checkbox .ui-chkbox { vertical-align:top;}
@@ -104,3 +105,26 @@ body .custome-checkbox .ui-chkbox { vertical-align:top;}
 .profiledata-info .table td,
 .profiledata-info.table th {padding: 0.75rem; vertical-align: top; border-top: 0; }
 .profiledata-info .table tr:nth-of-type(odd) {background-color:#f0f3f5;}
+
+button + button{ margin-left:8px;}
+body .ui-dialog .ui-dialog-footer{ text-align:center;}
+body .ui-confirmdialog.ui-dialog .ui-dialog-content {padding: 20px 60px;}
+body .ui-confirmdialog .ui-dialog-content .ui-confirmdialog-icon{position: absolute;top: 20px;left: 30px;}
+.ui-button-icon-only .ui-button-icon-left, .ui-button-text-icon-left .ui-button-icon-left,
+.ui-button-text-icon-right .ui-button-icon-right { line-height:20px;}
+body .ui-button:enabled:focus {outline:0 none; outline-offset:0px; box-shadow:none;}
+
+.country-code-box-wrap{ align-items:flex-start;}
+.country-code-box-wrap i.icon-phone{ line-height:22px;}
+.country-code-box-wrap .country-code>input{ width:60px;}
+
+.country-code-box-wrap .d-flex{ width:calc(100% - 40px);}
+.country-code-box-wrap .d-flex .country-code{ width:22%;flex: initial;}
+.country-code-box-wrap .d-flex .contact-number{ width:calc(78% - 15px); margin:0 0 0 auto;flex: initial;}
+
+.signup-box h4{ margin:0 0 15px; font-weight:600; text-align:left;font-size: 16px; color: #666;}
+.signup-box .ui-dropdown{ width:100%;}
+html .main .card.signup-box .card-body .bs-stepper .content .row.form-inner,
+html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-height:inherit !important; padding:40px 0 20px;}
+.step-form-btn button{ padding:5px 30px; margin: 0 auto; display:block;}
+.custom-margin{ margin:-4px 0;}
