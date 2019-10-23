@@ -49,9 +49,9 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         });
       }, columnDefs: [{ orderable: false, targets: 2 }],
       columns: [
-        // {
-        //   data: 'index'
-        // },
+        {
+          data: 'index'
+        },
         {
           data: 'key'
         },
@@ -73,7 +73,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
           this.rrerender();
         }, (err) => {
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
-        })
+        });
       }
     });
   }

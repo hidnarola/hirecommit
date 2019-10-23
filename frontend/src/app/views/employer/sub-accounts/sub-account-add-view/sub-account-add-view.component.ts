@@ -88,20 +88,21 @@ export class SubAccountAddViewComponent implements OnInit {
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
-      if (this.detail['admin_rights'] === 'no') {
+      // console.log(this.detail['name']);
+      if (this.detail['admin_rights'] === false) {
         this.obj = {
           name: this.detail['name'],
           email: this.detail['email'],
-          admin_rights: false
+          admin_rights: 'no'
         };
-      } else if (this.detail['admin_rights'] === 'yes') {
+      } else if (this.detail['admin_rights'] === true) {
         this.obj = {
           name: this.detail['name'],
           email: this.detail['email'],
-          admin_rights: true
+          admin_rights: 'yes'
         };
       }
-      console.log("obj==>", this.obj);
+      console.log('obj==>', this.obj);
 
       this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
         console.log('edited !!', res);

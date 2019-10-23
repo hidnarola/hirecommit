@@ -33,15 +33,21 @@
                                 <td>
                                     <button *ngIf="employer_type === 'Approved'" type="button"
                                         class="btn btn-sm btn-success"
-                                        [routerLink]="['/admin/employers/approved_employer/view/',emp._id]"><i
-                                            class="icon-eye"></i></button>
+                                        [routerLink]="['/admin/employers/approved_employer/view/',emp._id]">
+                                        <i class="icon-eye"></i>
+                                    </button>
                                     <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-success"
-                                        [routerLink]="['/admin/employers/new_employer/view/',emp._id]"><i
-                                            class="icon-eye"></i></button>
+                                        [routerLink]="['/admin/employers/new_employer/view/',emp._id]">
+                                        <i class="icon-eye"></i>
+                                    </button>
                                     <button type="button" class="btn btn-sm btn-danger"
-                                        (click)="delete(emp.user_id._id)"><i class="icon-trash"></i></button>
-                                    <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-success"
-                                        (click)="aprrov(emp.user_id._id)"><i class="icon-check"></i></button>
+                                        (click)="delete(emp.user_id._id)">
+                                        <i class="icon-trash"></i>
+                                    </button>
+                                    <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-primary"
+                                        (click)="aprrov(emp.user_id._id)">
+                                        <i class="icon-check"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
