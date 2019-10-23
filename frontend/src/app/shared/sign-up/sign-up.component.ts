@@ -65,23 +65,23 @@ export class SignUpComponent implements OnInit {
   }
 
   next1() {
-    // this.isFormSubmited = true;
-    // // tslint:disable-next-line: max-line-length
-    // if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
-    //   this.isFormSubmited = false;
-    //   this.step2 = true;
+    this.isFormSubmited = true;
+    // tslint:disable-next-line: max-line-length
+    if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
+      this.isFormSubmited = false;
+      this.step2 = true;
     this.stepper.next();
-    // }
+    }
   }
 
   next2() {
-    // this.isFormSubmited = true;
-    // // tslint:disable-next-line: max-line-length
-    // if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
-    //   this.isFormSubmited = false;
-    //   this.step3 = true;
+    this.isFormSubmited = true;
+    // tslint:disable-next-line: max-line-length
+    if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
+      this.isFormSubmited = false;
+      this.step3 = true;
     this.stepper.next();
-    // }
+    }
   }
 
   onSubmit(valid) {

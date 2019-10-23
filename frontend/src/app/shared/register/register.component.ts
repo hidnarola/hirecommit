@@ -12,15 +12,15 @@ import { ToastrService } from 'ngx-toastr';
 export class RegisterComponent implements OnInit {
   code: any = [];
   registerForm: FormGroup;
-  // documentImage: FormGroup;
+  documentImage: FormGroup;
   public registerData: any;
   fileFormData;
-  file: File;
+  file: File = null;
   public isFormSubmited;
   formData;
   isChecked;
   marked = false;
-  imgurl;
+  // imgurl;
 
   countryList = [
     { label: 'Select Country', value: '' },
@@ -56,9 +56,9 @@ export class RegisterComponent implements OnInit {
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
 
-    // this.documentImage = this.fb.group({
-    //   documentimage: new FormControl('', [Validators.required]),
-    // });
+    this.documentImage = this.fb.group({
+      documentimage: new FormControl('', [Validators.required]),
+    });
   }
 
   ngOnInit() {
@@ -66,8 +66,23 @@ export class RegisterComponent implements OnInit {
   }
 
   onFileChange(e) {
+    // if (e.target.files && e.target.files.length > 0) {
+    //   this.file = e.target.files[0];
+    // }
+    this.fileFormData = new FormData();
+    const reader = new FileReader();
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
+      this.fileFormData.append('filename', this.file);
+
+      reader.readAsDataURL(this.file);
+      reader.onload = () => {
+        this.documentImage.patchValue({
+          documentimage: reader.result
+        });
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
     }
   }
 
@@ -93,9 +108,7 @@ export class RegisterComponent implements OnInit {
   //     // }
   //     // else {
   //     //   console.log('image type is not valuid, please enter image in format of PNG, JPG or JPEG!');
-
   //     // }
-
   //   }
   // }
 
@@ -104,11 +117,11 @@ export class RegisterComponent implements OnInit {
     this.service.get_Type(e.value).subscribe(res => {
       console.log('response', res);
       console.log('Document Types of selected country =>', res['document']);
+      this.Document_optoins = [];
       res['document'].forEach(element => {
         this.Document_optoins.push({ 'label': element.name, 'value': element._id });
       });
       console.log('drop dowm of selected country =>', this.Document_optoins);
-
       if (e.value === 'India') {
         this.registerForm.controls['countrycode'].setValue('+91');
       } else {
@@ -118,10 +131,10 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  _handleReaderLoaded(e) {
-    const reader = e.target;
-    this.imgurl = reader.result;
-  }
+  // _handleReaderLoaded(e) {
+  //   const reader = e.target;
+  //   // this.imgurl = reader.result;
+  // }
 
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
@@ -137,25 +150,53 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(valid) {
-    console.log('this.registerForm.value ==> ', this.registerForm.value, this.formData);
+    // console.log('this.registerForm.value ==> ', this.registerForm.value, this.formData);
+
+    // this.isFormSubmited = true;
+    // if (valid && this.marked) {
+    //   // this.registerData.documentImage = this.file;
+    //   // console.log('this.registerData', this.registerData);
+    //   console.log('submit : registerData ==> ', this.registerForm.value);
+    //   // this.formData = new FormData();
+    //   // tslint:disable-next-line: forin+
+    //   const data = this.registerForm.value;
+    //   this.formData.append('documentImage', this.file);
+    //   for (const key in data) {
+    //     if (key) {
+    //       const value = data[key];
+    //       this.formData.append(key, value);
+    //     }
+    //   }
+
+    //   this.service.candidate_signup(this.formData).subscribe(res => {
+    //     this.isFormSubmited = false;
+    //     this.registerData = {};
+    //     if (res['status'] === 0) {
+    //       this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
+    //     } else if (res['status'] === 1) {
+    //       this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+    //       this.router.navigate(['/login']);
+    //     }
+    //   }, (err) => {
+    //     this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+    //   });
+    // }
 
     this.isFormSubmited = true;
     if (valid && this.marked) {
-      // this.registerData.documentImage = this.file;
-      console.log('this.registerData', this.registerData);
-      console.log('submit : registerData ==> ', this.registerForm.value);
-      // this.formData = new FormData();
-      // tslint:disable-next-line: forin+
-      const data = this.registerForm.value;
-      this.formData.append('documentImage', this.file);
-      for (const key in data) {
-        if (key) {
-          const value = data[key];
-          this.formData.append(key, value);
-        }
+      this.formData = new FormData();
+      // tslint:disable-next-line: forin
+      for (const key in this.registerData) {
+        const value = this.registerData[key];
+        this.formData.append(key, value);
+      }
+
+      if (this.fileFormData.get('filename')) {
+        this.formData.append('documentimage', this.fileFormData.get('filename'));
       }
 
       this.service.candidate_signup(this.formData).subscribe(res => {
+        console.log(res);
         this.isFormSubmited = false;
         this.registerData = {};
         if (res['status'] === 0) {
