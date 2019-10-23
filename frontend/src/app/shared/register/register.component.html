@@ -115,7 +115,7 @@
                 </div>
               </div>
 
-              <div class="row">
+              <!-- <div class="row">
                 <div class="form-group col-md-6">
                   <label for="documentimage">Document Image</label>
                   <div class="input-group">
@@ -127,10 +127,23 @@
                     <input type="file" accept="image/*" name="documentImage" [(ngModel)]="registerData.documentImage"
                       [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Select any image file"
                       (change)="onFileChange($event)">
-                    <!-- <div class="error" *ngIf="!registerForm.controls['documentImage'].valid && isFormSubmited">
-                      <span *ngIf="!registerForm.controls['documentImage'].errors['required']">This Field is required.
+                  </div>
+                </div>
+              </div> -->
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label for="documentimage">Document Image</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-doc"></i>
                       </span>
-                    </div> -->
+                    </div>
+                    <input type="file" class="form-control" placeholder="Select any image file"
+                      (change)="onFileChange($event)">
+                    <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmited">
+                      <span>DocumentImage is required.</span>
+                    </div>
                   </div>
                 </div>
               </div>

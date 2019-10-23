@@ -20,13 +20,13 @@ const CandidateDetailSchema = new Schema({
     required: true
   },
   country: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'country_datas'
   },
-  documentimage: {
-    type: String,
-    // required: true
-  },
+  documentimage:
+    [{ type: String }]
+  // required: true
+  ,
   documenttype: {
     type: String,
     required: true

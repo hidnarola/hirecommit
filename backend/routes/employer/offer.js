@@ -94,7 +94,7 @@ router.post("/", async (req, res) => {
                 "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
-
+                "communication": JSON.parse(req.body.data)
             }
         }
         else {
@@ -117,15 +117,13 @@ router.post("/", async (req, res) => {
                 "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
+                "communication": JSON.parse(req.body.data)
+
             }
 
-
-
         };
-        console.log('reg_obj', reg_obj);
 
         var interest_resp = await common_helper.insert(Offer, reg_obj);
-        console.log('interest_resp', interest_resp);
 
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
@@ -548,6 +546,9 @@ router.put('/', async (req, res) => {
 
     if (req.body.customfeild && req.body.customfeild != "") {
         obj.customfeild = JSON.parse(req.body.customfeild)
+    }
+    if (req.body.data && req.body.data != "") {
+        obj.communication = JSON.parse(req.body.data)
     }
     var id = req.body.id;
 

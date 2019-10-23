@@ -41,6 +41,12 @@ const GroupSchema = new Schema({
     type: Boolean,
     default: false
   },
+  start: {
+    type: Date
+  },
+  end: {
+    type: Date
+  },
   createdAt: {
     type: Date,
     default: Date.now

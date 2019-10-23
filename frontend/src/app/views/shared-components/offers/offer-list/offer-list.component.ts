@@ -12,12 +12,11 @@ import { Router } from '@angular/router';
 export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   checked1: boolean = true;
   @ViewChild(DataTableDirective, { static: false })
-  first_custom_field: any;
-
-
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  // first_custom_field: any;
+  first_custom_field = 'Custom Field 1';
   employer: any;
   offerData: any[];
   form = false;
