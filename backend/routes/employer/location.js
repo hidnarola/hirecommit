@@ -16,14 +16,14 @@ var User = require('../../models/user');
 //manage Location
 router.post("/", async (req, res) => {
     var schema = {
-        "country": {
-            notEmpty: true,
-            errorMessage: "Country is required"
-        },
-        "city": {
-            notEmpty: true,
-            errorMessage: "City is required"
-        }
+        // "country": {
+        //     notEmpty: true,
+        //     errorMessage: "Country is required"
+        // },
+        // "city": {
+        //     notEmpty: true,
+        //     errorMessage: "City is required"
+        // }
     };
     req.checkBody(schema);
 
