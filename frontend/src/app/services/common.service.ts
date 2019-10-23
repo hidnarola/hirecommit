@@ -16,7 +16,6 @@ export class CommonService {
   private profileDetail = new BehaviorSubject(null);
   getprofileDetail = this.profileDetail.asObservable();
 
-
   constructor(private http: HttpClient, private route: Router) { }
 
   employer_signup(data): Observable<any[]> {
@@ -80,6 +79,10 @@ export class CommonService {
   async setProfileDetail(profileData: any) {
     localStorage.setItem('profile', await this.encrypt(JSON.stringify(profileData)));
     this.profileDetail.next(profileData);
+  }
+  async getDecryptedProfileDetail() {
+    const profile = await this.decrypt(localStorage.getItem('profile'));
+    return JSON.parse(profile);
   }
 
   get_Type(data): Observable<any[]> {
