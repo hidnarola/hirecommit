@@ -23,13 +23,13 @@
                             </tr>
                         </thead>
                         <tbody *ngIf="data?.length != 0">
-                            <tr *ngFor="let acc of data; let i =index">
+                            <tr *ngFor="let acc of subAccountList; let i =index">
                                 <!-- {{data | json}} -->
                                 <td>{{acc.username}}</td>
-                                <td>{{acc.user.email}}</td>
+                                <td>{{acc.email}}</td>
                                 <td>
-                                    <p-inputSwitch [(ngModel)]="acc.user.admin_rights"
-                                        (onChange)="changeRights($event, acc.user._id)">
+                                    <p-inputSwitch [(ngModel)]="acc.admin_rights"
+                                        (onChange)="changeRights($event, acc.user_id)">
                                     </p-inputSwitch>
                                     <!-- <label class="switch">
                                         <input [checked]="acc.user.admin_rights === 'yes'" type="checkbox"
@@ -42,8 +42,8 @@
                                         [routerLink]="['/employer/sub_accounts/edit/',acc._id]" (click)="edit()">
                                         <i class="icon-pencil"></i>
                                     </button> -->
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        (click)="delete(acc.user._id)"><i class="icon-trash"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(acc.user_id)"><i
+                                            class="icon-trash"></i></button>
                                 </td>
                                 <!-- </div> -->
                             </tr>

@@ -35,6 +35,7 @@ export class RegisterComponent implements OnInit {
     public fb: FormBuilder,
     private cd: ChangeDetectorRef
   ) {
+    this.registerData = {};
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
@@ -70,8 +71,20 @@ export class RegisterComponent implements OnInit {
   }
 
   onFileChange(e) {
+   this.fileFormData = new FormData();
+    const reader = new FileReader();
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
+      this.fileFormData.append('filename', this.file);
+
+      reader.readAsDataURL(this.file);
+      reader.onload = () => {
+        this.documentImage.patchValue({
+          documentimage: reader.result
+       });
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
     }
   }
 
