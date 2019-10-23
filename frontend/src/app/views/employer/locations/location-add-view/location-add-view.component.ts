@@ -11,6 +11,8 @@ import { LocationService } from '../location.service';
   styleUrls: ['./location-add-view.component.scss']
 })
 export class LocationAddViewComponent implements OnInit {
+  decyptCountry: any;
+  LocationAdd: any;
   cnt: any;
   Country: any = [];
   addLocation: FormGroup;
@@ -26,22 +28,37 @@ export class LocationAddViewComponent implements OnInit {
     private toastr: ToastrService,
     private commonService: CommonService,
     private service: LocationService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
-      country: new FormControl('', [Validators.required]),
+      // country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required])
     });
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
     this.getDetail(this.id);
-    this.commonService.country_data().subscribe(res => {
-      res['data'].forEach(element => {
-        this.Country.push({ 'label': element.country, 'value': element._id });
-      });
+
+    this.commonService.getprofileDetail.subscribe(async res => {
+      if (res) {
+        this.decyptCountry = res;
+      } else {
+        const _country = await this.commonService.decrypt(localStorage.getItem('profile'));
+        if (_country) {
+          this.decyptCountry = JSON.parse(_country);
+          console.log('decyptCountry==>', this.decyptCountry.country);
+        } else {
+          console.log(' country data not found');
+        }
+      }
     });
+    // this.commonService.country_data().subscribe(res => {
+    //   res['data'].forEach(element => {
+    //     this.Country.push({ 'label': element.country, 'value': element._id });
+    //   });
+    // });
   }
 
   //issue
@@ -52,7 +69,7 @@ export class LocationAddViewComponent implements OnInit {
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
         this.cnt = res['data']['data'].country;
-        console.log(' this.cnt ', this.cnt);
+        console.log(' edited data ', this.detail);
 
       });
 
@@ -87,11 +104,17 @@ export class LocationAddViewComponent implements OnInit {
         }
         this.submitted = false;
       }, (err) => {
-        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     } else {
       if (flag) {
-        this.service.add(this.addLocation.value).subscribe(res => {
+
+        this.LocationAdd = {
+          'country': localStorage.getItem('country'),
+          'city': this.addLocation.value['city']
+        }
+        console.log('>>', this.LocationAdd);
+        this.service.add(this.LocationAdd).subscribe(res => {
           this.location = res;
           if (res['data']['status'] === 1) {
             this.submitted = false;
@@ -101,7 +124,7 @@ export class LocationAddViewComponent implements OnInit {
           }
           this.submitted = false;
         }, (err) => {
-          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
         this.addLocation.reset();
         this.router.navigate([this.cancel_link]);

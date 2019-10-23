@@ -17,29 +17,33 @@ export class ProfileComponent implements OnInit {
     //   this.userType = 'Candidate';
 
     this.userType = localStorage.getItem('user');
-    console.log('get user from local storage => ', this.userType);
+    // console.log('get user from local storage => ', this.userType);
 
     // }
   }
 
   ngOnInit() {
-    console.log('user>>', localStorage.getItem['user']);
-
-    this.service.getprofileDetail.subscribe(async res => {
-      if (res) {
-        this.profileData = res;
-      } else {
-        const profile = await this.service.decrypt(localStorage.getItem('profile'));
-        console.log('profile==>', profile);
-
-        if (profile) {
-          this.profileData = JSON.parse(profile);
-          console.log('profileData==>', this.profileData);
+    if (this.userType != 'admin') {
+      this.service.getprofileDetail.subscribe(async res => {
+        if (res) {
+          this.profileData = res;
         } else {
-          console.log('profile data not found');
+          const profile = await this.service.decrypt(localStorage.getItem('profile'));
+          console.log('profile==>', profile);
+
+          if (profile) {
+            this.profileData = JSON.parse(profile);
+            console.log('profileData==>', this.profileData);
+          } else {
+            console.log('profile data not found');
+          }
         }
-      }
-    });
+      });
+    } else {
+      console.log('it is admin!');
+
+    }
+
 
   }
 

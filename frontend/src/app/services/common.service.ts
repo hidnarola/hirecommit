@@ -56,6 +56,10 @@ export class CommonService {
     }
   }
 
+  country_registration(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + 'country')
+  }
+
   // get user detail
   getLoggedUserDetail() {
     let userDetails;

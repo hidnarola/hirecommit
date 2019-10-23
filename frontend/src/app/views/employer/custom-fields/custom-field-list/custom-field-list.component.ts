@@ -49,9 +49,9 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         });
       }, columnDefs: [{ orderable: false, targets: 2 }],
       columns: [
-        // {
-        //   data: 'index'
-        // },
+        {
+          data: 'index'
+        },
         {
           data: 'key'
         },
