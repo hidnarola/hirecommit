@@ -40,10 +40,10 @@
                                         [routerLink]="['/admin/employers/new_employer/view/',emp._id]">
                                         <i class="icon-eye"></i>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger"
+                                    <!-- <button type="button" class="btn btn-sm btn-danger"
                                         (click)="delete(emp.user_id._id)">
                                         <i class="icon-trash"></i>
-                                    </button>
+                                    </button> -->
                                     <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-primary"
                                         (click)="aprrove(emp.user_id)">
                                         <i class="icon-check"></i>

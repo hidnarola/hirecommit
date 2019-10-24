@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { EmployerService } from '../employer.service';
 import { NgxSpinnerService } from 'ngx-spinner';
