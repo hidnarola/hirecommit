@@ -78,8 +78,9 @@ export class OfferService {
     // Employer Services
 
     // Candidate Service
-    view_offerList(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.candidate_url}` + '/view_offer');
+
+    view_offer_candidate(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.candidate_url}` + '/offer/get', { ...params });
     }
 
     deactivate_candidate_offer(id): Observable<any[]> {

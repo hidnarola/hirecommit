@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-employer-list',
@@ -24,7 +25,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: Router,
     private router: ActivatedRoute,
     private service: EmployerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private confirmationService: ConfirmationService
   ) {
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     if (this.router.snapshot.data.type === 'new') {
@@ -111,13 +113,18 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
     const obj = {
       'id': id
     };
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
 
-    this.service.approved(obj).subscribe(res => {
-      this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
-      this.rrerender();
-    }, (err) => {
-      console.log(err);
-      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        this.service.approved(obj).subscribe(res => {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.rrerender();
+        }, (err) => {
+          console.log(err);
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        });
+      }
     });
   }
 

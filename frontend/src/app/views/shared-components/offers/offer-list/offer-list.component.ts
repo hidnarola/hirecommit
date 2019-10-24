@@ -3,6 +3,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { OfferService } from '../offer.service';
 import { Router } from '@angular/router';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-offer-list',
@@ -20,11 +21,13 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   employer: any;
   offerData: any[];
   form = false;
-
+  userDetail: any = [];
   constructor(
     private service: OfferService,
-    private route: Router
+    private route: Router,
+    private commonService: CommonService
   ) {
+    this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('candidate: offerlist component => ');
     this.getCustomField();
   }
@@ -50,19 +53,35 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        this.service.view_offer(dataTablesParameters).subscribe(res => {
-          console.log('res => ', res);
-          if (res['status']) {
-            this.offerData = res['offer'];
-            callback({
-              recordsTotal: res[`recordsTotal`],
-              recordsFiltered: res[`recordsTotal`],
-              data: []
-            });
-          }
-        }, err => {
-          console.log('err => ', err);
-        });
+        if (this.userDetail.role === 'employer') {
+          this.service.view_offer(dataTablesParameters).subscribe(res => {
+            console.log('res => ', res);
+            if (res['status']) {
+              this.offerData = res['offer'];
+              callback({
+                recordsTotal: res[`recordsTotal`],
+                recordsFiltered: res[`recordsTotal`],
+                data: []
+              });
+            }
+          }, err => {
+            console.log('err => ', err);
+          });
+        } else if (this.userDetail.role === 'candidate') {
+          this.service.view_offer_candidate(dataTablesParameters).subscribe(res => {
+            console.log('res => ', res);
+            if (res['status']) {
+              this.offerData = res['offer'];
+              callback({
+                recordsTotal: res[`recordsTotal`],
+                recordsFiltered: res[`recordsTotal`],
+                data: []
+              });
+            }
+          }, err => {
+            console.log('err => ', err);
+          });
+        }
       },
       columnDefs: [{ orderable: false, targets: 10 }], // 11
       columns: [

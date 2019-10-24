@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { EmployerService } from '../employer.service';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-employer-view',
@@ -30,7 +31,8 @@ export class EmployerViewComponent implements OnInit {
     private service: EmployerService,
     private route: ActivatedRoute,
     private commonService: CommonService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private confirmationService: ConfirmationService,
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('===>', this.route.snapshot.data.type);
@@ -82,12 +84,17 @@ export class EmployerViewComponent implements OnInit {
     const obj = {
       'id': id
     };
-    this.service.approved(obj).subscribe(res => {
-      this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
-      this.router.navigate([this.cancel_link1]);
-    }, (err) => {
-      console.log(err);
-      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.approved(obj).subscribe(res => {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.router.navigate([this.cancel_link1]);
+        }, (err) => {
+          console.log(err);
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        });
+      }
     });
   }
 
