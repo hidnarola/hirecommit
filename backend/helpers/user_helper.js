@@ -109,6 +109,23 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
         }
       },
       {
+        $lookup:
+        {
+          from: "business_type",
+          localField: "businesstype",
+          foreignField: "_id",
+          as: "business"
+        }
+      },
+      {
+        $unwind:
+        {
+          path: "$business",
+          // preserveNullAndEmptyArrays: true
+        }
+
+      },
+      {
         $match: { "user.isAllow": true }
       }
 
@@ -188,6 +205,24 @@ user_helper.get_all_new_employer = async (collection, search, start, length, rec
       {
         $unwind: "$user"
       },
+      {
+        $lookup:
+        {
+          from: "business_type",
+          localField: "businesstype",
+          foreignField: "_id",
+          as: "business"
+        }
+      },
+      {
+        $unwind:
+        {
+          path: "$business",
+          // preserveNullAndEmptyArrays: true
+        }
+
+      },
+
       {
         $match: { "user.isAllow": false }
       }
