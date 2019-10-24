@@ -13,7 +13,7 @@ import { ConfirmationService } from 'primeng/api';
 export class EmployerViewComponent implements OnInit {
 
   id: any;
-  employer_detail: any;
+  employer_detail: any = [];
   name: any = [];
   buttonValue: any;
   buttonValue1: String;
@@ -23,6 +23,9 @@ export class EmployerViewComponent implements OnInit {
   cancel_link2 = '/admin/employers/approved_employer';
   employer_type = 'Approved';
   userDetail: any = [];
+  email: any;
+  businesstype: any;
+  country: any;
   constructor(
     private router: Router,
     private service: EmployerService,
@@ -45,7 +48,12 @@ export class EmployerViewComponent implements OnInit {
     });
     this.service.getemployerDetail(this.id).subscribe(res => {
       this.employer_detail = res['data'];
-      console.log('this.employer', this.employer_detail);
+      this.email =  res['data']['user_id']['email'];
+      this.country = res['data']['businesstype']['country'];
+      this.businesstype = res['data']['businesstype']['name'];
+      console.log('employer_detail', this.employer_detail);
+
+      // console.log('this.employer', this.employer_detail);
 
       if (this.employer_detail.user_id.isAllow === false) {
         this.buttonValue = 'Approve';
@@ -81,7 +89,7 @@ export class EmployerViewComponent implements OnInit {
       accept: () => {
         this.service.approved(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
-          this.router.navigate([this.cancel_link1])
+          this.router.navigate([this.cancel_link1]);
         }, (err) => {
           console.log(err);
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
