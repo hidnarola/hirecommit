@@ -24,7 +24,7 @@
                                 <td>{{data.firstname}} {{data.lastname}}</td>
                                 <td>{{data.user.email}}</td>
                                 <td>{{data.countrycode}} {{data.contactno}}</td>
-                                <td>{{data.documenttype}}</td>
+                                <td>{{data['document'].name}}</td>
                                 <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{data.status}}</td>
                                 <td>
@@ -56,3 +56,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

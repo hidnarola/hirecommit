@@ -164,7 +164,7 @@ router.put("/deactive_candidate/:id", async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
     } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
+        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });

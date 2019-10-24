@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        const country = await CustomField.findOne({ "emp_id": req.userInfo.id }).lean();
+        const country = await CustomField.findOne({ "is_del": false, "emp_id": req.userInfo.id }).sort({ "createdAt": -1 }).lean();
         if (country && country.serial_number) {
             var serial_number = country.serial_number + 1
         }
@@ -200,9 +200,6 @@ router.put("/delete/:id", async (req, res) => {
         res.json({ "message": "Custom Field deleted successfully", "data": interest_resp })
     }
 });
-
-
-
 
 
 

@@ -47,13 +47,13 @@ export class SignUpComponent implements OnInit {
   ) {
     this.formData = {};
     this.registerForm = this.fb.group({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
+      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
       country: new FormControl('', [Validators.required]),
       businesstype: new FormControl('', [Validators.required]),
-      companyname: new FormControl('', [Validators.required]),
+      companyname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       website: new FormControl(''),
-      username: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
       contactno: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
@@ -61,6 +61,7 @@ export class SignUpComponent implements OnInit {
       isChecked: new FormControl('', [Validators.required])
     });
   }
+
 
   ngOnInit() {
     this.stepper = new Stepper(document.querySelector('#stepper1'), {
@@ -73,8 +74,8 @@ export class SignUpComponent implements OnInit {
       console.log('employer registration country>', res['data']);
       res['data'].forEach(element => {
         this.Country.push({ 'label': element.country, 'value': element._id });
-      })
-    })
+      });
+    });
 
     // this.service.country_data().subscribe(res => {
     //   this.code = res['data'];
@@ -83,6 +84,16 @@ export class SignUpComponent implements OnInit {
     //   });
     // });
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   next1() {
     this.isFormSubmitted = true;
@@ -131,13 +142,10 @@ export class SignUpComponent implements OnInit {
     this.marked = e;
   }
 
-
-
-
   getCode(e) {
     console.log('element of country =>', e.value);
 
-    this.countryID = this.alldata.find(x => x._id === e.value)
+    this.countryID = this.alldata.find(x => x._id === e.value);
     console.log('countryID', this.countryID.country);
 
     this.Business_Type = [];

@@ -33,8 +33,8 @@ export class SubAccountAddViewComponent implements OnInit {
 
   ngOnInit() {
     this.addAccount = new FormGroup({
-      name: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
       admin_rights: new FormControl(false)
     });
     this.route.params.subscribe((params: Params) => {
@@ -42,6 +42,16 @@ export class SubAccountAddViewComponent implements OnInit {
     });
     this.getDetail(this.id);
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   getDetail(id) {
     if (this.id) {

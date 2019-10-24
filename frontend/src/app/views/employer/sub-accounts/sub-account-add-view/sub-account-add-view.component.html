@@ -16,8 +16,10 @@
                                     [(ngModel)]="detail.name" formControlName="name" id="name">
 
                                 <span *ngIf="!addAccount.get('name').valid && submitted" class="text-danger">
-                                    <span *ngIf="addAccount.get('name').errors['required']">This field is
-                                        required!</span>
+                                    <span
+                                        *ngIf="addAccount.get('name').errors['required'] || addAccount.get('name').errors['whitespace']">This
+                                        field is
+                                        required.</span>
                                 </span>
                             </div>
                         </div>
@@ -27,8 +29,15 @@
                             <div class="col-md-4">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
                                     [(ngModel)]="detail.email" formControlName="email" id="email">
-                                <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">Email must
-                                    be in valid format.</span>
+
+                                <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">
+                                    <span
+                                        *ngIf="addAccount.get('email').errors['required'] || addAccount.get('email').errors.whitespace">This
+                                        field is required.</span>
+                                    <span
+                                        *ngIf="addAccount.get('email').errors.email && !addAccount.get('email').errors.whitespace">Email
+                                        must be in valid format.</span>
+                                </span>
                             </div>
                         </div>
 

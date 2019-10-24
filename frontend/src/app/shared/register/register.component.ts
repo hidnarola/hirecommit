@@ -37,10 +37,10 @@ export class RegisterComponent implements OnInit {
   ) {
     this.registerData = {};
     this.registerForm = this.fb.group({
-      firstname: new FormControl('', [Validators.required]),
-      lastname: new FormControl('', [Validators.required]),
+      firstname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      lastname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       // documentImage: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
       country: new FormControl('', [Validators.required]),
       countrycode: new FormControl('', [Validators.required]),
       contactno: new FormControl('',
@@ -48,8 +48,8 @@ export class RegisterComponent implements OnInit {
         Validators.pattern(/^-?(0|[1-9]\d*)?$/),
         Validators.maxLength(10), Validators.minLength(10)])),
       documenttype: new FormControl('', [Validators.required]),
-      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
-      confirmpassword: new FormControl('', [Validators.required]),
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      confirmpassword: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
 
@@ -68,6 +68,15 @@ export class RegisterComponent implements OnInit {
     });
     this.formData = new FormData();
 
+  }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
   }
 
   onFileChange(e) {

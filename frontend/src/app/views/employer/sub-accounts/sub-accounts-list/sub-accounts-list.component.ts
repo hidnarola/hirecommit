@@ -47,7 +47,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
             this.data = res['user'];
             this.subAccountList = [];
             this.data.forEach(element => {
-              console.log(element);
+              console.log('=>', element);
               if (element.user.admin_rights === 'no') {
                 this.obj = {
                   username: element.username,

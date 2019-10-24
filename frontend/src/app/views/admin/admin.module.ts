@@ -17,7 +17,7 @@ import { DefaultLayoutModule } from '../../shared/containers/default-layout/defa
     FormsModule,
     ReactiveFormsModule,
     CandidateModule,
-    MglTimelineModule
+    MglTimelineModule,
   ]
 })
 export class AdminModule { }
