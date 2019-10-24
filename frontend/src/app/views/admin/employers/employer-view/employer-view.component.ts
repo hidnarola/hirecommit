@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { EmployerService } from '../employer.service';
 import { CommonService } from '../../../../services/common.service';
@@ -48,7 +48,7 @@ export class EmployerViewComponent implements OnInit {
     });
     this.service.getemployerDetail(this.id).subscribe(res => {
       this.employer_detail = res['data'];
-      this.email =  res['data']['user_id']['email'];
+      this.email = res['data']['user_id']['email'];
       this.country = res['data']['businesstype']['country'];
       this.businesstype = res['data']['businesstype']['name'];
       console.log('employer_detail', this.employer_detail);
@@ -57,7 +57,7 @@ export class EmployerViewComponent implements OnInit {
 
       if (this.employer_detail.user_id.isAllow === false) {
         this.buttonValue = 'Approve';
-        this.buttonValue1 = 'unapprove';
+
       } else {
         this.buttonValue1 = 'Cancel';
       }

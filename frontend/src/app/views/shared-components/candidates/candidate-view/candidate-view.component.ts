@@ -24,6 +24,7 @@ export class CandidateViewComponent implements OnInit {
   image = env.environment.imageUrl;
   buttonValue: any;
   buttonValue1: any;
+  documenttype: any;
   constructor(
     private router: Router,
     private service: CandidateService,
@@ -52,6 +53,7 @@ export class CandidateViewComponent implements OnInit {
       this.candidate_detail = res['data'];
       console.log('res detail', this.candidate_detail);
       this.email = this.candidate_detail['user_id']['email'];
+      this.documenttype = this.candidate_detail['documenttype']['name'];
       // if (this.candidate_detail.user_id.isAllow === false) {
       //   this.buttonValue = 'Approve';
 
