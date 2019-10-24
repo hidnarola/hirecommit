@@ -46,8 +46,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res of approved employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
-              this.country = res['user'][0].country.country;
-              console.log('country>>', this.country);
+              // this.country = res['user'][0].country.country;
+              console.log('country>>', this.employer_data);
 
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
@@ -123,7 +123,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // detail(id) {
   //   this.route.navigate(['admin/employers/detail/' + id]);
-  // }
+  // }emplo
 
   // delete(id) {
   //   this.service.deactivate_employer(id).subscribe(res => { });

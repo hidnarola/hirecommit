@@ -101,12 +101,12 @@ export const employer: NavData[] = [
     url: 'groups/list',
     icon: 'icon-people',
   },
-  {
-    name: 'Salary Brackets',
-    // name: 'Manage Salary-Brackets',
-    url: 'salary_brackets/list',
-    icon: 'icon-wallet',
-  },
+  // {
+  //   name: 'Salary Brackets',
+  //   // name: 'Manage Salary-Brackets',
+  //   url: 'salary_brackets/list',
+  //   icon: 'icon-wallet',
+  // },
   {
     name: 'Locations',
     // name: 'Manage Location',
