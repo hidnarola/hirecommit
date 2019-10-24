@@ -20,7 +20,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
   candidates: any[];
   userDetail: any = [];
   candidate_type = 'Approved';
-
+  doc: any
   constructor(
     private service: CandidateService,
     private route: Router,
@@ -63,6 +63,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of new candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
+              this.doc = res['user']['document']
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -73,6 +74,8 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of approved candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
+              this.doc = res['user'][0]['document'].name
+              console.log('res=>', res['user'][0]['document'].name);
               console.log('this.candidates  => ', this.candidates);
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
@@ -84,6 +87,9 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of new candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
+              this.doc = res['user']['document']
+
+
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {

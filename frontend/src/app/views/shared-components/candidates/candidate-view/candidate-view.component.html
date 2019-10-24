@@ -26,7 +26,7 @@
                             </tr>
                             <tr>
                                 <td>Document Type</td>
-                                <td>{{candidate_detail.documenttype}}</td>
+                                <td>{{candidate_detail['documenttype'].name}}</td>
                             </tr>
                             <tr>
                                 <td>Document Image</td>
@@ -43,10 +43,10 @@
                     </table>
 
                     <div style="float: right;">
-                        <button type="button" *ngIf="!approval" class="btn btn-sm btn-success"
-                            (click)="approve()">Approve</button>
-                        <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
-                            (click)="unapprove()">Unapprove</button>
+                        <button type="button" *ngIf="candidate_type === 'New'" class="btn btn-sm btn-success"
+                            (click)="approve(candidate_detail.user_id)">Approve</button>
+                        <!-- <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
+                            (click)="unapprove()">Unapprove</button> -->
 
                         <button type="button" *ngIf="candidate_type === 'Approved'" class="btn btn-sm btn-danger"
                             [routerLink]="cancel_link2">Cancel</button>

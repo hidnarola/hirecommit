@@ -45,6 +45,23 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
 
       },
       {
+        $lookup:
+        {
+          from: "document_type",
+          localField: "documenttype",
+          foreignField: "_id",
+          as: "document"
+        }
+      },
+      {
+        $unwind:
+        {
+          path: "$document",
+          // preserveNullAndEmptyArrays: true
+        }
+
+      },
+      {
         $match: { "user.isAllow": true }
       }
 
@@ -127,6 +144,23 @@ candidate_helper.get_all_new_candidate = async (collection, search, start, lengt
           path: "$user",
           preserveNullAndEmptyArrays: true
         }
+      },
+      {
+        $lookup:
+        {
+          from: "document_type",
+          localField: "documenttype",
+          foreignField: "_id",
+          as: "document"
+        }
+      },
+      {
+        $unwind:
+        {
+          path: "$document",
+          // preserveNullAndEmptyArrays: true
+        }
+
       },
       {
         $match: { "user.isAllow": false }

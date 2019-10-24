@@ -64,6 +64,9 @@ export class OfferService {
     get_location(country): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + `/location/get_location/` + country);
     }
+    get_locations(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.employer_url}` + `/location/get_locations`);
+    }
 
     get_customfield(): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + `/customfield`);

@@ -166,7 +166,7 @@ router.post('/get_approved', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id").populate("country")
+    var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id").populate("country").populate("documenttype")
 
     // if (candidate_detail.status == 0) {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
