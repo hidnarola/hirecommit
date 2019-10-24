@@ -49,7 +49,6 @@ export class CandidateViewComponent implements OnInit {
     this.service.get_candidate_Detail(this.id).subscribe(res => {
       this.candidate_detail = res['data'];
       console.log('res detail', this.candidate_detail);
-
       this.email = this.candidate_detail['user_id']['email'];
       // if (this.candidate_detail.user_id.isAllow === false) {
       //   this.buttonValue = 'Approve';
@@ -71,7 +70,7 @@ export class CandidateViewComponent implements OnInit {
     this.service.approved(obj).subscribe(res => {
       this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
       // this.rrerender();
-      this.router.navigate([this.cancel_link1])
+      this.router.navigate([this.cancel_link1]);
     }, (err) => {
       console.log(err);
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
