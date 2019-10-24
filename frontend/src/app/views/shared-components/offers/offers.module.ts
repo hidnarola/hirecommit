@@ -10,6 +10,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     CalendarModule,
     InputSwitchModule,
     CKEditorModule,
-  ]
+    ConfirmDialogModule
+  ], providers: [ConfirmationService]
 })
 export class OffersModule { }
