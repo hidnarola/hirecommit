@@ -5,8 +5,8 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Offers
                     <p class="pull-right"></p>
-                    <button class="pull-right btn btn-sm btn-primary custom-margin"
-                        [routerLink]="['/employer/offers/add']">
+                    <button *ngIf="userDetail.role === 'employer'"
+                        class="pull-right btn btn-sm btn-primary custom-margin" [routerLink]="['/employer/offers/add']">
                         <i class="icon-plus"></i>
                         Add
                     </button>
@@ -49,12 +49,17 @@
                                 <td>{{offer.commitstatus}}</td>
                                 <td>{{offer.customfeild[0].value ? offer.customfeild[0].value : '-'}}</td>
                                 <td>
-                                    <!-- <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
-                                            class="icon-eye"></i></button> -->
+                                    <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
+                                            class="icon-eye"></i></button>
                                     <!-- <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
                                                 class="icon-trash"></i></button> -->
-                                    <button type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
+                                    <button *ngIf="userDetail.role === 'employer'" type="button"
+                                        class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
                                             class="icon-pencil"></i></button>
+
+                                    <button *ngIf="userDetail.role === 'candidate'" type="button"
+                                        class="btn btn-sm btn-primary" (click)="onAccept()">
+                                        <i class="icon-check"></i></button>
                                 </td>
                             </tr>
                         </tbody>

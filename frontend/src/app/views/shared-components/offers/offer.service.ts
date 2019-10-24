@@ -91,6 +91,8 @@ export class OfferService {
         return this.http.get<any[]>(`${this.candidate_url}` + '/get_employer/' + id);
     }
 
-
+    // offer_accept(): Observable<any[]>{
+    //     return this.http.put<any[]>(`${this.candidate_url}` + '/offer');
+    // }
     // Candidate Service
 }
