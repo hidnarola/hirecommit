@@ -3,6 +3,7 @@ import { EmployerService } from '../employer.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employer-list',
@@ -22,7 +23,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private route: Router,
     private router: ActivatedRoute,
-    private service: EmployerService
+    private service: EmployerService,
+    private toastr: ToastrService
   ) {
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     if (this.router.snapshot.data.type === 'new') {
@@ -105,9 +107,19 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   //   // we are calling to API
   // }
 
-  // aprrov(id) {
-  //   this.service.aprroved_employer(id).subscribe(res => { });
-  // }
+  aprrove(id) {
+    const obj = {
+      'id': id
+    };
+
+    this.service.approved(obj).subscribe(res => {
+      this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+      this.rrerender();
+    }, (err) => {
+      console.log(err);
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+    });
+  }
 
   // detail(id) {
   //   this.route.navigate(['admin/employers/detail/' + id]);

@@ -10,6 +10,7 @@ import * as env from '../../../../environments/environment';
 export class EmployerService {
   // private url = 'http://localhost:3000/admin';
   private url = env.environment.API_URL + 'admin';
+
   constructor(private http: HttpClient, private route: Router) { }
 
   myObservableArray: Observable<any[]> = new Observable<any[]>();
@@ -49,4 +50,8 @@ export class EmployerService {
   // delemployer(id): Observable<any[]> {
   //   return this.http.delete<any[]>(`${this.url}` + '/employer/' + id);
   // }
+
+  approved(data): Observable<any[]> {
+      return this.http.put<any[]>(`${this.url}` + '/candidate', data);
+  }
 }
