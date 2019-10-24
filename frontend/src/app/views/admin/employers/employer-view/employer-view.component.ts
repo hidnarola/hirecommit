@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { EmployerService } from '../employer.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-employer-view',
@@ -19,7 +20,8 @@ export class EmployerViewComponent implements OnInit {
   constructor(
     private router: Router,
     private service: EmployerService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService,
   ) {
     console.log('employer view component  => ');
   }

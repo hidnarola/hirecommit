@@ -21,6 +21,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   offerData: any[];
   form = false;
 
+  // offer type options
+  offer_type_optoins = [
+    { label: 'Select Offer Type', value: '' },
+    { label: 'No Commit', value: 'noCommit' },
+    { label: 'Candidate Commit', value: 'candidateCommit' },
+    { label: 'Both Commit', value: 'bothCommit' }
+  ];
+
   constructor(
     private service: OfferService,
     private route: Router
@@ -44,9 +52,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       serverSide: true,
       processing: true,
+      order: [[0, 'desc']],
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -54,6 +63,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log('res => ', res);
           if (res['status']) {
             this.offerData = res['offer'];
+            this.offerData.forEach(offer => {
+              offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+            });
             callback({
               recordsTotal: res[`recordsTotal`],
               recordsFiltered: res[`recordsTotal`],
@@ -64,7 +76,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log('err => ', err);
         });
       },
-      columnDefs: [{ orderable: false, targets: 10 }], // 11
+      columnDefs: [{ orderable: false, targets: 10 }],
       columns: [
         {
           data: 'createdAt'
@@ -110,8 +122,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.navigate(['/employer/offers/edit/' + id]);
   }
 
-  onDelete(id) {
+  delete(id) {
     this.service.deactivate_employer_offer(id).subscribe(res => {
+      console.log('res => ', res);
       this.rrerender();
     });
   }

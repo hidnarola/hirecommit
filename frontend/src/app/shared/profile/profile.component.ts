@@ -23,7 +23,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.userType != 'admin') {
+    if (this.userType !== 'admin') {
       this.service.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;

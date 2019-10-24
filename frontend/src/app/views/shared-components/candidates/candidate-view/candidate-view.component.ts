@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CandidateService } from '../candidate.service';
 import { CommonService } from '../../../../services/common.service';
 import * as env from '../../../../../environments/environment';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-candidate-view',
@@ -21,13 +22,13 @@ export class CandidateViewComponent implements OnInit {
   cancel_link2 = '/admin/candidates/approved_candidate';
   image = env.environment.imageUrl;
 
-
   constructor(
     private router: Router,
     private service: CandidateService,
     private route: ActivatedRoute,
     private commonService: CommonService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private spinner: NgxSpinnerService,
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('===>', this.activatedRoute.snapshot.data.type);

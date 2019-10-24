@@ -23,13 +23,11 @@
                                 <th>Salary Bracket</th>
                                 <th>Expiry Date</th>
                                 <th>Joining Date</th>
-                                <!-- <th>Status</th> -->
                                 <th>Offer Type</th>
                                 <th>Group</th>
                                 <th>Commit Status</th>
                                 <th>{{first_custom_field}}</th>
-                                <!-- <th>Custom Field 1</th> -->
-                                <th>Action</th>
+                                <th style="width: 12%;">Action</th>
                             </tr>
                         </thead>
 
@@ -38,21 +36,22 @@
                                 <td>{{offer.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.title}}</td>
                                 <td>{{offer.salarytype}}</td>
-                                <td>{{offer.salarybracket.from}} to {{offer.salarybracket.to}}</td>
+                                <td *ngIf="offer.salary">{{offer.salary}}</td>
+                                <td *ngIf="offer.salary_from && offer.salary_to">
+                                    {{offer.salary_from}} to {{offer.salary_to}}
+                                </td>
                                 <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</td>
-                                <!-- <td>
-                                    <p-inputSwitch></p-inputSwitch>
-                                </td> -->
                                 <td>{{offer.offertype}}</td>
                                 <td>{{offer.group.name}}</td>
                                 <td>{{offer.commitstatus}}</td>
                                 <td>{{offer.customfeild[0].value ? offer.customfeild[0].value : '-'}}</td>
                                 <td>
-                                    <!-- <button type="button" class="btn btn-sm btn-success" (click)="detail(offer._id)"><i
+                                    <!-- <button type="button" class="btn btn-sm btn-success"
+                                        [routerLink]="['/employer/offers/view/', offer._id]"><i
                                             class="icon-eye"></i></button> -->
-                                    <!-- <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
-                                                class="icon-trash"></i></button> -->
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
+                                            class="icon-trash"></i></button>
                                     <button type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
                                             class="icon-pencil"></i></button>
                                 </td>
