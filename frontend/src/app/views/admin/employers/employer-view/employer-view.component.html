@@ -22,7 +22,7 @@
                             </tr>
                             <tr>
                                 <td>Country</td>
-                                <td>{{employer_detail.country}}</td>
+                                <td>{{employer_detail['businesstype'].country}}</td>
                             </tr>
 
                             <tr>
@@ -42,20 +42,30 @@
 
                             <tr>
                                 <td>Bussiness Type</td>
-                                <td>{{employer_detail.businesstype}}</td>
+                                <td>{{employer_detail['businesstype'].name}}</td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div style="float: right;">
-                        <button type="button" class="btn btn-sm btn-success" *ngIf="buttonValue != null"
+                        <!-- <button type="button" class="btn btn-sm btn-success" *ngIf="buttonValue != null"
                             (click)="onApproved(employer_detail.user_id._id)">{{buttonValue}}</button>
                         <button type="button" class="btn btn-sm btn-danger"
-                            (click)="onUnapproved(employer_detail.user_id._id)">{{buttonValue1}}</button>
-                        <!-- <button type="button" class="btn btn-sm btn-danger" (click)="cancel()">Cancel</button> -->
+                            [routerLink]="['/admin/employers/approved_employer']">Cancel</button> -->
+                        <div style="float: right;">
+                            <button type="button" *ngIf="employer_type === 'New'" class="btn btn-sm btn-success"
+                                (click)="onApprove(employer_detail.user_id)">Approve</button>
+                            <!-- <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
+                                                        (click)="unapprove()">Unapprove</button> -->
+
+                            <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-sm btn-danger"
+                                [routerLink]="cancel_link2">Cancel</button>
+                            <button type="button" *ngIf="employer_type === 'New'" class="btn btn-sm btn-danger"
+                                [routerLink]="cancel_link1">Cancel</button>
+                            <!-- <button type="button" class="btn btn-sm btn-danger" (click)="cancel()">Cancel</button> -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
