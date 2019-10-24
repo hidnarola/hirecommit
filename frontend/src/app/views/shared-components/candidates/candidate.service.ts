@@ -26,9 +26,9 @@ export class CandidateService {
         return this.http.get<any[]>(`${this.url}` + '/manage_candidate/approved_candidate');
     }
 
-    approved_candidate(id): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/approved_candidate/' + id, null);
-    }
+    // approved_candidate(id): Observable<any[]> {
+    //     return this.http.put<any[]>(`${this.url}` + '/approved_candidate/' + id, null);
+    // }
 
     deactivate_candidate(id): Observable<any[]> {
         return this.http.put<any[]>(`${this.url}` + '/deactive_candidate/' + id, null);
@@ -64,5 +64,11 @@ export class CandidateService {
     get_approved_candidate_admin(params): Observable<any[]> {
         return this.http.post<any[]>(`${this.admin_url}` + '/candidate/get_approved', { ...params });
     }
+
+    approved(data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.admin_url}` + '/candidate', data);
+    }
+
+
     // admin services
 }
