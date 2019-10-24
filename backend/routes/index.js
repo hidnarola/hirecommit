@@ -303,7 +303,7 @@ router.post("/candidate_register", async (req, res) => {
                   "subject": "HC - Email Confirmation"
                 }, {
                   // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-                  "confirm_url": 'http://localhost:4200/confirmation/' + reset_token
+                  "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                 });
 
                 if (mail_resp.status === 0) {

@@ -171,17 +171,13 @@ router.post('/get_approved', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
-    var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id").populate("country");
-
-    // if (candidate_detail.status == 0) {
-    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
-    // }
-    // else if (candidate_detail.status == 1) {
-    res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
-    // }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
-    // }
+    var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id").populate("country").populate("businesstype");
+    if (candidate_detail) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
+    }
+    else {
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+    }
 });
 
 
