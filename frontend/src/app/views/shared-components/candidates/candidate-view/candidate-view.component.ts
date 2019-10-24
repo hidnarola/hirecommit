@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CandidateService } from '../candidate.service';
 import { CommonService } from '../../../../services/common.service';
 import * as env from '../../../../../environments/environment';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
 
@@ -22,6 +23,7 @@ export class CandidateViewComponent implements OnInit {
   cancel_link1 = '/admin/candidates/new_candidate';
   cancel_link2 = '/admin/candidates/approved_candidate';
   image = env.environment.imageUrl;
+
   buttonValue: any;
   buttonValue1: any;
   documenttype: any;
@@ -31,6 +33,7 @@ export class CandidateViewComponent implements OnInit {
     private route: ActivatedRoute,
     private commonService: CommonService,
     private activatedRoute: ActivatedRoute,
+    private spinner: NgxSpinnerService,
     private toastr: ToastrService,
     private confirmationService: ConfirmationService
 
