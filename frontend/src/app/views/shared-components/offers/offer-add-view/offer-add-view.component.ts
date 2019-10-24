@@ -81,7 +81,7 @@ export class OfferAddViewComponent implements OnInit {
       salaryduration: new FormControl(''),
       // country: new FormControl('', [Validators.required]),
       location: new FormControl('', [Validators.required]),
-      currency_type: new FormControl('', [Validators.required]),
+      // currency_type: new FormControl('', [Validators.required]),
       salarybracket: new FormControl('', [Validators.required]),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
@@ -98,8 +98,8 @@ export class OfferAddViewComponent implements OnInit {
     this.commonService.getDecryptedProfileDetail().then(res => {
       console.log('const : res => ', res);
       this.profileData = res;
-      this.getLocation(this.profileData.country);
     });
+    this.getLocation();
 
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
@@ -132,7 +132,7 @@ export class OfferAddViewComponent implements OnInit {
       console.log('value.value === element.country_id => ', value.value === element.country_id);
       if (value.value === element.country_id) {
         // this.offer_data.currency_type = element.currency;
-        this.form.controls.currency_type.setValue(element.currency);
+        // this.form.controls.currency_type.setValue(element.currency);
       }
     });
     const promise = new Promise((resolve, reject) => {
@@ -168,9 +168,9 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   // get location
-  getLocation(value) {
+  getLocation() {
     const promise = new Promise((resolve, reject) => {
-      this.service.get_location(value).subscribe(
+      this.service.get_locations().subscribe(
         async res => {
           console.log('res for location => ', res);
           this.location = await res[`data`].data;
@@ -562,6 +562,7 @@ export class OfferAddViewComponent implements OnInit {
       user_id: this.form.value.candidate,
       location: this.form.value.location._id,
       groups: this.form.value.group._id,
+      country: this.profileData._id,
       customfeild: JSON.stringify(_coustomisedFieldsArray),
       data: JSON.stringify(communication_array)
     };
