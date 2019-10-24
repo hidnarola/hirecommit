@@ -37,9 +37,19 @@ export class CustomFieldAddViewComponent implements OnInit {
       this.buttonTitle = 'Update';
     });
     this.addCustomFeild = new FormGroup({
-      key: new FormControl('', [Validators.required])
+      key: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   onSubmit(valid) {
     this.submitted = true;

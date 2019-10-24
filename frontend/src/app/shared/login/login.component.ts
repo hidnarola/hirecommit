@@ -23,12 +23,22 @@ export class LoginComponent implements OnInit {
   ) {
     this.formData = {};
     this.loginForm = this.fb.group({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)]))
+      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
     });
   }
 
   ngOnInit() { }
+
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
 
   onSubmit(valid) {
     this.isFormSubmitted = true;

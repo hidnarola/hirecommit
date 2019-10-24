@@ -14,8 +14,12 @@
               <input type="text" class="form-control" placeholder="Email" [(ngModel)]="formData.email" name="email"
                 formControlName="email" id="email" required email>
               <div class="error" *ngIf="!loginForm.controls['email'].valid && isFormSubmitted">
-                <span *ngIf="this.loginForm.controls['email'].errors.required">Email is required.</span>
-                <span *ngIf="loginForm.controls['email'].errors.email">Email must be in valid format.</span>
+                <span
+                  *ngIf="this.loginForm.controls['email'].errors.required || loginForm.controls['email'].errors['whitespace']">Email
+                  is required.</span>
+                <span
+                  *ngIf="loginForm.controls['email'].errors.email && !loginForm.controls['email'].errors['whitespace']">Email
+                  must be in valid format.</span>
               </div>
 
             </div>
@@ -26,8 +30,12 @@
               <input type="password" class="form-control" placeholder="Password" [(ngModel)]="formData.password"
                 name="password" formControlName="password" id="password" required>
               <div class="error" *ngIf="!loginForm.controls['password'].valid && isFormSubmitted">
-                <span *ngIf="loginForm.controls['password'].errors['required']">Password is required.</span>
-                <span *ngIf="loginForm.controls['password'].errors['minlength']">Password must be more then 8
+                <span
+                  *ngIf="loginForm.controls['password'].errors['whitespace'] || loginForm.controls['password'].errors['required'] ">Password
+                  is required.</span>
+                <span
+                  *ngIf="loginForm.controls['password'].errors['minlength'] && !loginForm.controls['password'].errors['whitespace']">Password
+                  must be more then 8
                   characters.</span>
               </div>
             </div>

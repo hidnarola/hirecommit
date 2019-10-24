@@ -27,8 +27,8 @@ export class ResetPasswordComponent implements OnInit {
   ) {
     this.formData = {};
     this.form = this.fb.group({
-      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
-      confirmpassword: new FormControl('', [Validators.required])
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator,  Validators.minLength(8)])),
+      confirmpassword: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
   }
 
@@ -37,6 +37,16 @@ export class ResetPasswordComponent implements OnInit {
       this.params_token = params;
     });
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   confirm(valid) {
     this.isFormSubmitted = true;
