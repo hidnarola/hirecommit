@@ -118,7 +118,6 @@ router.post("/", async (req, res) => {
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
                 "communication": JSON.parse(req.body.data)
-
             }
 
         };

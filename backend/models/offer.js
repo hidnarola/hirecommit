@@ -48,8 +48,8 @@ const OfferSchema = new Schema({
     type: String
   },
   country: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'country_datas'
   },
   location: {
     type: mongoose.Schema.Types.ObjectId,
