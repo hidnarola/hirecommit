@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { OfferService } from '../offer.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-offer-list',
@@ -25,11 +26,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private service: OfferService,
     private route: Router,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private confirmationService: ConfirmationService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('candidate: offerlist component => ');
-    this.getCustomField();
+    console.log('candidate: offerlist component => ', this.userDetail);
+    if (this.userDetail.role === 'Employer') {
+      this.getCustomField();
+    }
   }
 
   // get first custom field
@@ -129,9 +133,31 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.navigate(['/employer/offers/edit/' + id]);
   }
 
-  onDelete(id) {
-    this.service.deactivate_employer_offer(id).subscribe(res => {
-      this.rrerender();
+  delete(id) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.deactivate_employer_offer(id).subscribe(res => {
+          this.rrerender();
+        });
+      }
+    });
+  }
+
+  onAccept(id) {
+    console.log('accept id', id);
+    const obj = {
+      'id': id
+    }
+
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.offer_accept(obj).subscribe(res => {
+          console.log('accepted!!');
+        })
+
+      }
     });
   }
 

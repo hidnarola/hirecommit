@@ -57,8 +57,8 @@
                                         class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
                                             class="icon-pencil"></i></button>
 
-                                    <button *ngIf="userDetail.role === 'candidate'" type="button"
-                                        class="btn btn-sm btn-primary" (click)="onAccept()">
+                                    <button *ngIf="userDetail.role === 'candidate'" type="button" id="btnAccept"
+                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id)">
                                         <i class="icon-check"></i></button>
                                 </td>
                             </tr>
@@ -74,3 +74,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

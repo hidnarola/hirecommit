@@ -63,6 +63,33 @@ export const admin: NavData[] = [
     ]
   }
 ];
+export const sub_employer: NavData[] = [
+  {
+    name: 'Offer',
+    // name: 'Manage Employer',
+    url: 'offer/list',
+    icon: 'icon-grid',
+  },
+  {
+    name: 'Groups',
+    // name: 'Manage Groups',
+    url: 'groups/list',
+    icon: 'icon-people',
+  },
+  {
+    name: 'Locations',
+    // name: 'Manage Location',
+    url: 'locations/list',
+    icon: 'icon-location-pin',
+  },
+  {
+    name: 'Custom Field',
+    url: 'custom_fields',
+    icon: 'icon-paper-clip'
+  }
+
+
+];
 
 export const employer: NavData[] = [
   {
