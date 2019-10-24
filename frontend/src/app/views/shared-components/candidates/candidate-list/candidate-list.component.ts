@@ -43,8 +43,8 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-
-      pageLength: 5,
+      order: [[0, 'desc']],
+      pageLength: 10,
       serverSide: true,
       processing: true,
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },

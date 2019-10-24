@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
-
 import { AppRoutingModule } from './app.routing';
 import { P404Component } from './shared/error/404.component';
 import { P500Component } from './shared/error/500.component';
@@ -28,6 +27,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 export function getToken(): string {
   return localStorage.getItem('token');
 }
+import { NgxSpinnerModule } from 'ngx-spinner';
 @NgModule({
   imports: [
     BrowserModule,
@@ -39,6 +39,7 @@ export function getToken(): string {
     HttpClientModule,
     CheckboxModule,
     FileUploadModule,
+    NgxSpinnerModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: getToken
