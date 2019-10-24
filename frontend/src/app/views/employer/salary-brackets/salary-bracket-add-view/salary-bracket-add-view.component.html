@@ -14,7 +14,7 @@
                             <label class="col-md-3 col-form-label" for="country">Select Country</label>
                             <div class="col-md-2">
 
-                                 [(ngModel)]="offer_data.country" 
+                                 [(ngModel)]="offer_data.country"
                                 <p-dropdown [options]="countryList" placeholder="Select Country"
                                     formControlName="country" [(ngModel)]="detail.country" id="country" #country
                                     (onChange)="findCurrency($event)"></p-dropdown>

@@ -18,7 +18,7 @@
                                     <option placeholder="Select Country" class='option' *ngFor='let option of Country'
                                         [value]="option._id">
                                         {{option.country}}</option>
-                                </select> 
+                                </select>
 
                                 <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
                                     [(ngModel)]="cnt" id="country"></p-dropdown>
@@ -40,7 +40,9 @@
                                     [(ngModel)]="detail.city" formControlName="city" id="city">
 
                                 <span *ngIf="!addLocation.get('city').valid && submitted" class="text-danger">
-                                    <span *ngIf="addLocation.get('city').errors['required']">This field is
+                                    <span
+                                        *ngIf="addLocation.get('city').errors['required'] || addLocation.get('city').errors['whitespace']">This
+                                        field is
                                         required.</span>
                                 </span>
                             </div>

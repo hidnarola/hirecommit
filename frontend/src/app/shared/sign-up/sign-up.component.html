@@ -47,8 +47,13 @@
                       <input type="text" class="form-control" placeholder="yourname@companyname.com"
                         [(ngModel)]="formData.email" name="email" formControlName="email" required="required">
                       <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['email'].errors.required">Email is required.</span>
-                        <span *ngIf="registerForm.controls['email'].errors.email">Email must be in valid format.</span>
+                        <span
+                          *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
+                          field
+                          is required.</span>
+                        <span
+                          *ngIf="registerForm.controls['email'].errors.email && !registerForm.controls['email'].errors.whitespace">Email
+                          must be in valid format.</span>
                       </div>
                     </div>
                   </fieldset>
@@ -63,8 +68,13 @@
                       <input type="password" [(ngModel)]="formData.password" name="password" class="form-control"
                         placeholder="Min 8 char,1 letter & 1 number" formControlName="password" required="required">
                       <div class="error mb-2 mt-1" *ngIf="!registerForm.controls['password'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['password'].errors['required']">Password is required.</span>
-                        <span *ngIf="registerForm.controls['password'].errors['minlength']">Password must be more then 8
+                        <span
+                          *ngIf="registerForm.controls['password'].errors['required'] || registerForm.controls['password'].errors['whitespace']">This
+                          field
+                          is required.</span>
+                        <span
+                          *ngIf="registerForm.controls['password'].errors['minlength'] && !registerForm.controls['password'].errors['whitespace']">Password
+                          must be more then 8
                           characters.</span>
                       </div>
                     </div>
@@ -97,8 +107,8 @@
                         id="country" (onChange)="getCode($event)">
                       </p-dropdown>
                       <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['country'].errors['required']">Please select your
-                          country.</span>
+                        <span *ngIf="registerForm.controls['country'].errors['required']">This field
+                          is required.</span>
                       </div>
                     </fieldset>
                     <fieldset class="form-group col-md-6 mb-3">
@@ -107,8 +117,8 @@
                         formControlName="businesstype" id="businesstype">
                       </p-dropdown>
                       <div class="error" *ngIf="!registerForm.controls['businesstype'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['businesstype'].errors['required']">Please select business
-                          type.</span>
+                        <span *ngIf="registerForm.controls['businesstype'].errors['required']">This field
+                          is required.</span>
                       </div>
                     </fieldset>
                   </div>
@@ -132,8 +142,10 @@
                         [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
                         required="required">
                       <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['companyname'].errors['required']">Company name is
-                          required.</span>
+                        <span
+                          *ngIf="registerForm.controls['companyname'].errors['required'] || registerForm.controls['companyname'].errors['whitespace']">This
+                          field
+                          is required.</span>
                       </div>
                     </div>
 
@@ -161,8 +173,10 @@
                       <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
                         name="username" formControlName="username" required="required">
                       <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['username'].errors['required']">User name is
-                          required.</span>
+                        <span
+                          *ngIf="registerForm.controls['username'].errors['required'] || registerForm.controls['username'].errors['whitespace']">This
+                          field
+                          is required.</span>
                       </div>
                     </div>
 
@@ -183,8 +197,8 @@
                             required="required">
                           <div class="error pull-left"
                             *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
-                            <span *ngIf="registerForm.controls['contactno'].errors['required']">Contact number is
-                              required.</span>
+                            <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
+                              is required.</span>
                             <span
                               *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
                               10 digits of mobile number.</span>

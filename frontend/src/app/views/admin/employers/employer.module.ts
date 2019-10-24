@@ -6,7 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from 'angular-datatables';
 import { EmployerListComponent } from './employer-list/employer-list.component';
 import { EmployerViewComponent } from './employer-view/employer-view.component';
-
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 @NgModule({
   declarations: [
     EmployerListComponent,
@@ -17,8 +18,9 @@ import { EmployerViewComponent } from './employer-view/employer-view.component';
     EmployerRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    DataTablesModule
-  ],
-  providers: []
+    DataTablesModule,
+    ConfirmDialogModule
+  ], providers: [ConfirmationService]
+
 })
 export class EmployerModule { }

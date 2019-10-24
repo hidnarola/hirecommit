@@ -5,6 +5,7 @@ import { CandidateService } from '../candidate.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-candidate-list',
@@ -26,7 +27,9 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
     private route: Router,
     private router: ActivatedRoute,
     private commonService: CommonService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private confirmationService: ConfirmationService
+
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('this.userDetail => ', this.userDetail);
@@ -122,12 +125,17 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
     const obj = {
       'id': id
     };
-    this.service.approved(obj).subscribe(res => {
-      this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
-      this.rrerender();
-    }, (err) => {
-      console.log(err);
-      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.approved(obj).subscribe(res => {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.rrerender();
+        }, (err) => {
+          console.log(err);
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        });
+      }
     });
   }
 

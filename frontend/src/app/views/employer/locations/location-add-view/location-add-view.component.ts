@@ -34,14 +34,14 @@ export class LocationAddViewComponent implements OnInit {
   ngOnInit() {
     this.addLocation = new FormGroup({
       // country: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required])
+      city: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
     this.getDetail(this.id);
 
-    //country
+    // country
     // this.commonService.getprofileDetail.subscribe(async res => {
     //   if (res) {
     //     this.decyptCountry = res;
@@ -63,7 +63,17 @@ export class LocationAddViewComponent implements OnInit {
     // });
   }
 
-  //issue
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
+
+  // issue
   getDetail(id: string) {
     if (this.id) {
       this.panelTitle = 'Edit Location';

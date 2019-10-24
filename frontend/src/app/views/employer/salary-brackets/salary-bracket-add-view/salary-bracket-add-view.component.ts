@@ -112,7 +112,6 @@ export class SalaryBracketAddViewComponent implements OnInit {
   getDetail(id) {
     if (id) {
       this.panelTitle = 'Edit Salary Bracket';
-
       this.service.get_salary_bracket_detail(id).subscribe(res => {
         this.detail.country = res['data'].country._id;
         this.detail.currency = res['data'].country.currency_code;
@@ -162,7 +161,7 @@ export class SalaryBracketAddViewComponent implements OnInit {
         'currency': 'INR',
         'from': this.AddSalaryBracket.value['from'],
         'to': this.AddSalaryBracket.value['to']
-      }
+      };
       this.service.add_salary_brcaket(this.addSalary).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.submitted = false;
