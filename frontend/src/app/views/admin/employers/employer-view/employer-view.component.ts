@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { EmployerService } from '../employer.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
@@ -30,6 +31,7 @@ export class EmployerViewComponent implements OnInit {
     private router: Router,
     private service: EmployerService,
     private route: ActivatedRoute,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
     private toastr: ToastrService,
     private confirmationService: ConfirmationService,

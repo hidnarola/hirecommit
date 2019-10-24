@@ -22,6 +22,15 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   employer: any;
   offerData: any[];
   form = false;
+
+  // offer type options
+  offer_type_optoins = [
+    { label: 'Select Offer Type', value: '' },
+    { label: 'No Commit', value: 'noCommit' },
+    { label: 'Candidate Commit', value: 'candidateCommit' },
+    { label: 'Both Commit', value: 'bothCommit' }
+  ];
+
   userDetail: any = [];
   constructor(
     private service: OfferService,
@@ -51,9 +60,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       serverSide: true,
       processing: true,
+      order: [[0, 'desc']],
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -87,7 +97,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }
       },
-      columnDefs: [{ orderable: false, targets: 10 }], // 11
+      columnDefs: [{ orderable: false, targets: 10 }],
       columns: [
         {
           data: 'createdAt'

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-group-edit',
@@ -32,8 +33,11 @@ export class GroupEditComponent implements OnInit {
     private service: GroupService,
     private toastr: ToastrService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService,
   ) {
+    // show spinner
+    this.spinner.show();
     // form controls
     this.groupForm = this.fb.group({
       name: new FormControl('', [Validators.required]),
@@ -56,6 +60,8 @@ export class GroupEditComponent implements OnInit {
     this.id = this.route.snapshot.params.id;
     this.service.get_detail(this.id).subscribe(res => {
       this.groupData = res['data']['data'][0];
+      // hide spinner
+      this.spinner.hide();
       if (res['communication']['data'] && res['communication']['data'].length > 0) {
         this.communicationData = res['communication']['data'][0]['communication'];
       }
@@ -63,10 +69,8 @@ export class GroupEditComponent implements OnInit {
       // set communication
       if (this.communicationData && this.communicationData.length > 0) {
         this.is_communication_added = true;
-        console.log('communicaiondata found => ');
         const _array = [];
         this.communicationData.forEach((element, index) => {
-          console.log('element => ', element);
           const new_communication = {
             'communicationname': element.communicationname,
             'trigger': element.trigger,
@@ -109,19 +113,19 @@ export class GroupEditComponent implements OnInit {
   }
 
   // On change of communication
-  changeCommunication(e) {
-    console.log('e => ', e);
-    if (e.checked) {
-      this.add_new_communication();
-    } else {
-      this.communicationData = [];
-      console.log('communicationFieldItems => ', this.communicationFieldItems);
-      console.log('this.groupForm => ', this.groupForm);
-      this.communicationFieldItems.setControl(0, this.fb.group({}));
-      this.updateValidation();
-      this.isFormSubmitted = false;
-    }
-  }
+  // changeCommunication(e) {
+  //   console.log('e => ', e);
+  //   if (e.checked) {
+  //     this.add_new_communication();
+  //   } else {
+  //     this.communicationData = [];
+  //     console.log('communicationFieldItems => ', this.communicationFieldItems);
+  //     console.log('this.groupForm => ', this.groupForm);
+  //     this.communicationFieldItems.setControl(0, this.fb.group({}));
+  //     this.updateValidation();
+  //     this.isFormSubmitted = false;
+  //   }
+  // }
 
   // add new communication
   add_new_communication(data_index = null) {
