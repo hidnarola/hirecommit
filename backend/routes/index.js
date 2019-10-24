@@ -557,8 +557,23 @@ router.post('/login', async (req, res) => {
                 path: "$country",
                 preserveNullAndEmptyArrays: true
               },
-            }
+            },
+            // {
+            //   $lookup:
+            //   {
+            //     from: "country_datas",
+            //     localField: "userDetail.country",
+            //     foreignField: "_id",
+            //     as: "country"
+            //   }
+            // },
 
+            // {
+            //   $unwind: {
+            //     path: "$country",
+            //     preserveNullAndEmptyArrays: true
+            //   },
+            // }
 
           ])
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successful", "data": user_resp.data, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": role.data.role, id: user_resp.data._id });

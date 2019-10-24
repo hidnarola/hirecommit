@@ -183,19 +183,25 @@ router.put("/deactive_candidate/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(Candidate, { "_id": req.params.id }, obj);
-    var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
+
+    var resp_data = await common_helper.update(Candidate, { "user_id": req.params.id }, obj);
+
+    var resp_data = await common_helper.update(User, { "_id": req.params.id }, obj);
+
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
     } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
+        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
     }
 });
+
+
+
 
 // router.put('/edit_approved_candidate/:id', async (req, res) => {
 
