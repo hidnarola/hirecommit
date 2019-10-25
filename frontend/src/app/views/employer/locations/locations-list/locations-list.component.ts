@@ -82,7 +82,9 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.deactivate_location(id).subscribe(res => {
-          if (res['status'] === 1) {
+          console.log('>>', res['message']);
+
+          if (res['resp_data'].status === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
           this.rrerender();

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CandidateService } from '../candidate.service';
 import { CommonService } from '../../../../services/common.service';
-import * as env from '../../../../../environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-candidate-view',
@@ -22,10 +22,11 @@ export class CandidateViewComponent implements OnInit {
   email: any;
   cancel_link1 = '/admin/candidates/new_candidate';
   cancel_link2 = '/admin/candidates/approved_candidate';
-  image = env.environment.imageUrl;
+  image = environment.imageUrl;
 
   buttonValue: any;
   buttonValue1: any;
+  documenttype: any;
   constructor(
     private router: Router,
     private service: CandidateService,
@@ -55,6 +56,7 @@ export class CandidateViewComponent implements OnInit {
       this.candidate_detail = res['data'];
       console.log('res detail', this.candidate_detail);
       this.email = this.candidate_detail['user_id']['email'];
+      this.documenttype = this.candidate_detail['documenttype']['name'];
       // if (this.candidate_detail.user_id.isAllow === false) {
       //   this.buttonValue = 'Approve';
 

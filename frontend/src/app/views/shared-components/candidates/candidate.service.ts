@@ -31,7 +31,7 @@ export class CandidateService {
     // }
 
     deactivate_candidate(id): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/deactive_candidate/' + id, null);
+        return this.http.put<any[]>(`${this.admin_url}` + '/candidate/deactive_candidate/' + id, null);
     }
 
     candidate_detail(id): Observable<any[]> {

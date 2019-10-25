@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { EmployerService } from '../employer.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -59,7 +59,7 @@ export class EmployerViewComponent implements OnInit {
 
       if (this.employer_detail.user_id.isAllow === false) {
         this.buttonValue = 'Approve';
-        this.buttonValue1 = 'unapprove';
+
       } else {
         this.buttonValue1 = 'Cancel';
       }
