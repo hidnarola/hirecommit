@@ -76,8 +76,7 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
           }
         ]
       };
-    }
-    else if (this.userDetail.role === 'sub-employer') {
+    } else if (this.userDetail.role === 'sub-employer') {
       this.dtOptions = {
         pagingType: 'full_numbers',
         pageLength: 10,
@@ -118,7 +117,7 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   delete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
+      message: 'Are you sure that you want to delete this record?',
       accept: () => {
         this.service.deactivate_location(id).subscribe(res => {
           console.log('>>', res['message']);
