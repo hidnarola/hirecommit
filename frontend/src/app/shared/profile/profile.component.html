@@ -108,3 +108,69 @@
             </div>
         </div>
     </div>
+
+    <!-- //sub-employer -->
+    <!-- 
+    <div *ngIf="userType === 'sub-employer'" class="row profiledata-info">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit(profileForm.valid)"> 
+        <div class="col-md-3 well">
+            <div class="row">
+                <div class="card text-black col-sm-12">
+                    <div class="card-body">
+                        <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
+                        <label>Name </label><br>
+                        <label> Email </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 well">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form role="form">
+                            <div class="card-header"><strong>Personal Details</strong></div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Country</td>
+                                            <td>
+                                                 <p-dropdown [options]="countryList" placeholder="Select Country"
+                                                        formControlName="country" [(ngModel)]="profileForm.country"
+                                                        id="country" (onChange)="getCode($event)" [required]>
+                                                    </p-dropdown> 
+                                              <div class="error"
+                                                        *ngIf="!profileForm.controls['country'].valid && isFormSubmitted">
+                                                        <span
+                                                            *ngIf="profileForm.controls['country'].errors['required']">This
+                                                            field is required.</span>
+                                                    </div> 
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Contact Number</td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Document Type</td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Document Image</td>
+                                            <td></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div> -->

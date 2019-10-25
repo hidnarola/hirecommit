@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from '../../services/common.service';
 import { ActivatedRoute } from '@angular/router';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
@@ -10,7 +11,12 @@ import { ActivatedRoute } from '@angular/router';
 export class ProfileComponent implements OnInit {
   profileData: any = {};
   userType: any;
-  constructor(private service: CommonService, private router: ActivatedRoute) {
+  alldata: any = [];
+  countryList: any = [];
+  profileForm: FormGroup;
+  constructor(private service: CommonService,
+    private router: ActivatedRoute,
+    public fb: FormBuilder, ) {
 
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     // if (this.router.snapshot.data.type === 'candidate') {
@@ -18,6 +24,9 @@ export class ProfileComponent implements OnInit {
 
     this.userType = localStorage.getItem('user');
     // console.log('get user from local storage => ', this.userType);
+    this.profileForm = this.fb.group({
+      country: new FormControl('', [Validators.required])
+    })
 
     // }
   }
@@ -45,7 +54,13 @@ export class ProfileComponent implements OnInit {
 
     }
 
-
+    this.service.country_registration().subscribe(res => {
+      this.alldata = res['data'];
+      console.log('Profile country>', res['data']);
+      res['data'].forEach(element => {
+        this.countryList.push({ 'label': element.country, 'value': element._id });
+      });
+    });
   }
 
 }

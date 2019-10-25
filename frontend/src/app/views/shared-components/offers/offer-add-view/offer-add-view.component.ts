@@ -197,6 +197,7 @@ export class OfferAddViewComponent implements OnInit {
       console.log('this.form.controls[] => ', this.form.controls['salaryduration']);
     } else {
       this.form.controls['salaryduration'].setValidators(null);
+      this.form.controls['salaryduration'].setValue(null);
     }
     this.updateValidation();
     this.form.controls['salaryduration'].updateValueAndValidity();
@@ -239,80 +240,81 @@ export class OfferAddViewComponent implements OnInit {
         this.resData = res[`data`];
         this.spinner.hide();
         console.log('details ====>', this.resData);
-        // set communication
-        console.log('communication res=> ', res['communication']);
-        if (res['data']['communication'] && res['data']['communication'].length > 0) {
-          this.communicationData = res['data']['communication'];
-          const _communication_array = [];
-          this.communicationData.forEach((element, index) => {
-            const new_communication = {
-              'communicationname': element.communicationname,
-              'trigger': element.trigger,
-              'priority': element.priority,
-              'day': element.day,
-              'message': element.message,
-            };
-            this.communicationFieldItems.setControl(index, this.fb.group({
-              communicationname: ['', Validators.required],
-              trigger: ['', Validators.required],
-              priority: ['', Validators.required],
-              day: ['', Validators.required],
-              message: ['']
-              // message: ['', Validators.required]
-            }));
-            _communication_array.push(new_communication);
-          });
-          this.communicationData = _communication_array;
-        }
-        // set communication
-        this.form.controls['candidate'].setValue(this.resData.user_id);
-        this.getCandidateDetail(this.resData.user_id);
-        this.form.controls['title'].setValue(this.resData.title);
-        this.form.controls.salarytype.setValue(res['data'].salarytype);
-        this.form.controls['salaryduration'].setValue(this.resData.salaryduration);
-        console.log('this.resData[location][_id] => ', this.resData['location']['_id']);
-        this.form.controls['location'].setValue(this.resData['location']);
-        // this.getCountryDetail(this.resData.country);
-        // this.findData({ 'value': this.resData.country });
-        this.form.controls['expirydate'].setValue(new Date(this.resData.expirydate));
-        this.form.controls['joiningdate'].setValue(new Date(this.resData.joiningdate));
-        this.form.controls['offertype'].setValue(this.resData.offertype);
-        this.groupDetail(this.resData.groups);
-        this.form.controls['commitstatus'].setValue(this.resData.commitstatus);
-        this.form.controls['notes'].setValue(this.resData.notes);
-        if (this.resData.salary) {
-          this.form.controls['salarybracket'].setValue(this.resData.salary);
-          document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
-          document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
-          this.form.controls['salarybracket_from'].setErrors(null);
-          this.form.controls['salarybracket_to'].setErrors(null);
-          this.updateValidation();
-        }
-        if (this.resData.salary_from && this.resData.salary_to) {
-          this.form.controls['salarybracket_from'].setValue(this.resData.salary_from);
-          this.form.controls['salarybracket_to'].setValue(this.resData.salary_to);
-          document.getElementById('salarybracket').setAttribute('disabled', 'true');
-          this.form.controls['salarybracket'].setErrors(null);
-          this.updateValidation();
-        }
+        this.getCandidateDetail(res[`data`].user_id);
+        this.groupDetail(res[`data`].groups);
+        if (res[`data`] && this.is_Edit) {
+          // set communication
+          if (res['data']['communication'] && res['data']['communication'].length > 0) {
+            this.communicationData = res['data']['communication'];
+            const _communication_array = [];
+            this.communicationData.forEach((element, index) => {
+              const new_communication = {
+                'communicationname': element.communicationname,
+                'trigger': element.trigger,
+                'priority': element.priority,
+                'day': element.day,
+                'message': element.message,
+              };
+              this.communicationFieldItems.setControl(index, this.fb.group({
+                communicationname: ['', Validators.required],
+                trigger: ['', Validators.required],
+                priority: ['', Validators.required],
+                day: ['', Validators.required],
+                message: ['']
+                // message: ['', Validators.required]
+              }));
+              _communication_array.push(new_communication);
+            });
+            this.communicationData = _communication_array;
+          }
+          // set communication
+          this.form.controls['candidate'].setValue(res[`data`].user_id);
+          this.form.controls['title'].setValue(res[`data`].title);
+          this.form.controls.salarytype.setValue(res['data'].salarytype);
+          this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
+          console.log('res[`data`][location][_id] => ', res[`data`]['location']['_id']);
+          this.form.controls['location'].setValue(res[`data`]['location']);
+          // this.getCountryDetail(res[`data`].country);
+          // this.findData({ 'value': res[`data`].country });
+          this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
+          this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
+          this.form.controls['offertype'].setValue(res[`data`].offertype);
+          this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
+          this.form.controls['notes'].setValue(res[`data`].notes);
+          if (res[`data`].salary) {
+            this.form.controls['salarybracket'].setValue(res[`data`].salary);
+            document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+            this.form.controls['salarybracket_from'].setErrors(null);
+            this.form.controls['salarybracket_to'].setErrors(null);
+            this.updateValidation();
+          }
+          if (res[`data`].salary_from && res[`data`].salary_to) {
+            this.form.controls['salarybracket_from'].setValue(res[`data`].salary_from);
+            this.form.controls['salarybracket_to'].setValue(res[`data`].salary_to);
+            document.getElementById('salarybracket').setAttribute('disabled', 'true');
+            this.form.controls['salarybracket'].setErrors(null);
+            this.updateValidation();
+          }
 
-        const _array = [];
-        this.resData['customfeild'].forEach((element, index) => {
-          const new_customfield = {
-            key: element.key,
-            value: element.value
-          };
-          this.customfieldItem.setControl(
-            index,
-            this.fb.group({
-              value: [element.value],
-              key: [element.key]
-            })
-          );
-          this.customfieldItem.updateValueAndValidity();
-          _array.push(new_customfield);
-        });
-        this.offer_data.customfieldItem = _array;
+          const _array = [];
+          res[`data`]['customfeild'].forEach((element, index) => {
+            const new_customfield = {
+              key: element.key,
+              value: element.value
+            };
+            this.customfieldItem.setControl(
+              index,
+              this.fb.group({
+                value: [element.value],
+                key: [element.key]
+              })
+            );
+            this.customfieldItem.updateValueAndValidity();
+            _array.push(new_customfield);
+          });
+          this.offer_data.customfieldItem = _array;
+        }
       },
       err => {
         console.log(err);
@@ -346,6 +348,13 @@ export class OfferAddViewComponent implements OnInit {
   async getCandidateDetail(id) {
     const candidateDataById = this.candidate.filter(x => x.user._id === id);
     this.form.controls.email.setValue(candidateDataById[0].user.email);
+
+    console.log('candidateDataById => ', candidateDataById);
+    if (this.is_View) {
+      this.resData.candidate_name = candidateDataById[0].firstname + ' ' + candidateDataById[0].lastname;
+      this.resData.candidate_email = candidateDataById[0].user.email;
+    }
+    console.log('this.resData => ', this.resData);
   }
 
   async getCountryList() {
@@ -411,8 +420,13 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   async groupDetail(id) {
+    console.log('group_optoins => ', this.group_optoins);
     const groupById = this.group_optoins.find(x => x._id === id);
     this.form.controls.group.setValue(groupById);
+    console.log('groupId => ', groupById);
+    if (this.is_View) {
+      this.resData.groupName = groupById.name;
+    }
   }
 
   // get joining date
@@ -598,7 +612,8 @@ export class OfferAddViewComponent implements OnInit {
       'communicationFieldItems',
       'salarybracket',
       'salarybracket_from',
-      'salarybracket_to'
+      'salarybracket_to',
+      // 'salaryduration'
     ];
     const data = {
       ...this.form.value,
@@ -625,6 +640,10 @@ export class OfferAddViewComponent implements OnInit {
         this.formData.append(key, value);
       }
     }
+    console.log('this.form.value.salaryduration => ', this.form.value.salaryduration);
+    // if (this.form.value.salaryduration) {
+    //   this.formData.append('salaryduration', this.form.value.salaryduration);
+    // }
 
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
