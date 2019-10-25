@@ -38,11 +38,13 @@ export const admin: NavData[] = [
     children: [
       {
         name: 'Approved Employer',
-        url: 'employers/approved_employer'
+        url: 'employers/approved_employer',
+        icon: 'fa fa-check-square-o'
       },
       {
         name: 'New Employer',
-        url: 'employers/new_employer'
+        url: 'employers/new_employer',
+        icon: 'fa fa-user-circle'
       }
     ]
   },
@@ -54,11 +56,13 @@ export const admin: NavData[] = [
     children: [
       {
         name: 'Approved Candidate',
-        url: 'candidates/approved_candidate'
+        url: 'candidates/approved_candidate',
+        icon: 'fa fa-check-square-o'
       },
       {
         name: 'New Candidate',
-        url: 'candidates/new_candidate'
+        url: 'candidates/new_candidate',
+        icon: 'fa fa-user-circle'
       },
     ]
   }
@@ -129,14 +133,14 @@ export const candidate: NavData[] = [
   {
     name: 'Offers',
     // name: 'Manager Offers',
-    url: 'user',
-    icon: 'icon-puzzle',
-    children: [
-      {
-        name: 'Offer List',
-        url: 'offers/list'
-      }
-    ]
+    url: 'offers/list',
+    icon: 'icon-grid',
+    // children: [
+    //   {
+    //     name: 'Offer List',
+    //     url: 'offers/list'
+    //   }
+    // ]
   }
 ];
 
