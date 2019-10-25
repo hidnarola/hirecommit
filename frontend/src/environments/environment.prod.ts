@@ -14,4 +14,5 @@ export const environment = {
   production: true,
   API_URL: str + host + ':' + port + '/',
   captcha_site_key: '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc',
+  imageUrl: 'http://13.235.235.178:3000/upload/'
 };

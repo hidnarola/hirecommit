@@ -18,7 +18,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   // first_custom_field: any;
-  first_custom_field = 'Custom Field 1';
+  first_custom_field = 'Custom Field';
   employer: any;
   offerData: any[];
   form = false;
@@ -40,6 +40,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('candidate: offerlist component => ', this.userDetail);
+    console.log('userDetails => ', this.userDetail);
     if (this.userDetail.role === 'employer') {
       this.getCustomField();
     }
@@ -52,7 +53,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (res['data']) {
         this.first_custom_field = res['data']['key'];
       } else {
-        this.first_custom_field = 'Custom Field 1';
+        this.first_custom_field = 'Custom Field';
       }
     });
   }
@@ -72,6 +73,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
+              this.offerData.forEach(offer => {
+                offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+              });
               callback({
                 recordsTotal: res[`recordsTotal`],
                 recordsFiltered: res[`recordsTotal`],
@@ -86,6 +90,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
+              this.offerData.forEach(offer => {
+                offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+              });
               callback({
                 recordsTotal: res[`recordsTotal`],
                 recordsFiltered: res[`recordsTotal`],
