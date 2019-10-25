@@ -67,6 +67,7 @@ export class OfferAddViewComponent implements OnInit {
   profileData: any;
   min_date = new Date();
   min_expiry_date = new Date();
+  userDetail: any = [];
 
   constructor(
     private fb: FormBuilder,
@@ -79,7 +80,9 @@ export class OfferAddViewComponent implements OnInit {
     private spinner: NgxSpinnerService,
   ) {
     // show spinner
-    this.spinner.show();
+    if (this.is_Edit || this.is_View) {
+      this.spinner.show();
+    }
     // Form Controls
     this.form = this.fb.group({
       candidate: new FormControl('', [Validators.required]),
@@ -106,8 +109,13 @@ export class OfferAddViewComponent implements OnInit {
 
     this.commonService.getDecryptedProfileDetail().then(res => {
       this.profileData = res;
+      console.log('profiledata => ', this.profileData);
     });
-    this.getLocation();
+    this.userDetail = this.commonService.getLoggedUserDetail();
+    if (this.userDetail.role === 'employer') {
+      console.log('here => ');
+      this.getLocation();
+    }
 
     // check for add or edit
     this.route.params.subscribe((params: Params) => {
@@ -204,122 +212,145 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.userDetail = this.commonService.getLoggedUserDetail();
     //   To get candidates list
-    this.getCandidateList()
-      .then(res => {
-        this.groupList();
-      })
-      .then(res => {
-        if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
-          this.customFieldList();
-          //  spinner hide
-          this.spinner.hide();
-        }
-      })
-      .then(res => {
-        console.log('this.route.snapshot.data.title => ', this.route.snapshot.data.title);
-        if (this.route.snapshot.data.title === 'Edit') {
-          this.panelTitle = 'Edit';
-          this.is_Edit = true;
-          this.getDetail();
-        } else if (this.route.snapshot.data.title === 'View') {
-          console.log('view => ');
-          this.panelTitle = 'View';
-          this.is_View = true;
-          this.getDetail();
-        } else {
-          console.log('add => ');
-          this.panelTitle = 'Add';
-        }
-      });
+    if (this.userDetail.role === 'employer') {
+      this.getCandidateList()
+        .then(res => {
+          this.groupList();
+        })
+        .then(res => {
+          if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
+            this.customFieldList();
+            //  spinner hide
+            this.spinner.hide();
+          } else {
+            this.spinner.hide();
+          }
+        })
+        .then(res => {
+          console.log('this.route.snapshot.data.title => ', this.route.snapshot.data.title);
+          if (this.route.snapshot.data.title === 'Edit') {
+            this.panelTitle = 'Edit';
+            this.is_Edit = true;
+            this.getDetail();
+          } else if (this.route.snapshot.data.title === 'View') {
+            console.log('view => ');
+            this.panelTitle = 'View';
+            this.is_View = true;
+            this.getDetail();
+          } else {
+            console.log('add => ');
+            this.panelTitle = 'Add';
+            this.spinner.hide();
+          }
+        });
+    } else if (this.userDetail.role === 'candidate') {
+      this.getDetail();
+    }
+
   }
 
   getDetail() {
-    this.service.offer_detail(this.id).subscribe(
-      res => {
-        this.resData = res[`data`];
-        this.spinner.hide();
-        console.log('details ====>', this.resData);
-        this.getCandidateDetail(res[`data`].user_id);
-        this.groupDetail(res[`data`].groups);
-        if (res[`data`] && this.is_Edit) {
-          // set communication
-          if (res['data']['communication'] && res['data']['communication'].length > 0) {
-            this.communicationData = res['data']['communication'];
-            const _communication_array = [];
-            this.communicationData.forEach((element, index) => {
-              const new_communication = {
-                'communicationname': element.communicationname,
-                'trigger': element.trigger,
-                'priority': element.priority,
-                'day': element.day,
-                'message': element.message,
-              };
-              this.communicationFieldItems.setControl(index, this.fb.group({
-                communicationname: ['', Validators.required],
-                trigger: ['', Validators.required],
-                priority: ['', Validators.required],
-                day: ['', Validators.required],
-                message: ['']
-                // message: ['', Validators.required]
-              }));
-              _communication_array.push(new_communication);
-            });
-            this.communicationData = _communication_array;
-          }
-          // set communication
-          this.form.controls['candidate'].setValue(res[`data`].user_id);
-          this.form.controls['title'].setValue(res[`data`].title);
-          this.form.controls.salarytype.setValue(res['data'].salarytype);
-          this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
-          console.log('res[`data`][location][_id] => ', res[`data`]['location']['_id']);
-          this.form.controls['location'].setValue(res[`data`]['location']);
-          // this.getCountryDetail(res[`data`].country);
-          // this.findData({ 'value': res[`data`].country });
-          this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
-          this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
-          this.form.controls['offertype'].setValue(res[`data`].offertype);
-          this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
-          this.form.controls['notes'].setValue(res[`data`].notes);
-          if (res[`data`].salary) {
-            this.form.controls['salarybracket'].setValue(res[`data`].salary);
-            document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
-            document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
-            this.form.controls['salarybracket_from'].setErrors(null);
-            this.form.controls['salarybracket_to'].setErrors(null);
-            this.updateValidation();
-          }
-          if (res[`data`].salary_from && res[`data`].salary_to) {
-            this.form.controls['salarybracket_from'].setValue(res[`data`].salary_from);
-            this.form.controls['salarybracket_to'].setValue(res[`data`].salary_to);
-            document.getElementById('salarybracket').setAttribute('disabled', 'true');
-            this.form.controls['salarybracket'].setErrors(null);
-            this.updateValidation();
-          }
+    console.log('userDetails => ', this.userDetail);
+    if (this.userDetail.role === 'employer') {
+      this.service.offer_detail(this.id).subscribe(
+        res => {
+          this.resData = res[`data`];
+          this.spinner.hide();
+          console.log('details ====>', this.resData);
+          this.getCandidateDetail(res[`data`].user_id);
+          this.groupDetail(res[`data`].groups);
+          if (res[`data`] && this.is_Edit) {
+            // set communication
+            if (res['data']['communication'] && res['data']['communication'].length > 0) {
+              this.communicationData = res['data']['communication'];
+              const _communication_array = [];
+              this.communicationData.forEach((element, index) => {
+                const new_communication = {
+                  'communicationname': element.communicationname,
+                  'trigger': element.trigger,
+                  'priority': element.priority,
+                  'day': element.day,
+                  'message': element.message,
+                };
+                this.communicationFieldItems.setControl(index, this.fb.group({
+                  communicationname: ['', Validators.required],
+                  trigger: ['', Validators.required],
+                  priority: ['', Validators.required],
+                  day: ['', Validators.required],
+                  message: ['']
+                  // message: ['', Validators.required]
+                }));
+                _communication_array.push(new_communication);
+              });
+              this.communicationData = _communication_array;
+            }
+            // set communication
+            this.form.controls['candidate'].setValue(res[`data`].user_id);
+            this.form.controls['title'].setValue(res[`data`].title);
+            this.form.controls.salarytype.setValue(res['data'].salarytype);
+            this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
+            console.log('res[`data`][location][_id] => ', res[`data`]['location']['_id']);
+            this.form.controls['location'].setValue(res[`data`]['location']);
+            // this.getCountryDetail(res[`data`].country);
+            // this.findData({ 'value': res[`data`].country });
+            this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
+            this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
+            this.form.controls['offertype'].setValue(res[`data`].offertype);
+            this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
+            this.form.controls['notes'].setValue(res[`data`].notes);
+            if (res[`data`].salary) {
+              this.form.controls['salarybracket'].setValue(res[`data`].salary);
+              document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+              document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+              this.form.controls['salarybracket_from'].setErrors(null);
+              this.form.controls['salarybracket_to'].setErrors(null);
+              this.updateValidation();
+            }
+            if (res[`data`].salary_from && res[`data`].salary_to) {
+              this.form.controls['salarybracket_from'].setValue(res[`data`].salary_from);
+              this.form.controls['salarybracket_to'].setValue(res[`data`].salary_to);
+              document.getElementById('salarybracket').setAttribute('disabled', 'true');
+              this.form.controls['salarybracket'].setErrors(null);
+              this.updateValidation();
+            }
 
-          const _array = [];
-          res[`data`]['customfeild'].forEach((element, index) => {
-            const new_customfield = {
-              key: element.key,
-              value: element.value
-            };
-            this.customfieldItem.setControl(
-              index,
-              this.fb.group({
-                value: [element.value],
-                key: [element.key]
-              })
-            );
-            this.customfieldItem.updateValueAndValidity();
-            _array.push(new_customfield);
-          });
-          this.offer_data.customfieldItem = _array;
+            const _array = [];
+            res[`data`]['customfeild'].forEach((element, index) => {
+              const new_customfield = {
+                key: element.key,
+                value: element.value
+              };
+              this.customfieldItem.setControl(
+                index,
+                this.fb.group({
+                  value: [element.value],
+                  key: [element.key]
+                })
+              );
+              this.customfieldItem.updateValueAndValidity();
+              _array.push(new_customfield);
+            });
+            this.offer_data.customfieldItem = _array;
+          }
+        },
+        err => {
+          console.log(err);
         }
-      },
-      err => {
-        console.log(err);
-      }
-    );
+      );
+    } else if (this.userDetail.role === 'candidate') {
+      this.service.offer_detail_candidate(this.id).subscribe(
+        res => {
+          this.resData = res[`data`];
+          console.log('res => ', res);
+          this.spinner.hide();
+          this.is_View = true;
+          this.resData.candidate_name = this.profileData.firstname + ' ' + this.profileData.lastname;
+          this.resData.candidate_email = this.profileData.email;
+          this.resData.groupName = res[`data`].groups.name;
+        });
+    }
   }
 
   // get candidate details
