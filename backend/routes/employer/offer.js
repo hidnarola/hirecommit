@@ -74,7 +74,7 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var obj = {
                 "employer_id": user.data.emp_id,
                 "user_id": req.body.user_id,
@@ -325,7 +325,7 @@ router.post('/get', async (req, res) => {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         console.log('user', user);
 
-        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id
         }
         else {
