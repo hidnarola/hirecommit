@@ -33,10 +33,11 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       serverSide: true,
       searching: true,
       processing: true,
+      order: [[0, 'desc']],
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -46,21 +47,21 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
             this.data = res['user'];
             this.subAccountList = [];
             this.data.forEach(element => {
-              console.log(element);
+              console.log('=>', element);
               if (element.user.admin_rights === 'no') {
                 this.obj = {
-                  username : element.username,
+                  username: element.username,
                   email: element.user.email,
                   admin_rights: false,
-                  user_id : element.user_id
+                  user_id: element.user_id
                 };
                 this.subAccountList.push(this.obj);
               } else if (element.user.admin_rights === 'yes') {
                 this.obj = {
-                  username : element.username,
+                  username: element.username,
                   email: element.user.email,
                   admin_rights: true,
-                  user_id : element.user_id
+                  user_id: element.user_id
                 };
                 this.subAccountList.push(this.obj);
               }
@@ -125,21 +126,21 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         'id': id,
         'admin_rights': 'no'
       };
-       this.service.admin_rigth(this.obj).subscribe(res => {
-          this.toastr.success('Admin Rights Revoke.' , 'Success!', { timeOut: 1000 });
-        }, (err) => {
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-        });
+      this.service.admin_rigth(this.obj).subscribe(res => {
+        this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 1000 });
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+      });
     } else if (e.checked === true) {
       this.obj = {
-        'id':  id,
+        'id': id,
         'admin_rights': 'yes'
       };
       this.service.admin_rigth(this.obj).subscribe(res => {
-          this.toastr.success('Admin Rights Granted.' , 'Success!', { timeOut: 1000 });
-        }, (err) => {
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-        });
+        this.toastr.success('Admin Rights Granted.', 'Success!', { timeOut: 1000 });
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+      });
     }
   }
 

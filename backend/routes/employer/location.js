@@ -68,7 +68,7 @@ router.post('/get', async (req, res) => {
 
     if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'country' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
             [sortOrderColumn]: sortOrder
@@ -228,7 +228,8 @@ router.put("/deactivate_location/:id", async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
     } else {
         logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
+        var data = resp_data.data
+        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
     }
 });
 

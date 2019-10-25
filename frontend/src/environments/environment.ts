@@ -16,8 +16,14 @@ if (host === 'localhost') {
 export const environment = {
   production: false,
   captcha_site_key: '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU',
+<<<<<<< HEAD
   API_URL: str + host + ':' + port + '/',
   //API_URL: 'http://192.168.100.23:3000/',
   // API_URL: ' http://13.235.235.178:3000/',
+=======
+  // API_URL: str + host + ':' + port + '/',
+  // API_URL: 'http://192.168.100.23:3000/',
+  API_URL: ' http://13.235.235.178:3000/',
+>>>>>>> d1638f1f5c63de1c0d6fc30d8047918d6a1d7490
   imageUrl: 'http://192.168.100.23:3000/upload/'
 };

@@ -46,7 +46,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="title">Title</label>
                             <div class="col-md-6">
-                                <input type="title" class="form-control" placeholder="Enter Name" autocomplete="title"
+                                <input type="title" class="form-control" placeholder="Enter Title" autocomplete="title"
                                     formControlName="title" id="title">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['title'].valid">
                                     <span *ngIf="form.controls['title'].errors['required']" class="text-danger">
@@ -85,6 +85,13 @@
                                 <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration"
                                     id="salaryduration" [disabled]="!(form.controls['salarytype'].value === 'hourly')">
                                 </p-dropdown>
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salaryduration'].valid">
+                                    <span *ngIf="form.controls['salaryduration'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -130,7 +137,8 @@
                             </div>
                         </div> -->
 
-                        <div class="form-group row">
+                        <!--  salary bracket dropdown -->
+                        <!-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket">Salary Bracket</label>
                             <div class="col-md-6">
                                 <p-dropdown [options]="salarybracketList" formControlName="salarybracket"
@@ -143,13 +151,61 @@
                                     </span>
                                 </div>
                             </div>
+                        </div> -->
+                        <!--  salary bracket dropdown -->
+
+                        <!--  input salary bracket -->
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="salarybracket">Salary</label>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" placeholder="Enter Salary Bracket"
+                                    formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()">
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salarybracket'].valid">
+                                    <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                            </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="salarybracket_from">Salary From</label>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" placeholder="Enter from Salary"
+                                    formControlName="salarybracket_from" id="salarybracket_from"
+                                    (blur)="onSalaryRangeBlur()">
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salarybracket_from'].valid">
+                                    <span *ngIf="form.controls['salarybracket_from'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="salarybracket_to">Salary To</label>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" placeholder="Enter to Salary"
+                                    formControlName="salarybracket_to" id="salarybracket_to"
+                                    (blur)="onSalaryRangeBlur()">
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salarybracket_to'].valid">
+                                    <span *ngIf="form.controls['salarybracket_to'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  input salary bracket -->
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="joiningdate">Joining Date</label>
                             <div class="col-md-6">
                                 <p-calendar dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" formControlName="joiningdate"
-                                    id="joiningdate">
+                                    id="joiningdate" [readonlyInput]="is_View" [disabled]="is_View" [minDate]="min_date"
+                                    (onClose)="getJoiningDate()">
                                 </p-calendar>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">
@@ -159,12 +215,12 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="expirydate">Expiry Date</label>
                             <div class="col-md-6">
                                 <p-calendar dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" formControlName="expirydate"
-                                    id="expirydate">
+                                    id="expirydate" [readonlyInput]="is_View" [disabled]="is_View"
+                                    [minDate]="min_expiry_date">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../../../services/common.service';
 import { LocationService } from '../location.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-location-add-view',
@@ -28,20 +29,21 @@ export class LocationAddViewComponent implements OnInit {
     private toastr: ToastrService,
     private commonService: CommonService,
     private service: LocationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit() {
     this.addLocation = new FormGroup({
       // country: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required])
+      city: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
     this.getDetail(this.id);
 
-    //country
+    // country
     // this.commonService.getprofileDetail.subscribe(async res => {
     //   if (res) {
     //     this.decyptCountry = res;
@@ -63,7 +65,17 @@ export class LocationAddViewComponent implements OnInit {
     // });
   }
 
-  //issue
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
+
+  // issue
   getDetail(id: string) {
     if (this.id) {
       this.panelTitle = 'Edit Location';

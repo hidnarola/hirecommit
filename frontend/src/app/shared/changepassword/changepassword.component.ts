@@ -24,9 +24,9 @@ export class ChangepasswordComponent implements OnInit {
   ) {
     this.formData = {};
     this.form = this.fb.group({
-      'oldpassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
-      'newpassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(8)])),
-      'confirmnewpassword': new FormControl('', [Validators.required])
+      'oldpassword': new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      'newpassword': new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
   }
 
@@ -37,6 +37,16 @@ export class ChangepasswordComponent implements OnInit {
   ngOnInit() {
     this.token = localStorage.getItem('token');
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   submit(valid) {
     this.isFormSubmitted = true;

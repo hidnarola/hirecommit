@@ -3,6 +3,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { CustomFieldService } from '../custom-field.service';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router, Params } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-custom-field-add-view',
@@ -23,7 +24,8 @@ export class CustomFieldAddViewComponent implements OnInit {
     private service: CustomFieldService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit() {
@@ -37,9 +39,19 @@ export class CustomFieldAddViewComponent implements OnInit {
       this.buttonTitle = 'Update';
     });
     this.addCustomFeild = new FormGroup({
-      key: new FormControl('', [Validators.required])
+      key: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   onSubmit(valid) {
     this.submitted = true;

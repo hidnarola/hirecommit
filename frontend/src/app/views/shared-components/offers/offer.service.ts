@@ -10,6 +10,7 @@ import * as env from '../../../../environments/environment';
 export class OfferService {
     private employer_url = env.environment.API_URL + 'employer';
     private candidate_url = env.environment.API_URL + 'candidate';
+    private sub_employer_url = env.environment.API_URL + 'sub-employer';
 
     constructor(private http: HttpClient, private route: Router) { }
 
@@ -78,8 +79,9 @@ export class OfferService {
     // Employer Services
 
     // Candidate Service
-    view_offerList(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.candidate_url}` + '/view_offer');
+
+    view_offer_candidate(params): Observable<any[]> {
+        return this.http.post<any[]>(`${this.candidate_url}` + '/offer/get', { ...params });
     }
 
     deactivate_candidate_offer(id): Observable<any[]> {
@@ -90,6 +92,13 @@ export class OfferService {
         return this.http.get<any[]>(`${this.candidate_url}` + '/get_employer/' + id);
     }
 
-
+    offer_accept(id): Observable<any[]> {
+        return this.http.put<any[]>(`${this.candidate_url}` + '/offer', id);
+    }
     // Candidate Service
+
+    //sub-employer
+
+
+    //sub-employer
 }

@@ -28,8 +28,8 @@ const CandidateDetailSchema = new Schema({
   // required: true
   ,
   documenttype: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'document_type'
   },
   document_verified: {
     type: Boolean,

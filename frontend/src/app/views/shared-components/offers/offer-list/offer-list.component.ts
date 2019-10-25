@@ -3,6 +3,8 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { OfferService } from '../offer.service';
 import { Router } from '@angular/router';
+import { CommonService } from '../../../../services/common.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-offer-list',
@@ -16,17 +18,32 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   // first_custom_field: any;
-  first_custom_field = 'Custom Field 1';
+  first_custom_field = 'Custom Field';
   employer: any;
   offerData: any[];
   form = false;
 
+  // offer type options
+  offer_type_optoins = [
+    { label: 'Select Offer Type', value: '' },
+    { label: 'No Commit', value: 'noCommit' },
+    { label: 'Candidate Commit', value: 'candidateCommit' },
+    { label: 'Both Commit', value: 'bothCommit' }
+  ];
+
+  userDetail: any = [];
   constructor(
     private service: OfferService,
-    private route: Router
+    private route: Router,
+    private commonService: CommonService,
+    private confirmationService: ConfirmationService
   ) {
-    console.log('candidate: offerlist component => ');
-    this.getCustomField();
+    this.userDetail = this.commonService.getLoggedUserDetail();
+    console.log('candidate: offerlist component => ', this.userDetail);
+    console.log('userDetails => ', this.userDetail);
+    if (this.userDetail.role === 'employer') {
+      this.getCustomField();
+    }
   }
 
   // get first custom field
@@ -36,7 +53,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (res['data']) {
         this.first_custom_field = res['data']['key'];
       } else {
-        this.first_custom_field = 'Custom Field 1';
+        this.first_custom_field = 'Custom Field';
       }
     });
   }
@@ -44,27 +61,44 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       serverSide: true,
       processing: true,
+      order: [[0, 'desc']],
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        this.service.view_offer(dataTablesParameters).subscribe(res => {
-          console.log('res => ', res);
-          if (res['status']) {
-            this.offerData = res['offer'];
-            callback({
-              recordsTotal: res[`recordsTotal`],
-              recordsFiltered: res[`recordsTotal`],
-              data: []
-            });
-          }
-        }, err => {
-          console.log('err => ', err);
-        });
+        if (this.userDetail.role === 'employer') {
+          this.service.view_offer(dataTablesParameters).subscribe(res => {
+            console.log('res => ', res);
+            if (res['status']) {
+              this.offerData = res['offer'];
+              callback({
+                recordsTotal: res[`recordsTotal`],
+                recordsFiltered: res[`recordsTotal`],
+                data: []
+              });
+            }
+          }, err => {
+            console.log('err => ', err);
+          });
+        } else if (this.userDetail.role === 'candidate') {
+          this.service.view_offer_candidate(dataTablesParameters).subscribe(res => {
+            console.log('res => ', res);
+            if (res['status']) {
+              this.offerData = res['offer'];
+              callback({
+                recordsTotal: res[`recordsTotal`],
+                recordsFiltered: res[`recordsTotal`],
+                data: []
+              });
+            }
+          }, err => {
+            console.log('err => ', err);
+          });
+        }
       },
-      columnDefs: [{ orderable: false, targets: 10 }], // 11
+      columnDefs: [{ orderable: false, targets: 10 }],
       columns: [
         {
           data: 'createdAt'
@@ -110,9 +144,31 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.navigate(['/employer/offers/edit/' + id]);
   }
 
-  onDelete(id) {
-    this.service.deactivate_employer_offer(id).subscribe(res => {
-      this.rrerender();
+  delete(id) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.deactivate_employer_offer(id).subscribe(res => {
+          this.rrerender();
+        });
+      }
+    });
+  }
+
+  onAccept(id) {
+    console.log('accept id', id);
+    const obj = {
+      'id': id
+    }
+
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        this.service.offer_accept(obj).subscribe(res => {
+          console.log('accepted!!');
+        })
+
+      }
     });
   }
 

@@ -147,6 +147,21 @@ router.get('/details/:id', async (req, res) => {
 });
 
 
+router.put('/', async (req, res) => {
+    var reg_obj = {
+        "status": "Accepted"
+    }
+    var sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
 
+    if (sub_account_upadate.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (sub_account_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Status updated successfully", "data": sub_account_upadate });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    }
+})
 
 module.exports = router;

@@ -43,10 +43,10 @@ router.post("/", async (req, res) => {
             notEmpty: true,
             errorMessage: "Location is required"
         },
-        "salarybracket": {
-            notEmpty: true,
-            errorMessage: "Salary Bracket is required"
-        },
+        // "salarybracket": {
+        //     notEmpty: true,
+        //     errorMessage: "Salary Bracket is required"
+        // },
         "expirydate": {
             notEmpty: true,
             errorMessage: "Expiry Date Code is required"
@@ -94,6 +94,9 @@ router.post("/", async (req, res) => {
                 "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
+                "salary_from": req.body.salary_from,
+                "salary_to": req.body.salary_to,
+                "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data)
             }
         }
@@ -117,7 +120,14 @@ router.post("/", async (req, res) => {
                 "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
+<<<<<<< HEAD
                 "communication": JSON.parse(req.body.data)
+=======
+                "communication": JSON.parse(req.body.data),
+                "salary_from": req.body.salary_from,
+                "salary_to": req.body.salary_to,
+                "salary": req.body.salary,
+>>>>>>> d1638f1f5c63de1c0d6fc30d8047918d6a1d7490
             }
 
         };
@@ -487,7 +497,7 @@ router.put("/deactive_offer/:id", async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
     } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
+        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
@@ -545,6 +555,15 @@ router.put('/', async (req, res) => {
     }
     if (req.body.commitstatus && req.body.commitstatus != "") {
         obj.commitstatus = req.body.commitstatus
+    }
+    if (req.body.salary && req.body.salary != "") {
+        obj.salary = req.body.salary
+    }
+    if (req.body.salary_from && req.body.salary_from != "") {
+        obj.salary_from = req.body.salary_from
+    }
+    if (req.body.salary_to && req.body.salary_to != "") {
+        obj.salary_to = req.body.salary_to
     }
 
     if (req.body.customfeild && req.body.customfeild != "") {

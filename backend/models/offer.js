@@ -60,10 +60,10 @@ const OfferSchema = new Schema({
   },
   communication: [{ type: CommunicationSchema }],
 
-  salarybracket: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'salary_bracket'
-  },
+  // salarybracket: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'salary_bracket'
+  // },
   expirydate: {
     type: Date,
     required: true

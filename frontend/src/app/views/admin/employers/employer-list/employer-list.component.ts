@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-employer-list',
@@ -24,7 +25,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: Router,
     private router: ActivatedRoute,
     private service: EmployerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private confirmationService: ConfirmationService
   ) {
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     if (this.router.snapshot.data.type === 'new') {
@@ -35,9 +37,10 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       serverSide: true,
       processing: true,
+      order: [[0, 'desc']],
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
@@ -46,8 +49,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res of approved employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
-              this.country = res['user'][0].country.country;
-              console.log('country>>', this.country);
+              // this.country = res['user'][0].country.country;
+              console.log('country>>', this.employer_data);
 
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
@@ -111,19 +114,24 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
     const obj = {
       'id': id
     };
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
 
-    this.service.approved(obj).subscribe(res => {
-      this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
-      this.rrerender();
-    }, (err) => {
-      console.log(err);
-      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        this.service.approved(obj).subscribe(res => {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.rrerender();
+        }, (err) => {
+          console.log(err);
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        });
+      }
     });
   }
 
   // detail(id) {
   //   this.route.navigate(['admin/employers/detail/' + id]);
-  // }
+  // }emplo
 
   // delete(id) {
   //   this.service.deactivate_employer(id).subscribe(res => { });

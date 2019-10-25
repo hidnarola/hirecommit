@@ -5,17 +5,18 @@ const Schema = mongoose.Schema;
 // Create Schema
 const EmployerDetailSchema = new Schema({
   country: {
-    type: String,
-    required: true
-  },
-  businesstype: {
-    type: String,
-    // ref: 'business_type'
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'country_datas'
+    //required: true
   },
   // businesstype: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'business_type'
+  //   type: String,
+  //    ref: 'business_type'
   // },
+  businesstype: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'business_type'
+  },
   companyname: {
     type: String,
     required: true

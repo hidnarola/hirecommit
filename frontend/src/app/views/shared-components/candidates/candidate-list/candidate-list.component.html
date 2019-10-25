@@ -24,7 +24,7 @@
                                 <td>{{data.firstname}} {{data.lastname}}</td>
                                 <td>{{data.user.email}}</td>
                                 <td>{{data.countrycode}} {{data.contactno}}</td>
-                                <td>{{data.documenttype}}</td>
+                                <td>{{data['document'].name}}</td>
                                 <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{data.status}}</td>
                                 <td>
@@ -37,8 +37,8 @@
                                         [routerLink]="['/admin/candidates/new_candidate/view/',data._id]">
                                         <i class="icon-eye"></i></button>
 
-                                    <!-- <button type="button" class="btn btn-sm btn-danger"
-                                        (click)="onDelete(data.user_id._id)"><i class="icon-trash"></i></button> -->
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                        (click)="onDelete(data.user_id)"><i class="icon-trash"></i></button>
                                     <button type="button" *ngIf="candidate_type === 'New'"
                                         class="btn btn-sm btn-primary" (click)="onApproved(data.user_id)"><i
                                             class="icon-check"></i></button>
@@ -56,3 +56,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

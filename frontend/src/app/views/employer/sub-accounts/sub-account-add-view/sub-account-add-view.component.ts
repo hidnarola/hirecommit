@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SubAccountService } from '../sub-accounts.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-sub-account-add-view',
@@ -26,13 +27,14 @@ export class SubAccountAddViewComponent implements OnInit {
     private router: Router,
     private service: SubAccountService,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit() {
     this.addAccount = new FormGroup({
-      name: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
       admin_rights: new FormControl(false)
     });
     this.route.params.subscribe((params: Params) => {
@@ -40,6 +42,16 @@ export class SubAccountAddViewComponent implements OnInit {
     });
     this.getDetail(this.id);
   }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
 
   getDetail(id) {
     if (this.id) {

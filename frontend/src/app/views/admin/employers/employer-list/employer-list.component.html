@@ -24,7 +24,7 @@
                                 <td>{{emp.username.split(' ')[0]}}</td>
                                 <td>{{emp.username.split(' ')[1]}}</td>
                                 <td>{{emp.user.email}}</td>
-                                <td>{{country}}</td>
+                                <td>{{emp['business'].country}}</td>
                                 <td>{{emp.companyname}}</td>
                                 <!-- <td><label class="switch">
                                         <input type="checkbox" checked>
@@ -40,10 +40,10 @@
                                         [routerLink]="['/admin/employers/new_employer/view/',emp._id]">
                                         <i class="icon-eye"></i>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger"
+                                    <!-- <button type="button" class="btn btn-sm btn-danger"
                                         (click)="delete(emp.user_id._id)">
                                         <i class="icon-trash"></i>
-                                    </button>
+                                    </button> -->
                                     <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-primary"
                                         (click)="aprrove(emp.user_id)">
                                         <i class="icon-check"></i>
@@ -62,3 +62,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

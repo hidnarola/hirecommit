@@ -15,8 +15,8 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'forgot_password', component: ForgotPasswordComponent },
   { path: 'emp_register', component: SignUpComponent },
-  { path: 'candidate_register', component: RegisterComponent },
-  { path: 'confirmation/:token', component: EmailconfermationComponent },
+  { path: 'candidate_register', component: RegisterComponent, canActivate: [LoginGuard] },
+  { path: 'confirmation/:token', component: EmailconfermationComponent, canActivate: [LoginGuard] },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
   {
     path: 'admin',
