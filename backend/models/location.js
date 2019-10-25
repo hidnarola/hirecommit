@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const LocationSchema = new Schema({
-    // country: {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: 'country_datas',
-    //     // required: true
-    // },
+    country: {
+        type: mongoose.Types.ObjectId,
+        ref: 'country_datas',
+        // required: true
+    },
     city: {
         type: String,
         required: true
