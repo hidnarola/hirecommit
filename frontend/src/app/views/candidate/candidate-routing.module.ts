@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
 import { ProfileComponent } from '../../shared/profile/profile.component';
+import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
 const routes: Routes = [
   {
     path: '',
@@ -19,7 +20,8 @@ const routes: Routes = [
         path: 'offers',
         loadChildren: () => import('../shared-components/offers/offers.module').then(m => m.OffersModule)
       },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent },
+      { path: 'change-password', component: ChangepasswordComponent },
     ]
   }
 ];
