@@ -1,7 +1,9 @@
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+
+            <!-- add-edit -->
+            <div class="card" *ngIf="!is_View">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
 
@@ -58,6 +60,28 @@
                     </div>
                 </form>
             </div>
+            <!-- add-edit -->
+
+
+            <!-- view -->
+            <div class="card" *ngIf="is_View">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">View Location</strong>
+                </div>
+                <div class="card-body detail-box" *ngIf="detail">
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Location
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{detail.city}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- view -->
+
+
         </div>
     </div>
 </div>

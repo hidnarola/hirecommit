@@ -210,7 +210,7 @@ export class OfferAddViewComponent implements OnInit {
         this.groupList();
       })
       .then(res => {
-        if (this.route.snapshot.data.title !== 'Edit') {
+        if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
           this.customFieldList();
           //  spinner hide
           this.spinner.hide();

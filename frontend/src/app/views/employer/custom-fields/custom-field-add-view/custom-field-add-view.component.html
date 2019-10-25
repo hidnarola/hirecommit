@@ -1,7 +1,9 @@
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+
+            <!-- add-edit -->
+            <div class="card" *ngIf="!isView">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
 
@@ -34,6 +36,26 @@
                     </div>
                 </form>
             </div>
+            <!-- add-edit -->
+
+            <!-- view -->
+            <div class="card" *ngIf="isView">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">View Custom Field</strong>
+                </div>
+                <div class="card-body detail-box" *ngIf="data">
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Custom Field
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{data.key}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- view -->
+
         </div>
     </div>
 </div>

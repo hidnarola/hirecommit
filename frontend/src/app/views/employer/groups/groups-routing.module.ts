@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { GroupsListComponent } from './groups-list/groups-list.component';
 import { GroupAddComponent } from './group-add/group-add.component';
 import { GroupEditComponent } from './group-edit/group-edit.component';
+import { GroupViewComponent } from './group-view/group-view.component';
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
       },
       {
         path: 'view/:id',
-        component: GroupEditComponent,
+        component: GroupViewComponent,
+        // component: GroupEditComponent,
         data: {
           title: 'View'
         }

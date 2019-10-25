@@ -19,6 +19,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   id: any;
   data: any = {};
   isEdit = false;
+  isView = false;
 
   constructor(
     private service: CustomFieldService,
@@ -29,15 +30,27 @@ export class CustomFieldAddViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
-      this.isEdit = true;
-    });
-    this.service.get_custom_field(this.id).subscribe(res => {
-      this.data = res['data'];
-      this.panelTitle = 'Edit Custom Field';
-      this.buttonTitle = 'Update';
-    });
+    this.spinner.show();
+    if (this.route.snapshot.data.title !== 'Add') {
+      this.route.params.subscribe((params: Params) => {
+        this.id = params['id'];
+      });
+      this.service.get_custom_field(this.id).subscribe(res => {
+        this.spinner.hide();
+        this.data = res['data'];
+      });
+
+      if (this.route.snapshot.data.title === 'Edit') {
+        this.panelTitle = 'Edit Custom Field';
+        this.isEdit = true;
+      } else {
+        this.panelTitle = 'View Custom Field';
+        this.isView = true;
+      }
+
+    } else {
+      this.spinner.hide();
+    }
     this.addCustomFeild = new FormGroup({
       key: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });

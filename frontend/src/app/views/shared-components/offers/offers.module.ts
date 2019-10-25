@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OffersRoutingModule } from './offers-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { OfferListComponent } from './offer-list/offer-list.component';
 import { OfferAddViewComponent } from './offer-add-view/offer-add-view.component';
@@ -21,6 +21,7 @@ import { ConfirmationService } from 'primeng/api';
   imports: [
     CommonModule,
     OffersRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
     TooltipModule,
     DataTablesModule,

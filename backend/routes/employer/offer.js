@@ -592,7 +592,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (offer_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": offer_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer update successfully", "data": offer_upadate });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
