@@ -61,21 +61,21 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
           preserveNullAndEmptyArrays: true
         }
       },
-      {
-        $lookup:
-        {
-          from: "salary_bracket",
-          localField: "salarybracket",
-          foreignField: "_id",
-          as: "salarybracket"
-        }
-      },
-      {
-        $unwind: {
-          path: "$salarybracket",
-          preserveNullAndEmptyArrays: true
-        }
-      },
+      // {
+      //   $lookup:
+      //   {
+      //     from: "salary_bracket",
+      //     localField: "salarybracket",
+      //     foreignField: "_id",
+      //     as: "salarybracket"
+      //   }
+      // },
+      // {
+      //   $unwind: {
+      //     path: "$salarybracket",
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
     ]
 
     if (search && search.value != '') {
@@ -128,7 +128,7 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
         $lookup:
         {
           from: "group",
-          localField: "group",
+          localField: "groups",
           foreignField: "_id",
           as: "group"
         }
@@ -169,21 +169,21 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
           preserveNullAndEmptyArrays: true
         }
       },
-      {
-        $lookup:
-        {
-          from: "salary_bracket",
-          localField: "salarybracket",
-          foreignField: "_id",
-          as: "salarybracket"
-        }
-      },
-      {
-        $unwind: {
-          path: "$salarybracket",
-          preserveNullAndEmptyArrays: true
-        }
-      },
+      // {
+      //   $lookup:
+      //   {
+      //     from: "salary_bracket",
+      //     localField: "salarybracket",
+      //     foreignField: "_id",
+      //     as: "salarybracket"
+      //   }
+      // },
+      // {
+      //   $unwind: {
+      //     path: "$salarybracket",
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
     ]
 
     if (search && search.value != '') {

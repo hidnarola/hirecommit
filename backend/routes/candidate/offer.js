@@ -136,7 +136,7 @@ router.get('/details/:id', async (req, res) => {
                 { path: 'employer_id' },
                 { path: 'salarybracket' },
                 { path: 'location' },
-                { path: 'group' },
+                { path: 'groups' },
             ])
             .lean();
 
