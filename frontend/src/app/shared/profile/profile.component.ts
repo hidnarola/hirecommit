@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from '../../services/common.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -10,6 +10,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 })
 export class ProfileComponent implements OnInit {
   profileData: any = {};
+  image = environment.imageUrl;
   userType: any;
   alldata: any = [];
   countryList: any = [];

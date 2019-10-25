@@ -29,7 +29,8 @@
                                 </th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
                                     Status</th>
-                                <th>{{first_custom_field}}</th>
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{first_custom_field}}</th>
                                 <th style="width: 12%;">Action</th>
                             </tr>
                         </thead>
@@ -51,15 +52,19 @@
                                     {{offer.group.name}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.commitstatus}}</td>
-                                <td>{{offer.customfeild[0].value ? offer.customfeild[0].value : '-'}}</td>
+                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.customfeild[0].value ? offer.customfeild[0].value : '-'}}</td>
                                 <td>
                                     <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
                                         type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
                                             class="icon-pencil"></i></button>
+
                                     <button type="button" class="btn btn-sm btn-success"
                                         [routerLink]="['/employer/offers/view/', offer._id]"><i
                                             class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
+
+                                    <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
+                                        type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
                                             class="icon-trash"></i></button>
                                     <button *ngIf="userDetail.role === 'candidate'" type="button"
                                         class="btn btn-sm btn-primary" (click)="onAccept()">

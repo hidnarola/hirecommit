@@ -156,7 +156,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 7 }],
+        columnDefs: [{ orderable: false, targets: 6 }],
         columns: [
           {
             data: 'createdAt'
@@ -188,9 +188,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           // {
           //   data: 'commitstatus'
           // },
-          {
-            data: 'customfeild[0].key'
-          },
+          // {
+          //   data: 'customfeild[0].key'
+          // },
           {
             data: 'actions'
           }
