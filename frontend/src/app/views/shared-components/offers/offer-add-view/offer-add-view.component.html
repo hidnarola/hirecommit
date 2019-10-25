@@ -1,7 +1,8 @@
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <!-- add-edit -->
+            <div class="card" *ngIf="!is_View">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}} Offer</strong>
                     <!-- <span class="input-group-text pull-right" [routerLink]="cancel_link">
@@ -31,7 +32,7 @@
                             <label class="col-md-3 col-form-label" for="email">Email</label>
                             <div class="col-md-6">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    formControlName="email" id="email">
+                                    formControlName="email" id="email" [disabled]="is_View">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
@@ -421,6 +422,195 @@
 
                 </form>
             </div>
+            <!-- add-edit -->
+
+            <!-- view -->
+            <div class="card" *ngIf="is_View">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">{{panelTitle}} Offer</strong>
+                </div>
+                <div class="card-body detail-box" *ngIf="resData">
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Candidate Name
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.candidate_name}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Candidate Email
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.candidate_email}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Title
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.title}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Salary Type
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.salarytype}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
+                        <div class="col-md-3 detail-label">
+                            Hourly Salary Duration
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.salaryduration}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Location
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.location.city}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary">
+                        <div class="col-md-3 detail-label">
+                            Salary
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.salary}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary_from">
+                        <div class="col-md-3 detail-label">
+                            Salary From
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.salary_from}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary_to">
+                        <div class="col-md-3 detail-label">
+                            Salary To
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.salary_to}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Joining Date
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Expiry Date
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Offer Type
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.offertype}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Group
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.groupName}}
+                        </div>
+                    </div>
+
+
+                    <!-- communication -->
+                    <div class="row" *ngIf="resData.communication">
+                        <div class="col-md-12 mt-3" *ngFor="let communication of resData.communication;  let i = index">
+                            <div class="card">
+                                <div class="card-header h5">Record - {{i+1}} </div>
+                                <div class="card-body">
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">
+                                            Communication Name
+                                        </label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.communicationname}}
+                                        </div>
+                                        <label class="col-md-2 detail-label">Trigger</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.trigger}}
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">
+                                            Day
+                                        </label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.day}}
+                                        </div>
+                                        <label class="col-md-2 detail-label">Priority</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.priority}}
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">Message</label>
+                                        <div class="col-md-9 detail-input">
+                                            <!-- <ckeditor [editor]="Editor" formControlName="message" [(ngModel)]="customfield.message"
+                                                    (ready)="onReady($event)">
+                                                </ckeditor> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- communication -->
+
+
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Commit Status
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.commitstatus}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Notes
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.notes}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+                    <div class="row detail-panel" *ngFor="let field of resData.customfeild">
+                        <div class="col-md-3 detail-label">
+                            {{field.key}}
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{field.value ? field.value : '-'}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+                </div>
+            </div>
+            <!-- view -->
+
         </div>
     </div>
 </div>

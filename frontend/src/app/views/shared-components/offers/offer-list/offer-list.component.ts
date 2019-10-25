@@ -59,16 +59,17 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      serverSide: true,
-      processing: true,
-      order: [[0, 'desc']],
-      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
-      destroy: true,
-      ajax: (dataTablesParameters: any, callback) => {
-        if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        serverSide: true,
+        processing: true,
+        order: [[0, 'desc']],
+        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+
           this.service.view_offer(dataTablesParameters).subscribe(res => {
             console.log('res => ', res);
             if (res['status']) {
@@ -85,7 +86,59 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }, err => {
             console.log('err => ', err);
           });
-        } else if (this.userDetail.role === 'candidate') {
+        },
+        columnDefs: [{ orderable: false, targets: 7 }],
+        columns: [
+          {
+            data: 'createdAt'
+          },
+          {
+            data: 'title'
+          },
+          {
+            data: 'salarytype'
+          },
+          {
+            data: 'salarybracket.from'
+          },
+          {
+            data: 'expirydate'
+          },
+          {
+            data: 'joiningdate'
+          },
+          // {
+          //   data: 'status'
+          // },
+          {
+            data: 'offertype'
+          },
+          {
+            data: 'group.name'
+          },
+          {
+            data: 'commitstatus'
+          },
+          {
+            data: 'customfeild[0].key'
+          },
+          {
+            data: 'actions'
+          }
+        ]
+      };
+    }
+    else if (this.userDetail.role === 'candidate') {
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        serverSide: true,
+        processing: true,
+        order: [[0, 'desc']],
+        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+
           this.service.view_offer_candidate(dataTablesParameters).subscribe(res => {
             console.log('res => ', res);
             if (res['status']) {
@@ -102,48 +155,48 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }, err => {
             console.log('err => ', err);
           });
-        }
-      },
-      columnDefs: [{ orderable: false, targets: 10 }],
-      columns: [
-        {
-          data: 'createdAt'
         },
-        {
-          data: 'title'
-        },
-        {
-          data: 'salarytype'
-        },
-        {
-          data: 'salarybracket.from'
-        },
-        {
-          data: 'expirydate'
-        },
-        {
-          data: 'joiningdate'
-        },
-        // {
-        //   data: 'status'
-        // },
-        {
-          data: 'offertype'
-        },
-        {
-          data: 'group.name'
-        },
-        {
-          data: 'commitstatus'
-        },
-        {
-          data: 'customfeild[0].key'
-        },
-        {
-          data: 'actions'
-        }
-      ]
-    };
+        columnDefs: [{ orderable: false, targets: 7 }],
+        columns: [
+          {
+            data: 'createdAt'
+          },
+          {
+            data: 'title'
+          },
+          {
+            data: 'salarytype'
+          },
+          {
+            data: 'salarybracket.from'
+          },
+          {
+            data: 'expirydate'
+          },
+          {
+            data: 'joiningdate'
+          },
+          // {
+          //   data: 'status'
+          // },
+          // {
+          //   data: 'offertype'
+          // },
+          // {
+          //   data: 'group.name'
+          // },
+          // {
+          //   data: 'commitstatus'
+          // },
+          {
+            data: 'customfeild[0].key'
+          },
+          {
+            data: 'actions'
+          }
+        ]
+      };
+    }
   }
 
   edit(id) {
