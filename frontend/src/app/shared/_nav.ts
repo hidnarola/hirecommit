@@ -38,11 +38,13 @@ export const admin: NavData[] = [
     children: [
       {
         name: 'Approved Employer',
-        url: 'employers/approved_employer'
+        url: 'employers/approved_employer',
+        icon: 'fa fa-check-square-o'
       },
       {
         name: 'New Employer',
-        url: 'employers/new_employer'
+        url: 'employers/new_employer',
+        icon: 'fa fa-user-circle'
       }
     ]
   },
@@ -54,41 +56,16 @@ export const admin: NavData[] = [
     children: [
       {
         name: 'Approved Candidate',
-        url: 'candidates/approved_candidate'
+        url: 'candidates/approved_candidate',
+        icon: 'fa fa-check-square-o'
       },
       {
         name: 'New Candidate',
-        url: 'candidates/new_candidate'
+        url: 'candidates/new_candidate',
+        icon: 'fa fa-user-circle'
       },
     ]
   }
-];
-export const sub_employer: NavData[] = [
-  {
-    name: 'Offer',
-    // name: 'Manage Employer',
-    url: 'offer/list',
-    icon: 'icon-grid',
-  },
-  {
-    name: 'Groups',
-    // name: 'Manage Groups',
-    url: 'groups/list',
-    icon: 'icon-people',
-  },
-  {
-    name: 'Locations',
-    // name: 'Manage Location',
-    url: 'locations/list',
-    icon: 'icon-location-pin',
-  },
-  {
-    name: 'Custom Field',
-    url: 'custom_fields',
-    icon: 'icon-paper-clip'
-  }
-
-
 ];
 
 export const employer: NavData[] = [
@@ -156,13 +133,39 @@ export const candidate: NavData[] = [
   {
     name: 'Offers',
     // name: 'Manager Offers',
-    url: 'user',
-    icon: 'icon-puzzle',
-    children: [
-      {
-        name: 'Offer List',
-        url: 'offers/list'
-      }
-    ]
+    url: 'offers/list',
+    icon: 'icon-grid',
+    // children: [
+    //   {
+    //     name: 'Offer List',
+    //     url: 'offers/list'
+    //   }
+    // ]
+  }
+];
+
+export const sub_employer: NavData[] = [
+  {
+    name: 'Offer',
+    // name: 'Manage Employer',
+    url: 'offers/list',
+    icon: 'icon-grid',
+  },
+  {
+    name: 'Groups',
+    // name: 'Manage Groups',
+    url: 'groups/list',
+    icon: 'icon-people',
+  },
+  {
+    name: 'Locations',
+    // name: 'Manage Location',
+    url: 'locations/list',
+    icon: 'icon-location-pin',
+  },
+  {
+    name: 'Custom Field',
+    url: 'custom_fields',
+    icon: 'icon-paper-clip'
   }
 ];

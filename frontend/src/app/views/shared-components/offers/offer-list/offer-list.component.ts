@@ -73,6 +73,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
+              this.offerData.forEach(offer => {
+                offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+              });
               callback({
                 recordsTotal: res[`recordsTotal`],
                 recordsFiltered: res[`recordsTotal`],
@@ -87,6 +90,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
+              this.offerData.forEach(offer => {
+                offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+              });
               callback({
                 recordsTotal: res[`recordsTotal`],
                 recordsFiltered: res[`recordsTotal`],
