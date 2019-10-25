@@ -8,6 +8,7 @@ var common_helper = require('../../helpers/common_helper');
 var cron = require('node-cron');
 
 var offer_helper = require('../../helpers/offer_helper');
+var mail_helper = require('../../helpers/mail_helper');
 
 var logger = config.logger;
 var moment = require("moment")
@@ -74,7 +75,9 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        console.log('user', user);
+
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var obj = {
                 "employer_id": user.data.emp_id,
                 "user_id": req.body.user_id,
@@ -134,6 +137,18 @@ router.post("/", async (req, res) => {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
+            var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
+            console.log('user', user);
+
+            let mail_resp = await mail_helper.send("offer", {
+                "to": user.data.email,
+                "subject": "Offer"
+            }, {
+
+                "msg": "you have been invited for the offer" + req.body.title
+            });
+            console.log('mail_resp', mail_resp);
+
             res.json({ "message": "Offer Added successfully", "data": interest_resp })
         }
     }
@@ -325,7 +340,7 @@ router.post('/get', async (req, res) => {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         console.log('user', user);
 
-        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id
         }
         else {
@@ -519,6 +534,7 @@ router.put('/', async (req, res) => {
     if (req.body.salarytype && req.body.salarytype != "") {
         obj.salarytype = req.body.salarytype
     }
+
     if (req.body.salaryduration && req.body.salaryduration != "") {
         obj.salaryduration = req.body.salaryduration
     }
@@ -576,7 +592,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (offer_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": offer_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer update successfully", "data": offer_upadate });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });

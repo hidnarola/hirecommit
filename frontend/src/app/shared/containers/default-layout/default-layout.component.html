@@ -11,7 +11,8 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
         <div class="dropdown-header text-center"><strong>Settings</strong></div>
-        <a class="dropdown-item" *ngIf="userDetail.role != 'admin'" (click)="profile()">
+        <a class="dropdown-item" *ngIf="userDetail.role != 'admin' &&  userDetail.role != 'sub-employer'"
+          (click)="profile()">
           <i class="icon-user"></i> Profile
         </a>
         <a class="dropdown-item" (click)="changepassword()">
