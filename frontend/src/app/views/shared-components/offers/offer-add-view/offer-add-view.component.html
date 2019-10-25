@@ -569,9 +569,9 @@
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
-                                            <!-- <ckeditor [editor]="Editor" formControlName="message" [(ngModel)]="customfield.message"
-                                                    (ready)="onReady($event)">
-                                                </ckeditor> -->
+                                            <ckeditor [editor]="Editor" [(ngModel)]="communication.message"
+                                                [ngModelOptions]="{standalone: true}" [disabled]="true">
+                                            </ckeditor>
                                         </div>
                                     </div>
                                 </div>

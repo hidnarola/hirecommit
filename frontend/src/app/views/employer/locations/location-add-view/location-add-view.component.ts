@@ -25,6 +25,8 @@ export class LocationAddViewComponent implements OnInit {
   buttonTitle: string;
   cnt1: any;
   cancel_link = '/employer/locations/list';
+  is_Edit: boolean = false;
+  is_View: boolean = false;
   constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
@@ -34,14 +36,24 @@ export class LocationAddViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.spinner.show();
     this.addLocation = new FormGroup({
       // country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });
-    this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
-    });
-    this.getDetail(this.id);
+    if (this.route.snapshot.data.title !== 'Add') {
+      this.route.params.subscribe((params: Params) => {
+        this.id = params['id'];
+      });
+      this.getDetail(this.id);
+      if (this.route.snapshot.data.title === 'Edit') {
+        this.is_Edit = true;
+      } else {
+        this.is_View = true;
+      }
+    } else {
+      this.spinner.hide();
+    }
 
     // country
     // this.commonService.getprofileDetail.subscribe(async res => {
@@ -82,8 +94,9 @@ export class LocationAddViewComponent implements OnInit {
 
       this.service.get_location(id).subscribe(res => {
         this.detail = res['data']['data'];
+        this.spinner.hide();
         // this.cnt = res['data']['data'].country;
-        console.log(' edited data ', this.detail);
+        console.log(' detail', this.detail);
 
       });
 
