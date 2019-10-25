@@ -97,6 +97,15 @@ const OfferSchema = new Schema({
   notes: {
     type: String
   },
+  salary: {
+    type: Number
+  },
+  salary_from: {
+    type: Number
+  },
+  salary_to: {
+    type: Number
+  },
   is_del: {
     type: Boolean,
     default: false
