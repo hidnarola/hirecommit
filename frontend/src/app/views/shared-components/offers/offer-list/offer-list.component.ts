@@ -40,7 +40,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('candidate: offerlist component => ', this.userDetail);
-    if (this.userDetail.role === 'Employer') {
+    if (this.userDetail.role === 'employer') {
       this.getCustomField();
     }
   }
