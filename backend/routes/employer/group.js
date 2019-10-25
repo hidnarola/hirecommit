@@ -125,7 +125,7 @@ router.post('/get', async (req, res) => {
             [sortOrderColumn]: sortOrder
         }
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id
         }
         else {
