@@ -6,7 +6,8 @@
                     <i class="fa fa-align-justify"></i> Locations
                     <p class="pull-right"></p>
 
-                    <button class="pull-right btn btn-sm btn-primary custom-margin"
+                    <button *ngIf="userDetail.role === 'employer'"
+                        class="pull-right btn btn-sm btn-primary custom-margin"
                         [routerLink]="['/employer/locations/add']">
                         <i class="icon-plus"></i>
                         Add
@@ -20,7 +21,7 @@
                             <tr>
                                 <th>City</th>
                                 <!-- <th>Country</th> -->
-                                <th>Action</th>
+                                <th *ngIf="userDetail.role === 'employer'">Action</th>
                             </tr>
                         </thead>
 
@@ -28,7 +29,7 @@
                             <tr *ngFor="let data of locations|| sal of sal">
                                 <td>{{data.city}}</td>
                                 <!-- <td>{{data.country.country}}</td> -->
-                                <td>
+                                <td *ngIf="userDetail.role === 'employer'">
 
                                     <button type="button" class="btn btn-sm btn-primary"
                                         [routerLink]="['/employer/locations/edit/',data._id]"><i

@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 export class ProfileComponent implements OnInit {
   profileData: any = {};
   userType: any;
+  alldata: any = [];
+  countryList: any;
   constructor(private service: CommonService, private router: ActivatedRoute) {
 
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
@@ -44,6 +46,14 @@ export class ProfileComponent implements OnInit {
       console.log('it is admin!');
 
     }
+
+    this.service.country_registration().subscribe(res => {
+      this.alldata = res['data'];
+      console.log('Profile country>', res['data']);
+      res['data'].forEach(element => {
+        this.countryList.push({ 'label': element.country, 'value': element._id });
+      });
+    });
 
 
   }

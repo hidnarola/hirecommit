@@ -7,7 +7,8 @@
                     <p class="pull-right"></p>
 
 
-                    <button class="pull-right btn btn-sm btn-primary custom-margin"
+                    <button *ngIf="userDetail.role === 'employer'"
+                        class="pull-right btn btn-sm btn-primary custom-margin"
                         [routerLink]="['/employer/custom_fields/add']">
                         <i class="icon-plus"></i>
                         Add
@@ -22,7 +23,7 @@
                                 <th>No.</th>
                                 <th>Custom Fields</th>
 
-                                <th>Action</th>
+                                <th *ngIf="userDetail.role === 'employer'">Action</th>
                             </tr>
                         </thead>
 
@@ -31,7 +32,7 @@
                                 <td>{{d.serial_number}} </td>
                                 <td>{{d.key}}</td>
 
-                                <td>
+                                <td *ngIf="userDetail.role === 'employer'">
                                     <button type="button" class="btn btn-sm btn-primary">
                                         <i class="icon-pencil"
                                             [routerLink]="['/employer/custom_fields/edit/',d._id]"></i></button>
