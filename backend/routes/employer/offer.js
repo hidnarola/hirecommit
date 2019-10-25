@@ -519,6 +519,7 @@ router.put('/', async (req, res) => {
     if (req.body.salarytype && req.body.salarytype != "") {
         obj.salarytype = req.body.salarytype
     }
+
     if (req.body.salaryduration && req.body.salaryduration != "") {
         obj.salaryduration = req.body.salaryduration
     }
