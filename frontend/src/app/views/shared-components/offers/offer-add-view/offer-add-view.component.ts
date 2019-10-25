@@ -216,17 +216,19 @@ export class OfferAddViewComponent implements OnInit {
         }
       })
       .then(res => {
+        console.log('this.route.snapshot.data.title => ', this.route.snapshot.data.title);
         if (this.route.snapshot.data.title === 'Edit') {
           this.panelTitle = 'Edit';
           this.is_Edit = true;
           this.getDetail();
-        } else if (this.route.snapshot.data.title === 'view') {
+        } else if (this.route.snapshot.data.title === 'View') {
+          console.log('view => ');
           this.panelTitle = 'View';
           this.is_View = true;
           this.getDetail();
         } else {
+          console.log('add => ');
           this.panelTitle = 'Add';
-
         }
       });
   }
