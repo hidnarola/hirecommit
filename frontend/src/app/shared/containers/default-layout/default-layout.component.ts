@@ -1,6 +1,6 @@
 import { Component, OnDestroy, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { admin, employer, candidate } from '../../_nav';
+import { admin, employer, candidate, sub_employer } from '../../_nav';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 
@@ -80,6 +80,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.navItems = employer;
     } else if (userType === 'candidate') {
       this.navItems = candidate;
+    } else if (userType === 'sub-employer') {
+      this.navItems = sub_employer;
     }
   }
 

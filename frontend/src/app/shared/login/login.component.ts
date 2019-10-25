@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('user', res['role']);
         localStorage.setItem('userid', res['id']);
         console.log(' log res => ', res);
-        if (res['role'] !== 'admin') {
+        if (res['role'] !== 'admin' && res['role'] !== 'sub-employer') {
           const userData = {
             ...res[`data`],
             ...res[`userDetails`][0].userDetail,
@@ -68,6 +68,9 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['employer']);
         } else if (res['role'] === 'candidate') {
           this.router.navigate(['candidate']);
+        } else if (res['role'] === 'sub-employer') {
+          console.log('here => ');
+          this.router.navigate(['sub_employer']);
         }
       }, (err) => {
         console.log('err => ', err);
