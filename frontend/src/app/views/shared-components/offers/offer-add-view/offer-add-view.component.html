@@ -15,9 +15,9 @@
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="candidate">Select Candidate</label>
-                            <div class="col-md-2">
+                            <div class="col-md-6">
                                 <p-dropdown [options]="candidateList" placeholder="Select Candidate"
-                                    formControlName="candidate" id="candidate" #candidate
+                                    formControlName="candidate" [style]="{'width':'100%'}" id="candidate" #candidate
                                     (onChange)="findEmail($event)">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['candidate'].valid">
@@ -60,8 +60,8 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="title">Salary Type</label>
                             <div class="col-md-6">
-                                <div class="custom-radio-wrap">
-                                    <div class="custom-control custom-radio">
+                                <div class="custom-radio-wrap d-flex flex-warp">
+                                    <div class="custom-control custom-radio mr-5">
                                         <input type="radio" id="annual" class="custom-control-input" value="annual"
                                             name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
                                         <label class="custom-control-label" for="annual">Annual</label>
@@ -84,7 +84,8 @@
                             <label class="col-md-3 col-form-label" for="salaryduration">Hourly Salary Duration</label>
                             <div class="col-md-6">
                                 <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration"
-                                    id="salaryduration" [disabled]="!(form.controls['salarytype'].value === 'hourly')">
+                                    id="salaryduration" [style]="{'width':'100%'}"
+                                    [disabled]="!(form.controls['salarytype'].value === 'hourly')">
                                 </p-dropdown>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salaryduration'].valid">
@@ -113,8 +114,9 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="location">Location</label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="location" optionLabel="city" optionValue="_id"
-                                    formControlName="location" id="location" placeholder="Select location"></p-dropdown>
+                                <p-dropdown [options]="location" [style]="{'width':'100%'}" optionLabel="city"
+                                    optionValue="_id" formControlName="location" id="location"
+                                    placeholder="Select location"></p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['location'].valid">
                                     <span *ngIf="form.controls['location'].errors['required']" class="text-danger">
                                         This field is required.
@@ -204,9 +206,10 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="joiningdate">Joining Date</label>
                             <div class="col-md-6">
-                                <p-calendar dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" formControlName="joiningdate"
-                                    id="joiningdate" [readonlyInput]="is_View" [disabled]="is_View" [minDate]="min_date"
-                                    (onClose)="getJoiningDate()">
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
+                                    [disabled]="is_View" [minDate]="min_date" (onClose)="getJoiningDate()">
                                 </p-calendar>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">
@@ -220,9 +223,10 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="expirydate">Expiry Date</label>
                             <div class="col-md-6">
-                                <p-calendar dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" formControlName="expirydate"
-                                    id="expirydate" [readonlyInput]="is_View" [disabled]="is_View"
-                                    [minDate]="min_expiry_date">
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
+                                    [disabled]="is_View" [minDate]="min_expiry_date">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
@@ -235,7 +239,8 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="offertype">Offer Type</label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="offer_type_optoins" formControlName="offertype" id="offertype">
+                                <p-dropdown [options]="offer_type_optoins" [style]="{'width':'100%'}"
+                                    formControlName="offertype" id="offertype">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['offertype'].valid">
                                     <span *ngIf="form.controls['offertype'].errors['required']" class="text-danger">
@@ -248,8 +253,8 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="group">Group</label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="group_optoins" optionLabel="name" optionValue="_id"
-                                    formControlName="group" placeholder="Select Group" id="group">
+                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" optionLabel="name"
+                                    optionValue="_id" formControlName="group" placeholder="Select Group" id="group">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
                                     <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
@@ -374,8 +379,8 @@
                             <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
                             </label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="commitstatus_optoins" formControlName="commitstatus"
-                                    id="commitstatus">
+                                <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
+                                    formControlName="commitstatus" id="commitstatus">
                                 </p-dropdown>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['commitstatus'].valid">
@@ -569,9 +574,9 @@
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
-                                            <!-- <ckeditor [editor]="Editor" formControlName="message" [(ngModel)]="customfield.message"
-                                                    (ready)="onReady($event)">
-                                                </ckeditor> -->
+                                            <ckeditor [editor]="Editor" [(ngModel)]="communication.message"
+                                                [ngModelOptions]="{standalone: true}" [disabled]="true">
+                                            </ckeditor>
                                         </div>
                                     </div>
                                 </div>

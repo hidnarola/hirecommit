@@ -18,35 +18,65 @@
                         <form role="form">
                             <div class="card-header"><strong>Company Details</strong></div>
                             <div class="card-body">
+
                                 <table class="table">
                                     <tbody>
                                         <tr>
-                                            <td>Company Name</td>
-                                            <td>{{profileData.companyname}} </td>
+                                            <td class="align-middle">Company Name</td>
+                                            <td>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{profileData.companyname}}">
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td>Website</td>
-                                            <td>{{profileData.website ? profileData.website :  '-' }}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Country</td>
-                                            <td>{{profileData.country}}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Business Type</td>
-                                            <td>{{profileData.name}}</td>
+                                            <td class="align-middle">Website</td>
+                                            <td>
+                                                <input type="text"
+                                                    placeholder="{{profileData.website ? profileData.website :  '-' }}"
+                                                    class="form-control">
+                                            </td>
                                         </tr>
 
                                         <tr>
-                                            <td>Company Person Name</td>
-                                            <td>{{profileData.username}}</td>
+                                            <td class="align-middle">Country</td>
+                                            <td>
+                                                <input type="text" class="form-control" disabled=""
+                                                    value="{{profileData.country}}">
+                                            </td>
                                         </tr>
 
                                         <tr>
-                                            <td>Contact Number</td>
-                                            <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
+                                            <td class="align-middle">Business Type</td>
+                                            <td>
+                                                <input type="text" placeholder="{{profileData.name}}"
+                                                    class="form-control">
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="align-middle">Company Person Name</td>
+                                            <td>
+                                                <input type="text" class="form-control"
+                                                    placeholder="{{profileData.username}}">
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="align-middle">Contact Number</td>
+                                            <td>
+                                                <div class="d-flex flex-warp">
+                                                    <input type="text" class="form-control countrycode-input"
+                                                        disabled="" value="{{profileData.countrycode}}">
+                                                    <input type="text" class="form-control countryno-input"
+                                                        placeholder="{{profileData.contactno}}">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-right">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button type="submit" class="btn btn-danger">Close</button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -81,22 +111,38 @@
                                     <tbody>
                                         <tr>
                                             <td>Country</td>
-                                            <td>{{profileData.country}} </td>
+                                            <td>
+                                                <input type="text" class="form-control" disabled=""
+                                                    value="{{profileData.country}}">
+                                            </td>
                                         </tr>
 
                                         <tr>
                                             <td>Contact Number</td>
-                                            <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
+                                            <td>
+                                                <div class="d-flex flex-warp">
+                                                    <input type="text" class="form-control countrycode-input"
+                                                        disabled="" value="{{profileData.countrycode}}">
+                                                    <input type="text" class="form-control countryno-input"
+                                                        placeholder="{{profileData.contactno}}">
+                                                </div>
+                                            </td>
                                         </tr>
 
                                         <tr>
                                             <td>Document Type</td>
-                                            <td>{{profileData.name}}</td>
+                                            <td>
+                                                <input type="text" class="form-control" disabled=""
+                                                    placeholder="{{profileData.name}}">
+                                            </td>
                                         </tr>
 
                                         <tr>
                                             <td>Document Image</td>
-                                            <td><img src="{{profileData.documentimage}}"></td>
+                                            <td>
+
+                                                <img src="{{image + profileData.documentimage}}" disabled=""
+                                                    style="height: 100px; width:100px;;"></td>
                                         </tr>
 
                                     </tbody>
