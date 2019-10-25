@@ -5,8 +5,8 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Groups
                     <p class="pull-right"></p>
-                    <button class="pull-right btn btn-sm btn-primary custom-margin"
-                        [routerLink]="['/employer/groups/add']">
+                    <button *ngIf="userDetail.role === 'employer'"
+                        class="pull-right btn btn-sm btn-primary custom-margin" [routerLink]="['/employer/groups/add']">
                         <i class="icon-plus"></i>
                         Add
                     </button>
@@ -23,7 +23,7 @@
                                 <th>Medium - NotReplied</th>
                                 <th>Low - UnOpened</th>
                                 <th>Low - NotReplied</th>
-                                <th style="width: 12%;">Action</th>
+                                <th style="width: 12%;" *ngIf="userDetail.role === 'employer'">Action</th>
                             </tr>
                         </thead>
 
@@ -38,7 +38,7 @@
                                 <td>{{group.medium_notreplied}}</td>
                                 <td>{{group.low_unopened}}</td>
                                 <td>{{group.low_notreplied}}</td>
-                                <td>
+                                <td *ngIf="userDetail.role === 'employer'">
                                     <!-- <button type="button" class="btn btn-sm btn-success"
                                         [routerLink]="['/employer/groups/view/', group._id]"><i
                                             class="icon-eye"></i></button> -->

@@ -6,6 +6,7 @@ import { LocationService } from '../location.service';
 import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { countries } from '../../../../shared/countries';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-locations-list',
@@ -29,50 +30,88 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
   c_name: any = [];
   sal: any = [];
   salnew: any = [];
-
+  userDetail: any;
   constructor(
     private router: Router,
     private service: LocationService,
     private confirmationService: ConfirmationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private commonService: CommonService
   ) {
-    console.log('employer - locations : view-location component => ');
+    this.userDetail = this.commonService.getLoggedUserDetail();
   }
 
   ngOnInit() {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      serverSide: true,
-      processing: true,
-      order: [[0, 'desc']],
-      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
-      destroy: true,
-      ajax: (dataTablesParameters: any, callback) => {
-        this.service.view_location(dataTablesParameters).subscribe(res => {
-          console.log('location response =>>', res);
+    if (this.userDetail.role === 'employer') {
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        serverSide: true,
+        processing: true,
+        order: [[0, 'desc']],
+        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+          this.service.view_location(dataTablesParameters).subscribe(res => {
+            console.log('location response =>>', res);
 
-          if (res['status'] === 1) {
-            this.locations = res['location'];
-            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
-          }
-        }, err => {
-          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-        });
-      },
-      columnDefs: [{ orderable: false, targets: 1 }],
-      columns: [
-        {
-          data: 'city'
+            if (res['status'] === 1) {
+              this.locations = res['location'];
+              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+            }
+          }, err => {
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+          });
         },
-        // {
-        //   data: 'country.country'
-        // },
-        {
-          data: 'action'
-        }
-      ]
-    };
+        columnDefs: [{ orderable: false, targets: 1 }],
+        columns: [
+          {
+            data: 'city'
+          },
+          // {
+          //   data: 'country.country'
+          // },
+          {
+            data: 'action'
+          }
+        ]
+      };
+    }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        serverSide: true,
+        processing: true,
+        order: [[0, 'desc']],
+        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+          this.service.view_location(dataTablesParameters).subscribe(res => {
+            console.log('location response =>>', res);
+
+            if (res['status'] === 1) {
+              this.locations = res['location'];
+              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+            }
+          }, err => {
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+          });
+        },
+        //  columnDefs: [{ orderable: false, targets: 1 }],
+        columns: [
+          {
+            data: 'city'
+          },
+          // {
+          //   data: 'country.country'
+          // },
+          //  {
+          //    data: 'action'
+          //  }
+        ]
+      };
+    }
     this.country = countries;
   }
 

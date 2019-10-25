@@ -52,6 +52,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['candidate/profile']);
     }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['sub_employer/profile']);
+    }
   }
 
 

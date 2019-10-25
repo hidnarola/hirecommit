@@ -108,3 +108,61 @@
             </div>
         </div>
     </div>
+
+    <!-- //sub-employer -->
+    <!-- 
+    <div *ngIf="userType === 'sub-employer'" class="row profiledata-info">
+        <div class="col-md-3 well">
+            <div class="row">
+                <div class="card text-black col-sm-12">
+                    <div class="card-body">
+                        <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
+                        <label>Name </label><br>
+                        <label> Email </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 well">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form role="form">
+                            <div class="card-header"><strong>Personal Details</strong></div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Country</td>
+                                            <td>
+                                                <p-dropdown [options]="countryList" placeholder="Select Country"
+                                                    formControlName="country" id="country" (onChange)="getCode($event)"
+                                                    [required]>
+                                                </p-dropdown>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Contact Number</td>
+                                            <td>{{profileData.countrycode}} {{profileData.contactno}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Document Type</td>
+                                            <td>{{profileData.name}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Document Image</td>
+                                            <td><img src="{{profileData.documentimage}}"></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
