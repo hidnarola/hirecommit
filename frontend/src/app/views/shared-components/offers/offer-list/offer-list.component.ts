@@ -127,8 +127,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         ]
       };
-    }
-    else if (this.userDetail.role === 'candidate') {
+    } else if (this.userDetail.role === 'candidate') {
       this.dtOptions = {
         pagingType: 'full_numbers',
         pageLength: 10,

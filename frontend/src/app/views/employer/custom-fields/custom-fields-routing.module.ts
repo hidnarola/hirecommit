@@ -39,6 +39,13 @@ const routes: Routes = [
           title: 'Edit'
         }
       },
+      {
+        path: 'view/:id',
+        component: CustomFieldAddViewComponent,
+        data: {
+          title: 'View'
+        }
+      },
     ]
   }
 
