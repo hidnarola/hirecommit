@@ -127,8 +127,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         ]
       };
-    }
-    else if (this.userDetail.role === 'candidate') {
+    } else if (this.userDetail.role === 'candidate') {
       this.dtOptions = {
         pagingType: 'full_numbers',
         pageLength: 10,
@@ -200,7 +199,11 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   edit(id) {
-    this.route.navigate(['/employer/offers/edit/' + id]);
+    if (this.userDetail.role === 'employer') {
+      this.route.navigate(['/employer/offers/edit/' + id]);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/edit/' + id]);
+    }
   }
 
   delete(id) {
@@ -218,14 +221,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('accept id', id);
     const obj = {
       'id': id
-    }
+    };
 
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.offer_accept(obj).subscribe(res => {
           console.log('accepted!!');
-        })
+        });
 
       }
     });

@@ -11,14 +11,14 @@ import { ConfirmationService } from 'primeng/api';
 import { GroupAddComponent } from './group-add/group-add.component';
 import { GroupEditComponent } from './group-edit/group-edit.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
-// import { GroupViewComponent } from './group-view/group-view.component';
+import { GroupViewComponent } from './group-view/group-view.component';
 
 @NgModule({
   declarations: [
     GroupsListComponent,
     GroupAddComponent,
     GroupEditComponent,
-    // GroupViewComponent
+    GroupViewComponent
   ],
   imports: [
     CommonModule,
