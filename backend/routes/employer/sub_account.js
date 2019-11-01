@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
             "role_id": "5d9d99003a0c78039c6dd00f"
 
         };
-        var user_data = await common_helper.findOne(User, { "email": req.body.email })
+        var user_data = await common_helper.findOne(User, { "is_del": false, "email": req.body.email })
 
         if (user_data.status == 2) {
             var passwords = random_pass_word.randomPassword({ length: 8, characters: random_pass_word.lower + random_pass_word.upper + random_pass_word.digits + random_pass_word.symbols })

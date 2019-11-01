@@ -27,6 +27,8 @@ export class CustomFieldService {
     }
 
     add_custom_field(data): Observable<any[]> {
+        console.log('data', data);
+
         return this.http.post<any[]>(`${this.url}` + '/customfield', data);
     }
 

@@ -15,12 +15,13 @@ export class ChangepasswordComponent implements OnInit {
   public isFormSubmitted;
   public formData: any;
   token: any;
-
+  userDetail: any;
   constructor(
     private router: Router,
     public fb: FormBuilder,
     public service: CommonService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private commonService: CommonService
   ) {
     this.formData = {};
     this.form = this.fb.group({
@@ -28,6 +29,8 @@ export class ChangepasswordComponent implements OnInit {
       'newpassword': new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
       'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
+
+    this.userDetail = this.commonService.getLoggedUserDetail();
   }
 
   send() {
@@ -60,7 +63,18 @@ export class ChangepasswordComponent implements OnInit {
         this.isFormSubmitted = false;
         if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          this.router.navigate(['/employer/offers/list']);
+          if (this.userDetail.role === 'employer') {
+            this.router.navigate(['/employer/offers/list']);
+          }
+          else if (this.userDetail.role === 'candidate') {
+            this.router.navigate(['/candidate/offers/list']);
+          }
+          else if (this.userDetail.role === 'admin') {
+            this.router.navigate(['/admin/employers/approved_employer']);
+          }
+          else if (this.userDetail.role === 'sub-employer') {
+            this.router.navigate(['/sub_employer/offers/list']);
+          }
         }
       }, (err) => {
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });

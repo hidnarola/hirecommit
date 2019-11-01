@@ -38,6 +38,9 @@ router.put('/', async (req, res) => {
     if (req.body.contactno && req.body.contactno != "") {
         obj.contactno = req.body.contactno
     }
+    if (req.body.email && req.body.email != "") {
+        obj.email = req.body.email
+    }
 
     var sub_account_upadate = await common_helper.update(Employer, { "user_id": req.body.id }, obj)
     var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, obj)

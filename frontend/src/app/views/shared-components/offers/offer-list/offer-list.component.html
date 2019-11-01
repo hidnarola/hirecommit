@@ -40,7 +40,7 @@
                             <tr *ngFor="let offer of offerData; let i = index;">
                                 <td>{{offer.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.title}}</td>
-                                <td>{{offer.salarytype}}</td>
+                                <td>{{offer.salarytype|titlecase}}</td>
                                 <td *ngIf="offer.salary">{{offer.salary}}</td>
                                 <td *ngIf="offer.salary_from && offer.salary_to">
                                     {{offer.salary_from}} to {{offer.salary_to}}
@@ -50,15 +50,19 @@
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{offer.group.name}}</td>
+                                    {{offer.group.name|titlecase}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{offer.commitstatus}}</td>
+                                    {{offer.commitstatus|titlecase}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.customfeild[0].value ? offer.customfeild[0].value : '-'}}</td>
                                 <td>
                                     <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
                                         type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
                                             class="icon-pencil"></i></button>
+
+                                    <!-- <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
+                                        type="button" class="btn btn-sm btn-primary" (click)="history(offer._id)"><i
+                                            class="icon-pencil"></i></button> -->
 
                                     <button type="button" class="btn btn-sm btn-success" (click)='detail(offer._id)'><i
                                             class="icon-eye"></i></button>
@@ -75,7 +79,7 @@
                         </tbody>
                         <tbody *ngIf="offerData?.length == 0">
                             <tr>
-                                <td colspan="11" class="no-data-available">No data!</td>
+                                <td colspan="11" class="no-data-available">No Offers Available!</td>
                             </tr>
                         </tbody>
                     </table>

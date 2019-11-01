@@ -28,14 +28,13 @@ export class GroupViewComponent implements OnInit {
     this.id = this.route.snapshot.params.id;
     this.service.get_detail(this.id).subscribe(res => {
       this.groupData = res['data']['data'][0];
-      console.log('this.groupData => ', this.groupData);
 
       // hide spinner
       this.spinner.hide();
       if (res['communication']['data'] && res['communication']['data'].length > 0) {
         this.communicationData = res['communication']['data'][0]['communication'];
       }
-      console.log('communicationData => ', this.communicationData);
+
     });
   }
 

@@ -5,7 +5,7 @@ import { OfferService } from '../offer.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { ConfirmationService } from 'primeng/api';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-offer-list',
   templateUrl: './offer-list.component.html',
@@ -242,16 +242,25 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     const obj = {
       'id': id
     }
-    this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
-      accept: () => {
-        this.service.offer_accept(obj).subscribe(res => {
-          console.log('accepted!!');
-        })
 
+    this.service.offer_accept(obj).subscribe(res => {
+      console.log('accepted!!');
+      this.rrerender();
+      if (res['data'].status === 1) {
+        Swal.fire({
+          type: 'success',
+          text: res['message']
+        });
       }
-    });
+    })
+
   }
+  // history(id) {
+  //   this.service.history(id).subscribe(res => {
+  //     console.log('history', res);
+
+  //   })
+  // }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

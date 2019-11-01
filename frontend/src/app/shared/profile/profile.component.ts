@@ -79,6 +79,7 @@ export class ProfileComponent implements OnInit {
       'id': id,
       'username': this.profileData.username,
       'website': this.profileData.website,
+      'email': this.profileData.email,
       'companyname': this.profileData.companyname,
       'businesstype': this.profileData.businesstype,
       'contactno': this.profileData.contactno

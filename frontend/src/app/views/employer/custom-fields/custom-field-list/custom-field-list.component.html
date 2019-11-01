@@ -30,7 +30,7 @@
                         <tbody *ngIf="data?.length != 0">
                             <tr *ngFor="let d of data; let i = index;">
                                 <td>{{d.serial_number}} </td>
-                                <td>{{d.key}}</td>
+                                <td>{{d.key|titlecase}}</td>
 
                                 <td *ngIf="userDetail.role === 'employer'">
                                     <button type="button" class="btn btn-sm btn-success"
@@ -46,7 +46,7 @@
                         </tbody>
                         <tbody *ngIf="data?.length == 0">
                             <tr>
-                                <td colspan="8" class="no-data-available">No data!</td>
+                                <td colspan="8" class="no-data-available">No Custom Field Available!</td>
                             </tr>
                         <tbody>
                     </table>

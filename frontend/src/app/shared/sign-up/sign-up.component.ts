@@ -125,7 +125,7 @@ export class SignUpComponent implements OnInit {
             text: res['message']
           });
           this.router.navigate(['/login']);
-        } else { }
+        }
       }, (err) => {
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
