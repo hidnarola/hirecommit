@@ -201,29 +201,25 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   edit(id) {
     if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/edit/' + id]);
-    }
-    else if (this.userDetail.role === 'sub-employer') {
-      this.route.navigate(['/sub_employer/offers/edit/' + id])
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/edit/' + id]);
     }
   }
 
   detail(id) {
     if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/view/' + id]);
-    }
-    else if (this.userDetail.role === 'sub-employer') {
-      this.route.navigate(['/sub_employer/offers/view/' + id])
-    }
-    else if (this.userDetail.role === 'candidate') {
-      this.route.navigate(['/candidate/offers/view/' + id])
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/view/' + id]);
+    } else if (this.userDetail.role === 'candidate') {
+      this.route.navigate(['/candidate/offers/view/' + id]);
     }
   }
   add() {
     if (this.userDetail.role === 'employer') {
-      this.route.navigate(['/employer/offers/add'])
-    }
-    else if (this.userDetail.role === 'sub-employer') {
-      this.route.navigate(['/sub_employer/offers/add'])
+      this.route.navigate(['/employer/offers/add']);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/add']);
     }
   }
   delete(id) {
@@ -242,7 +238,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     const obj = {
       'id': id
     }
-
     this.service.offer_accept(obj).subscribe(res => {
       console.log('accepted!!');
       this.rrerender();

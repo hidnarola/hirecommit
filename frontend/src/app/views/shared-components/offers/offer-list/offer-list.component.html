@@ -10,8 +10,12 @@
                         <i class="icon-plus"></i>
                         Add
                     </button>
-
-
+                    <button *ngIf="userDetail.role === 'sub-employer'"
+                        class="pull-right btn btn-sm btn-primary custom-margin"
+                        [routerLink]="['/sub_employer/offers/add']">
+                        <i class="icon-plus"></i>
+                        Add
+                    </button>
                 </div>
 
                 <div class="card-body">
