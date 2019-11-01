@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../../../services/common.service';
 import { LocationService } from '../location.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-location-add-view',
@@ -21,7 +22,7 @@ export class LocationAddViewComponent implements OnInit {
   locations: any;
   id: any;
   detail: any = [];
-  panelTitle: string;
+  panelTitle = 'Add Location';
   buttonTitle: string;
   cnt1: any;
   cancel_link = '/employer/locations/list';
@@ -33,6 +34,7 @@ export class LocationAddViewComponent implements OnInit {
     private service: LocationService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit() {
@@ -122,16 +124,21 @@ export class LocationAddViewComponent implements OnInit {
         // 'country': this.detail.country,
         'city': this.detail.city
       };
-      this.service.edit_location(res_data).subscribe(res => {
-        if (res['data']['status'] === 1) {
-          this.submitted = false;
-          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          this.addLocation.reset();
-          this.router.navigate([this.cancel_link]);
+      this.confirmationService.confirm({
+        message: 'Are you sure that you want to delete this record?',
+        accept: () => {
+          this.service.edit_location(res_data).subscribe(res => {
+            if (res['data']['status'] === 1) {
+              this.submitted = false;
+              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+              this.addLocation.reset();
+              this.router.navigate([this.cancel_link]);
+            }
+            this.submitted = false;
+          }, (err) => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          });
         }
-        this.submitted = false;
-      }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     } else {
       if (flag) {
@@ -148,8 +155,6 @@ export class LocationAddViewComponent implements OnInit {
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
-        this.addLocation.reset();
-        this.router.navigate([this.cancel_link]);
       }
     }
   }

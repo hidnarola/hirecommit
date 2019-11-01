@@ -87,7 +87,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 7 }],
+        columnDefs: [{ orderable: false, targets: 10 }],
         columns: [
           {
             data: 'createdAt'
@@ -199,9 +199,33 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   edit(id) {
-    this.route.navigate(['/employer/offers/edit/' + id]);
+    if (this.userDetail.role === 'employer') {
+      this.route.navigate(['/employer/offers/edit/' + id]);
+    }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/edit/' + id])
+    }
   }
 
+  detail(id) {
+    if (this.userDetail.role === 'employer') {
+      this.route.navigate(['/employer/offers/view/' + id]);
+    }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/view/' + id])
+    }
+    else if (this.userDetail.role === 'candidate') {
+      this.route.navigate(['/candidate/offers/view/' + id])
+    }
+  }
+  add() {
+    if (this.userDetail.role === 'employer') {
+      this.route.navigate(['/employer/offers/add'])
+    }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/add'])
+    }
+  }
   delete(id) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
@@ -218,7 +242,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     const obj = {
       'id': id
     }
-
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {

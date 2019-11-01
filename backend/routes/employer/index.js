@@ -39,8 +39,8 @@ router.put('/', async (req, res) => {
         obj.contactno = req.body.contactno
     }
 
-    var sub_account_upadate = await common_helper.update(Employer, { "user_id": req.body.id }, reg_obj)
-    var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
+    var sub_account_upadate = await common_helper.update(Employer, { "user_id": req.body.id }, obj)
+    var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, obj)
 
     if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });

@@ -103,6 +103,8 @@ export class OfferService {
 
     // sub-employer
 
-
+    add_offer_sub_employer(data) {
+        return this.http.post(`${this.sub_employer_url}` + '/offer', data);
+    }
     // sub-employer
 }

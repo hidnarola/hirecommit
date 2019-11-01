@@ -6,6 +6,7 @@ import { CandidateModule } from '../shared-components/candidates/candidate.modul
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MglTimelineModule } from 'angular-mgl-timeline';
 import { DefaultLayoutModule } from '../../shared/containers/default-layout/default-layout.module';
+import { TooltipModule } from 'ng2-tooltip-directive';
 
 @NgModule({
   declarations: [],
@@ -18,6 +19,7 @@ import { DefaultLayoutModule } from '../../shared/containers/default-layout/defa
     ReactiveFormsModule,
     CandidateModule,
     MglTimelineModule,
+    TooltipModule,
   ]
 })
 export class AdminModule { }

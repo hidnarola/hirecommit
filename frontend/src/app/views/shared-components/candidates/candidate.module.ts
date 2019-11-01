@@ -6,6 +6,7 @@ import { CandidateViewComponent } from './candidate-view/candidate-view.componen
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   declarations: [
     CandidateListComponent,
@@ -15,7 +16,8 @@ import { ConfirmationService } from 'primeng/api';
     CommonModule,
     CandidateRoutingModule,
     ConfirmDialogModule,
-    DataTablesModule
+    DataTablesModule,
+    TooltipModule,
   ], providers: [ConfirmationService]
 })
 export class CandidateModule { }

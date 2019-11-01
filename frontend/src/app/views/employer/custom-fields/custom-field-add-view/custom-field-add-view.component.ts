@@ -20,7 +20,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   data: any = {};
   isEdit = false;
   isView = false;
-
+  cancel_link = '/employer/custom_fields/list'
   constructor(
     private service: CustomFieldService,
     private toastr: ToastrService,
@@ -93,7 +93,7 @@ export class CustomFieldAddViewComponent implements OnInit {
           }
           this.router.navigate(['/employer/custom_fields/list']);
         }, (err) => {
-          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     }

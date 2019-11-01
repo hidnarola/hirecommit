@@ -76,12 +76,14 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <!-- <tr>
+                                        <tr>
                                             <td colspan="2" class="text-right">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                                <button type="submit" class="btn btn-danger">Close</button>
+                                                <button type="submit" class="btn btn-primary"
+                                                    (click)=edit(profileData.user_id)>Submit</button>
+                                                <button type="button" class="btn btn-danger"
+                                                    (click)='cancel()'>Close</button>
                                             </td>
-                                        </tr> -->
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -151,7 +153,14 @@
                                                 <img src="{{image + profileData.documentimage}}" disabled=""
                                                     style="height: 100px; width:100px;;"></td>
                                         </tr>
-
+                                        <tr>
+                                            <td colspan="2" class="text-right">
+                                                <button type="submit" class="btn btn-primary"
+                                                    (click)='candidate_profile(profileData.user_id)'>Submit</button>
+                                                <button type="button" class="btn btn-danger"
+                                                    (click)='cancel1()'>Close</button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

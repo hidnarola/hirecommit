@@ -10,12 +10,18 @@ import * as env from '../../../../environments/environment';
 export class CandidateService {
     // private url = 'http://localhost:3000/admin';
     private url = env.environment.API_URL + 'employer';
+    private url_candidate = env.environment.API_URL + 'candidate';
     private admin_url = env.environment.API_URL + 'admin';
     constructor(private http: HttpClient, private route: Router) { }
 
     myObservableArray: Observable<any[]> = new Observable<any[]>();
     employer = new BehaviorSubject(null);
     employerList = this.employer.asObservable();
+
+
+    update_Profile_candidate(data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url_candidate}`, data);
+    }
 
     // emoployer services
     checkHere() {

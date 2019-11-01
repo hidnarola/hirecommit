@@ -24,12 +24,7 @@ export class SignUpComponent implements OnInit {
   step2 = false;
   step3 = false;
   alldata: any;
-  Business_Type = [
-    { label: 'Select Business Type', value: '' },
-    { label: 'Private', value: 'Private' },
-    { label: 'Individual', value: 'Individual' },
-    { label: 'Partnership', value: 'Partnership' }
-  ];
+  Business_Type: any = [];
 
   // local
   // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';

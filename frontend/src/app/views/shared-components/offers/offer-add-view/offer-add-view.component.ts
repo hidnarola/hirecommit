@@ -87,7 +87,7 @@ export class OfferAddViewComponent implements OnInit {
     this.form = this.fb.group({
       candidate: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      title: new FormControl('', [Validators.required]),
+      title: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
       // country: new FormControl('', [Validators.required]),
@@ -112,7 +112,7 @@ export class OfferAddViewComponent implements OnInit {
       console.log('profiledata => ', this.profileData);
     });
     this.userDetail = this.commonService.getLoggedUserDetail();
-    if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       console.log('here => ');
       this.getLocation();
     }
@@ -198,11 +198,8 @@ export class OfferAddViewComponent implements OnInit {
 
   //  On change of salary type
   getSalaryType() {
-    console.log('this.form.controls.salaryType => ', this.form.value.salarytype);
     if (this.form.value.salarytype === 'hourly') {
-      console.log('here => ');
-      this.form.controls['salaryduration'].setValidators([Validators.required]);
-      console.log('this.form.controls[] => ', this.form.controls['salaryduration']);
+      this.form.controls['salaryduration'].setValidators([Validators.required]);;
     } else {
       this.form.controls['salaryduration'].setValidators(null);
       this.form.controls['salaryduration'].setValue(null);
@@ -214,7 +211,7 @@ export class OfferAddViewComponent implements OnInit {
   ngOnInit() {
     this.userDetail = this.commonService.getLoggedUserDetail();
     //   To get candidates list
-    if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.getCandidateList()
         .then(res => {
           this.groupList();
@@ -253,7 +250,7 @@ export class OfferAddViewComponent implements OnInit {
 
   getDetail() {
     console.log('userDetails => ', this.userDetail);
-    if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
@@ -339,7 +336,8 @@ export class OfferAddViewComponent implements OnInit {
           console.log(err);
         }
       );
-    } else if (this.userDetail.role === 'candidate') {
+    }
+    else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`];
@@ -605,6 +603,26 @@ export class OfferAddViewComponent implements OnInit {
     }
   }
 
+  cancel() {
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate([this.cancel_link])
+    }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['/sub_employer/offers/list']);
+    }
+    else if (this.userDetail.role === 'candidate') {
+      this.router.navigate(['/candidate/offers/list']);
+    }
+  }
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
+
   // submit offers
   onSubmit(flag) {
     // customised fields
@@ -694,24 +712,44 @@ export class OfferAddViewComponent implements OnInit {
           }
         );
       } else {
-        this.show_spinner = true;
-        this.service.add_offer(this.formData).subscribe(
-          res => {
-            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            this.router.navigate([this.cancel_link]);
-          },
-          err => {
-            console.log('err => ', err);
-            this.show_spinner = false;
-            this.toastr.error(err['error']['message'], 'Error!', {
-              timeOut: 3000
-            });
-          }
-        );
+        if (this.userDetail.role === 'employer') {
+          this.show_spinner = true;
+          this.service.add_offer(this.formData).subscribe(
+            res => {
+              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+              this.router.navigate([this.cancel_link]);
+            },
+            err => {
+              console.log('err => ', err);
+              this.show_spinner = false;
+              this.toastr.error(err['error']['message'], 'Error!', {
+                timeOut: 3000
+              });
+            }
+          );
+        }
+        else if (this.userDetail.role === 'sub-employer') {
+          this.show_spinner = true;
+          this.service.add_offer_sub_employer(this.formData).subscribe(
+            res => {
+              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+              this.router.navigate([this.cancel_link]);
+            },
+            err => {
+              console.log('err => ', err);
+              this.show_spinner = false;
+              this.toastr.error(err['error']['message'], 'Error!', {
+                timeOut: 3000
+              });
+            }
+          );
+        }
+
       }
 
     }
     this.form_validation = !flag;
   }
+
 
 }

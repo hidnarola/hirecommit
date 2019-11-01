@@ -50,7 +50,9 @@
                                 <input type="title" class="form-control" placeholder="Enter Title" autocomplete="title"
                                     formControlName="title" id="title">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['title'].valid">
-                                    <span *ngIf="form.controls['title'].errors['required']" class="text-danger">
+                                    <span
+                                        *ngIf="form.controls['title'].errors['required'] || form.get('title').errors['whitespace']"
+                                        class="text-danger">
                                         This field is required.
                                     </span>
                                 </div>
@@ -161,7 +163,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket">Salary</label>
                             <div class="col-md-6">
-                                <input type="number" class="form-control" placeholder="Enter Salary Bracket"
+                                <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
                                     formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()">
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salarybracket'].valid">
@@ -174,7 +176,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket_from">Salary From</label>
                             <div class="col-md-6">
-                                <input type="number" class="form-control" placeholder="Enter from Salary"
+                                <input type="number" min="1" class="form-control" placeholder="Enter from Salary"
                                     formControlName="salarybracket_from" id="salarybracket_from"
                                     (blur)="onSalaryRangeBlur()">
                                 <div class="cust_err_msg"
@@ -189,7 +191,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket_to">Salary To</label>
                             <div class="col-md-6">
-                                <input type="number" class="form-control" placeholder="Enter to Salary"
+                                <input type="number" min="1" class="form-control" placeholder="Enter to Salary"
                                     formControlName="salarybracket_to" id="salarybracket_to"
                                     (blur)="onSalaryRangeBlur()">
                                 <div class="cust_err_msg"
@@ -421,8 +423,9 @@
                         <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
+                        <button type="reset" class="btn btn-sm btn-danger" (click)='cancel()'>
                             Cancel</button>
+
                     </div>
 
                 </form>
@@ -615,7 +618,7 @@
                 </div>
                 <div class="card-footer text-right">
 
-                    <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
+                    <button type="button" class="btn btn-sm btn-danger" (click)='cancel()'>
                         Cancel</button>
                 </div>
             </div>

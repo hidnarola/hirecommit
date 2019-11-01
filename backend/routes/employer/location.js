@@ -40,18 +40,26 @@ router.post("/", async (req, res) => {
         else {
             var reg_obj = {
                 "country": req.body.country,
-                "city": req.body.city,
+                "city": req.body.city.toLowerCase(),
                 "emp_id": req.userInfo.id
             };
         }
 
-        var interest_resp = await common_helper.insert(location, reg_obj);
-        if (interest_resp.status == 0) {
-            logger.debug("Error = ", interest_resp.error);
-            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-        } else {
-            res.json({ "message": "Location Added successfully", "data": interest_resp })
+        var location_resp = await common_helper.findOne(location, { "emp_id": req.userInfo.id, "city": req.body.city });
+        if (location_resp.status == 2) {
+            var interest_resp = await common_helper.insert(location, reg_obj);
+
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+                res.json({ "message": "Location Added successfully", "data": interest_resp })
+            }
         }
+        else {
+            res.status(config.BAD_REQUEST).json({ message: "City already exists" });
+        }
+
     }
     else {
         logger.error("Validation Error = ", errors);
@@ -125,11 +133,26 @@ router.post('/get', async (req, res) => {
 
 router.get('/get_location', async (req, res) => {
     try {
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        console.log('user', user);
+
+        if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            console.log('1', 1);
+
+
+            var user_id = user.data.emp_id
+        }
+        else {
+            console.log('1', 2);
+
+
+            var user_id = req.userInfo.id
+        }
         var aggregate = [
             {
                 $match: {
                     "is_del": false,
-                    "emp_id": new ObjectId(req.userInfo.id)
+                    "emp_id": new ObjectId(user_id)
                 }
             },
             // {
@@ -165,8 +188,15 @@ router.get('/get_location', async (req, res) => {
 
 
 router.get('/get_locations', async (req, res) => {
+    var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+    if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+        var user_id = user.data.emp_id
+    }
+    else {
+        var user_id = req.userInfo.id
+    }
     var location_list = await common_helper.find(location, {
-        "emp_id": new ObjectId(req.userInfo.id),
+        "emp_id": new ObjectId(user_id),
         "is_del": false
     });
 

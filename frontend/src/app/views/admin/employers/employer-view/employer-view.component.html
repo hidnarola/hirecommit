@@ -14,7 +14,7 @@
                             </tr>
                             <tr>
                                 <td>Last Name</td>
-                                <td>{{name[1]}}</td>
+                                <td>{{name[1] ? name[1] : '-'}}</td>
                             </tr>
                             <tr>
                                 <td>Email</td>
@@ -37,7 +37,7 @@
 
                             <tr>
                                 <td>Website</td>
-                                <td>{{employer_detail.website}}</td>
+                                <td>{{employer_detail.website ? employer_detail.website : '-'}}</td>
                             </tr>
 
                             <tr>
