@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Params, ActivatedRouteSnapshot } from '@angular/router';
 import { OfferService } from '../offer.service';
 import { CommonService } from '../../../../services/common.service';
@@ -59,6 +59,7 @@ export class OfferAddViewComponent implements OnInit {
   ];
   contryList: any;
   cancel_link = '/employer/offers/list';
+  cancel_link1 = '/sub_employer/offers/list';
   show_spinner = false;
   formData: FormData;
   communicationData: any = [];
@@ -92,9 +93,9 @@ export class OfferAddViewComponent implements OnInit {
       salaryduration: new FormControl(''),
       // country: new FormControl('', [Validators.required]),
       location: new FormControl('', [Validators.required]),
-      salarybracket: new FormControl('', [Validators.required]),
-      salarybracket_from: new FormControl('', [Validators.required]),
-      salarybracket_to: new FormControl('', [Validators.required]),
+      salarybracket: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
+      salarybracket_from: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
+      salarybracket_to: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
       status: new FormControl(),
@@ -107,14 +108,17 @@ export class OfferAddViewComponent implements OnInit {
       communicationFieldItems: this.fb.array([])
     });
 
-    this.commonService.getDecryptedProfileDetail().then(res => {
-      this.profileData = res;
-      console.log('profiledata => ', this.profileData);
-    });
+
     this.userDetail = this.commonService.getLoggedUserDetail();
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       console.log('here => ');
       this.getLocation();
+    }
+    if (this.userDetail.role === 'employer') {
+      this.commonService.getDecryptedProfileDetail().then(res => {
+        this.profileData = res;
+        console.log('profiledata => ', this.profileData);
+      });
     }
 
     // check for add or edit
@@ -199,7 +203,7 @@ export class OfferAddViewComponent implements OnInit {
   //  On change of salary type
   getSalaryType() {
     if (this.form.value.salarytype === 'hourly') {
-      this.form.controls['salaryduration'].setValidators([Validators.required]); ;
+      this.form.controls['salaryduration'].setValidators([Validators.required]);
     } else {
       this.form.controls['salaryduration'].setValidators(null);
       this.form.controls['salaryduration'].setValue(null);
@@ -226,18 +230,15 @@ export class OfferAddViewComponent implements OnInit {
           }
         })
         .then(res => {
-          console.log('this.route.snapshot.data.title => ', this.route.snapshot.data.title);
           if (this.route.snapshot.data.title === 'Edit') {
             this.panelTitle = 'Edit';
             this.is_Edit = true;
             this.getDetail();
           } else if (this.route.snapshot.data.title === 'View') {
-            console.log('view => ');
             this.panelTitle = 'View';
             this.is_View = true;
             this.getDetail();
           } else {
-            console.log('add => ');
             this.panelTitle = 'Add';
             this.spinner.hide();
           }
@@ -249,13 +250,11 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   getDetail() {
-    console.log('userDetails => ', this.userDetail);
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
           this.spinner.hide();
-          console.log('details ====>', this.resData);
           this.getCandidateDetail(res[`data`].user_id);
           this.groupDetail(res[`data`].groups);
           if (res[`data`] && this.is_Edit) {
@@ -288,7 +287,6 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
             this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
-            console.log('res[`data`][location][_id] => ', res[`data`]['location']['_id']);
             this.form.controls['location'].setValue(res[`data`]['location']);
             // this.getCountryDetail(res[`data`].country);
             // this.findData({ 'value': res[`data`].country });
@@ -340,7 +338,6 @@ export class OfferAddViewComponent implements OnInit {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`];
-          console.log('res => ', res);
           this.spinner.hide();
           this.is_View = true;
           this.resData.candidate_name = this.profileData.firstname + ' ' + this.profileData.lastname;
@@ -365,7 +362,6 @@ export class OfferAddViewComponent implements OnInit {
           }
           resolve(this.candidate);
         }, err => {
-          console.log('getCandidateList : err ==> ', err);
           reject(err);
         });
     });
@@ -376,13 +372,10 @@ export class OfferAddViewComponent implements OnInit {
   async getCandidateDetail(id) {
     const candidateDataById = this.candidate.filter(x => x.user._id === id);
     this.form.controls.email.setValue(candidateDataById[0].user.email);
-
-    console.log('candidateDataById => ', candidateDataById);
     if (this.is_View) {
       this.resData.candidate_name = candidateDataById[0].firstname + ' ' + candidateDataById[0].lastname;
       this.resData.candidate_email = candidateDataById[0].user.email;
     }
-    console.log('this.resData => ', this.resData);
   }
 
   async getCountryList() {
@@ -448,10 +441,8 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   async groupDetail(id) {
-    console.log('group_optoins => ', this.group_optoins);
     const groupById = this.group_optoins.find(x => x._id === id);
     this.form.controls.group.setValue(groupById);
-    console.log('groupId => ', groupById);
     if (this.is_View) {
       this.resData.groupName = groupById.name;
     }
@@ -459,7 +450,6 @@ export class OfferAddViewComponent implements OnInit {
 
   // get joining date
   getJoiningDate() {
-    console.log('this.form.value.joiningdate => ', this.form.value.joiningdate);
     this.min_expiry_date = this.form.value.joiningdate;
   }
 
@@ -606,7 +596,7 @@ export class OfferAddViewComponent implements OnInit {
     if (this.userDetail.role === 'employer') {
       this.router.navigate([this.cancel_link]);
     } else if (this.userDetail.role === 'sub-employer') {
-      this.router.navigate(['/sub_employer/offers/list']);
+      this.router.navigate([this.cancel_link1]);
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
     }
@@ -618,13 +608,22 @@ export class OfferAddViewComponent implements OnInit {
       return isValid ? null : { 'whitespace': true };
     }
   }
+  // onlyInteger(control: FormControl) {
+  //   if (!((control.value > 95 && control.value < 106)
+  //     || (control.value > 47 && control.value < 58)
+  //     || control.value == 8)) {
+  //       const minusNumber
+  //     return isValid ? null : { 'whitespace': true };
+  //   }
+
+  // }
 
 
   // submit offers
   onSubmit(flag) {
     // customised fields
     const _coustomisedFieldsArray = [];
-    console.log('this.form.controls => ', this.form.controls);
+    console.log('this.form.controls => ', this.form.value);
     this.form.value.customfieldItem.forEach(element => {
       // if (element.value) {
       _coustomisedFieldsArray.push({
@@ -666,14 +665,13 @@ export class OfferAddViewComponent implements OnInit {
       user_id: this.form.value.candidate,
       location: this.form.value.location._id,
       groups: this.form.value.group._id,
-      country: this.profileData._id,
+      // country: this.profileData._id,
       salary: this.form.value.salarybracket ? this.form.value.salarybracket : '',
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
       data: JSON.stringify(communication_array)
     };
-    console.log('data => ', data);
     Object.keys(data).map(key => {
       if (unwantedFields.includes(key)) {
         delete data[key];
@@ -686,7 +684,6 @@ export class OfferAddViewComponent implements OnInit {
         this.formData.append(key, value);
       }
     }
-    console.log('this.form.value.salaryduration => ', this.form.value.salaryduration);
     // if (this.form.value.salaryduration) {
     //   this.formData.append('salaryduration', this.form.value.salaryduration);
     // }
@@ -698,10 +695,13 @@ export class OfferAddViewComponent implements OnInit {
         this.service.update_offer(this.formData).subscribe(
           res => {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            this.router.navigate([this.cancel_link]);
+            if (this.userDetail.role === 'employer') {
+              this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.router.navigate([this.cancel_link1]);
+            }
           },
           err => {
-            console.log('err => ', err);
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', {
               timeOut: 3000
@@ -709,30 +709,18 @@ export class OfferAddViewComponent implements OnInit {
           }
         );
       } else {
-        if (this.userDetail.role === 'employer') {
+        if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
           this.show_spinner = true;
           this.service.add_offer(this.formData).subscribe(
             res => {
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-              this.router.navigate([this.cancel_link]);
+              if (this.userDetail.role === 'employer') {
+                this.router.navigate([this.cancel_link]);
+              } else if (this.userDetail.role === 'sub-employer') {
+                this.router.navigate([this.cancel_link1]);
+              }
             },
             err => {
-              console.log('err => ', err);
-              this.show_spinner = false;
-              this.toastr.error(err['error']['message'], 'Error!', {
-                timeOut: 3000
-              });
-            }
-          );
-        } else if (this.userDetail.role === 'sub-employer') {
-          this.show_spinner = true;
-          this.service.add_offer_sub_employer(this.formData).subscribe(
-            res => {
-              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-              this.router.navigate([this.cancel_link]);
-            },
-            err => {
-              console.log('err => ', err);
               this.show_spinner = false;
               this.toastr.error(err['error']['message'], 'Error!', {
                 timeOut: 3000
@@ -740,6 +728,21 @@ export class OfferAddViewComponent implements OnInit {
             }
           );
         }
+        // else if (this.userDetail.role === 'sub-employer') {
+        //   this.show_spinner = true;
+        //   this.service.add_offer(this.formData).subscribe(
+        //     res => {
+        //       this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+        //       this.router.navigate([this.cancel_link1]);
+        //     },
+        //     err => {
+        //       this.show_spinner = false;
+        //       this.toastr.error(err['error']['message'], 'Error!', {
+        //         timeOut: 3000
+        //       });
+        //     }
+        //   );
+        // }
 
       }
 

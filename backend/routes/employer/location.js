@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
             };
         }
 
-        var location_resp = await common_helper.findOne(location, { "emp_id": req.userInfo.id, "city": req.body.city });
+        var location_resp = await common_helper.findOne(location, { "is_del": false, "emp_id": req.userInfo.id, "city": req.body.city.toLowerCase() });
         if (location_resp.status == 2) {
             var interest_resp = await common_helper.insert(location, reg_obj);
 
@@ -82,18 +82,12 @@ router.post('/get', async (req, res) => {
             [sortOrderColumn]: sortOrder
         }
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        console.log('user', user);
 
         if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-            console.log('1', 1);
-
 
             var user_id = user.data.emp_id
         }
         else {
-            console.log('1', 2);
-
-
             var user_id = req.userInfo.id
         }
 
@@ -134,16 +128,13 @@ router.post('/get', async (req, res) => {
 router.get('/get_location', async (req, res) => {
     try {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        console.log('user', user);
 
         if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-            console.log('1', 1);
 
 
             var user_id = user.data.emp_id
         }
         else {
-            console.log('1', 2);
 
 
             var user_id = req.userInfo.id

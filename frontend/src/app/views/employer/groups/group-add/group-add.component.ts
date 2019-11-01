@@ -126,7 +126,6 @@ export class GroupAddComponent implements OnInit {
     this.isFormSubmitted = true;
     if (valid) {
       this.service.addGroup(this.addGroup.value).subscribe(res => {
-        console.log('for id => ', res['data']['data']['_id']);
         if (res['data']['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
           this.isFormSubmitted = false;

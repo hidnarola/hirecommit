@@ -121,7 +121,7 @@ export const employer: NavData[] = [
     name: 'Custom Field',
     url: 'custom_fields',
     icon: 'icon-paper-clip'
-  }
+  },
   // {
   //   name: 'Timeline',
   //   url: 'timeline',

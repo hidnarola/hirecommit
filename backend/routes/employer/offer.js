@@ -13,6 +13,7 @@ var mail_helper = require('../../helpers/mail_helper');
 var logger = config.logger;
 var moment = require("moment")
 var User = require('../../models/user');
+var History = require('../../models/offer_history');
 
 
 
@@ -36,10 +37,10 @@ router.post("/", async (req, res) => {
             notEmpty: true,
             errorMessage: "Salary Type is required"
         },
-        "country": {
-            notEmpty: true,
-            errorMessage: "Country is required"
-        },
+        // "country": {
+        //     notEmpty: true,
+        //     errorMessage: "Country is required"
+        // },
         "location": {
             notEmpty: true,
             errorMessage: "Location is required"
@@ -85,7 +86,7 @@ router.post("/", async (req, res) => {
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
-                "country": req.body.country,
+                // "country": req.body.country,
                 "location": req.body.location,
                 "currency_type": req.body.currency_type,
                 "salarybracket": req.body.salarybracket,
@@ -104,14 +105,14 @@ router.post("/", async (req, res) => {
             }
         }
         else {
-            var reg_obj = {
+            var obj = {
                 "employer_id": req.userInfo.id,
                 "user_id": req.body.user_id,
                 // "name": req.body.name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
-                "country": req.body.country,
+                // "country": req.body.country,
                 "location": req.body.location,
                 "currency_type": req.body.currency_type,
                 "salarybracket": req.body.salarybracket,
@@ -131,8 +132,11 @@ router.post("/", async (req, res) => {
 
         };
 
-        var interest_resp = await common_helper.insert(Offer, reg_obj);
+        var interest_resp = await common_helper.insert(Offer, obj);
 
+        obj.offer_id = interest_resp.data._id
+        var interest = await common_helper.insert(History, obj);
+        console.log("history data", interest)
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
@@ -490,6 +494,9 @@ router.put("/status_change", async (req, res) => {
         obj.status = "Not Joined"
     }
 
+    obj.offer_id = req.body.id
+    var interest = await common_helper.insert(History, obj);
+
     var update_status = await common_helper.update(Offer, { "_id": req.body.id }, obj)
     res.status(config.OK_STATUS).json({ "message": "status changed", "status": obj.status });
 
@@ -622,6 +629,71 @@ router.get('/details/:id', async (req, res) => {
 });
 
 
+router.get('/history/:id', async (req, res) => {
+    var id = req.params.id;
+    try {
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
+        if (user && user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
+        }
+        else {
+            var user_id = req.userInfo.id
+        }
+        var history_data = await History.aggregate([
+            {
+                $match: {
+                    "offer_id": new ObjectId(id)
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "offer",
+                    localField: "offer_id",
+                    foreignField: "_id",
+                    as: "offer"
+                }
+            },
+
+            {
+                $unwind: "$offer"
+            },
+            {
+                $lookup:
+                {
+                    from: "employerDetail",
+                    localField: "offer.employer_id",
+                    foreignField: "user_id",
+                    as: "employer"
+                }
+            },
+
+            {
+                $unwind: "$employer"
+            },
+            {
+                $lookup:
+                {
+                    from: "candidateDetail",
+                    localField: "offer.user_id",
+                    foreignField: "user_id",
+                    as: "candidate"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$candidate"
+                },
+            },
+        ])
+        if (history_data) {
+            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history_data });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
+});
 
 module.exports = router;

@@ -53,7 +53,6 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
         destroy: true,
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_location(dataTablesParameters).subscribe(res => {
-            console.log('location response =>>', res);
 
             if (res['status'] === 1) {
               this.locations = res['location'];
@@ -87,8 +86,6 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
         destroy: true,
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_location(dataTablesParameters).subscribe(res => {
-            console.log('location response =>>', res);
-
             if (res['status'] === 1) {
               this.locations = res['location'];
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -120,7 +117,6 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
       message: 'Are you sure that you want to delete this record?',
       accept: () => {
         this.service.deactivate_location(id).subscribe(res => {
-          console.log('>>', res['message']);
 
           if (res['resp_data'].status === 1) {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

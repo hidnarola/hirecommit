@@ -6,7 +6,7 @@
                     <div class="card-body">
                         <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
                         <h2>{{profileData.username}}</h2>
-                        <label> Email: <a href="/">{{profileData.email}} </a></label>
+                        <!-- <label> Email: <a href="/">{{profileData.email}} </a></label> -->
                     </div>
                 </div>
             </div>
@@ -38,6 +38,13 @@
                                             </td>
                                         </tr>
 
+                                        <tr>
+                                            <td class="align-middle">Email</td>
+                                            <td>
+                                                <input type="email" class="form-control" [(ngModel)]="profileData.email"
+                                                    [ngModelOptions]="{standalone: true}">
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td class="align-middle">Country</td>
                                             <td>
@@ -101,7 +108,7 @@
                     <div class="card-body">
                         <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
                         <h2>{{profileData.firstname}} {{profileData.lastname}}</h2>
-                        <label> Email: <a href="/">{{profileData.email}} </a></label>
+                        <!-- <label> Email: <a href="/">{{profileData.email}} </a></label> -->
                     </div>
                 </div>
             </div>
@@ -134,6 +141,13 @@
                                                         [(ngModel)]="profileData.contactno"
                                                         [ngModelOptions]="{standalone: true}">
                                                 </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-middle">Email</td>
+                                            <td>
+                                                <input type="email" class="form-control" [(ngModel)]="profileData.email"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 

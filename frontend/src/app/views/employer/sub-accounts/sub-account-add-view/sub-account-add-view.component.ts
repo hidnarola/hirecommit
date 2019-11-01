@@ -41,6 +41,7 @@ export class SubAccountAddViewComponent implements OnInit {
       this.id = params['id'];
     });
     this.getDetail(this.id);
+
   }
 
   // Remove white spaces
@@ -114,10 +115,8 @@ export class SubAccountAddViewComponent implements OnInit {
           admin_rights: 'yes'
         };
       }
-      console.log('obj==>', this.obj);
 
       this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
-        console.log('edited !!', res);
         this.submitted = false;
         this.router.navigate([this.cancel_link]);
         this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });

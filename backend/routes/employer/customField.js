@@ -43,16 +43,20 @@ router.post("/", async (req, res) => {
             };
 
         }
-        var CustomeField_resp = await common_helper.findOne(CustomField, { "emp_id": req.userInfo.id, "key": req.body.key });
+        var CustomeField_resp = await common_helper.findOne(CustomField, { "is_del": false, "emp_id": new ObjectId(req.userInfo.id), "key": req.body.key.toLowerCase() });
         if (CustomeField_resp.status == 2) {
             var interest_resp = await common_helper.insert(CustomField, obj);
             if (interest_resp.status == 0) {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             }
+            else {
+                res.json({ "message": "Custom Field Added successfully", "data": interest_resp })
+
+            }
         }
         else {
-            res.status(config.BAD_REQUEST).json({ message: "Custome Field already exists" });
+            res.status(config.BAD_REQUEST).json({ message: "Custom Field already exists" });
         }
 
     }

@@ -47,7 +47,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
             this.data = res['user'];
             this.subAccountList = [];
             this.data.forEach(element => {
-              console.log('=>', element);
               if (element.user.admin_rights === 'no') {
                 this.obj = {
                   username: element.username,
@@ -65,7 +64,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
                 };
                 this.subAccountList.push(this.obj);
               }
-              console.log('====>', this.subAccountList);
+
             });
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
@@ -87,10 +86,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       ]
     };
 
-  }
-
-  edit() {
-    console.log('function called => ');
   }
 
   get_SubEmployer() { }
@@ -120,7 +115,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   changeRights(e, id) {
-    console.log(e.checked, id);
     if (e.checked === false) {
       this.obj = {
         'id': id,

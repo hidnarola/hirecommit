@@ -30,7 +30,6 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     private commonService: CommonService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('employer - groups : view-groups component => ');
   }
 
   ngOnInit(): void {

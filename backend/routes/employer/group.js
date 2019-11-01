@@ -95,7 +95,7 @@ router.post("/", async (req, res) => {
         else {
             var reg_obj = {
                 "emp_id": req.userInfo.id,
-                "name": req.body.name,
+                "name": req.body.name.toLowerCase(),
                 "high_unopened": req.body.high_unopened,
                 "high_notreplied": req.body.high_notreplied,
                 "medium_unopened": req.body.medium_unopened,
@@ -107,13 +107,21 @@ router.post("/", async (req, res) => {
 
             };
         }
-        var interest_resp = await common_helper.insert(group, reg_obj);
-        if (interest_resp.status == 0) {
-            logger.debug("Error = ", interest_resp.error);
-            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-        } else {
-            res.json({ "message": "Group Added successfully", "data": interest_resp })
+
+        var group_resp = await common_helper.findOne(group, { "is_del": false, "emp_id": req.userInfo.id, "name": req.body.name.toLowerCase() });
+        if (group_resp.status == 2) {
+            var interest_resp = await common_helper.insert(group, reg_obj);
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+                res.json({ "message": "Group Added successfully", "data": interest_resp })
+            }
         }
+        else {
+            res.status(config.BAD_REQUEST).json({ message: "Group already exists" });
+        }
+
     }
     else {
         logger.error("Validation Error = ", errors);
@@ -195,8 +203,8 @@ router.put('/', async (req, res) => {
     if (req.body.medium_unopened && req.body.medium_unopened != "") {
         obj.medium_unopened = req.body.medium_unopened
     }
-    if (req.body.medium_unopened && req.body.medium_unopened != "") {
-        obj.medium_unopened = req.body.medium_unopened
+    if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+        obj.medium_notreplied = req.body.medium_notreplied
     }
     if (req.body.low_unopened && req.body.low_unopened != "") {
         obj.low_unopened = req.body.low_unopened

@@ -47,10 +47,10 @@ const OfferSchema = new Schema({
   salaryduration: {
     type: String
   },
-  country: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'country_datas'
-  },
+  // country: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'country_datas'
+  // },
   location: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'location'

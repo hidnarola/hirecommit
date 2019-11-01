@@ -98,7 +98,6 @@ export class LocationAddViewComponent implements OnInit {
         this.detail = res['data']['data'];
         this.spinner.hide();
         // this.cnt = res['data']['data'].country;
-        console.log(' detail', this.detail);
 
       });
 
@@ -142,7 +141,6 @@ export class LocationAddViewComponent implements OnInit {
       });
     } else {
       if (flag) {
-        console.log('>>', this.addLocation.value);
         this.service.add(this.addLocation.value).subscribe(res => {
           this.location = res;
           if (res['data']['status'] === 1) {
