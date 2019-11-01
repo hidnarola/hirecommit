@@ -4,44 +4,6 @@ import { OfferListComponent } from './offer-list/offer-list.component';
 import { OfferAddViewComponent } from './offer-add-view/offer-add-view.component';
 
 const routes: Routes = [
-  // {
-  //   path: '',
-  //   redirectTo: 'list',
-  //   data: {
-  //     title: 'Offers'
-  //   },
-  // },
-  // {
-  //   path: 'list',
-  //   component: OfferListComponent,
-  //   data: {
-  //     title: 'List Offers'
-  //   }
-  // },
-  // {
-  //   path: 'add',
-  //   component: OfferAddViewComponent,
-  //   data: {
-  //     title: 'Add Offers'
-  //   }
-  // },
-  // {
-  //   path: 'view/:id',
-  //   component: OfferAddViewComponent,
-  //   data: {
-  //     title: 'View Offers'
-  //   }
-  // },
-  // {
-  //   path: 'edit/:id',
-  //   component: OfferAddViewComponent,
-  //   data: {
-  //     title: 'Edit Offers'
-  //   }
-  // }
-
-
-
   {
     path: '',
     data: {

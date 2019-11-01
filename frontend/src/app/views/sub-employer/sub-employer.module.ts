@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { SubEmployerRoutingModule } from './sub-employer-routing.module';
 import { DefaultLayoutModule } from '../../shared/containers/default-layout/default-layout.module';
 import { EmployerModule } from '../admin/employers/employer.module';
+import { OffersModule } from '../shared-components/offers/offers.module';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -11,7 +13,9 @@ import { EmployerModule } from '../admin/employers/employer.module';
     CommonModule,
     SubEmployerRoutingModule,
     DefaultLayoutModule,
-    EmployerModule
+    EmployerModule,
+    OffersModule,
+    SharedModule
   ]
 })
 export class SubEmployerModule { }

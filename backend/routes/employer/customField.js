@@ -38,17 +38,21 @@ router.post("/", async (req, res) => {
         else {
             var obj = {
                 "emp_id": req.userInfo.id,
-                "key": req.body.key,
+                "key": req.body.key.toLowerCase(),
                 "serial_number": serial_number
             };
 
         }
-        var interest_resp = await common_helper.insert(CustomField, obj);
-        if (interest_resp.status == 0) {
-            logger.debug("Error = ", interest_resp.error);
-            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-        } else {
-            res.json({ "message": "Custom Field Added successfully", "data": interest_resp })
+        var CustomeField_resp = await common_helper.findOne(CustomField, { "emp_id": req.userInfo.id, "key": req.body.key });
+        if (CustomeField_resp.status == 2) {
+            var interest_resp = await common_helper.insert(CustomField, obj);
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            }
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ message: "Custome Field already exists" });
         }
 
     }

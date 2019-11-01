@@ -25,31 +25,33 @@
                                             <td class="align-middle">Company Name</td>
                                             <td>
                                                 <input type="text" class="form-control"
-                                                    placeholder="{{profileData.companyname}}">
+                                                    [(ngModel)]="profileData.companyname"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="align-middle">Website</td>
                                             <td>
-                                                <input type="text"
-                                                    placeholder="{{profileData.website ? profileData.website :  '-' }}"
-                                                    class="form-control">
+                                                <input type="text" class="form-control"
+                                                    [(ngModel)]="profileData.website"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 
                                         <tr>
                                             <td class="align-middle">Country</td>
                                             <td>
-                                                <input type="text" class="form-control" disabled=""
-                                                    value="{{profileData.country}}">
+                                                <input type="text" class="form-control" disabled="true"
+                                                    [(ngModel)]="profileData.country"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 
                                         <tr>
                                             <td class="align-middle">Business Type</td>
                                             <td>
-                                                <input type="text" placeholder="{{profileData.name}}"
-                                                    class="form-control">
+                                                <input type="text" [(ngModel)]="profileData.name" class="form-control"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 
@@ -57,7 +59,8 @@
                                             <td class="align-middle">Company Person Name</td>
                                             <td>
                                                 <input type="text" class="form-control"
-                                                    placeholder="{{profileData.username}}">
+                                                    [(ngModel)]="profileData.username"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 
@@ -68,14 +71,17 @@
                                                     <input type="text" class="form-control countrycode-input"
                                                         disabled="" value="{{profileData.countrycode}}">
                                                     <input type="text" class="form-control countryno-input"
-                                                        placeholder="{{profileData.contactno}}">
+                                                        [(ngModel)]="profileData.contactno"
+                                                        [ngModelOptions]="{standalone: true}">
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2" class="text-right">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                                <button type="submit" class="btn btn-danger">Close</button>
+                                                <button type="submit" class="btn btn-primary"
+                                                    (click)=edit(profileData.user_id)>Submit</button>
+                                                <button type="button" class="btn btn-danger"
+                                                    (click)='cancel()'>Close</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -113,7 +119,8 @@
                                             <td>Country</td>
                                             <td>
                                                 <input type="text" class="form-control" disabled=""
-                                                    value="{{profileData.country}}">
+                                                    [(ngModel)]="profileData.country"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 
@@ -124,7 +131,8 @@
                                                     <input type="text" class="form-control countrycode-input"
                                                         disabled="" value="{{profileData.countrycode}}">
                                                     <input type="text" class="form-control countryno-input"
-                                                        placeholder="{{profileData.contactno}}">
+                                                        [(ngModel)]="profileData.contactno"
+                                                        [ngModelOptions]="{standalone: true}">
                                                 </div>
                                             </td>
                                         </tr>
@@ -133,7 +141,8 @@
                                             <td>Document Type</td>
                                             <td>
                                                 <input type="text" class="form-control" disabled=""
-                                                    placeholder="{{profileData.name}}">
+                                                    [(ngModel)]="profileData.name"
+                                                    [ngModelOptions]="{standalone: true}">
                                             </td>
                                         </tr>
 
@@ -144,7 +153,14 @@
                                                 <img src="{{image + profileData.documentimage}}" disabled=""
                                                     style="height: 100px; width:100px;;"></td>
                                         </tr>
-
+                                        <tr>
+                                            <td colspan="2" class="text-right">
+                                                <button type="submit" class="btn btn-primary"
+                                                    (click)='candidate_profile(profileData.user_id)'>Submit</button>
+                                                <button type="button" class="btn btn-danger"
+                                                    (click)='cancel1()'>Close</button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

@@ -35,7 +35,7 @@ export class GroupAddComponent implements OnInit {
 
     // form controls
     this.addGroup = this.fb.group({
-      name: new FormControl('', [Validators.required]),
+      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       high_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       high_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       medium_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
@@ -113,6 +113,13 @@ export class GroupAddComponent implements OnInit {
       editor.ui.view.toolbar.element,
       editor.ui.getEditableElement()
     );
+  }
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
   }
 
   onSubmit(valid) {

@@ -8,6 +8,7 @@ import { EmployerListComponent } from './employer-list/employer-list.component';
 import { EmployerViewComponent } from './employer-view/employer-view.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   declarations: [
     EmployerListComponent,
@@ -19,7 +20,8 @@ import { ConfirmationService } from 'primeng/api';
     ReactiveFormsModule,
     HttpClientModule,
     DataTablesModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TooltipModule
   ], providers: [ConfirmationService]
 
 })

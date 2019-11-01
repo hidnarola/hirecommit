@@ -28,6 +28,7 @@ export function getToken(): string {
   return localStorage.getItem('token');
 }
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   imports: [
     BrowserModule,
@@ -40,6 +41,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     CheckboxModule,
     FileUploadModule,
     NgxSpinnerModule,
+    TooltipModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: getToken

@@ -1,8 +1,12 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonService } from '../../services/common.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { EmployerService } from '../../views/employer/employer.service';
+import { CandidateService } from '../../views/shared-components/candidates/candidate.service';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -15,9 +19,15 @@ export class ProfileComponent implements OnInit {
   alldata: any = [];
   countryList: any = [];
   profileForm: FormGroup;
+  obj: any;
+  obj1: any;
   constructor(private service: CommonService,
     private router: ActivatedRoute,
-    public fb: FormBuilder, ) {
+    public fb: FormBuilder,
+    private Employerservice: EmployerService,
+    private CandidateService: CandidateService,
+    private tostsr: ToastrService,
+    private route: Router) {
 
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     // if (this.router.snapshot.data.type === 'candidate') {
@@ -63,5 +73,43 @@ export class ProfileComponent implements OnInit {
       });
     });
   }
+  edit(id) {
 
+    this.obj = {
+      'id': id,
+      'username': this.profileData.username,
+      'website': this.profileData.website,
+      'companyname': this.profileData.companyname,
+      'businesstype': this.profileData.businesstype,
+      'contactno': this.profileData.contactno
+    }
+    this.Employerservice.update_Profile(this.obj).subscribe(res => {
+      console.log('edited!!', res);
+      this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+    })
+  }
+  candidate_profile(id) {
+    this.obj1 = {
+      'id': id,
+      'firstname': this.profileData.firstname,
+      'lastname': this.profileData.lastname,
+      'email': this.profileData.email,
+      'contactno': this.profileData.contactno,
+    }
+
+    this.CandidateService.update_Profile_candidate(this.obj1).subscribe(res => {
+      console.log('edited', res);
+
+      this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 })
+    })
+  }
+
+
+  cancel() {
+    this.route.navigate(['/employer/offers/list'])
+  }
+
+  cancel1() {
+    this.route.navigate(['/candidate/offers/list'])
+  }
 }

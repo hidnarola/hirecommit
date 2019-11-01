@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -15,11 +15,12 @@ export class GroupViewComponent implements OnInit {
   id: any;
   groupData: any = [];
   communicationData: any = [];
-
+  cancel_link = '/employer/groups/list'
   constructor(
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
     private service: GroupService,
+    private router: Router
   ) {
     // show spinner
     this.spinner.show();
@@ -36,10 +37,10 @@ export class GroupViewComponent implements OnInit {
       }
       console.log('communicationData => ', this.communicationData);
     });
-
   }
 
   ngOnInit() {
   }
+
 
 }

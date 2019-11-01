@@ -47,7 +47,7 @@ export const routes: Routes = [
     loadChildren: () => import('./views/sub-employer/sub-employer.module').then(m => m.SubEmployerModule),
     canActivate: [RoleGuardService],
     data: {
-      expectedRole: 'sub-employer'
+      expectedRole: 'sub-employer',
     }
   },
   { path: '**', component: P404Component }
