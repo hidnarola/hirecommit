@@ -204,7 +204,7 @@ export class OfferAddViewComponent implements OnInit {
   //  On change of salary type
   getSalaryType() {
     if (this.form.value.salarytype === 'hourly') {
-      this.form.controls['salaryduration'].setValidators([Validators.required]);;
+      this.form.controls['salaryduration'].setValidators([Validators.required]);
     } else {
       this.form.controls['salaryduration'].setValidators(null);
       this.form.controls['salaryduration'].setValue(null);
@@ -335,8 +335,7 @@ export class OfferAddViewComponent implements OnInit {
           console.log(err);
         }
       );
-    }
-    else if (this.userDetail.role === 'candidate') {
+    } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`];
@@ -598,12 +597,10 @@ export class OfferAddViewComponent implements OnInit {
 
   cancel() {
     if (this.userDetail.role === 'employer') {
-      this.router.navigate([this.cancel_link])
-    }
-    else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate([this.cancel_link]);
+    } else if (this.userDetail.role === 'sub-employer') {
       this.router.navigate([this.cancel_link1]);
-    }
-    else if (this.userDetail.role === 'candidate') {
+    } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
     }
   }
@@ -703,8 +700,7 @@ export class OfferAddViewComponent implements OnInit {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             if (this.userDetail.role === 'employer') {
               this.router.navigate([this.cancel_link]);
-            }
-            else if (this.userDetail.role === 'sub-employer') {
+            } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate([this.cancel_link1]);
             }
           },
@@ -723,8 +719,7 @@ export class OfferAddViewComponent implements OnInit {
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
               if (this.userDetail.role === 'employer') {
                 this.router.navigate([this.cancel_link]);
-              }
-              else if (this.userDetail.role === 'sub-employer') {
+              } else if (this.userDetail.role === 'sub-employer') {
                 this.router.navigate([this.cancel_link1]);
               }
             },
