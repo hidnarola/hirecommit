@@ -15,12 +15,13 @@
                             <div class="col-md-4">
                                 <input type="text" [(ngModel)]="data.key" id="key" name="key" class="form-control"
                                     placeholder="Custom Field" formControlName="key">
-                                <span *ngIf="!addCustomFeild.get('key').valid && submitted" class="text-danger">
-                                    <span
-                                        *ngIf="addCustomFeild.get('key').errors['required'] || addCustomFeild.controls['key'].errors['whitespace']">This
-                                        field is required.</span>
-                                </span>
-
+                                <div class="cust_err_msg">
+                                    <span *ngIf="!addCustomFeild.get('key').valid && submitted" class="text-danger">
+                                        <span
+                                            *ngIf="addCustomFeild.get('key').errors['required'] || addCustomFeild.controls['key'].errors['whitespace']">This
+                                            field is required.</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -63,3 +64,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

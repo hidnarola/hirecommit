@@ -15,9 +15,10 @@
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
                                     autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
-                                <div class="error" *ngIf="!addGroup.controls['name'].valid && isFormSubmitted">
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['name'].valid && isFormSubmitted">
                                     <span
-                                        *ngIf="addGroup.controls['name'].errors['required'] ||  addGroup.get('name').errors['whitespace']">
+                                        *ngIf="addGroup.controls['name'].errors['required'] ||  addGroup.get('name').errors['whitespace']"
+                                        class="text-danger">
                                         This field is required.
                                     </span>
                                 </div>
@@ -39,11 +40,14 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!addGroup.controls['high_unopened'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['high_unopened'].errors['required']">This field is
+                                <div class="cust_err_msg"
+                                    *ngIf="!addGroup.controls['high_unopened'].valid && isFormSubmitted">
+                                    <span *ngIf="addGroup.controls['high_unopened'].errors['required']"
+                                        class="text-danger">This field is
                                         required.</span>
-                                    <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']">Allow number from
-                                        1-31.</span>
+                                    <span
+                                        *ngIf="addGroup.controls['high_unopened'].errors['pattern'] || !addGroup.controls['high_unopened'].errors['required']"
+                                        class="text-danger">Only Month Days</span>
                                 </div>
                             </div>
                         </div>
@@ -57,12 +61,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error"
+                                <div class="cust_err_msg"
                                     *ngIf="!addGroup.controls['high_notreplied'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['required']">This field is
+                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['required']"
+                                        class="text-danger">This field is
                                         required.</span>
-                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['pattern']">Allow number
-                                        from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['pattern']"
+                                        class="text-danger">Only Month Days</span>
                                 </div>
                             </div>
                         </div>
@@ -76,12 +81,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error"
+                                <div class="cust_err_msg"
                                     *ngIf="!addGroup.controls['medium_unopened'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['required']">This field is
+                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['required']"
+                                        class="text-danger">This field is
                                         required.</span>
-                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']">Allow number
-                                        from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']"
+                                        class="text-danger">Only Month Days</span>
                                 </div>
                             </div>
                         </div>
@@ -95,12 +101,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error"
+                                <div class="cust_err_msg"
                                     *ngIf="!addGroup.controls['medium_notreplied'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['required']">This field
+                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['required']"
+                                        class="text-danger">This field
                                         is required.</span>
-                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['pattern']">Allow number
-                                        from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['pattern']"
+                                        class="text-danger">Only Month Days</span>
                                 </div>
                             </div>
                         </div>
@@ -114,11 +121,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error" *ngIf="!addGroup.controls['low_unopened'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['low_unopened'].errors['required']">This field is
+                                <div class="cust_err_msg"
+                                    *ngIf="!addGroup.controls['low_unopened'].valid && isFormSubmitted">
+                                    <span *ngIf="addGroup.controls['low_unopened'].errors['required']"
+                                        class="text-danger">This field is
                                         required.</span>
-                                    <span *ngIf="addGroup.controls['low_unopened'].errors['pattern']">Allow number from
-                                        1-31.</span>
+                                    <span *ngIf="addGroup.controls['low_unopened'].errors['pattern']"
+                                        class="text-danger">Only Month Days</span>
                                 </div>
                             </div>
                         </div>
@@ -132,12 +141,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="error"
+                                <div class="cust_err_msg"
                                     *ngIf="!addGroup.controls['low_notreplied'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['required']">This field is
+                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['required']"
+                                        class="text-danger">This field is
                                         required.</span>
-                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['pattern']">Allow number
-                                        from 1-31.</span>
+                                    <span *ngIf="addGroup.controls['low_notreplied'].errors['pattern']"
+                                        class="text-danger">Only Month Days</span>
                                 </div>
                             </div>
                         </div>

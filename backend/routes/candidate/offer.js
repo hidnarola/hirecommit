@@ -13,7 +13,9 @@ var logger = config.logger;
 var moment = require("moment")
 var User = require('../../models/user');
 var History = require('../../models/offer_history');
+var Employer = require('../../models/employer-detail');
 
+var mail_helper = require('../../helpers/mail_helper');
 
 
 
@@ -151,14 +153,26 @@ router.put('/', async (req, res) => {
     var reg_obj = {
         "status": "Accepted"
     }
-
-    var sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
+    sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
     reg_obj.offer_id = req.body.id
     var interest = await common_helper.insert(History, reg_obj);
     if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
+
+        var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
+        var employee = await common_helper.findOne(Employer, { user_id: new ObjectId(offer.data.employer_id) })
+
+        let mail_resp = await mail_helper.send("offer", {
+            "to": employee.data.email,
+            "subject": "Offer Accepted"
+        }, {
+
+            "msg": "Offer:" + " " + offer.data.title + " " + "is accepted"
+        });
+        console.log('mail_resp', mail_resp);
+
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer Accepted", "data": sub_account_upadate });
     }
     else {

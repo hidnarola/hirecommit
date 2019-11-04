@@ -4,6 +4,7 @@ import { CustomFieldService } from '../custom-field.service';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-custom-field-add-view',
@@ -20,13 +21,14 @@ export class CustomFieldAddViewComponent implements OnInit {
   data: any = {};
   isEdit = false;
   isView = false;
-  cancel_link = '/employer/custom_fields/list'
+  cancel_link = '/employer/custom_fields/list';
   constructor(
     private service: CustomFieldService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit() {
@@ -73,15 +75,21 @@ export class CustomFieldAddViewComponent implements OnInit {
         'id': this.id,
         'key': this.addCustomFeild.value['key']
       };
-      this.service.edit_custom_field(obj).subscribe(res => {
-        if (res['data']['status'] === 1) {
-          this.submitted = false;
-          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          this.addCustomFeild.reset();
+      this.confirmationService.confirm({
+        message: 'Are you sure that you want to Update this record?',
+        accept: () => {
+          this.service.edit_custom_field(obj).subscribe(res => {
+            if (res['data'].status === 1) {
+
+              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+              this.router.navigate([this.cancel_link]);
+              this.addCustomFeild.reset();
+            }
+            this.submitted = false;
+          }, (err) => {
+            this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+          });
         }
-        this.router.navigate(['/employer/custom_fields/list']);
-      }, (err) => {
-        this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
       });
     } else {
       if (valid) {
@@ -89,7 +97,7 @@ export class CustomFieldAddViewComponent implements OnInit {
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            this.router.navigate(['/employer/custom_fields/list']);
+            this.router.navigate([this.cancel_link]);
             this.addCustomFeild.reset();
           }
         }, (err) => {

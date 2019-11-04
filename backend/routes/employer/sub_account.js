@@ -162,18 +162,44 @@ router.put('/', async (req, res) => {
     }
 })
 
+router.put('/details', async (req, res) => {
+    var obj = {}
+    console.log("details==> ", req.body);
+    if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
+        obj.admin_rights = req.body.data.admin_rights
+    }
+    var id = req.body.id;
+    // var sub_account_upadate = await common_helper.update(Sub_Employer_Detail, { "_id": req.body.id }, obj)
+    var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
+
+    if (req.body.data.username && req.body.data.username !== "") {
+        obj.username = req.body.data.username;
+    }
+
+    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
+    if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": { resp_user_data, resp_Detail_data } });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    }
+})
+
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
 
-    var sub_account_detail = await Sub_Employer_Detail.findOne({ "_id": new ObjectId(id) }).populate('user_id')
-
+    var sub_account_detail = await Sub_Employer_Detail.findOne({ "user_id": new ObjectId(id) }).populate('user_id')
+    if (sub_account_detail) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+    }
     // if (sub_account_detail.status == 0) {
     //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     // }
-    // else if (sub_account_detail.status == 1) {
-    res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
-    // }
+    // else 
     // else {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
     // }

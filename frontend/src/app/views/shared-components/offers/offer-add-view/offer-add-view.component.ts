@@ -33,6 +33,7 @@ export class OfferAddViewComponent implements OnInit {
   group_optoins: any = [];
   arrayItems: any = [];
   key: any;
+  gname: any;
   custom_field: any = [];
   id: any;
   is_Edit: boolean = false;
@@ -338,6 +339,8 @@ export class OfferAddViewComponent implements OnInit {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`];
+          this.gname = this.resData['groups'].name;
+
           this.spinner.hide();
           this.is_View = true;
           this.resData.candidate_name = this.profileData.firstname + ' ' + this.profileData.lastname;
