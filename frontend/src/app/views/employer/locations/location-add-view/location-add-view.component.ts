@@ -124,7 +124,7 @@ export class LocationAddViewComponent implements OnInit {
         'city': this.detail.city
       };
       this.confirmationService.confirm({
-        message: 'Are you sure that you want to delete this record?',
+        message: 'Are you sure that you want to Update this record?',
         accept: () => {
           this.service.edit_location(res_data).subscribe(res => {
             if (res['data']['status'] === 1) {

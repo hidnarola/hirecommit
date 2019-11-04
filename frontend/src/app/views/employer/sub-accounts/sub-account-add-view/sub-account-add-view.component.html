@@ -1,7 +1,8 @@
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <!-- add-edit -->
+            <div class="card" *ngIf="!is_View">
                 <div class="card-header">
                     <strong style="font-size: 20px;">{{panelTitle}} Sub Accounts</strong>
 
@@ -10,14 +11,14 @@
                 <form class="form-horizontal" [formGroup]="addAccount" (ngSubmit)="onSubmit(addAccount.valid)">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="name">Name</label>
+                            <label class="col-md-3 col-form-label" for="username">Name</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="Enter Name" autocomplete="name"
-                                    [(ngModel)]="detail.name" formControlName="name" id="name">
+                                <input type="text" class="form-control" placeholder="Enter Name" autocomplete="username"
+                                    [(ngModel)]="detail.username" formControlName="username" id="username">
 
-                                <span *ngIf="!addAccount.get('name').valid && submitted" class="text-danger">
+                                <span *ngIf="!addAccount.get('username').valid && submitted" class="text-danger">
                                     <span
-                                        *ngIf="addAccount.get('name').errors['required'] || addAccount.get('name').errors['whitespace']">This
+                                        *ngIf="addAccount.get('username').errors['required'] || addAccount.get('username').errors['whitespace']">This
                                         field is
                                         required.</span>
                                 </span>
@@ -61,6 +62,47 @@
                     </div>
                 </form>
             </div>
+            <!-- add-edit -->
+
+            <!-- view -->
+            <div class="card" *ngIf="is_View">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">View Sub Account</strong>
+                </div>
+                <div class="card-body detail-box" *ngIf="detail">
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Name
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{detail.username}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Email
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{detail.email}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Admin Rights?
+                        </div>
+                        <div class="col-md-6 ">
+                            <p-inputSwitch [(ngModel)]="detail.admin_rights" disabled="true">
+                            </p-inputSwitch>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100 card-footer text-right">
+                    <button type="button" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
+                        Cancel</button>
+                </div>
+            </div>
+            <!-- view -->
+
         </div>
     </div>
 </div>

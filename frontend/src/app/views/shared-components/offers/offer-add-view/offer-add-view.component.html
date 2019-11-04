@@ -306,7 +306,7 @@
                                                     <input type="text" class="form-control" placeholder="Enter name"
                                                         formControlName="communicationname" id="communicationname"
                                                         [(ngModel)]="customfield.communicationname">
-                                                    <div
+                                                    <div class="cust_err_msg"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required']"
@@ -327,7 +327,7 @@
                                                         <option value="beforeExpiry">Before Expiry</option>
                                                         <option value="afterExpiry">After Expiry</option>
                                                     </select>
-                                                    <div
+                                                    <div class="cust_err_msg"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['trigger'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['trigger'].errors['required']"
@@ -344,7 +344,7 @@
                                                         placeholder="Enter Days" formControlName="day"
                                                         [(ngModel)]="customfield.day">
 
-                                                    <div
+                                                    <div class="cust_err_msg"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
@@ -364,7 +364,7 @@
                                                         <option value="Medium">Medium</option>
                                                         <option value="Low">Low</option>
                                                     </select>
-                                                    <div
+                                                    <div class="cust_err_msg"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['priority'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['priority'].errors['required']"
@@ -450,7 +450,8 @@
                     <strong style="font-size: 20px;">View Offer</strong>
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
-                    <div class="row detail-panel">
+                    <div class="row detail-panel"
+                        *ngIf="userDetail.role === employer || userDetail.role === 'sub-employer'">
                         <div class="col-md-3 detail-label">
                             Candidate Name
                         </div>
@@ -458,7 +459,8 @@
                             {{resData.candidate_name}}
                         </div>
                     </div>
-                    <div class="row detail-panel">
+                    <div class="row detail-panel"
+                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                         <div class="col-md-3 detail-label">
                             Candidate Email
                         </div>
@@ -551,7 +553,7 @@
                             Group
                         </div>
                         <div class="col-md-6 detail-input">
-                            {{resData.groupName}}
+                            {{gname}}
                         </div>
                     </div>
 

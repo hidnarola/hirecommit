@@ -4,6 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SubAccountService } from '../sub-accounts.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ThemeService } from 'ng2-charts';
 
 @Component({
   selector: 'app-sub-account-add-view',
@@ -17,7 +18,8 @@ export class SubAccountAddViewComponent implements OnInit {
   admin_rights = false;
   id: any;
   panelTitle: string;
-
+  is_Edit: boolean = false;
+  is_View: boolean = false;
   detail: any = [];
   update_data_id: any;
   obj: any;
@@ -33,14 +35,27 @@ export class SubAccountAddViewComponent implements OnInit {
 
   ngOnInit() {
     this.addAccount = new FormGroup({
-      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
       admin_rights: new FormControl(false)
     });
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
-    this.getDetail(this.id);
+
+    if (this.route.snapshot.data.title !== 'Add') {
+      this.route.params.subscribe((params: Params) => {
+        this.id = params['id'];
+      });
+      this.getDetail(this.id);
+      if (this.route.snapshot.data.title === 'Edit') {
+        this.is_Edit = true;
+      } else {
+        this.is_View = true;
+      }
+    } else {
+      this.spinner.hide();
+    }
 
   }
 
@@ -59,15 +74,18 @@ export class SubAccountAddViewComponent implements OnInit {
       this.panelTitle = 'Edit';
 
       this.service.view_sub_acc_detail(id).subscribe(res => {
+        console.log('/', res['data']['user_id']['admin_rights']);
+
         if (res['data']['user_id']['admin_rights'] === 'no') {
           this.detail = {
-            name: res['data']['username'],
+            username: res['data']['username'],
             email: res['data']['user_id']['email'],
             admin_rights: false
           };
+          this.detail
         } else if (res['data']['user_id']['admin_rights'] === 'yes') {
           this.detail = {
-            name: res['data']['username'],
+            username: res['data']['username'],
             email: res['data']['user_id']['email'],
             admin_rights: true
           };
@@ -78,11 +96,13 @@ export class SubAccountAddViewComponent implements OnInit {
         //   admin_rights: res['data']['user_id']['admin_rights']
         // };
         this.update_data_id = res['data']['user_id']['_id'];
+
+
       });
     } else {
       this.detail = {
         _id: null,
-        name: null,
+        username: null,
         email: null,
         admin_rights: false
       };
@@ -101,25 +121,28 @@ export class SubAccountAddViewComponent implements OnInit {
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
-      // console.log(this.detail['name']);
+      console.log(this.detail['admin_rights']);
       if (this.detail['admin_rights'] === false) {
         this.obj = {
-          name: this.detail['name'],
+          username: this.detail['username'],
           email: this.detail['email'],
           admin_rights: 'no'
         };
+        console.log('?', this.obj);
       } else if (this.detail['admin_rights'] === true) {
         this.obj = {
-          name: this.detail['name'],
+          username: this.detail['username'],
           email: this.detail['email'],
           admin_rights: 'yes'
         };
       }
-
       this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
+        console.log('>?', this.obj);
+
+
         this.submitted = false;
-        this.router.navigate([this.cancel_link]);
         this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
+        this.router.navigate([this.cancel_link]);
       }, (err) => {
         this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
@@ -127,13 +150,13 @@ export class SubAccountAddViewComponent implements OnInit {
       if (flag) {
         if (this.addAccount.value['admin_rights'] === false) {
           this.obj = {
-            name: this.addAccount.value['name'],
+            username: this.addAccount.value['username'],
             email: this.addAccount.value['email'],
             admin_rights: 'no'
           };
         } else if (this.addAccount.value['admin_rights'] === true) {
           this.obj = {
-            name: this.addAccount.value['name'],
+            username: this.addAccount.value['username'],
             email: this.addAccount.value['email'],
             admin_rights: 'yes'
           };

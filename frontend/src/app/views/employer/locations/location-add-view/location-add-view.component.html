@@ -40,13 +40,13 @@
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter city" autocomplete="city"
                                     [(ngModel)]="detail.city" formControlName="city" id="city">
-
-                                <span *ngIf="!addLocation.get('city').valid && submitted" class="text-danger">
-                                    <span
-                                        *ngIf="addLocation.get('city').errors['required'] || addLocation.get('city').errors['whitespace']">This
-                                        field is
-                                        required.</span>
-                                </span>
+                                <div class="cust_err_msg">
+                                    <span *ngIf="!addLocation.get('city').valid && submitted" class="text-danger">
+                                        <span
+                                            *ngIf="addLocation.get('city').errors['required'] || addLocation.get('city').errors['whitespace']">This
+                                            field is
+                                            required.</span>
+                                    </span></div>
                             </div>
                         </div>
                     </div>

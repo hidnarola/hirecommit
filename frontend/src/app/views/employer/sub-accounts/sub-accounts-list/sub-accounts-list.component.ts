@@ -55,6 +55,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
                   user_id: element.user_id
                 };
                 this.subAccountList.push(this.obj);
+
+
               } else if (element.user.admin_rights === 'yes') {
                 this.obj = {
                   username: element.username,
@@ -63,6 +65,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
                   user_id: element.user_id
                 };
                 this.subAccountList.push(this.obj);
+
               }
 
             });
