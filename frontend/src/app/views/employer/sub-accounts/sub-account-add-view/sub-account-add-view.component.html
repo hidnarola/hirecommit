@@ -29,7 +29,9 @@
                             <label class="col-md-3 col-form-label" for="email">Email</label>
                             <div class="col-md-4">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    [(ngModel)]="detail.email" formControlName="email" id="email">
+                                    [(ngModel)]="detail.email" formControlName="email" id="email"
+                                    [attr.disabled]="is_Edit">
+
 
                                 <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">
                                     <span
@@ -97,8 +99,8 @@
                     </div>
                 </div>
                 <div class="w-100 card-footer text-right">
-                    <button type="button" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
-                        Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" [routerLink]="cancel_link">
+                        Back</button>
                 </div>
             </div>
             <!-- view -->

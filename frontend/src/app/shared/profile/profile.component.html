@@ -92,7 +92,8 @@
                                         <tr>
                                             <td colspan="2" class="text-right">
                                                 <button type="submit" class="btn btn-primary"
-                                                    (click)=edit(profileData.user_id)>Submit</button>
+                                                    (click)=edit(profileData.user_id) [disabled]="show_spinner">Submit
+                                                    <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
                                                 <button type="button" class="btn btn-danger"
                                                     (click)='cancel()'>Close</button>
                                             </td>
@@ -190,7 +191,7 @@
             </div>
         </div>
     </div>
-
+    <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
     <!-- //sub-employer -->
     <!-- 
     <div *ngIf="userType === 'sub-employer'" class="row profiledata-info">

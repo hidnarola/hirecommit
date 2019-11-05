@@ -23,10 +23,12 @@ import { ToastrModule } from 'ngx-toastr';
 import { Interceptor } from './shared/interceptor';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 export function getToken(): string {
   return localStorage.getItem('token');
 }
+import { ConfirmationService } from 'primeng/api';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
@@ -41,6 +43,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     CheckboxModule,
     FileUploadModule,
     NgxSpinnerModule,
+    ConfirmDialogModule,
     TooltipModule.forRoot({
       'placement': 'bottom',
       'theme': 'light'
@@ -70,7 +73,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     AuthService,
     AuthGuardService,
     RoleGuardService,
-    JwtHelperService,
+    JwtHelperService, ConfirmationService,
     { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
   ],
   bootstrap: [AppComponent]

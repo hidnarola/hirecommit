@@ -60,6 +60,8 @@ export class SubAccountAddViewComponent implements OnInit {
       this.spinner.hide();
     }
 
+
+
   }
 
   // Remove white spaces
@@ -141,7 +143,7 @@ export class SubAccountAddViewComponent implements OnInit {
         };
       }
       this.confirmationService.confirm({
-        message: 'Are you sure that you want to update this record?',
+        message: 'Are you sure that you want to Update this record?',
         accept: () => {
           this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
             console.log('>?', this.obj);
@@ -170,8 +172,10 @@ export class SubAccountAddViewComponent implements OnInit {
             admin_rights: 'yes'
           };
         }
+        console.log(this.obj);
         this.service.add_sub_account(this.obj).subscribe(res => {
           if (res['data']['status'] === 1) {
+
             this.submitted = false;
             this.addAccount.reset();
             this.router.navigate([this.cancel_link]);

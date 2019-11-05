@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { EmployerService } from '../../views/employer/employer.service';
 import { CandidateService } from '../../views/shared-components/candidates/candidate.service';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-profile',
@@ -23,13 +24,15 @@ export class ProfileComponent implements OnInit {
   obj1: any;
   Business_Type: any = [];
   businessCode: any;
+  show_spinner = false;
   constructor(private service: CommonService,
     private router: ActivatedRoute,
     public fb: FormBuilder,
     private Employerservice: EmployerService,
     private CandidateService: CandidateService,
     private tostsr: ToastrService,
-    private route: Router) {
+    private route: Router,
+    private confirmationService: ConfirmationService, ) {
 
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     // if (this.router.snapshot.data.type === 'candidate') {
@@ -71,6 +74,7 @@ export class ProfileComponent implements OnInit {
 
   }
   edit(id) {
+    this.show_spinner = true;
 
     this.obj = {
       'id': id,
@@ -81,12 +85,19 @@ export class ProfileComponent implements OnInit {
       'businesstype': this.businessCode,
       'contactno': this.profileData.contactno
     }
-    this.Employerservice.update_Profile(this.obj).subscribe(res => {
-      console.log('edited!!', res);
-      this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
-    })
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to update your Profile?',
+      accept: () => {
+        this.Employerservice.update_Profile(this.obj).subscribe(res => {
+          console.log('edited!!', res);
+          this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+        })
+      }
+    });
+    this.show_spinner = false;
   }
   candidate_profile(id) {
+    this.show_spinner = true;
     this.obj1 = {
       'id': id,
       'firstname': this.profileData.firstname,
@@ -95,11 +106,17 @@ export class ProfileComponent implements OnInit {
       'contactno': this.profileData.contactno,
 
     }
-    this.CandidateService.update_Profile_candidate(this.obj1).subscribe(res => {
-      console.log('edited', res);
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to update your Profile?',
+      accept: () => {
+        this.CandidateService.update_Profile_candidate(this.obj1).subscribe(res => {
+          console.log('edited', res);
 
-      this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 })
-    })
+          this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 })
+        })
+      }
+    });
+    this.show_spinner = false;
   }
 
   businessType(id) {
