@@ -15,9 +15,10 @@
     <div class="year_show">
       <span><b>2015</b></span>
     </div> -->
-
     <div class="post_wrap" *ngFor="let data of history">
-      <span class="dot green_dot"></span>
+      <span
+        [ngClass]="{'green_dot' : data.status === 'On Hold' || data.status === 'Released' || data.status === 'Accepted','full_black' : data.status === 'Inactive','red_dot' : data.status === 'Not Joined'}"
+        class="dot"></span>
       <ul class="ul_post">
         <li>
           <span class="text_span"><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"

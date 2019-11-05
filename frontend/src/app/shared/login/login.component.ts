@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   public isFormSubmitted;
   public formData: any;
-
+  show_spinner = false;
   constructor(
     public router: Router,
     private service: CommonService,
@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
+    this.show_spinner = true;
     if (valid) {
       this.service.login(this.loginForm.value).subscribe(res => {
         this.isFormSubmitted = false;
@@ -82,6 +83,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['sub_employer']);
         }
       }, (err) => {
+        this.show_spinner = false;
         console.log('err => ', err);
         this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });

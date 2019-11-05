@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
   isChecked;
   marked = false;
   imgurl;
+  show_spinner = false;
   alldata: any;
   countryList: any = [];
   codeList: any;
@@ -46,7 +47,8 @@ export class RegisterComponent implements OnInit {
       contactno: new FormControl('',
         Validators.compose([Validators.required,
         Validators.pattern(/^-?(0|[1-9]\d*)?$/),
-        Validators.maxLength(10), Validators.minLength(10)])),
+        Validators.maxLength(10), Validators.minLength(10)
+        ])),
       documenttype: new FormControl('', [Validators.required]),
       password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
       confirmpassword: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
@@ -80,7 +82,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onFileChange(e) {
-   this.fileFormData = new FormData();
+    this.fileFormData = new FormData();
     const reader = new FileReader();
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
@@ -90,7 +92,7 @@ export class RegisterComponent implements OnInit {
       reader.onload = () => {
         this.documentImage.patchValue({
           documentimage: reader.result
-       });
+        });
         // need to run CD since file load runs outside of zone
         this.cd.markForCheck();
       };
@@ -109,13 +111,16 @@ export class RegisterComponent implements OnInit {
       res['document'].forEach(element => {
         this.Document_optoins.push({ 'label': element.name, 'value': element._id });
       });
-      console.log('drop down of selected country =>', this.Document_optoins);
 
       if (this.countryID.country === 'India') {
         this.registerForm.controls['countrycode'].setValue('+91');
+        // this.registerForm.controls['contactno'].setValidators([Validators.maxLength(10), Validators.minLength(10)])
       } else {
         this.registerForm.controls['countrycode'].setValue('+1');
+        // this.registerForm.controls['contactno'].setValidators([Validators.maxLength(7), Validators.minLength(7)])
       }
+
+      this.registerForm.updateValueAndValidity();
 
     });
   }
@@ -129,13 +134,14 @@ export class RegisterComponent implements OnInit {
   }
 
   checkValue(e) {
-    console.log('e>>', e);
     this.marked = e;
   }
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
+
     if (valid && this.marked) {
+      this.show_spinner = true;
       this.formData = new FormData();
       // tslint:disable-next-line: forin
       for (const key in this.registerData) {
@@ -158,7 +164,10 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/login']);
         }
       }, (err) => {
+        console.log(this.show_spinner);
+
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        this.show_spinner = false;
       });
     }
   }

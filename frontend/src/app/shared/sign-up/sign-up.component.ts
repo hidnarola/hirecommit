@@ -25,7 +25,7 @@ export class SignUpComponent implements OnInit {
   step3 = false;
   alldata: any;
   Business_Type: any = [];
-
+  show_spinner = false;
   // local
   // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // live
@@ -113,6 +113,7 @@ export class SignUpComponent implements OnInit {
   onSubmit(valid) {
     this.isFormSubmitted = true;
     if (valid) {
+      this.show_spinner = true;
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
         this.isFormSubmitted = false;
         this.formData = {};
@@ -127,6 +128,9 @@ export class SignUpComponent implements OnInit {
           this.router.navigate(['/login']);
         }
       }, (err) => {
+        console.log(this.show_spinner);
+
+        this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }

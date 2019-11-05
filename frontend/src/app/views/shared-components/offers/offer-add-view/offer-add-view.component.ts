@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../employer/groups/manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { visitValue } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -227,6 +228,8 @@ export class OfferAddViewComponent implements OnInit {
         })
         .then(res => {
           if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
+
+
             this.customFieldList();
             //  spinner hide
             this.spinner.hide();
@@ -311,7 +314,7 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
-
+            this.form.controls['offerStatus'].setValue(res[`data`]['status'])
             if (res[`data`].salary) {
               this.form.controls['salarybracket'].setValue(res[`data`].salary);
               document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
@@ -327,8 +330,6 @@ export class OfferAddViewComponent implements OnInit {
               this.form.controls['salarybracket'].setErrors(null);
               this.updateValidation();
             }
-            this.form.controls['offerStatus'].setValue(res[`data`]['status']);
-
 
             const _array = [];
             res[`data`]['customfeild'].forEach((element, index) => {
@@ -431,21 +432,24 @@ export class OfferAddViewComponent implements OnInit {
     this.service.get_customfield().subscribe(
       res => {
         this.customfield = res['data'];
+
+
         const _array = [];
         this.customfield.forEach((element, index) => {
           const new_customfield = {
             key: element.key,
-            value: ''
+            value: '',
           };
           this.customfieldItem.setControl(
             index,
             this.fb.group({
               value: [''],
-              key: [element.key]
+              key: [element.key],
             })
           );
           _array.push(new_customfield);
         });
+
         this.offer_data.customfieldItem = _array;
       },
       err => {
@@ -650,6 +654,8 @@ export class OfferAddViewComponent implements OnInit {
     // customised fields
     const _coustomisedFieldsArray = [];
     console.log('this.form.controls => ', this.form.value);
+    console.log('CF', this.form.value.customfieldItem);
+
     this.form.value.customfieldItem.forEach(element => {
       // if (element.value) {
       _coustomisedFieldsArray.push({
