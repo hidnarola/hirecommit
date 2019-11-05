@@ -52,11 +52,20 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('userid', res['id']);
         console.log(' log res => ', res);
         if (res['role'] !== 'admin' && res['role'] !== 'sub-employer') {
+          let countryId;
+          countryId = res[`userDetails`][0].country ? res[`userDetails`][0].country._id : undefined;
+          let documentId;
+          documentId = res[`userDetails`][0].document ? res[`userDetails`][0].document._id : undefined;
+          let businessId;
+          businessId = res[`userDetails`][0].business ? res[`userDetails`][0].business._id : undefined;
           const userData = {
             ...res[`data`],
             ...res[`userDetails`][0].userDetail,
+            countryId,
             ...res[`userDetails`][0].country,
+            documentId,
             ...res[`userDetails`][0].document,
+            businessId,
             ...res[`userDetails`][0].business
           };
           this.service.setProfileDetail(userData);

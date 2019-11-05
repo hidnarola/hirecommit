@@ -7,7 +7,7 @@ import { ConfirmationService } from 'primeng/api';
 import { DataTablesModule } from 'angular-datatables';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   declarations: [
     CustomFieldListComponent,
@@ -19,7 +19,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DataTablesModule,
     ReactiveFormsModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TooltipModule,
   ],
   providers: [ConfirmationService]
 })

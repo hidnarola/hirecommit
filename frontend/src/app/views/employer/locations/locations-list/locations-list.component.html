@@ -31,14 +31,14 @@
                                 <!-- <td>{{data.country.country}}</td> -->
                                 <td *ngIf="userDetail.role === 'employer'">
 
-                                    <button type="button" class="btn btn-sm btn-success"
+                                    <button tooltip='View' type="button" class="btn btn-sm btn-success"
                                         [routerLink]="['/employer/locations/view/',data._id]"><i
                                             class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-primary"
+                                    <button tooltip='Edit' type="button" class="btn btn-sm btn-primary"
                                         [routerLink]="['/employer/locations/edit/',data._id]"><i
                                             class="icon-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(data._id)"><i
-                                            class="icon-trash"></i></button></td>
+                                    <button tooltip='Delete' type="button" class="btn btn-sm btn-danger"
+                                        (click)="delete(data._id)"><i class="icon-trash"></i></button></td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="locations?.length == 0">

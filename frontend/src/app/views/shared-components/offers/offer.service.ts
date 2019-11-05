@@ -103,6 +103,9 @@ export class OfferService {
     history(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + '/offer/history/' + id);
     }
+    status(status): Observable<any[]> {
+        return this.http.get<any[]>(`${this.employer_url}` + '/offer/status_list/' + status);
+    }
     // Candidate Service
 
     // sub-employer

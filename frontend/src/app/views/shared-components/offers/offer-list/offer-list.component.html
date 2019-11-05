@@ -27,11 +27,13 @@
                                     Type</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Group
                                 </th>
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Current
+                                    Status</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
                                     Status</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{first_custom_field}}</th>
-                                <th style="width: 12%;">Action</th>
+                                    {{first_custom_field |titlecase}}</th>
+                                <th style="width: 15%;">Action</th>
                             </tr>
                         </thead>
 
@@ -44,34 +46,41 @@
                                 <td *ngIf="offer.salary_from && offer.salary_to">
                                     {{offer.salary_from}} to {{offer.salary_to}}
                                 </td>
-                                <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
-                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <td>{{offer.expirydate | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy'}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.group.name|titlecase}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.status|titlecase}}</td>
+                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.commitstatus|titlecase}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{offer.customfeild[0].value ? offer.customfeild[0].value : '-'}}</td>
+                                    {{offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}}</td>
                                 <td>
-                                    <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
-                                        type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
-                                            class="icon-pencil"></i></button>
 
                                     <!-- <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
                                         type="button" class="btn btn-sm btn-primary" (click)="history(offer._id)"><i
-                                            class="icon-pencil"></i></button> -->
+                                        class="icon-pencil"></i></button> -->
 
-                                    <button type="button" class="btn btn-sm btn-success" (click)='detail(offer._id)'><i
-                                            class="icon-eye"></i></button>
+                                    <button tooltip='View' type="button" class="btn btn-sm btn-success"
+                                        (click)='detail(offer._id)'><i class="icon-eye"></i></button>
 
-                                    <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
-                                        type="button" class="btn btn-sm btn-danger" (click)="delete(offer._id)"><i
-                                            class="icon-trash"></i></button>
+                                    <button tooltip='Edit'
+                                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
+                                        type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
+                                            class="icon-pencil"></i></button>
+
+                                    <button tooltip='History'
+                                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
+                                        type="button" class="btn btn-sm btn-secondary"
+                                        [routerLink]="['/employer/history',offer._id]"><i
+                                            class="fa fa-history"></i></button>
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
-                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id)">
+                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id)"
+                                        [disabled]="offer.status === 'On Hold'">
                                         <i class="icon-check"></i></button>
                                 </td>
                             </tr>

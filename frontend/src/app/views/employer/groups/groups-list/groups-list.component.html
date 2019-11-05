@@ -37,15 +37,16 @@
                                 <td>{{group.medium_notreplied}}</td>
                                 <td>{{group.low_unopened}}</td>
                                 <td>{{group.low_notreplied}}</td>
+
                                 <td *ngIf="userDetail.role === 'employer'">
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                        [routerLink]="['/employer/groups/edit/', group._id]"><i
-                                            class="icon-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm btn-success"
+                                    <button tooltip='View' type="button" class="btn btn-sm btn-success"
                                         [routerLink]="['/employer/groups/view/', group._id]"><i
                                             class="icon-eye"></i></button>
-                                    <button type="button" class="btn btn-sm btn-danger" (click)="delete(group._id)"><i
-                                            class="icon-trash"></i></button>
+                                    <button tooltip='Edit' type="button" class="btn btn-sm btn-primary"
+                                        [routerLink]="['/employer/groups/edit/', group._id]"><i
+                                            class="icon-pencil"></i></button>
+                                    <button tooltip='Delete' type="button" class="btn btn-sm btn-danger"
+                                        (click)="delete(group._id)"><i class="icon-trash"></i></button>
                                 </td>
                             </tr>
                         </tbody>

@@ -33,6 +33,8 @@ export class OfferAddViewComponent implements OnInit {
   group_optoins: any = [];
   arrayItems: any = [];
   key: any;
+
+  offerStatus: any = [];
   gname: any;
   custom_field: any = [];
   id: any;
@@ -70,6 +72,7 @@ export class OfferAddViewComponent implements OnInit {
   min_date = new Date();
   min_expiry_date = new Date();
   userDetail: any = [];
+  offerList: any;
 
   constructor(
     private fb: FormBuilder,
@@ -106,7 +109,8 @@ export class OfferAddViewComponent implements OnInit {
       notes: new FormControl(''),
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
-      communicationFieldItems: this.fb.array([])
+      communicationFieldItems: this.fb.array([]),
+      is_active: new FormControl('')
     });
 
 
@@ -255,8 +259,18 @@ export class OfferAddViewComponent implements OnInit {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
+          this.service.status(this.resData.status).subscribe(res => {
+            console.log('changed!!', res);
+
+            res['status'].forEach(element => {
+              this.offerStatus.push({ 'label': element.label, 'value': element.value });
+              console.log(element);
+            });
+          })
+
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
+
           this.groupDetail(res[`data`].groups);
           if (res[`data`] && this.is_Edit) {
             // set communication
@@ -293,6 +307,7 @@ export class OfferAddViewComponent implements OnInit {
             // this.findData({ 'value': res[`data`].country });
             this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
+            this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
@@ -311,7 +326,7 @@ export class OfferAddViewComponent implements OnInit {
               this.form.controls['salarybracket'].setErrors(null);
               this.updateValidation();
             }
-
+            this.form.controls['is_active'].setValue(res[`data`].is_active);
             const _array = [];
             res[`data`]['customfeild'].forEach((element, index) => {
               const new_customfield = {
@@ -356,6 +371,9 @@ export class OfferAddViewComponent implements OnInit {
       this.service.get_candidate_list().subscribe(
         async res => {
           this.candidate = await res['data'];
+          console.log(':', this.candidate);
+
+
           // res['data'].forEach(element => {
           for (const element of res['data']) {
             this.candidateList.push({
@@ -373,8 +391,10 @@ export class OfferAddViewComponent implements OnInit {
 
   // get candidate detail
   async getCandidateDetail(id) {
+    console.log('./', this.candidate);
     const candidateDataById = this.candidate.filter(x => x.user._id === id);
     this.form.controls.email.setValue(candidateDataById[0].user.email);
+
     if (this.is_View) {
       this.resData.candidate_name = candidateDataById[0].firstname + ' ' + candidateDataById[0].lastname;
       this.resData.candidate_email = candidateDataById[0].user.email;
