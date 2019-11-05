@@ -7,7 +7,7 @@ console.log("DB = ", config.database);
 //Set up default mongoose connection
 var mongoDB = config.database;
 // mongoose.connect(mongoDB, { auth: { authdb: "admin" }, useMongoClient: true });
-mongoose.connect(mongoDB, { useNewUrlParser: true });
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 //Get the default connection
@@ -28,10 +28,10 @@ db.on('disconnected', function () {
     // console.log('Mongoose default connection disconnected');
 });
 
-// If the Node process ends, close the Mongoose connection 
+// If the Node process ends, close the Mongoose connection
 process.on('SIGINT', function () {
     db.close(function () {
         // console.log('Mongoose default connection disconnected through app termination');
         process.exit(0);
     });
-}); 
+});

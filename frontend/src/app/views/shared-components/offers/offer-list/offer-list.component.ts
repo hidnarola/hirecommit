@@ -51,7 +51,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.service.get_first_custom_field().subscribe(res => {
       console.log('res for first custom field => ', res);
       if (res['data']) {
-        this.first_custom_field = res['data']['key'];
+        this.first_custom_field = res['data'][0]['key'];
       } else {
         this.first_custom_field = 'Custom Field';
       }
@@ -240,7 +240,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('accept id', id);
     const obj = {
       'id': id
-    }
+    };
     this.service.offer_accept(obj).subscribe(res => {
       console.log('accepted!!');
       this.rrerender();
@@ -250,7 +250,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           text: res['message']
         });
       }
-    })
+    });
 
   }
 

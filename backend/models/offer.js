@@ -106,6 +106,10 @@ const OfferSchema = new Schema({
   salary_to: {
     type: Number
   },
+  is_active: {
+    type: Boolean,
+    default: true
+  },
   is_del: {
     type: Boolean,
     default: false

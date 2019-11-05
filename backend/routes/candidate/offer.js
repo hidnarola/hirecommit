@@ -12,6 +12,7 @@ var offer_helper = require('../../helpers/offer_helper');
 var logger = config.logger;
 var moment = require("moment")
 var User = require('../../models/user');
+var Candidate = require('../../models/candidate-detail');
 var History = require('../../models/offer_history');
 var Employer = require('../../models/employer-detail');
 
@@ -154,7 +155,12 @@ router.put('/', async (req, res) => {
         "status": "Accepted"
     }
     sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
-    reg_obj.offer_id = req.body.id
+    reg_obj.offer_id = req.body.id;
+
+    var candidate = await common_helper.findOne(Candidate, { "user_id": req.userInfo.id });
+    console.log('Accepted : candidate ==> ', candidate, offer);
+    reg_obj.message = `${candidate.data.firstname} ${candidate.data.lastname} has accepted your offer.`;
+
     var interest = await common_helper.insert(History, reg_obj);
     if (sub_account_upadate.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
@@ -162,17 +168,15 @@ router.put('/', async (req, res) => {
     else if (sub_account_upadate.status == 1) {
 
         var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
-        var employee = await common_helper.findOne(Employer, { user_id: new ObjectId(offer.data.employer_id) })
+        var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
 
         let mail_resp = await mail_helper.send("offer", {
             "to": employee.data.email,
             "subject": "Offer Accepted"
         }, {
-
-            "msg": "Offer:" + " " + offer.data.title + " " + "is accepted"
+            "msg": candidate.data.firstname + " " + candidate.data.lastname + " " + "has accepted offer."
         });
         console.log('mail_resp', mail_resp);
-
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer Accepted", "data": sub_account_upadate });
     }
     else {

@@ -341,6 +341,7 @@ router.get('/', async (req, res) => {
         }
     ]
     let candidate_list = await Candidate.aggregate(aggregate);
+    console.log("candidate====>", candidate_list);
 
     if (candidate_list) {
         return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
