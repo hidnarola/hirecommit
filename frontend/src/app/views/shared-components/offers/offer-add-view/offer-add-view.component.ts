@@ -35,7 +35,7 @@ export class OfferAddViewComponent implements OnInit {
   key: any;
 
   offerStatus: any = [];
-  gname: any;
+  // gname: any;
   custom_field: any = [];
   id: any;
   is_Edit: boolean = false;
@@ -85,9 +85,9 @@ export class OfferAddViewComponent implements OnInit {
     private spinner: NgxSpinnerService,
   ) {
     // show spinner
-    if (this.is_Edit || this.is_View) {
-      this.spinner.show();
-    }
+    // if (this.is_Edit || this.is_View) {
+    this.spinner.show();
+    // }
     // Form Controls
     this.form = this.fb.group({
       candidate: new FormControl('', [Validators.required]),
@@ -259,14 +259,14 @@ export class OfferAddViewComponent implements OnInit {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
-          this.service.status(this.resData.status).subscribe(res => {
+          this.service.status(this.resData.status).subscribe(resp => {
             console.log('changed!!', res);
 
-            res['status'].forEach(element => {
+            resp['status'].forEach(element => {
               this.offerStatus.push({ 'label': element.label, 'value': element.value });
               console.log(element);
             });
-          })
+          });
 
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
@@ -356,14 +356,11 @@ export class OfferAddViewComponent implements OnInit {
     } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
+          console.log('res[`data`] => ', res[`data`]);
           this.resData = res[`data`];
-          this.gname = this.resData['groups'].name;
-
           this.spinner.hide();
           this.is_View = true;
-          this.resData.candidate_name = this.profileData.firstname + ' ' + this.profileData.lastname;
-          this.resData.candidate_email = this.profileData.email;
-          this.resData.groupName = res[`data`].groups.name;
+          this.resData.groupName = res[`data`]['groups']['name'];
         });
     }
   }
@@ -468,6 +465,7 @@ export class OfferAddViewComponent implements OnInit {
 
   async groupDetail(id) {
     const groupById = this.group_optoins.find(x => x._id === id);
+    console.log('groupById => ', groupById);
     this.form.controls.group.setValue(groupById);
     if (this.is_View) {
       this.resData.groupName = groupById.name;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmployerService } from '../employer.service';
 import { OfferService } from '../../shared-components/offers/offer.service';
 import { ActivatedRoute, Params } from '@angular/router';
-import * as  moment from "moment";
+import * as  moment from 'moment';
 
 @Component({
   selector: 'app-timeline',

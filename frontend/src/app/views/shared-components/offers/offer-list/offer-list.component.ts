@@ -218,6 +218,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.route.navigate(['/candidate/offers/view/' + id]);
     }
   }
+
   add() {
     if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/add']);
@@ -225,6 +226,15 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.route.navigate(['/sub_employer/offers/add']);
     }
   }
+
+  history(id) {
+    if (this.userDetail.role === 'employer') {
+      this.route.navigate(['/employer/offers/history/' + id]);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.route.navigate(['/sub_employer/offers/history/' + id]);
+    }
+  }
+
   delete(id) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',

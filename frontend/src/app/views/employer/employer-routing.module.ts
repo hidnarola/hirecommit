@@ -45,7 +45,7 @@ const routes: Routes = [
         path: 'custom_fields',
         loadChildren: () => import('./custom-fields/custom-fields.module').then(m => m.CustomFieldsModule)
       },
-      { path: 'history/:id', component: TimelineComponent },
+      // { path: 'history/:id', component: TimelineComponent },
       { path: 'change-password', component: ChangepasswordComponent },
       { path: 'profile', component: ProfileComponent },
 
