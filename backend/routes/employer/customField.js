@@ -9,6 +9,7 @@ var custom_helper = require('../../helpers/custom_helper');
 var logger = config.logger;
 var CustomField = require('../../models/customfield');
 var User = require('../../models/user');
+var Offer = require('../../models/offer');
 
 
 router.post("/", async (req, res) => {
@@ -160,7 +161,7 @@ router.get("/", async (req, res) => {
 
 router.get('/first', async (req, res) => {
     try {
-        const country = await CustomField.findOne({ "emp_id": req.userInfo.id }).lean();
+        const country = await CustomField.find({ "emp_id": req.userInfo.id, is_del: false }).sort({ serial_number: 1 }).limit(1).lean();
         return res.status(config.OK_STATUS).json({
             success: true, message: 'country list fetched successfully.',
             data: country

@@ -12,7 +12,6 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
       {
         $match: {
           "is_del": false,
-
           $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(id) }],
         }
       },

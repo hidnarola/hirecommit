@@ -13,6 +13,9 @@ var mail_helper = require('../../helpers/mail_helper');
 var logger = config.logger;
 var moment = require("moment")
 var User = require('../../models/user');
+var CandidateDetail = require("../../models/candidate-detail");
+var SubEmployerDetail = require("../../models/sub-employer-detail");
+var EmployerDetail = require("../../models/employer-detail");
 var History = require('../../models/offer_history');
 
 
@@ -76,9 +79,15 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        console.log('user', user);
+        // console.log('user', user);
 
+        var candidate = await common_helper.findOne(CandidateDetail,
+            { user_id: new ObjectId(req.body.user_id) });
+        var employer;
+        // console.log('Create : candidate ==> ', candidate);
         if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
+            // console.log("===>", employer, user.data.emp_id, user);
             var obj = {
                 "employer_id": user.data.emp_id,
                 "user_id": req.body.user_id,
@@ -101,10 +110,12 @@ router.post("/", async (req, res) => {
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
-                "communication": JSON.parse(req.body.data)
+                "communication": JSON.parse(req.body.data),
+                "message": `${employer.data.username} has Created this offer for ${candidate.data.firstname} ${candidate.data.lastname}`
             }
         }
         else {
+            employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
             var obj = {
                 "employer_id": req.userInfo.id,
                 "user_id": req.body.user_id,
@@ -128,9 +139,12 @@ router.post("/", async (req, res) => {
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
+                "message": `${employer.data.username} has Created this offer for ${candidate.data.firstname} ${candidate.data.lastname}`
             }
 
         };
+        console.log('Create : employer ==> ', employer);
+
 
         var interest_resp = await common_helper.insert(Offer, obj);
 
@@ -569,6 +583,9 @@ router.put('/', async (req, res) => {
     if (req.body.group && req.body.group != "") {
         obj.group = req.body.group
     }
+    if (req.body.status && req.body.status != "") {
+        obj.status = req.body.status
+    }
     if (req.body.notes && req.body.notes != "") {
         obj.notes = req.body.notes
     }
@@ -591,9 +608,35 @@ router.put('/', async (req, res) => {
     if (req.body.data && req.body.data != "") {
         obj.communication = JSON.parse(req.body.data)
     }
+
+    if (req.body.is_active && req.body.is_active != "") {
+        obj.is_active = JSON.parse(req.body.is_active)
+    }
+
     var id = req.body.id;
 
+    var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+    // console.log('user', req.body.user_id); return false;
+    var candidate = await common_helper.findOne(CandidateDetail,
+        { user_id: new ObjectId(req.body.user_id) });
+
+    if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+        employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
+    } else {
+        employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
+    }
+
+    var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
+    console.log(offer, offer_upadate);
+
+    obj.offer_id = offer_upadate.data._id;
+    // obj.status = offer_upadate.data.status;
+
+    if (offer.data.status !== req.body.status) {
+        obj.message = `${employer.data.username} has ${req.body.status} this offer for ${candidate.data.firstname} ${candidate.data.lastname}`
+        var interest = await common_helper.insert(History, obj);
+    }
 
     if (offer_upadate.status == 0) {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
@@ -605,9 +648,6 @@ router.put('/', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
     }
 })
-
-
-
 
 router.get('/details/:id', async (req, res) => {
     var id = req.params.id;
@@ -694,6 +734,36 @@ router.get('/history/:id', async (req, res) => {
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
+});
+
+router.get("/status_list/:status", async (req, res) => {
+    var status = req.params.status;
+    // console.log("HIII", status);
+    var obj = {};
+    if (status === 'On Hold') {
+        obj.status = [
+            { label: 'On Hold', value: 'On Hold' },
+            { label: 'Released', value: 'Released' },
+            { label: 'Inactive', value: 'Inactive' }
+        ];
+    } else if (status === 'Released') {
+        obj.status = [
+            { label: 'Released', value: 'Released' },
+            { label: 'Inactive', value: 'Inactive' }
+        ];
+    }
+    else if (status === 'Accepted') {
+        obj.status = [
+            { label: 'Accepted', value: 'Accepted' },
+            { label: 'Not Joined', value: 'Not Joined' },
+            { label: 'Inactive', value: 'Inactive' }
+        ];
+    } else if (status === 'Not Joined') {
+        obj.status = [
+            { label: 'Inactive', value: 'Inactive' }
+        ];
+    }
+    res.status(config.OK_STATUS).json({ "message": "status changed", "status": obj.status });
 });
 
 module.exports = router;

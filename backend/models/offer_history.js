@@ -13,6 +13,9 @@ const OfferHistorySchema = new Schema({
     type: String,
     default: "On Hold"
   },
+  message: {
+    type: String
+  },
   is_del: {
     type: Boolean,
     default: false
