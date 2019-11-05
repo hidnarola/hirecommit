@@ -11,6 +11,7 @@ var async = require('async');
 var location = require('../../models/location');
 var Salary = require('../../models/salary_bracket');
 var User = require('../../models/user');
+var Offer = require('../../models/offer');
 
 
 //manage Location
@@ -245,8 +246,11 @@ router.put("/deactivate_location/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
+
+    // location = {};
     var id = req.params.id;
     var resp_data = await common_helper.update(location, { "_id": id }, obj);
+    // var resp_data = await common_helper.deleteMany(Offer, ObjectId(id));
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
