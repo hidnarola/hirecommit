@@ -41,7 +41,10 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     CheckboxModule,
     FileUploadModule,
     NgxSpinnerModule,
-    TooltipModule,
+    TooltipModule.forRoot({
+      'placement': 'bottom',
+      'theme': 'light'
+    }),
     JwtModule.forRoot({
       config: {
         tokenGetter: getToken

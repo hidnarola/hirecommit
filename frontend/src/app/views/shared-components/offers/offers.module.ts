@@ -12,11 +12,13 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { TimelineComponent } from '../../employer/timeline/timeline.component';
 
 @NgModule({
   declarations: [
     OfferListComponent,
-    OfferAddViewComponent
+    OfferAddViewComponent,
+    TimelineComponent
   ],
   imports: [
     CommonModule,

@@ -476,7 +476,7 @@
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
                     <div class="row detail-panel"
-                        *ngIf="userDetail.role === employer || userDetail.role === 'sub-employer'">
+                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                         <div class="col-md-3 detail-label">
                             Candidate Name
                         </div>
@@ -586,7 +586,7 @@
                             Group
                         </div>
                         <div class="col-md-6 detail-input">
-                            {{gname}}
+                            {{resData.groupName}}
                         </div>
                     </div>
 

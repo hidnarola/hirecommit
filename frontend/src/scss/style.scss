@@ -187,7 +187,10 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .ul_post li {padding: 20px;background: #fff;box-shadow: 5px 5px 40px 5px #e0e2e4;}
 .text_span {color: #bbbdc9;font-size: 14px;display: flex;align-items: center;flex-wrap: wrap;}
 .post_wrap {margin-bottom: 50px;}
-.username_a {color: #333;font-weight: 600;margin-right: 6px;}
+.username_a {color: #333;
+    // font-weight: 600;
+    margin-right: 6px;}
+.username_a .message span {font-weight: 600;}
 .span_right {font-size: 13px;margin-left: auto;}
 .ar_down svg {width: 16px;height: 16px;margin: 0 0 0 12px;fill: #999;}
 .span_dropdown {padding-left: 60px;width: 100%;
@@ -197,6 +200,7 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .username_a:hover {color: #000;text-decoration: none;}
 .post_wrap .dot {top: 24px;}
 .green_dot {border: 2px solid #5ce88f;}
+.blue_dot {border: 2px solid #007ad9;}
 .full_black {background: #000;box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.40);border: 2px solid #000;}
 .red_dot {border: 2px solid #ff0146;}
 .search_wrapper input:focus {outline: none;}
