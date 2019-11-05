@@ -24,7 +24,7 @@ export class GroupAddComponent implements OnInit {
   communicationData: any = [];
   group_id: any;
   formData: FormData;
-
+  show_spinner = false;
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -125,6 +125,7 @@ export class GroupAddComponent implements OnInit {
   onSubmit(valid) {
     this.isFormSubmitted = true;
     if (valid) {
+      this.show_spinner = true;
       this.service.addGroup(this.addGroup.value).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
@@ -133,8 +134,10 @@ export class GroupAddComponent implements OnInit {
           // add communication
           this.add_new_communication();
           this.show_communication = true;
+          this.show_spinner = false;
         }
       }, (err) => {
+        this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
@@ -142,12 +145,14 @@ export class GroupAddComponent implements OnInit {
 
   //  on submit of communication
   onCommunicationSubmit(flag) {
+
     this.isSubmitted = true;
     this.formData = new FormData();
     if (flag) {
       if (this.show_communication) {
         const communication_array = [];
         if (this.communicationData.length > 0) {
+          this.show_spinner = true;
           this.communicationData.forEach(element => {
             communication_array.push({
               communicationname: element.communicationname,
@@ -187,6 +192,7 @@ export class GroupAddComponent implements OnInit {
           }
           this.router.navigate(['/employer/groups/list']);
         }, (err) => {
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
       }

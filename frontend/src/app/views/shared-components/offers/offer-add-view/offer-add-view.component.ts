@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../../employer/groups/manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { visitValue } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -35,7 +36,7 @@ export class OfferAddViewComponent implements OnInit {
   key: any;
 
   offerStatus: any = [];
-  gname: any;
+  // gname: any;
   custom_field: any = [];
   id: any;
   is_Edit: boolean = false;
@@ -85,9 +86,9 @@ export class OfferAddViewComponent implements OnInit {
     private spinner: NgxSpinnerService,
   ) {
     // show spinner
-    if (this.is_Edit || this.is_View) {
-      this.spinner.show();
-    }
+    // if (this.is_Edit || this.is_View) {
+    this.spinner.show();
+    // }
     // Form Controls
     this.form = this.fb.group({
       candidate: new FormControl('', [Validators.required]),
@@ -227,6 +228,8 @@ export class OfferAddViewComponent implements OnInit {
         })
         .then(res => {
           if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
+
+
             this.customFieldList();
             //  spinner hide
             this.spinner.hide();
@@ -259,14 +262,14 @@ export class OfferAddViewComponent implements OnInit {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
-          this.service.status(this.resData.status).subscribe(res => {
+          this.service.status(this.resData.status).subscribe(resp => {
             console.log('changed!!', res);
 
-            res['status'].forEach(element => {
+            resp['status'].forEach(element => {
               this.offerStatus.push({ 'label': element.label, 'value': element.value });
               console.log(element);
             });
-          })
+          });
 
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
@@ -311,7 +314,7 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
-
+            this.form.controls['offerStatus'].setValue(res[`data`]['status'])
             if (res[`data`].salary) {
               this.form.controls['salarybracket'].setValue(res[`data`].salary);
               document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
@@ -327,8 +330,6 @@ export class OfferAddViewComponent implements OnInit {
               this.form.controls['salarybracket'].setErrors(null);
               this.updateValidation();
             }
-            this.form.controls['offerStatus'].setValue(res[`data`]['status']);
-
 
             const _array = [];
             res[`data`]['customfeild'].forEach((element, index) => {
@@ -356,14 +357,11 @@ export class OfferAddViewComponent implements OnInit {
     } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
+          console.log('res[`data`] => ', res[`data`]);
           this.resData = res[`data`];
-          this.gname = this.resData['groups'].name;
-
           this.spinner.hide();
           this.is_View = true;
-          this.resData.candidate_name = this.profileData.firstname + ' ' + this.profileData.lastname;
-          this.resData.candidate_email = this.profileData.email;
-          this.resData.groupName = res[`data`].groups.name;
+          this.resData.groupName = res[`data`]['groups']['name'];
         });
     }
   }
@@ -431,21 +429,24 @@ export class OfferAddViewComponent implements OnInit {
     this.service.get_customfield().subscribe(
       res => {
         this.customfield = res['data'];
+
+
         const _array = [];
         this.customfield.forEach((element, index) => {
           const new_customfield = {
             key: element.key,
-            value: ''
+            value: '',
           };
           this.customfieldItem.setControl(
             index,
             this.fb.group({
               value: [''],
-              key: [element.key]
+              key: [element.key],
             })
           );
           _array.push(new_customfield);
         });
+
         this.offer_data.customfieldItem = _array;
       },
       err => {
@@ -468,6 +469,7 @@ export class OfferAddViewComponent implements OnInit {
 
   async groupDetail(id) {
     const groupById = this.group_optoins.find(x => x._id === id);
+    console.log('groupById => ', groupById);
     this.form.controls.group.setValue(groupById);
     if (this.is_View) {
       this.resData.groupName = groupById.name;
@@ -650,6 +652,8 @@ export class OfferAddViewComponent implements OnInit {
     // customised fields
     const _coustomisedFieldsArray = [];
     console.log('this.form.controls => ', this.form.value);
+    console.log('CF', this.form.value.customfieldItem);
+
     this.form.value.customfieldItem.forEach(element => {
       // if (element.value) {
       _coustomisedFieldsArray.push({

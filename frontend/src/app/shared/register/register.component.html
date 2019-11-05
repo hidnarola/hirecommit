@@ -203,7 +203,10 @@
                 </label>
               </div>
               <div class="btm-btn">
-                <button type="submit" class="btn btn-block btn-primary">Create Account</button>
+
+
+                <button type="submit" [disabled]="show_spinner" class="btn btn-block btn-primary">Create Account <i
+                    *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
               </div>
               <div class="col-10">
                 <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>

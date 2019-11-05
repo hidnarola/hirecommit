@@ -24,6 +24,7 @@ export class SubAccountAddViewComponent implements OnInit {
   detail: any = [];
   update_data_id: any;
   obj: any;
+  show_spinner = false;
   cancel_link = '/employer/sub_accounts/list';
 
   constructor(
@@ -123,6 +124,7 @@ export class SubAccountAddViewComponent implements OnInit {
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
+      this.show_spinner = true;
       console.log(this.detail['admin_rights']);
       if (this.detail['admin_rights'] === false) {
         this.obj = {
@@ -143,18 +145,18 @@ export class SubAccountAddViewComponent implements OnInit {
         accept: () => {
           this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
             console.log('>?', this.obj);
-
-
             this.submitted = false;
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
             this.router.navigate([this.cancel_link]);
           }, (err) => {
+            this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         }
       });
     } else {
       if (flag) {
+        this.show_spinner = true;
         if (this.addAccount.value['admin_rights'] === false) {
           this.obj = {
             username: this.addAccount.value['username'],
@@ -176,6 +178,7 @@ export class SubAccountAddViewComponent implements OnInit {
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
           }
         }, (err) => {
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }

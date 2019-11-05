@@ -459,6 +459,7 @@
                         <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+
                         <button type="reset" class="btn btn-sm btn-danger" (click)='cancel()'>
                             Cancel</button>
 
@@ -475,7 +476,7 @@
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
                     <div class="row detail-panel"
-                        *ngIf="userDetail.role === employer || userDetail.role === 'sub-employer'">
+                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                         <div class="col-md-3 detail-label">
                             Candidate Name
                         </div>
@@ -585,7 +586,7 @@
                             Group
                         </div>
                         <div class="col-md-6 detail-input">
-                            {{gname}}
+                            {{resData.groupName}}
                         </div>
                     </div>
 

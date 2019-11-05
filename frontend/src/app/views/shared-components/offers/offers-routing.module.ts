@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { OfferListComponent } from './offer-list/offer-list.component';
 import { OfferAddViewComponent } from './offer-add-view/offer-add-view.component';
+import { TimelineComponent } from '../../employer/timeline/timeline.component';
 
 const routes: Routes = [
   {
@@ -41,7 +42,14 @@ const routes: Routes = [
         data: {
           title: 'Edit'
         }
-      }
+      },
+      {
+        path: 'history/:id',
+        component: TimelineComponent,
+        data: {
+          title: 'History'
+        }
+      },
     ]
   }
 ];

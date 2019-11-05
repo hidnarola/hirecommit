@@ -46,8 +46,8 @@
                                 <td *ngIf="offer.salary_from && offer.salary_to">
                                     {{offer.salary_from}} to {{offer.salary_to}}
                                 </td>
-                                <td>{{offer.expirydate | date: 'dd/MM/yyyy'}}</td>
-                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy' : 'utc'}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
@@ -74,8 +74,7 @@
 
                                     <button tooltip='History'
                                         *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
-                                        type="button" class="btn btn-sm btn-secondary"
-                                        [routerLink]="['/employer/history',offer._id]"><i
+                                        type="button" class="btn btn-sm btn-secondary" (click)="history(offer._id)"><i
                                             class="fa fa-history"></i></button>
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
@@ -85,11 +84,12 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tbody></tbody>
+
                         <tbody *ngIf="offerData?.length == 0">
                             <tr>
-                                <td colspan="11" class="no-data-available">No Offers Available!</td>
+                                <td colspan="12" class="no-data-available">No Offers Available!</td>
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
