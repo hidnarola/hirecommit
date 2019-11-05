@@ -35,7 +35,7 @@ const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
 var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
-
+// 
 //local
 // var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 

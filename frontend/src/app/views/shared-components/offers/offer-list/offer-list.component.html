@@ -46,8 +46,8 @@
                                 <td *ngIf="offer.salary_from && offer.salary_to">
                                     {{offer.salary_from}} to {{offer.salary_to}}
                                 </td>
-                                <td>{{offer.expirydate | date: 'dd/MM/yyyy'}}</td>
-                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <td>{{offer.joiningdate | date: 'dd/MM/yyyy' : 'utc'}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
