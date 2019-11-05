@@ -8,6 +8,7 @@ import { GroupService } from '../../../employer/groups/manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { visitValue } from '@angular/compiler/src/util';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -84,6 +85,7 @@ export class OfferAddViewComponent implements OnInit {
     private groupService: GroupService,
     private commonService: CommonService,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
   ) {
     // show spinner
     // if (this.is_Edit || this.is_View) {
@@ -723,42 +725,52 @@ export class OfferAddViewComponent implements OnInit {
         this.show_spinner = true;
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
+        this.confirmationService.confirm({
+          message: 'Are you sure that you want to Update This Offer this record?',
+          accept: () => {
+            this.service.update_offer(this.formData).subscribe(
+              res => {
+                this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+                if (this.userDetail.role === 'employer') {
+                  this.router.navigate([this.cancel_link]);
+                } else if (this.userDetail.role === 'sub-employer') {
+                  this.router.navigate([this.cancel_link1]);
+                }
+              },
+              err => {
+                this.show_spinner = false;
+                this.toastr.error(err['error']['message'], 'Error!', {
+                  timeOut: 3000
+                });
+              }
 
-        this.service.update_offer(this.formData).subscribe(
-          res => {
-            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            if (this.userDetail.role === 'employer') {
-              this.router.navigate([this.cancel_link]);
-            } else if (this.userDetail.role === 'sub-employer') {
-              this.router.navigate([this.cancel_link1]);
-            }
-          },
-          err => {
-            this.show_spinner = false;
-            this.toastr.error(err['error']['message'], 'Error!', {
-              timeOut: 3000
-            });
+            );
           }
-        );
+        });
       } else {
         if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
           this.show_spinner = true;
-          this.service.add_offer(this.formData).subscribe(
-            res => {
-              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-              if (this.userDetail.role === 'employer') {
-                this.router.navigate([this.cancel_link]);
-              } else if (this.userDetail.role === 'sub-employer') {
-                this.router.navigate([this.cancel_link1]);
-              }
-            },
-            err => {
-              this.show_spinner = false;
-              this.toastr.error(err['error']['message'], 'Error!', {
-                timeOut: 3000
-              });
+          this.confirmationService.confirm({
+            message: 'Are you sure that you want to Add this Offer?',
+            accept: () => {
+              this.service.add_offer(this.formData).subscribe(
+                res => {
+                  this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+                  if (this.userDetail.role === 'employer') {
+                    this.router.navigate([this.cancel_link]);
+                  } else if (this.userDetail.role === 'sub-employer') {
+                    this.router.navigate([this.cancel_link1]);
+                  }
+                },
+                err => {
+                  this.show_spinner = false;
+                  this.toastr.error(err['error']['message'], 'Error!', {
+                    timeOut: 3000
+                  });
+                }
+              );
             }
-          );
+          });
         }
         // else if (this.userDetail.role === 'sub-employer') {
         //   this.show_spinner = true;

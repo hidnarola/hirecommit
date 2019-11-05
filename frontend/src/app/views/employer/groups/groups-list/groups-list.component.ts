@@ -46,7 +46,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   delete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to delete this record?',
+      message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.deleteGroup(id).subscribe(res => {
           if (res['status']) {

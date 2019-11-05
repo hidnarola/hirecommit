@@ -75,7 +75,7 @@ export class CandidateViewComponent implements OnInit {
       'id': id
     };
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
+      message: 'Are you sure that you want to Approve This Candidate this action?',
       accept: () => {
 
         this.service.approved(obj).subscribe(res => {

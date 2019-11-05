@@ -28,6 +28,7 @@ export class LocationAddViewComponent implements OnInit {
   cancel_link = '/employer/locations/list';
   is_Edit: boolean = false;
   is_View: boolean = false;
+  show_spinner = false;
   constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
@@ -118,6 +119,7 @@ export class LocationAddViewComponent implements OnInit {
   onSubmit(flag: boolean, id) {
     this.submitted = true;
     if (this.id && flag) {
+      this.show_spinner = true;
       const res_data = {
         'id': this.id,
         // 'country': this.detail.country,
@@ -135,12 +137,14 @@ export class LocationAddViewComponent implements OnInit {
             }
             this.submitted = false;
           }, (err) => {
+            this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         }
       });
     } else {
       if (flag) {
+        this.show_spinner = true;
         this.service.add(this.addLocation.value).subscribe(res => {
           this.location = res;
           if (res['data']['status'] === 1) {
@@ -151,6 +155,7 @@ export class LocationAddViewComponent implements OnInit {
           }
           this.submitted = false;
         }, (err) => {
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }

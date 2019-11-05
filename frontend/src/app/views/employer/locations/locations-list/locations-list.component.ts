@@ -114,7 +114,7 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   delete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to delete this record?',
+      message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.deactivate_location(id).subscribe(res => {
 

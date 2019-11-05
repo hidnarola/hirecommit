@@ -126,7 +126,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
       'id': id
     };
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
+      message: 'Are you sure that you want to  Approve this candidate this action?',
       accept: () => {
         this.service.approved(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
@@ -141,7 +141,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onDelete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to delete this record?',
+      message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.deactivate_candidate(id).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });

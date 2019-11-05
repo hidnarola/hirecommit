@@ -111,7 +111,7 @@ router.post("/", async (req, res) => {
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data),
-                "message": `${employer.data.username} has Created this offer for ${candidate.data.firstname} ${candidate.data.lastname}`
+                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
             }
         }
         else {
@@ -139,7 +139,7 @@ router.post("/", async (req, res) => {
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
-                "message": `${employer.data.username} has Created this offer for ${candidate.data.firstname} ${candidate.data.lastname}`
+                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
             }
 
         };
@@ -162,8 +162,7 @@ router.post("/", async (req, res) => {
                 "to": user.data.email,
                 "subject": "Offer"
             }, {
-
-                "msg": "you have been invited for the offer" + req.body.title
+                "msg": "You have been invited for the offer " + req.body.title
             });
             console.log('mail_resp', mail_resp);
 
@@ -177,147 +176,147 @@ router.post("/", async (req, res) => {
 });
 
 
-// cron.schedule('00 00 * * *', async (req, res) => {
-//     var resp_data = await Offer.aggregate(
-//         [
-//             {
-//                 $lookup:
-//                 {
-//                     from: "group",
-//                     localField: "groups",
-//                     foreignField: "_id",
-//                     as: "group"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: "$group",
-//                     preserveNullAndEmptyArrays: true
-//                 },
-//             },
-//             {
-//                 $lookup:
-//                 {
-//                     from: "group_detail",
-//                     localField: "group._id",
-//                     foreignField: "group_id",
-//                     as: "communication"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: "$communication",
-//                     preserveNullAndEmptyArrays: true
-//                 },
-//             }
-//         ]
-//     )
+cron.schedule('00 * * * *', async (req, res) => {
+    console.log('CRON : req.userInfo ==> ');
+    var resp_data = await Offer.aggregate(
+        [
+            {
+                $lookup:
+                {
+                    from: "group",
+                    localField: "groups",
+                    foreignField: "_id",
+                    as: "group"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$group",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
+                    from: "group_detail",
+                    localField: "group._id",
+                    foreignField: "group_id",
+                    as: "communication"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$communication",
+                    preserveNullAndEmptyArrays: true
+                },
+            }
+        ]
+    )
+    console.log("resp_data", resp_data);
+    var current_date = moment()
+
+    for (const resp of resp_data) {
+
+        for (const comm of resp.communication.communication) {
+            if (comm.trigger == "After Offer") {
+                var offer_date = moment(resp.createdAt).add(1, 'day')
+                offer_date = moment(offer_date)
+                var message = comm.message;
+                var email = resp.email
+                if (moment(current_date).isSame(offer_date) == true) {
+                    let mail_resp = await mail_helper.send("offer", {
+                        "to": email,
+                        "subject": "Offer Letter"
+                    }, {
+
+                        "msg": message
+                    });
+                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for after offer", "msg": msg });
+                }
+
+            }
+
+            if (comm.trigger == "Before Joining") {
+                var offer_date = moment(resp.joiningdate).subtract(2, 'day')
+                offer_date = moment(offer_date)
+
+                var message = comm.message;
+                var email = resp.email
+                if (moment(current_date).isSame(offer_date) == true) {
+                    let mail_resp = await mail_helper.send("offer", {
+                        "to": email,
+                        "subject": "Before Joining"
+                    }, {
+
+                        "msg": message
+                    });
+                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", "msg": msg });
+                }
+
+            }
+
+            if (comm.trigger == "After Joining") {
+                var offer_date = moment(resp.joiningdate).add(2, 'day')
+                offer_date = moment(offer_date)
+
+                var message = comm.message;
+                var email = resp.email
+                if (moment(current_date).isSame(offer_date) == true) {
+                    let mail_resp = await mail_helper.send("offer", {
+                        "to": email,
+                        "subject": "After Joining"
+                    }, {
+
+                        "msg": message
+                    });
+                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for after joining", "msg": msg });
+                }
+
+            }
+            if (comm.trigger == "Before Expiry") {
+                var offer_date = moment(resp.expirydate).subtract(2, 'day')
+                offer_date = moment(offer_date)
+
+                var message = comm.message;
+                var email = resp.email
+                if (moment(current_date).isSame(offer_date) == true) {
+                    let mail_resp = await mail_helper.send("offer", {
+                        "to": email,
+                        "subject": "Before Expiry"
+                    }, {
+
+                        "msg": message
+                    });
+                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before expiry", "msg": msg });
+                }
+
+            }
+            if (comm.trigger == "After Expiry") {
+                var offer_date = moment(resp.expirydate).add(2, 'day')
+                offer_date = moment(offer_date)
+
+                var message = comm.message;
+                var email = resp.email
+                if (moment(current_date).isSame(offer_date) == true) {
+                    let mail_resp = await mail_helper.send("offer", {
+                        "to": email,
+                        "subject": "After Expiry"
+                    }, {
+
+                        "msg": message
+                    });
+                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for after expiry", "msg": msg });
+                }
+
+            }
 
 
-//     var current_date = moment().format("DD-MM-YYYY")
+        }
 
-//     for (const resp of resp_data) {
+    }
 
-//         for (const comm of resp.communication.communication) {
-//             if (comm.trigger == "After Offer") {
-//                 var offer_date = moment(resp.createdAt).add(1, 'day')
-//                 offer_date = moment(offer_date).format("DD-MM-YYYY")
-//                 var message = comm.message;
-//                 var email = resp.email
-//                 if (moment(current_date).isSame(offer_date) == true) {
-//                     let mail_resp = await mail_helper.send("offer", {
-//                         "to": email,
-//                         "subject": "Offer Letter"
-//                     }, {
-
-//                         "msg": message
-//                     });
-//                     res.status(config.OK_STATUS).json({ "mesage": "mail sent for after offer", "msg": msg });
-//                 }
-
-//             }
-
-//             if (comm.trigger == "Before Joining") {
-//                 var offer_date = moment(resp.joiningdate).subtract(2, 'day')
-//                 offer_date = moment(offer_date).format("DD-MM-YYYY")
-
-//                 var message = comm.message;
-//                 var email = resp.email
-//                 if (moment(current_date).isSame(offer_date) == true) {
-//                     let mail_resp = await mail_helper.send("offer", {
-//                         "to": email,
-//                         "subject": "Before Joining"
-//                     }, {
-
-//                         "msg": message
-//                     });
-//                     res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", "msg": msg });
-//                 }
-
-//             }
-
-//             if (comm.trigger == "After Joining") {
-//                 var offer_date = moment(resp.joiningdate).add(2, 'day')
-//                 offer_date = moment(offer_date).format("DD-MM-YYYY")
-
-//                 var message = comm.message;
-//                 var email = resp.email
-//                 if (moment(current_date).isSame(offer_date) == true) {
-//                     let mail_resp = await mail_helper.send("offer", {
-//                         "to": email,
-//                         "subject": "After Joining"
-//                     }, {
-
-//                         "msg": message
-//                     });
-//                     res.status(config.OK_STATUS).json({ "mesage": "mail sent for after joining", "msg": msg });
-//                 }
-
-//             }
-//             if (comm.trigger == "Before Expiry") {
-//                 var offer_date = moment(resp.expirydate).subtract(2, 'day')
-//                 offer_date = moment(offer_date).format("DD-MM-YYYY")
-
-//                 var message = comm.message;
-//                 var email = resp.email
-//                 if (moment(current_date).isSame(offer_date) == true) {
-//                     let mail_resp = await mail_helper.send("offer", {
-//                         "to": email,
-//                         "subject": "Before Expiry"
-//                     }, {
-
-//                         "msg": message
-//                     });
-//                     res.status(config.OK_STATUS).json({ "mesage": "mail sent for before expiry", "msg": msg });
-//                 }
-
-//             }
-//             if (comm.trigger == "After Expiry") {
-//                 var offer_date = moment(resp.expirydate).add(2, 'day')
-//                 offer_date = moment(offer_date).format("DD-MM-YYYY")
-
-//                 var message = comm.message;
-//                 var email = resp.email
-//                 if (moment(current_date).isSame(offer_date) == true) {
-//                     let mail_resp = await mail_helper.send("offer", {
-//                         "to": email,
-//                         "subject": "After Expiry"
-//                     }, {
-
-//                         "msg": message
-//                     });
-//                     res.status(config.OK_STATUS).json({ "mesage": "mail sent for after expiry", "msg": msg });
-//                 }
-
-//             }
-
-
-//         }
-
-//     }
-
-//     res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
-// });
+    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
+});
 
 router.post('/get', async (req, res) => {
     // try {
@@ -634,7 +633,7 @@ router.put('/', async (req, res) => {
     // obj.status = offer_upadate.data.status;
 
     if (offer.data.status !== req.body.status) {
-        obj.message = `${employer.data.username} has ${req.body.status} this offer for ${candidate.data.firstname} ${candidate.data.lastname}`
+        obj.message = `<span>${employer.data.username}</span> has ${req.body.status} this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
         var interest = await common_helper.insert(History, obj);
     }
 
@@ -642,6 +641,15 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (offer_upadate.status == 1) {
+        if (offer.data.status !== offer_upadate.data.status) {
+            var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
+            let mail_resp = await mail_helper.send("offer", {
+                "to": user.data.email,
+                "subject": "Change Status of offer."
+            }, {
+                "msg": "Offer" + offer_upadate.data.title + " has been " + offer_upadate.data.status
+            });
+        }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer update successfully", "data": offer_upadate });
     }
     else {
@@ -759,6 +767,11 @@ router.get("/status_list/:status", async (req, res) => {
             { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Not Joined') {
+        obj.status = [
+            { label: 'Not Joined', value: 'Not Joined' },
+            { label: 'Inactive', value: 'Inactive' }
+        ];
+    } else if (status === 'Inactive') {
         obj.status = [
             { label: 'Inactive', value: 'Inactive' }
         ];

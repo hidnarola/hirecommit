@@ -28,7 +28,7 @@ export class GroupEditComponent implements OnInit {
   arr: FormArray;
   is_communication_added: boolean = false;
   formData: FormData;
-
+  show_spinner = false;
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -188,6 +188,7 @@ export class GroupEditComponent implements OnInit {
     this.isFormSubmitted = true;
     this.formData = new FormData();
     if (valid) {
+      this.show_spinner = true;
       if (this.isEdit) {
         const communication_array = [];
         if (this.communicationData.length > 0) {
@@ -224,7 +225,7 @@ export class GroupEditComponent implements OnInit {
         }
 
         this.confirmationService.confirm({
-          message: 'Are you sure that you want to delete this record?',
+          message: 'Are you sure that you want to Delete this record?',
           accept: () => {
             this.service.edit_group(this.formData).subscribe(res => {
               if (res['data']['status'] === 1) {
@@ -234,6 +235,7 @@ export class GroupEditComponent implements OnInit {
               }
               this.router.navigate(['/employer/groups/list']);
             }, (err) => {
+              this.show_spinner = false;
               this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
             });
           }

@@ -326,4 +326,29 @@ common_helper.updateMany = async (collection, condition) => {
     }
 }
 
+common_helper.deleteMany = async (collection, condition) => {
+    console.log(condition);
+    try {
+        var data = await collection.updateMany(
+            { location: { $in: condition } },
+            { $unset: { location: "" } }
+        );
+        if (data) {
+            return {
+                status: 1,
+                message: "Record deleted successfully.",
+                data: data
+            };
+        } else {
+            return { status: 2, message: "No data deleted" };
+        }
+    } catch (err) {
+        return {
+            status: 0,
+            message: "Error occured while deleting data",
+            error: err
+        };
+    }
+}
+
 module.exports = common_helper;

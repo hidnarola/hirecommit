@@ -27,9 +27,11 @@
 
                     </div>
                     <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-sm btn-primary">
+                        <button type="submit" class="btn btn-sm btn-primary" [disabled]="show_spinner">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
-                            Submit</button>
+                            Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+
+
                         <button type="reset" class="btn btn-sm btn-danger"
                             [routerLink]="['/employer/custom_fields/list']">
                             <!-- <i class="fa fa-ban"></i> -->
@@ -55,8 +57,8 @@
                     </div>
                 </div>
                 <div class="w-100 card-footer text-right">
-                    <button type="button" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
-                        Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" [routerLink]="cancel_link">
+                        Back</button>
                 </div>
             </div>
             <!-- view -->

@@ -18,7 +18,7 @@ const random_pass_word = require('secure-random-password');
 
 router.post("/", async (req, res) => {
     var schema = {
-        "name": {
+        "username": {
             notEmpty: true,
             errorMessage: "Name is required"
         },
@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var reg_obj = {
-            "username": req.body.name,
+            "username": req.body.username,
             "email": req.body.email,
             "admin_rights": req.body.admin_rights,
             "is_del": false,
@@ -199,7 +199,7 @@ router.get('/:id', async (req, res) => {
     // if (sub_account_detail.status == 0) {
     //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     // }
-    // else 
+    // else
     // else {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
     // }

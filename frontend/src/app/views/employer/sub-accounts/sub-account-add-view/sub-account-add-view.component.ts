@@ -24,6 +24,7 @@ export class SubAccountAddViewComponent implements OnInit {
   detail: any = [];
   update_data_id: any;
   obj: any;
+  show_spinner = false;
   cancel_link = '/employer/sub_accounts/list';
 
   constructor(
@@ -58,6 +59,8 @@ export class SubAccountAddViewComponent implements OnInit {
     } else {
       this.spinner.hide();
     }
+
+
 
   }
 
@@ -123,6 +126,7 @@ export class SubAccountAddViewComponent implements OnInit {
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
+      this.show_spinner = true;
       console.log(this.detail['admin_rights']);
       if (this.detail['admin_rights'] === false) {
         this.obj = {
@@ -139,22 +143,22 @@ export class SubAccountAddViewComponent implements OnInit {
         };
       }
       this.confirmationService.confirm({
-        message: 'Are you sure that you want to update this record?',
+        message: 'Are you sure that you want to Update this record?',
         accept: () => {
           this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
             console.log('>?', this.obj);
-
-
             this.submitted = false;
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
             this.router.navigate([this.cancel_link]);
           }, (err) => {
+            this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         }
       });
     } else {
       if (flag) {
+        this.show_spinner = true;
         if (this.addAccount.value['admin_rights'] === false) {
           this.obj = {
             username: this.addAccount.value['username'],
@@ -168,14 +172,17 @@ export class SubAccountAddViewComponent implements OnInit {
             admin_rights: 'yes'
           };
         }
+        console.log(this.obj);
         this.service.add_sub_account(this.obj).subscribe(res => {
           if (res['data']['status'] === 1) {
+
             this.submitted = false;
             this.addAccount.reset();
             this.router.navigate([this.cancel_link]);
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
           }
         }, (err) => {
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }

@@ -21,6 +21,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   data: any = {};
   isEdit = false;
   isView = false;
+  show_spinner = false;
   cancel_link = '/employer/custom_fields/list';
   constructor(
     private service: CustomFieldService,
@@ -71,6 +72,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   onSubmit(valid) {
     this.submitted = true;
     if (this.id && this.id !== 0) {
+      this.show_spinner = true;
       const obj = {
         'id': this.id,
         'key': this.addCustomFeild.value['key']
@@ -87,12 +89,14 @@ export class CustomFieldAddViewComponent implements OnInit {
             }
             this.submitted = false;
           }, (err) => {
+            this.show_spinner = false;
             this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
           });
         }
       });
     } else {
       if (valid) {
+        this.show_spinner = true;
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
           if (res['data']['status'] === 1) {
             this.submitted = false;
@@ -101,6 +105,7 @@ export class CustomFieldAddViewComponent implements OnInit {
             this.addCustomFeild.reset();
           }
         }, (err) => {
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }

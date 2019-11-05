@@ -106,7 +106,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
 
   delete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to delete this record?',
+      message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.delete_custom_field(id).subscribe(res => {
           if (res['data']['status'] === 1) {
