@@ -28,17 +28,19 @@
                                 <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{data.status}}</td>
                                 <td>
-                                    <button type="button" *ngIf="candidate_type === 'Approved'"
+                                    <button tooltip='View' type="button" *ngIf="candidate_type === 'Approved'"
                                         class="btn btn-sm btn-success"
                                         [routerLink]="['/admin/candidates/approved_candidate/view/',data._id]">
                                         <i class="icon-eye"></i></button>
-                                    <button type="button" *ngIf="candidate_type === 'New'"
+
+                                    <button tooltip='View' type="button" *ngIf="candidate_type === 'New'"
                                         class="btn btn-sm btn-success"
                                         [routerLink]="['/admin/candidates/new_candidate/view/',data._id]">
                                         <i class="icon-eye"></i></button>
 
-                                    <button type="button" class="btn btn-sm btn-danger"
+                                    <button type="button" class="btn btn-sm btn-danger" tooltip='Delete'
                                         (click)="onDelete(data.user_id)"><i class="icon-trash"></i></button>
+
                                     <button type="button" *ngIf="candidate_type === 'New'" tooltip='Approv'
                                         class="btn btn-sm btn-primary" (click)="onApproved(data.user_id)"><i
                                             class="icon-check"></i></button>

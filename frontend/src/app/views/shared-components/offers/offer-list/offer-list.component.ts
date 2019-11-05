@@ -71,7 +71,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         ajax: (dataTablesParameters: any, callback) => {
 
           this.service.view_offer(dataTablesParameters).subscribe(res => {
-            console.log('res => ', res);
+            console.log('Offerresres => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
               this.offerData.forEach(offer => {
@@ -87,7 +87,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 10 }],
+        columnDefs: [{ orderable: false, targets: 11 }],
         columns: [
           {
             data: 'createdAt'
@@ -115,6 +115,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           },
           {
             data: 'group.name'
+          },
+          {
+            data: 'status'
           },
           {
             data: 'commitstatus'
@@ -250,12 +253,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
   }
-  // history(id) {
-  //   this.service.history(id).subscribe(res => {
-  //     console.log('history', res);
 
-  //   })
-  // }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

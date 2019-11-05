@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-group-edit',
@@ -35,6 +36,7 @@ export class GroupEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
   ) {
     // show spinner
     this.spinner.show();
@@ -221,15 +223,20 @@ export class GroupEditComponent implements OnInit {
           }
         }
 
-        this.service.edit_group(this.formData).subscribe(res => {
-          if (res['data']['status'] === 1) {
-            this.isFormSubmitted = false;
-            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            this.groupForm.reset();
+        this.confirmationService.confirm({
+          message: 'Are you sure that you want to delete this record?',
+          accept: () => {
+            this.service.edit_group(this.formData).subscribe(res => {
+              if (res['data']['status'] === 1) {
+                this.isFormSubmitted = false;
+                this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+                this.groupForm.reset();
+              }
+              this.router.navigate(['/employer/groups/list']);
+            }, (err) => {
+              this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+            });
           }
-          this.router.navigate(['/employer/groups/list']);
-        }, (err) => {
-          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
       }
     }

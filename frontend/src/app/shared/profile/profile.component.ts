@@ -21,6 +21,8 @@ export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   obj: any;
   obj1: any;
+  Business_Type: any = [];
+  businessCode: any;
   constructor(private service: CommonService,
     private router: ActivatedRoute,
     public fb: FormBuilder,
@@ -55,23 +57,18 @@ export class ProfileComponent implements OnInit {
           if (profile) {
             this.profileData = JSON.parse(profile);
             console.log('profileData==>', this.profileData);
+            this.businessType(this.profileData.country)
           } else {
             console.log('profile data not found');
           }
         }
       });
-    } else {
+    }
+    else {
       console.log('it is admin!');
-
     }
 
-    this.service.country_registration().subscribe(res => {
-      this.alldata = res['data'];
-      console.log('Profile country>', res['data']);
-      res['data'].forEach(element => {
-        this.countryList.push({ 'label': element.country, 'value': element._id });
-      });
-    });
+
   }
   edit(id) {
 
@@ -81,7 +78,7 @@ export class ProfileComponent implements OnInit {
       'website': this.profileData.website,
       'email': this.profileData.email,
       'companyname': this.profileData.companyname,
-      'businesstype': this.profileData.businesstype,
+      'businesstype': this.businessCode,
       'contactno': this.profileData.contactno
     }
     this.Employerservice.update_Profile(this.obj).subscribe(res => {
@@ -96,8 +93,8 @@ export class ProfileComponent implements OnInit {
       'lastname': this.profileData.lastname,
       'email': this.profileData.email,
       'contactno': this.profileData.contactno,
-    }
 
+    }
     this.CandidateService.update_Profile_candidate(this.obj1).subscribe(res => {
       console.log('edited', res);
 
@@ -105,6 +102,21 @@ export class ProfileComponent implements OnInit {
     })
   }
 
+  businessType(id) {
+    if (this.profileData) {
+      this.Business_Type = [];
+      this.service.get_Type(id).subscribe(res => {
+        res['data'].forEach(element => {
+          this.Business_Type.push({ 'label': element.name, 'value': element._id });
+        });
+      })
+    }
+  }
+  value(event) {
+    console.log('value', event.value);
+    this.businessCode = event.value
+
+  }
 
   cancel() {
     this.route.navigate(['/employer/offers/list'])

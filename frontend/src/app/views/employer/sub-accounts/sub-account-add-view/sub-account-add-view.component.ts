@@ -5,6 +5,7 @@ import { SubAccountService } from '../sub-accounts.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ThemeService } from 'ng2-charts';
+import { ConfirmationService } from 'primeng/components/common/confirmationservice';
 
 @Component({
   selector: 'app-sub-account-add-view',
@@ -31,6 +32,7 @@ export class SubAccountAddViewComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit() {
@@ -136,15 +138,20 @@ export class SubAccountAddViewComponent implements OnInit {
           admin_rights: 'yes'
         };
       }
-      this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
-        console.log('>?', this.obj);
+      this.confirmationService.confirm({
+        message: 'Are you sure that you want to update this record?',
+        accept: () => {
+          this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
+            console.log('>?', this.obj);
 
 
-        this.submitted = false;
-        this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
-        this.router.navigate([this.cancel_link]);
-      }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+            this.submitted = false;
+            this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
+            this.router.navigate([this.cancel_link]);
+          }, (err) => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          });
+        }
       });
     } else {
       if (flag) {

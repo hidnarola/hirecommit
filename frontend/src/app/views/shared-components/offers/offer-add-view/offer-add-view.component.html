@@ -249,6 +249,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group row" *ngIf="is_Edit">
+                            <label class="col-md-3 col-form-label">Current Status</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" autocomplete="status" formControlName="status"
+                                    disabled id="status">
+                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['title'].valid">
+                                    <span *ngIf="form.controls['title'].errors['required'] || form.get('title').errors['whitespace']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div> -->
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="offertype">Offer Type</label>
@@ -429,6 +442,17 @@
                             </div>
                         </ng-container>
 
+                        <div class="form-group row" *ngIf="is_Edit">
+                            <label class="col-md-3 col-form-label" for="offerStatus">Offer Status</label>
+                            <div class=" col-md-6">
+                                <!-- <p-inputSwitch [(ngModel)]="offerStatus" formControlName="is_active" name="is_active">
+                                </p-inputSwitch> -->
+
+                                <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}"
+                                    formControlName="offerStatus" id="offerStatus" placeholder="Please Select Status">
+                                </p-dropdown>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card-footer text-right">
@@ -538,6 +562,14 @@
                         </div>
                         <div class="col-md-6 detail-input">
                             {{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Current Status
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.status}}
                         </div>
                     </div>
                     <div class="row detail-panel">

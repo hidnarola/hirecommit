@@ -12,7 +12,7 @@ import { GroupAddComponent } from './group-add/group-add.component';
 import { GroupEditComponent } from './group-edit/group-edit.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { GroupViewComponent } from './group-view/group-view.component';
-
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   declarations: [
     GroupsListComponent,
@@ -29,7 +29,8 @@ import { GroupViewComponent } from './group-view/group-view.component';
     HttpClientModule,
     DataTablesModule,
     ConfirmDialogModule,
-    InputSwitchModule
+    InputSwitchModule,
+    TooltipModule,
   ],
   providers: [ConfirmationService]
 })

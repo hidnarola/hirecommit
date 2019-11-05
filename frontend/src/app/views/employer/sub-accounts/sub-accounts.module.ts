@@ -8,7 +8,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
 import { SubAccountAddViewComponent } from './sub-account-add-view/sub-account-add-view.component';
 import { SubAccountsListComponent } from './sub-accounts-list/sub-accounts-list.component';
-
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   declarations: [
     SubAccountAddViewComponent,
@@ -21,6 +21,7 @@ import { SubAccountsListComponent } from './sub-accounts-list/sub-accounts-list.
     ReactiveFormsModule,
     DataTablesModule,
     ConfirmDialogModule,
+    TooltipModule,
     InputSwitchModule
   ],
   providers: [ConfirmationService]

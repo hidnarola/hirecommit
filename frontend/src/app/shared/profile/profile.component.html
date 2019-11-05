@@ -57,13 +57,14 @@
                                         <tr>
                                             <td class="align-middle">Business Type</td>
                                             <td>
-                                                <input type="text" [(ngModel)]="profileData.name" class="form-control"
-                                                    [ngModelOptions]="{standalone: true}">
+                                                <!-- <input type="text" [(ngModel)]="profileData.name" class="form-control"
+                                                    [ngModelOptions]="{standalone: true}"> -->
 
-                                                <!-- <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
-                                                    formControlName="businesstype" [(ngModel)]="profileData.name"
-                                                    id="businesstype" [ngModelOptions]="{standalone: true}"> -->
-                                                <!-- </p-dropdown> -->
+                                                <p-dropdown [options]="Business_Type" placeholder="{{profileData.name}}"
+                                                    class="form-control align-middle" [(ngModel)]="profileData.name"
+                                                    [ngModelOptions]="{standalone: true}" (onChange)="value($event)"
+                                                    [style]="{'width':'50%'}">
+                                                </p-dropdown>
                                             </td>
                                         </tr>
 

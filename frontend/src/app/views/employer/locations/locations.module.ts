@@ -9,7 +9,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DataTablesModule } from 'angular-datatables';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-
+import { TooltipModule } from 'ng2-tooltip-directive';
 @NgModule({
   declarations: [
     LocationAddViewComponent,
@@ -21,7 +21,8 @@ import { DropdownModule } from 'primeng/dropdown';
     ReactiveFormsModule,
     DataTablesModule,
     ConfirmDialogModule,
-    DropdownModule
+    DropdownModule,
+    TooltipModule
   ],
   providers: [ConfirmationService]
 })
