@@ -263,17 +263,11 @@ export class OfferAddViewComponent implements OnInit {
         res => {
           this.resData = res[`data`];
           this.service.status(this.resData.status).subscribe(resp => {
-            console.log('changed!!', res);
-
-            resp['status'].forEach(element => {
-              this.offerStatus.push({ 'label': element.label, 'value': element.value });
-              console.log(element);
-            });
+            this.offerStatus = resp['status'];
+            console.log('this.offerStatus => ', this.offerStatus);
           });
-
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
-
           this.groupDetail(res[`data`].groups);
           if (res[`data`] && this.is_Edit) {
             // set communication
@@ -314,7 +308,9 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
-            this.form.controls['offerStatus'].setValue(res[`data`]['status'])
+            console.log('res[`data`][`status`] => ', res[`data`]['status']);
+            this.form.controls['offerStatus']
+              .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
             if (res[`data`].salary) {
               this.form.controls['salarybracket'].setValue(res[`data`].salary);
               document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
@@ -683,6 +679,7 @@ export class OfferAddViewComponent implements OnInit {
       'customfieldItem',
       'group',
       'offerStatus',
+      'status',
       'employer_id',
       'communicationFieldItems',
       'salarybracket',
@@ -691,6 +688,7 @@ export class OfferAddViewComponent implements OnInit {
 
       // 'salaryduration'
     ];
+    console.log('this.form.value.offerStatus => ', this.form.value.offerStatus);
     const data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
@@ -701,7 +699,7 @@ export class OfferAddViewComponent implements OnInit {
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
-      status: this.form.value.offerStatus,
+      // status: this.form.value.offerStatus,
       data: JSON.stringify(communication_array)
     };
     Object.keys(data).map(key => {
@@ -724,6 +722,7 @@ export class OfferAddViewComponent implements OnInit {
       if (this.route.snapshot.data.title === 'Edit') {
         this.show_spinner = true;
         this.formData.append('id', this.id);
+        this.formData.append('status', this.form.value.offerStatus.value);
 
         this.service.update_offer(this.formData).subscribe(
           res => {
