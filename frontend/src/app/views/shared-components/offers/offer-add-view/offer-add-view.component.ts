@@ -719,10 +719,9 @@ export class OfferAddViewComponent implements OnInit {
     // if (this.form.value.salaryduration) {
     //   this.formData.append('salaryduration', this.form.value.salaryduration);
     // }
-
+    console.log('flag => ', flag);
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
-        this.show_spinner = true;
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
         this.confirmationService.confirm({
@@ -730,6 +729,7 @@ export class OfferAddViewComponent implements OnInit {
           accept: () => {
             this.service.update_offer(this.formData).subscribe(
               res => {
+                this.show_spinner = true;
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -749,12 +749,12 @@ export class OfferAddViewComponent implements OnInit {
         });
       } else {
         if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-          this.show_spinner = true;
           this.confirmationService.confirm({
             message: 'Are you sure that you want to Add this Offer?',
             accept: () => {
               this.service.add_offer(this.formData).subscribe(
                 res => {
+                  this.show_spinner = true;
                   this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                   if (this.userDetail.role === 'employer') {
                     this.router.navigate([this.cancel_link]);
