@@ -110,7 +110,7 @@ export class OfferAddViewComponent implements OnInit {
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
-      is_active: new FormControl('')
+      offerStatus: new FormControl('')
     });
 
 
@@ -311,6 +311,7 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
+
             if (res[`data`].salary) {
               this.form.controls['salarybracket'].setValue(res[`data`].salary);
               document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
@@ -326,7 +327,9 @@ export class OfferAddViewComponent implements OnInit {
               this.form.controls['salarybracket'].setErrors(null);
               this.updateValidation();
             }
-            this.form.controls['is_active'].setValue(res[`data`].is_active);
+            this.form.controls['offerStatus'].setValue(res[`data`]['status']);
+
+
             const _array = [];
             res[`data`]['customfeild'].forEach((element, index) => {
               const new_customfield = {
@@ -675,12 +678,13 @@ export class OfferAddViewComponent implements OnInit {
       'candidate',
       'customfieldItem',
       'group',
-      'status',
+      'offerStatus',
       'employer_id',
       'communicationFieldItems',
       'salarybracket',
       'salarybracket_from',
       'salarybracket_to',
+
       // 'salaryduration'
     ];
     const data = {
@@ -693,6 +697,7 @@ export class OfferAddViewComponent implements OnInit {
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
+      status: this.form.value.offerStatus,
       data: JSON.stringify(communication_array)
     };
     Object.keys(data).map(key => {
@@ -715,6 +720,7 @@ export class OfferAddViewComponent implements OnInit {
       if (this.route.snapshot.data.title === 'Edit') {
         this.show_spinner = true;
         this.formData.append('id', this.id);
+
         this.service.update_offer(this.formData).subscribe(
           res => {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

@@ -443,12 +443,13 @@
                         </ng-container>
 
                         <div class="form-group row" *ngIf="is_Edit">
-                            <label class="col-md-3 col-form-label" for="offer">Change Offer Status</label>
-                            <div class="col-md-6">
+                            <label class="col-md-3 col-form-label" for="offerStatus">Offer Status</label>
+                            <div class=" col-md-6">
                                 <!-- <p-inputSwitch [(ngModel)]="offerStatus" formControlName="is_active" name="is_active">
                                 </p-inputSwitch> -->
+
                                 <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}"
-                                    formControlName="is_active" id="is_active" placeholder="Please Select Status">
+                                    formControlName="offerStatus" id="offerStatus" placeholder="Please Select Status">
                                 </p-dropdown>
                             </div>
                         </div>
