@@ -254,12 +254,7 @@
                             <div class="col-md-6">
                                 <input type="text" class="form-control" autocomplete="status" formControlName="status"
                                     disabled id="status">
-                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['title'].valid">
-                                    <span *ngIf="form.controls['title'].errors['required'] || form.get('title').errors['whitespace']"
-                                        class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div> -->
+
                             </div>
                         </div>
 
@@ -448,8 +443,9 @@
                                 <!-- <p-inputSwitch [(ngModel)]="offerStatus" formControlName="is_active" name="is_active">
                                 </p-inputSwitch> -->
 
-                                <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}"
-                                    formControlName="offerStatus" id="offerStatus" placeholder="Please Select Status">
+                                <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
+                                    optionValue="value" formControlName="offerStatus" id="offerStatus"
+                                    placeholder="Please Select Status">
                                 </p-dropdown>
                             </div>
                         </div>
@@ -459,10 +455,8 @@
                         <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-
                         <button type="reset" class="btn btn-sm btn-danger" (click)='cancel()'>
                             Cancel</button>
-
                     </div>
 
                 </form>
@@ -665,8 +659,8 @@
                 </div>
                 <div class="card-footer text-right">
 
-                    <button type="button" class="btn btn-sm btn-danger" (click)='cancel()'>
-                        Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" (click)='cancel()'>
+                        Back</button>
                 </div>
             </div>
             <!-- view -->
@@ -674,3 +668,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

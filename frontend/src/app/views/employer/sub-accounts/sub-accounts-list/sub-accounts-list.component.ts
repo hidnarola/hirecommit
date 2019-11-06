@@ -103,7 +103,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
 
   delete(user_id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to delete this record?',
+      message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.decativate_sub_account(user_id).subscribe(res => {
           if (res['status'] === 1) {

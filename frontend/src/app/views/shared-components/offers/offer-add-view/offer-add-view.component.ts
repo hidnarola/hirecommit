@@ -8,6 +8,7 @@ import { GroupService } from '../../../employer/groups/manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { visitValue } from '@angular/compiler/src/util';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -84,6 +85,7 @@ export class OfferAddViewComponent implements OnInit {
     private groupService: GroupService,
     private commonService: CommonService,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
   ) {
     // show spinner
     // if (this.is_Edit || this.is_View) {
@@ -263,17 +265,11 @@ export class OfferAddViewComponent implements OnInit {
         res => {
           this.resData = res[`data`];
           this.service.status(this.resData.status).subscribe(resp => {
-            console.log('changed!!', res);
-
-            resp['status'].forEach(element => {
-              this.offerStatus.push({ 'label': element.label, 'value': element.value });
-              console.log(element);
-            });
+            this.offerStatus = resp['status'];
+            console.log('this.offerStatus => ', this.offerStatus);
           });
-
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
-
           this.groupDetail(res[`data`].groups);
           if (res[`data`] && this.is_Edit) {
             // set communication
@@ -314,7 +310,9 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
-            this.form.controls['offerStatus'].setValue(res[`data`]['status'])
+            console.log('res[`data`][`status`] => ', res[`data`]['status']);
+            this.form.controls['offerStatus']
+              .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
             if (res[`data`].salary) {
               this.form.controls['salarybracket'].setValue(res[`data`].salary);
               document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
@@ -683,6 +681,7 @@ export class OfferAddViewComponent implements OnInit {
       'customfieldItem',
       'group',
       'offerStatus',
+      'status',
       'employer_id',
       'communicationFieldItems',
       'salarybracket',
@@ -691,6 +690,7 @@ export class OfferAddViewComponent implements OnInit {
 
       // 'salaryduration'
     ];
+    console.log('this.form.value.offerStatus => ', this.form.value.offerStatus);
     const data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
@@ -701,7 +701,7 @@ export class OfferAddViewComponent implements OnInit {
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
-      status: this.form.value.offerStatus,
+      // status: this.form.value.offerStatus,
       data: JSON.stringify(communication_array)
     };
     Object.keys(data).map(key => {
@@ -719,47 +719,58 @@ export class OfferAddViewComponent implements OnInit {
     // if (this.form.value.salaryduration) {
     //   this.formData.append('salaryduration', this.form.value.salaryduration);
     // }
-
+    console.log('flag => ', flag);
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
-        this.show_spinner = true;
         this.formData.append('id', this.id);
+        this.formData.append('status', this.form.value.offerStatus.value);
+        this.confirmationService.confirm({
+          message: 'Are you sure that you want to Update This Offer this record?',
+          accept: () => {
+            this.service.update_offer(this.formData).subscribe(
+              res => {
+                this.show_spinner = true;
+                this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+                if (this.userDetail.role === 'employer') {
+                  this.router.navigate([this.cancel_link]);
+                } else if (this.userDetail.role === 'sub-employer') {
+                  this.router.navigate([this.cancel_link1]);
+                }
+              },
+              err => {
+                this.show_spinner = false;
+                this.toastr.error(err['error']['message'], 'Error!', {
+                  timeOut: 3000
+                });
+              }
 
-        this.service.update_offer(this.formData).subscribe(
-          res => {
-            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            if (this.userDetail.role === 'employer') {
-              this.router.navigate([this.cancel_link]);
-            } else if (this.userDetail.role === 'sub-employer') {
-              this.router.navigate([this.cancel_link1]);
-            }
-          },
-          err => {
-            this.show_spinner = false;
-            this.toastr.error(err['error']['message'], 'Error!', {
-              timeOut: 3000
-            });
+            );
           }
-        );
+        });
       } else {
         if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-          this.show_spinner = true;
-          this.service.add_offer(this.formData).subscribe(
-            res => {
-              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-              if (this.userDetail.role === 'employer') {
-                this.router.navigate([this.cancel_link]);
-              } else if (this.userDetail.role === 'sub-employer') {
-                this.router.navigate([this.cancel_link1]);
-              }
-            },
-            err => {
-              this.show_spinner = false;
-              this.toastr.error(err['error']['message'], 'Error!', {
-                timeOut: 3000
-              });
+          this.confirmationService.confirm({
+            message: 'Are you sure that you want to Add this Offer?',
+            accept: () => {
+              this.service.add_offer(this.formData).subscribe(
+                res => {
+                  this.show_spinner = true;
+                  this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+                  if (this.userDetail.role === 'employer') {
+                    this.router.navigate([this.cancel_link]);
+                  } else if (this.userDetail.role === 'sub-employer') {
+                    this.router.navigate([this.cancel_link1]);
+                  }
+                },
+                err => {
+                  this.show_spinner = false;
+                  this.toastr.error(err['error']['message'], 'Error!', {
+                    timeOut: 3000
+                  });
+                }
+              );
             }
-          );
+          });
         }
         // else if (this.userDetail.role === 'sub-employer') {
         //   this.show_spinner = true;
