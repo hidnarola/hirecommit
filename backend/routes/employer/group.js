@@ -11,6 +11,7 @@ var groups_helper = require('../../helpers/groups_helper');
 var logger = config.logger;
 var group = require('../../models/group');
 var GroupDetail = require('../../models/group-detail');
+var Offer = require('../../models/offer');
 
 var User = require('../../models/user');
 
@@ -396,21 +397,26 @@ router.put("/deactivate_group/:id", async (req, res) => {
         is_del: true
     }
     var id = req.params.id;
-    var resp_group_data = await common_helper.update(group, { "_id": id }, obj);
 
-    var resp_groupdetail_data = await common_helper.update(GroupDetail, { "group_id": id }, obj);
+    var resp_data = await Offer.find({ 'groups': new ObjectId(id) });
+    if (resp_data && resp_data.length > 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This group can't be deleted because it is used in offer." });
+    } else {
+        var resp_group_data = await common_helper.update(group, { "_id": id }, obj);
+        var resp_groupdetail_data = await common_helper.update(GroupDetail, { "group_id": id }, obj);
 
-    if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_group_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while featching data.", "data": resp_group_data });
-    }
-    else if (resp_group_data.status == 1 || resp_groupdetail_data.status == 1) {
-        logger.trace("User got successfully = ", resp_groupdetail_data);
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
-    }
-    else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2) {
-        logger.trace("User got successfully = ", resp_group_data);
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No Data Found." });
+        if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0) {
+            logger.error("Error occured while fetching User = ", resp_group_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while featching data.", "data": resp_group_data });
+        }
+        else if (resp_group_data.status == 1 || resp_groupdetail_data.status == 1) {
+            logger.trace("User got successfully = ", resp_groupdetail_data);
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
+        }
+        else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2) {
+            logger.trace("User got successfully = ", resp_group_data);
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No Data Found." });
+        }
     }
 });
 

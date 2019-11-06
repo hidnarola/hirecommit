@@ -16,6 +16,7 @@ var User = require('../../models/user');
 var CandidateDetail = require("../../models/candidate-detail");
 var SubEmployerDetail = require("../../models/sub-employer-detail");
 var EmployerDetail = require("../../models/employer-detail");
+var Status = require("../../models/status");
 var History = require('../../models/offer_history');
 
 
@@ -79,15 +80,11 @@ router.post("/", async (req, res) => {
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        // console.log('user', user);
-
         var candidate = await common_helper.findOne(CandidateDetail,
             { user_id: new ObjectId(req.body.user_id) });
         var employer;
-        // console.log('Create : candidate ==> ', candidate);
         if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
-            // console.log("===>", employer, user.data.emp_id, user);
             var obj = {
                 "employer_id": user.data.emp_id,
                 "user_id": req.body.user_id,
@@ -150,19 +147,23 @@ router.post("/", async (req, res) => {
 
         obj.offer_id = interest_resp.data._id
         var interest = await common_helper.insert(History, obj);
-        console.log("history data", interest)
+        // console.log("history data", interest)
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
-            console.log('user', user);
+            var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
+            let content = status.data.MessageContent;
+
+            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+            // console.log("content===>", content); return false;
 
             let mail_resp = await mail_helper.send("offer", {
                 "to": user.data.email,
                 "subject": "Offer"
             }, {
-                "msg": "You have been invited for the offer " + req.body.title
+                "msg": content
             });
             console.log('mail_resp', mail_resp);
 
@@ -176,10 +177,24 @@ router.post("/", async (req, res) => {
 });
 
 
-cron.schedule('00 * * * *', async (req, res) => {
-    console.log('CRON : req.userInfo ==> ');
+cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
         [
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "candidate"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$candidate",
+                    // preserveNullAndEmptyArrays: true
+                },
+            },
             {
                 $lookup:
                 {
@@ -212,17 +227,23 @@ cron.schedule('00 * * * *', async (req, res) => {
             }
         ]
     )
-    console.log("resp_data", resp_data);
-    var current_date = moment()
+    // console.log("resp_data", resp_data);
+
+    var current_date = moment().format("DD-MM-YYYY")
 
     for (const resp of resp_data) {
-
         for (const comm of resp.communication.communication) {
-            if (comm.trigger == "After Offer") {
+            // console.log('comm.trigger====>', comm.trigger == "afterOffer");
+            // console.log('comm : comm ==> ', comm);
+            // console.log('resp : resp ==> ', resp.candidate.email);
+            if (comm.trigger == "afterOffer") {
                 var offer_date = moment(resp.createdAt).add(1, 'day')
-                offer_date = moment(offer_date)
+                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                console.log(' offer_date : offer_date ==> ', offer_date);
+
+                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 var message = comm.message;
-                var email = resp.email
+                var email = resp.candidate.email
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -236,15 +257,16 @@ cron.schedule('00 * * * *', async (req, res) => {
 
             }
 
-            if (comm.trigger == "Before Joining") {
+            if (comm.trigger == "beforeJoining") {
                 var offer_date = moment(resp.joiningdate).subtract(2, 'day')
-                offer_date = moment(offer_date)
+                offer_date = moment(offer_date).format("DD-MM-YYYY")
 
                 var message = comm.message;
-                var email = resp.email
+                var email = resp.candidate.email
+                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
-                        "to": email,
+                        "to": resp.candidate.email,
                         "subject": "Before Joining"
                     }, {
 
@@ -252,15 +274,15 @@ cron.schedule('00 * * * *', async (req, res) => {
                     });
                     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", "msg": msg });
                 }
-
             }
 
-            if (comm.trigger == "After Joining") {
+            if (comm.trigger == "afterJoining") {
                 var offer_date = moment(resp.joiningdate).add(2, 'day')
-                offer_date = moment(offer_date)
+                offer_date = moment(offer_date).format("DD-MM-YYYY")
 
                 var message = comm.message;
-                var email = resp.email
+                var email = resp.candidate.email
+                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -273,12 +295,13 @@ cron.schedule('00 * * * *', async (req, res) => {
                 }
 
             }
-            if (comm.trigger == "Before Expiry") {
+            if (comm.trigger == "beforeExpiry") {
                 var offer_date = moment(resp.expirydate).subtract(2, 'day')
-                offer_date = moment(offer_date)
+                offer_date = moment(offer_date).format("DD-MM-YYYY")
 
                 var message = comm.message;
-                var email = resp.email
+                var email = resp.candidate.email
+                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -291,12 +314,13 @@ cron.schedule('00 * * * *', async (req, res) => {
                 }
 
             }
-            if (comm.trigger == "After Expiry") {
+            if (comm.trigger == "afterExpiry") {
                 var offer_date = moment(resp.expirydate).add(2, 'day')
-                offer_date = moment(offer_date)
+                offer_date = moment(offer_date).format("DD-MM-YYYY")
 
                 var message = comm.message;
-                var email = resp.email
+                var email = resp.candidate.email
+                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -643,11 +667,16 @@ router.put('/', async (req, res) => {
     else if (offer_upadate.status == 1) {
         if (offer.data.status !== offer_upadate.data.status) {
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
+            var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
+            // console.log("status===>", status); return false;
+
+            let content = status.data.MessageContent;
+            content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
             let mail_resp = await mail_helper.send("offer", {
                 "to": user.data.email,
                 "subject": "Change Status of offer."
             }, {
-                "msg": "Offer" + offer_upadate.data.title + " has been " + offer_upadate.data.status
+                "msg": content
             });
         }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer update successfully", "data": offer_upadate });

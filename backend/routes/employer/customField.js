@@ -201,15 +201,22 @@ router.put("/delete/:id", async (req, res) => {
     var obj = {
         "is_del": true
     };
-    var interest_resp = await common_helper.update(CustomField, { "_id": req.params.id }, obj);
-    if (interest_resp.status == 0) {
-        logger.debug("Error = ", interest_resp.error);
-        res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+
+    var resp_data = await common_helper.findOne(CustomField, { "_id": req.params.id });
+    var resp_data1 = await Offer.find({ 'customfeild.key': resp_data.data.key });
+
+    if (resp_data1 && resp_data1.length > 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This custom field can't be deleted because it is used in offer." });
     } else {
-        res.json({ "message": "Custom Field deleted successfully", "data": interest_resp })
+        var interest_resp = await common_helper.update(CustomField, { "_id": req.params.id }, obj);
+        if (interest_resp.status == 0) {
+            logger.debug("Error = ", interest_resp.error);
+            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        } else {
+            res.json({ "message": "Custom Field deleted successfully", "data": interest_resp })
+        }
     }
+
 });
-
-
 
 module.exports = router;
