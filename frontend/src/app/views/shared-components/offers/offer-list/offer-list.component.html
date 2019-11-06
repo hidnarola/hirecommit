@@ -56,8 +56,9 @@
                                     {{offer.status|titlecase}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.commitstatus|titlecase}}</td>
-                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}}</td>
+                                <td *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
+                                    {{ offer.customfeild[0].key === first_custom_field && offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}}
+                                </td>
                                 <td>
 
                                     <!-- <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"

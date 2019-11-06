@@ -18,8 +18,13 @@
                             <div class="col-md-6">
                                 <p-dropdown [options]="candidateList" placeholder="Select Candidate"
                                     formControlName="candidate" [style]="{'width':'100%'}" id="candidate" #candidate
-                                    (onChange)="findEmail($event)">
+                                    (onChange)="findEmail($event)" [disabled]="is_Edit">
                                 </p-dropdown>
+
+                                <!-- <p-dropdown *ngIf="!is_Edit" [options]="candidateList" placeholder="Select Candidate"
+                                    formControlName="candidate" [style]="{'width':'100%'}" id="candidate" #candidate
+                                    (onChange)="findEmail($event)">
+                                </p-dropdown> -->
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['candidate'].valid">
                                     <span *ngIf="form.controls['candidate'].errors['required']" class="text-danger">
                                         This field is required.
@@ -163,7 +168,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket">Salary</label>
                             <div class="col-md-6">
-                                <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
+                                <input type="number" min="1" class="form-control" placeholder="Enter Salary"
                                     formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()">
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salarybracket'].valid">
@@ -428,7 +433,7 @@
                             <div class="form-group row" formGroupName="{{i}}"
                                 *ngFor="let customfield of offer_data.customfieldItem; let i=index">
                                 <label class="col-md-3 col-form-label" for="customfield.key">
-                                    {{customfield.key}}
+                                    {{customfield.key |titlecase}}
                                 </label>
                                 <div class="col-md-6">
                                     <input type="text" formControlName="value" class="form-control"
@@ -452,10 +457,10 @@
                     </div>
 
                     <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-sm btn-primary" (click)="onSubmit(form.valid)"
+                        <button type="submit" class="btn btn-md btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button type="reset" class="btn btn-sm btn-danger" (click)='cancel()'>
+                        <button type="reset" class="btn btn-md btn-danger" (click)='cancel()'>
                             Cancel</button>
                     </div>
 
@@ -649,7 +654,7 @@
                     <!-- custom fields -->
                     <div class="row detail-panel" *ngFor="let field of resData.customfeild">
                         <div class="col-md-3 detail-label">
-                            {{field.key}}
+                            {{field.key|titlecase}}
                         </div>
                         <div class="col-md-6 detail-input">
                             {{field.value ? field.value : '-'}}
@@ -659,7 +664,7 @@
                 </div>
                 <div class="card-footer text-right">
 
-                    <button type="button" class="btn btn-sm btn-primary" (click)='cancel()'>
+                    <button type="button" class="btn btn-md btn-primary" (click)='cancel()'>
                         Back</button>
                 </div>
             </div>
@@ -668,3 +673,4 @@
         </div>
     </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

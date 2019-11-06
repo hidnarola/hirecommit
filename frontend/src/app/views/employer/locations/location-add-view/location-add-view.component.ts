@@ -119,7 +119,7 @@ export class LocationAddViewComponent implements OnInit {
   onSubmit(flag: boolean, id) {
     this.submitted = true;
     if (this.id && flag) {
-      this.show_spinner = true;
+
       const res_data = {
         'id': this.id,
         // 'country': this.detail.country,
@@ -128,6 +128,7 @@ export class LocationAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
+          this.show_spinner = true;
           this.service.edit_location(res_data).subscribe(res => {
             if (res['data']['status'] === 1) {
               this.submitted = false;

@@ -722,12 +722,12 @@ export class OfferAddViewComponent implements OnInit {
 
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
-        this.show_spinner = true;
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
         this.confirmationService.confirm({
           message: 'Are you sure that you want to Update This Offer this record?',
           accept: () => {
+            this.show_spinner = true;
             this.service.update_offer(this.formData).subscribe(
               res => {
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -749,10 +749,10 @@ export class OfferAddViewComponent implements OnInit {
         });
       } else {
         if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-          this.show_spinner = true;
           this.confirmationService.confirm({
             message: 'Are you sure that you want to Add this Offer?',
             accept: () => {
+              this.show_spinner = true;
               this.service.add_offer(this.formData).subscribe(
                 res => {
                   this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

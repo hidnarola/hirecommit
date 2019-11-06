@@ -24,14 +24,15 @@
                                 </span>
                             </div>
                         </div>
-
+                        {{isEdit}}
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="email">Email</label>
                             <div class="col-md-4">
-                                <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    [(ngModel)]="detail.email" formControlName="email" id="email"
-                                    [attr.disabled]="is_Edit">
-
+                                <input type="email" *ngIf="is_Edit" class="form-control" placeholder="Enter Email"
+                                    autocomplete="email" [(ngModel)]="detail.email" formControlName="email" id="email"
+                                    disabled>
+                                <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
+                                    autocomplete="email" [(ngModel)]="detail.email" formControlName="email" id="email">
 
                                 <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">
                                     <span
@@ -55,10 +56,10 @@
                         </div>
                     </div>
                     <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-sm btn-primary" [disabled]="show_spinner">
+                        <button type="submit" class="btn btn-md btn-primary" [disabled]="show_spinner">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button type="reset" class="btn btn-sm btn-danger" [routerLink]="cancel_link">
+                        <button type="reset" class="btn btn-md btn-danger" [routerLink]="cancel_link">
                             <!-- <i class="fa fa-ban"></i> -->
                             Cancel</button>
                     </div>
@@ -99,7 +100,7 @@
                     </div>
                 </div>
                 <div class="w-100 card-footer text-right">
-                    <button type="button" class="btn btn-sm btn-primary" [routerLink]="cancel_link">
+                    <button type="button" class="btn btn-md btn-primary" [routerLink]="cancel_link">
                         Back</button>
                 </div>
             </div>

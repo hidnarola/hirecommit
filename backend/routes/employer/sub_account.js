@@ -164,7 +164,6 @@ router.put('/', async (req, res) => {
 
 router.put('/details', async (req, res) => {
     var obj = {}
-    console.log("details==> ", req.body);
     if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
         obj.admin_rights = req.body.data.admin_rights
     }

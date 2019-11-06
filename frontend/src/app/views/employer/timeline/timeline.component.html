@@ -18,9 +18,10 @@
 
   <div class="timeline_inner">
     <div class="post_wrap" *ngFor="let data of history">
-      <span
+      <!-- <span
         [ngClass]="{'green_dot': data.status === 'On Hold' || data.status === 'Accepted' || data.status === 'Released' , 'red_dot' : data.status === 'Not Joined', 'full_black': data.status === 'Inactive'}"
-        class="dot"></span>
+        class="dot"></span> -->
+      <span class="dot blue_dot"></span>
       <ul class="ul_post">
         <li>
           <span class="text_span">

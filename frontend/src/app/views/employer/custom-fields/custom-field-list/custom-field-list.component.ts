@@ -114,7 +114,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
           }
           this.rrerender();
         }, (err) => {
-          this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });

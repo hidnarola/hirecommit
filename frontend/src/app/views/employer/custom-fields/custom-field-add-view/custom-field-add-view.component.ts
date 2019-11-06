@@ -72,7 +72,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   onSubmit(valid) {
     this.submitted = true;
     if (this.id && this.id !== 0) {
-      this.show_spinner = true;
+
       const obj = {
         'id': this.id,
         'key': this.addCustomFeild.value['key']
@@ -80,6 +80,7 @@ export class CustomFieldAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
+          this.show_spinner = true;
           this.service.edit_custom_field(obj).subscribe(res => {
             if (res['data'].status === 1) {
 

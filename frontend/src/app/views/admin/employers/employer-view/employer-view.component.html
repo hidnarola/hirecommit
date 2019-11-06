@@ -53,14 +53,14 @@
                         <button type="button" class="btn btn-sm btn-danger"
                             [routerLink]="['/admin/employers/approved_employer']">Cancel</button> -->
                         <div style="float: right;">
-                            <button type="button" *ngIf="employer_type === 'New'" class="btn btn-sm btn-success"
+                            <button type="button" *ngIf="employer_type === 'New'" class="btn btn-md btn-success"
                                 (click)="onApprove(employer_detail.user_id)">Approve</button>
                             <!-- <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
                                                         (click)="unapprove()">Unapprove</button> -->
 
-                            <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-sm btn-danger"
+                            <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-danger"
                                 [routerLink]="cancel_link2">Cancel</button>
-                            <button type="button" *ngIf="employer_type === 'New'" class="btn btn-sm btn-danger"
+                            <button type="button" *ngIf="employer_type === 'New'" class="btn btn-md btn-danger"
                                 [routerLink]="cancel_link1">Cancel</button>
                             <!-- <button type="button" class="btn btn-sm btn-danger" (click)="cancel()">Cancel</button> -->
                         </div>

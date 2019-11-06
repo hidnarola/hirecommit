@@ -126,7 +126,6 @@ export class SubAccountAddViewComponent implements OnInit {
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
-      this.show_spinner = true;
       console.log(this.detail['admin_rights']);
       if (this.detail['admin_rights'] === false) {
         this.obj = {
@@ -145,10 +144,11 @@ export class SubAccountAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
+          this.show_spinner = true;
           this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
             console.log('>?', this.obj);
             this.submitted = false;
-            this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.router.navigate([this.cancel_link]);
           }, (err) => {
             this.show_spinner = false;
@@ -159,6 +159,8 @@ export class SubAccountAddViewComponent implements OnInit {
     } else {
       if (flag) {
         this.show_spinner = true;
+        console.log(this.addAccount.value['admin_rights']);
+
         if (this.addAccount.value['admin_rights'] === false) {
           this.obj = {
             username: this.addAccount.value['username'],
@@ -170,6 +172,13 @@ export class SubAccountAddViewComponent implements OnInit {
             username: this.addAccount.value['username'],
             email: this.addAccount.value['email'],
             admin_rights: 'yes'
+          }
+        }
+        else if (this.addAccount.value['admin_rights'] === undefined) {
+          this.obj = {
+            username: this.addAccount.value['username'],
+            email: this.addAccount.value['email'],
+            admin_rights: 'no'
           };
         }
         console.log(this.obj);
