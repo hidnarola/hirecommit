@@ -247,17 +247,21 @@ router.put("/deactivate_location/:id", async (req, res) => {
         is_del: true
     }
 
-    // location = {};
     var id = req.params.id;
-    var resp_data = await common_helper.update(location, { "_id": id }, obj);
-    // var resp_data = await common_helper.deleteMany(Offer, ObjectId(id));
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+
+    var resp_data = await Offer.find({ 'location': new ObjectId(id) });
+    if (resp_data && resp_data.length > 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This location can't be deleted because it is used in offer." });
     } else {
-        logger.trace("User got successfully = ", resp_data);
-        var data = resp_data.data
-        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+        var resp_data = await common_helper.update(location, { "_id": id }, obj);
+        if (resp_data.status == 0) {
+            logger.error("Error occured while fetching User = ", resp_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        } else {
+            logger.trace("User got successfully = ", resp_data);
+            var data = resp_data.data
+            res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+        }
     }
 });
 

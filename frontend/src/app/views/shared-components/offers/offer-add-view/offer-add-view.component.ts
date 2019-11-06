@@ -719,7 +719,7 @@ export class OfferAddViewComponent implements OnInit {
     // if (this.form.value.salaryduration) {
     //   this.formData.append('salaryduration', this.form.value.salaryduration);
     // }
-
+    console.log('flag => ', flag);
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
         this.formData.append('id', this.id);
@@ -730,6 +730,7 @@ export class OfferAddViewComponent implements OnInit {
             this.show_spinner = true;
             this.service.update_offer(this.formData).subscribe(
               res => {
+                this.show_spinner = true;
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -755,6 +756,7 @@ export class OfferAddViewComponent implements OnInit {
               this.show_spinner = true;
               this.service.add_offer(this.formData).subscribe(
                 res => {
+                  this.show_spinner = true;
                   this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                   if (this.userDetail.role === 'employer') {
                     this.router.navigate([this.cancel_link]);

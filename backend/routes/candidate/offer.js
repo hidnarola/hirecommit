@@ -15,6 +15,7 @@ var User = require('../../models/user');
 var Candidate = require('../../models/candidate-detail');
 var History = require('../../models/offer_history');
 var Employer = require('../../models/employer-detail');
+var Status = require('../../models/status');
 
 var mail_helper = require('../../helpers/mail_helper');
 
@@ -44,7 +45,7 @@ router.post('/get', async (req, res) => {
             var user_id = req.userInfo.id
         }
         var aggregate = [
-            { $match: { "user_id": new ObjectId(req.userInfo.id), "is_del": false } },
+            { $match: { "user_id": new ObjectId(req.userInfo.id), "is_del": false, } },
             {
                 $lookup:
                 {
@@ -168,6 +169,11 @@ router.put('/', async (req, res) => {
     else if (sub_account_upadate.status == 1) {
         var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
         var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
+        var status = await common_helper.findOne(Status, { 'status': 'Accepted' });
+        // console.log("status===>", status); return false;
+
+        let content = status.data.MessageContent;
+        content = content.replace('{title}', offer.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
 
         let mail_resp = await mail_helper.send("offer", {
             "to": employee.data.email,
