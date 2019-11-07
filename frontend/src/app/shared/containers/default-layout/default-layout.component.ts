@@ -79,23 +79,27 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const userType = localStorage.getItem('user');
     if (this.userDetail.role !== 'admin') {
-      this.commonService.getDecryptedProfileDetail().then(res => {
-        this._profile_data = res;
-      });
+
     }
 
     if (userType === 'admin') {
       this.navItems = admin;
-    } else if (userType === 'employer') {
-      this.navItems = employer;
-    } else if (userType === 'candidate') {
-      if (this._profile_data && this._profile_data.email_verified) {
-        this.navItems = candidate;
-      } else {
-        this.navItems = [];
-      }
-    } else if (userType === 'sub-employer') {
-      this.navItems = sub_employer;
+    } else {
+      this.commonService.getDecryptedProfileDetail().then(res => {
+        this._profile_data = res;
+        console.log(' this._profile_data ==============> ', this._profile_data);
+        if (userType === 'employer') {
+          this.navItems = employer;
+        } else if (userType === 'candidate') {
+          if (this._profile_data.email_verified) {
+            this.navItems = candidate;
+          } else {
+            this.navItems = [];
+          }
+        } else if (userType === 'sub-employer') {
+          this.navItems = sub_employer;
+        }
+      });
     }
   }
 

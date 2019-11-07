@@ -435,7 +435,7 @@
                                     <div class="cust_err_msg"
                                         *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
                                         <span
-                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['whitespace']"
+                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['_whitespace']"
                                             class="text-danger">
                                             Enter valid data.
                                         </span>

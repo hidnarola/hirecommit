@@ -338,7 +338,7 @@ export class OfferAddViewComponent implements OnInit {
                   this.customfieldItem.setControl(
                     index,
                     this.fb.group({
-                      value: [value, [this.noWhitespaceValidator]],
+                      value: [value, [this.noWhitespaceValidatorForNotRequired]],
                       key: [element.key]
                     })
                   );
@@ -436,7 +436,7 @@ export class OfferAddViewComponent implements OnInit {
           this.customfieldItem.setControl(
             index,
             this.fb.group({
-              value: ['', [this.noWhitespaceValidator]],
+              value: ['', [this.noWhitespaceValidatorForNotRequired]],
               key: [element.key],
             })
           );
@@ -629,6 +629,15 @@ export class OfferAddViewComponent implements OnInit {
       const isWhitespace = (control.value || '').trim().length === 0;
       const isValid = !isWhitespace;
       return isValid ? null : { 'whitespace': true };
+    }
+  }
+  noWhitespaceValidatorForNotRequired(control: FormControl) {
+    if (control.value.length > 0) {
+      if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+        const isWhitespace = (control.value || '').trim().length === 0;
+        const isValid = !isWhitespace;
+        return isValid ? null : { '_whitespace': true };
+      }
     }
   }
   // onlyInteger(control: FormControl) {
