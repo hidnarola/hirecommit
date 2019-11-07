@@ -43,7 +43,12 @@ export class SignUpComponent implements OnInit {
     this.formData = {};
     this.registerForm = this.fb.group({
       email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
-      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      password: new FormControl('',
+        Validators.compose([
+          Validators.required,
+          this.noWhitespaceValidator,
+          Validators.minLength(8),
+          Validators.pattern(/((?=.*\d)(?=.*[A-Z])(?=.*[a-z]))/)])),
       country: new FormControl('', [Validators.required]),
       businesstype: new FormControl('', [Validators.required]),
       companyname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),

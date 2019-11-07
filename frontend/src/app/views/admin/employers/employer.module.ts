@@ -9,10 +9,12 @@ import { EmployerViewComponent } from './employer-view/employer-view.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { ReportComponent } from './report/report.component';
 @NgModule({
   declarations: [
     EmployerListComponent,
-    EmployerViewComponent
+    EmployerViewComponent,
+    ReportComponent
   ],
   imports: [
     CommonModule,

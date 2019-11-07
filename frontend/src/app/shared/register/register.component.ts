@@ -50,7 +50,12 @@ export class RegisterComponent implements OnInit {
         Validators.maxLength(10), Validators.minLength(10)
         ])),
       documenttype: new FormControl('', [Validators.required]),
-      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      password: new FormControl('',
+        Validators.compose([
+          Validators.required,
+          this.noWhitespaceValidator,
+          Validators.minLength(8),
+          Validators.pattern(/((?=.*\d)(?=.*[A-Z])(?=.*[a-z]))/)])),
       confirmpassword: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });

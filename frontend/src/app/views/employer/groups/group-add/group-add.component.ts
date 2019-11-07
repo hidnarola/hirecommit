@@ -83,11 +83,11 @@ export class GroupAddComponent implements OnInit {
     };
 
     this.communicationFieldItems.setControl(index, this.fb.group({
-      communicationname: ['', Validators.required],
+      communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', Validators.required],
-      message: ['']
+      message: ['', [Validators.required, this.noWhitespaceValidator]]
       // message: ['', Validators.required]
     }));
 
@@ -114,6 +114,7 @@ export class GroupAddComponent implements OnInit {
       editor.ui.getEditableElement()
     );
   }
+
   noWhitespaceValidator(control: FormControl) {
     if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
       const isWhitespace = (control.value || '').trim().length === 0;

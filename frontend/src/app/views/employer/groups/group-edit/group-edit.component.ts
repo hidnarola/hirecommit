@@ -42,7 +42,7 @@ export class GroupEditComponent implements OnInit {
     this.spinner.show();
     // form controls
     this.groupForm = this.fb.group({
-      name: new FormControl('', [Validators.required]),
+      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       high_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       high_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       medium_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
@@ -81,11 +81,11 @@ export class GroupEditComponent implements OnInit {
             'message': element.message,
           };
           this.communicationFieldItems.setControl(index, this.fb.group({
-            communicationname: ['', Validators.required],
+            communicationname: ['', 0],
             trigger: ['', Validators.required],
             priority: ['', Validators.required],
             day: ['', Validators.required],
-            message: ['']
+            message: ['', [Validators.required, this.noWhitespaceValidator]]
             // message: ['', Validators.required]
           }));
           _array.push(new_communication);
@@ -164,6 +164,15 @@ export class GroupEditComponent implements OnInit {
     this.updateValidation();
   }
 
+  // no white space
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
+  }
+
   // Remove communication
   remove_communication(index: number) {
     delete this.communicationData[index];
@@ -225,7 +234,7 @@ export class GroupEditComponent implements OnInit {
         }
 
         this.confirmationService.confirm({
-          message: 'Are you sure that you want to Delete this record?',
+          message: 'Are you sure that you want to Update this record?',
           accept: () => {
             this.show_spinner = true;
             this.service.edit_group(this.formData).subscribe(res => {

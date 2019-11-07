@@ -22,7 +22,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   employer: any;
   offerData: any[];
   form = false;
-
+  accept_btn: boolean = false;
+  profileData: any = [];
   // offer type options
   offer_type_optoins = [
     { label: 'Select Offer Type', value: '' },
@@ -59,6 +60,30 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    // if (this.userDetail.role !== 'admin') {
+    //   this.commonService.getprofileDetail.subscribe(async res => {
+    //     if (res) {
+    //       this.profileData = res;
+    //       console.log('from profile +>>', this.profileData);
+    //     } else {
+    //       const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
+    //       // console.log('profile==>', profile);
+
+    //       if (profile) {
+    //         this.profileData = JSON.parse(profile);
+    //         console.log('profileData==>', this.profileData.email_verified);
+
+    //       } else {
+    //         console.log('profile data not found');
+    //       }
+    //     }
+    //   });
+    // }
+    // else {
+    //   console.log('it is admin!');
+    // }
+
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.dtOptions = {
         pagingType: 'full_numbers',
@@ -210,6 +235,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   detail(id) {
+
     if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/view/' + id]);
     } else if (this.userDetail.role === 'sub-employer') {
@@ -247,6 +273,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAccept(id) {
+    this.accept_btn = true;
     console.log('accept id', id);
     const obj = {
       'id': id
@@ -254,11 +281,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.service.offer_accept(obj).subscribe(res => {
       console.log('accepted!!');
       this.rrerender();
+      this.accept_btn = false;
       if (res['data'].status === 1) {
-        Swal.fire({
-          type: 'success',
-          text: res['message']
-        });
+        Swal.fire(
+          {
+            type: 'success',
+            text: res['message']
+          }
+        );
       }
     });
 

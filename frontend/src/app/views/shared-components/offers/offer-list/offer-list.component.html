@@ -1,6 +1,7 @@
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-lg-12">
+            <!--  *ngIf="profileData.email_verified" -->
             <div class="card">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Offers
@@ -80,7 +81,7 @@
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
                                         class="btn btn-sm btn-primary" (click)="onAccept(offer._id)"
-                                        [disabled]="offer.status === 'Accepted'">
+                                        [disabled]="offer.status === 'Accepted' || accept_btn">
                                         <i class="icon-check"></i></button>
                                 </td>
                             </tr>
@@ -95,6 +96,13 @@
                     </table>
                 </div>
             </div>
+
+            <!-- <div class="card" *ngIf="!profileData.email_verified ">
+
+                <div class="card-body">
+                    <h4>Your email is not verified yet.!!</h4>
+                </div>
+            </div> -->
         </div>
     </div>
 </div>

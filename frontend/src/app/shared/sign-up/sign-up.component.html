@@ -58,7 +58,7 @@
                     </div>
                   </fieldset>
                   <fieldset class="form-group col-md-6 mb-3">
-                    <label for="password">Create a Password</label>
+                    <label for="password"> Password</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -73,9 +73,8 @@
                           field
                           is required.</span>
                         <span
-                          *ngIf="registerForm.controls['password'].errors['minlength'] && !registerForm.controls['password'].errors['whitespace']">Password
-                          must be more then 8
-                          characters.</span>
+                          *ngIf="registerForm.controls['password'].errors['minlength']  || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">Password
+                          Password should be 8 character long , 1 capital , 1 small and 1 number is required.</span>
                       </div>
                     </div>
                   </fieldset>
