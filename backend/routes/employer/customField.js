@@ -52,7 +52,7 @@ router.post("/", async (req, res) => {
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             }
             else {
-                res.json({ "message": "Custom Field Added successfully", "data": interest_resp })
+                res.json({ "message": "Custom Field is Added successfully", "data": interest_resp })
 
             }
         }
@@ -79,7 +79,7 @@ router.put("/", async (req, res) => {
         logger.debug("Error = ", interest_resp.error);
         res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
     } else {
-        res.json({ "message": "Custom Field Updated successfully", "data": interest_resp })
+        res.json({ "message": "Custom Field is Updated successfully", "data": interest_resp })
     }
 
 
@@ -169,7 +169,7 @@ router.get('/first', async (req, res) => {
     } catch (error) {
         return res.status(config.INTERNAL_SERVER_ERROR).send({
             success: false,
-            message: 'Error in Fetching country data', data: country
+            message: 'Error occurred in Fetching country data', data: country
         });
     }
 })
@@ -206,14 +206,14 @@ router.put("/delete/:id", async (req, res) => {
     var resp_data1 = await Offer.find({ 'customfeild.key': resp_data.data.key });
 
     if (resp_data1 && resp_data1.length > 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This custom field can't be deleted because it is used in offer." });
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Custom Field can't be deleted because it is used in offer." });
     } else {
         var interest_resp = await common_helper.update(CustomField, { "_id": req.params.id }, obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            res.json({ "message": "Custom Field deleted successfully", "data": interest_resp })
+            res.json({ "message": "Custom Field is Deleted successfully", "data": interest_resp })
         }
     }
 

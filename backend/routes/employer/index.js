@@ -52,7 +52,7 @@ router.put('/', async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Profile updated successfully", "data": sub_account_upadate });
     }
     else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
     }
 })
 

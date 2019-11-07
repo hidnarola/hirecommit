@@ -172,10 +172,10 @@ router.get('/:id', async (req, res) => {
     //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     // }
     // else if (candidate_detail.status == 1) {
-    res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate details are fetched successfully", "data": candidate_detail });
     // }
     // else {
-    //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+    //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
     // }
 });
 
@@ -193,10 +193,10 @@ router.put("/deactive_candidate/:id", async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
     } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+        res.status(config.OK_STATUS).json({ "message": "Candidate is Deleted successfully", resp_data });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while deleting data." });
     }
 });
 
@@ -259,7 +259,7 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
 //     }
 //     else {
-//         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+//         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
 //     }
 // });
 
@@ -377,7 +377,7 @@ router.get('/', async (req, res) => {
         return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
     }
 
 });
@@ -390,13 +390,13 @@ router.put('/', async (req, res) => {
     var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
 
     if (sub_account_upadate.status == 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No dat  a found" });
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Approved successfully", "data": sub_account_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate is Approved successfully", "data": sub_account_upadate });
     }
     else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
     }
 })
 

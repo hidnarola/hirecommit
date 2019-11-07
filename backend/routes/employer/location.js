@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             } else {
-                res.json({ "message": "Location Added successfully", "data": interest_resp })
+                res.json({ "message": "Location is Added successfully", "data": interest_resp })
             }
         }
         else {
@@ -174,7 +174,7 @@ router.get('/get_location', async (req, res) => {
 
         return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list });
     } catch (error) {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
     }
 })
 
@@ -201,10 +201,10 @@ router.get('/get_locations', async (req, res) => {
         return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list, salary: salary_list });
     }
     else if (location_list.status === 2) {
-        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+        return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
     }
 })
 
@@ -234,7 +234,7 @@ router.put('/', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (update_location.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Location update successfully", "data": update_location });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Location is Updated successfully", "data": update_location });
     }
     else {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "No data found" });
@@ -251,7 +251,7 @@ router.put("/deactivate_location/:id", async (req, res) => {
 
     var resp_data = await Offer.find({ 'location': new ObjectId(id) });
     if (resp_data && resp_data.length > 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This location can't be deleted because it is used in offer." });
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Location can't be deleted because it is used in offer." });
     } else {
         var resp_data = await common_helper.update(location, { "_id": id }, obj);
         if (resp_data.status == 0) {
@@ -260,7 +260,7 @@ router.put("/deactivate_location/:id", async (req, res) => {
         } else {
             logger.trace("User got successfully = ", resp_data);
             var data = resp_data.data
-            res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+            res.status(config.OK_STATUS).json({ "message": "Location is Deleted successfully", resp_data });
         }
     }
 });
@@ -273,7 +273,7 @@ router.get('/:id', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email" });
     }
     else if (location_detail.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Location fetched successfully", "data": location_detail });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Location Details are fetched successfully", "data": location_detail });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "message": "No data found" });
