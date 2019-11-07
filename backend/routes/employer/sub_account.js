@@ -38,6 +38,7 @@ router.post("/", async (req, res) => {
             "is_del": false,
             "emp_id": req.userInfo.id,
             "email_verified": true,
+            "isAllow": true,
             "role_id": "5d9d99003a0c78039c6dd00f"
 
         };
@@ -62,7 +63,7 @@ router.post("/", async (req, res) => {
                     "password": passwords
                 });
 
-                res.status(config.OK_STATUS).json({ "message": "Sub-Account Added successfully", "data": interest_resps })
+                res.status(config.OK_STATUS).json({ "message": "Sub Account is Added successfully", "data": interest_resps })
             }
         }
         else {
@@ -135,9 +136,9 @@ router.put("/deactive_sub_account", async (req, res) => {
 
     if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_user_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while deleting data." });
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occurred while deleting data." });
     } else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record deleted successfully." });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record is Deleted successfully." });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
@@ -155,10 +156,10 @@ router.put('/', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": sub_account_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Sub Employer is Updated successfully", "data": sub_account_upadate });
     }
     else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
     }
 })
 
@@ -180,10 +181,10 @@ router.put('/details', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer update successfully", "data": { resp_user_data, resp_Detail_data } });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer is Updated successfully", "data": { resp_user_data, resp_Detail_data } });
     }
     else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
     }
 })
 
@@ -200,7 +201,7 @@ router.get('/:id', async (req, res) => {
     // }
     // else
     // else {
-    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
     // }
 });
 

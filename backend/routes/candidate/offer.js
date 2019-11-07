@@ -45,7 +45,13 @@ router.post('/get', async (req, res) => {
             var user_id = req.userInfo.id
         }
         var aggregate = [
-            { $match: { "user_id": new ObjectId(req.userInfo.id), "is_del": false, } },
+            {
+                $match: {
+                    "user_id": new ObjectId(req.userInfo.id),
+                    "is_del": false,
+                    "status": { $ne: 'Inactive' }
+                }
+            },
             {
                 $lookup:
                 {
@@ -182,10 +188,10 @@ router.put('/', async (req, res) => {
             "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
         });
         console.log('mail_resp', mail_resp);
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer Accepted", "data": sub_account_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Accepted", "data": sub_account_upadate });
     }
     else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while featching data." });
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
     }
 })
 

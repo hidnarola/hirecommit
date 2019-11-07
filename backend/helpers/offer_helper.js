@@ -6,7 +6,6 @@ var offer_helper = {};
 offer_helper.get_all_offer = async (collection, id, search, start, length, recordsTotal, sort) => {
 
   try {
-
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
       {
@@ -120,6 +119,7 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
       {
         $match: {
           "is_del": false,
+          "status": { $ne: 'Inactive' },
           "user_id": new ObjectId(id)
         }
       },
@@ -207,7 +207,10 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
         "$limit": length
       });
     }
+
+
     let offer = await collection.aggregate(aggregate);
+    // console.log(offer);
 
     if (offer) {
       return { "status": 1, "message": "offer list found", "offer": offer, "recordsTotal": recordsTotal };

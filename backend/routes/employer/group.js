@@ -36,7 +36,7 @@ router.get("/groups_list", async (req, res) => {
         return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
     }
 })
 
@@ -116,7 +116,7 @@ router.post("/", async (req, res) => {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             } else {
-                res.json({ "message": "Group Added successfully", "data": interest_resp })
+                res.json({ "message": "Group is Added successfully", "data": interest_resp })
             }
         }
         else {
@@ -236,7 +236,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (group_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group update successfully", "data": group_upadate, "communication": response });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group is Updated successfully", "data": group_upadate, "communication": response });
     }
 
 })
@@ -328,13 +328,13 @@ router.get('/communication_detail/:id', async (req, res) => {
     var group_detail = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
 
     if (group_detail.status === 1) {
-        return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail });
+        return res.status(config.OK_STATUS).json({ 'message': "Group details are fetched successfully", "status": 1, data: group_detail });
     }
     else if (group_detail.status === 2) {
         return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
     }
 });
 
@@ -343,13 +343,13 @@ router.get('/:id', async (req, res) => {
     if (group_detail.status === 1) {
         var group_details = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
 
-        return res.status(config.OK_STATUS).json({ 'message': "Group detail fetched successfully", "status": 1, data: group_detail, communication: group_details });
+        return res.status(config.OK_STATUS).json({ 'message': "Group details are fetched successfully", "status": 1, data: group_detail, communication: group_details });
     }
     else if (group_detail.status === 2) {
-        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+        return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
     }
     else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
     }
 });
 
@@ -386,7 +386,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (group_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group update successfully", "data": group_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Group is Updated successfully", "data": group_upadate });
     }
 
 })
@@ -407,11 +407,11 @@ router.put("/deactivate_group/:id", async (req, res) => {
 
         if (resp_group_data.status == 0 || resp_groupdetail_data.status == 0) {
             logger.error("Error occured while fetching User = ", resp_group_data);
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while featching data.", "data": resp_group_data });
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occurred while fetching data.", "data": resp_group_data });
         }
         else if (resp_group_data.status == 1 || resp_groupdetail_data.status == 1) {
             logger.trace("User got successfully = ", resp_groupdetail_data);
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Record is Deleted Successfully", resp_group_data });
         }
         else if (resp_group_data.status == 2 || resp_groupdetail_data.status == 2) {
             logger.trace("User got successfully = ", resp_group_data);
@@ -430,11 +430,11 @@ router.put("/deactivate_communication/:id", async (req, res) => {
 
     // if (resp_group_data.status == 0) {
     //     logger.error("Error occured while fetching User = ", resp_group_data);
-    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while featching data.", "data": resp_group_data });
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while fetching data.", "data": resp_group_data });
     // }
     // else if (resp_group_data.status == 1) {
     logger.trace("User got successfully = ", resp_group_data);
-    res.status(config.OK_STATUS).json({ "status": 1, "message": "Record Deleted Sucessfully", resp_group_data });
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Record is Deleted Successfully", resp_group_data });
     // }
     // else if (resp_group_data.status == 2) {
     //     logger.trace("User got successfully = ", resp_group_data);

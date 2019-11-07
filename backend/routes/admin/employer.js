@@ -176,7 +176,7 @@ router.get('/:id', async (req, res) => {
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
     }
 });
 
@@ -274,7 +274,7 @@ router.put("/deactive_employee/:id", async (req, res) => {
 //         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
 //     }
 //     else {
-//         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+//         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
 //     }
 // });
 

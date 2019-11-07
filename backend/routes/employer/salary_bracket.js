@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            res.json({ "message": "Sub-Account Added successfully", "data": interest_resp })
+            res.json({ "message": "Sub Account is Added successfully", "data": interest_resp })
         }
         // }
         // else {
@@ -169,13 +169,13 @@ router.get('/get_salary_bracket', async (req, res) => {
 
     const salary_bracket_list = await salary_bracket.aggregate(aggregate);
     if (salary_bracket_list && salary_bracket_list.length > 0) {
-        return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
+        return res.status(config.OK_STATUS).json({ 'message': "Salary bracket List", "status": 1, data: salary_bracket_list });
     }
     else {
-        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+        return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
     }
     // else {
-    //     return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+    //     return res.status(config.BAD_REQUEST).json({ 'message': "Error while fetching", "status": 0 });
     // }
 });
 
@@ -217,10 +217,10 @@ router.get('/get_salary_country', async (req, res) => {
 
     const salary_bracket_list = await salary_bracket.aggregate(aggregate);
     if (salary_bracket_list && salary_bracket_list.length > 0) {
-        return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
+        return res.status(config.OK_STATUS).json({ 'message': "Salary bracket List", "status": 1, data: salary_bracket_list });
     }
     else {
-        return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
+        return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
     }
 
 });
@@ -238,7 +238,7 @@ router.get('/get_salary_country', async (req, res) => {
 //         return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
 //     }
 //     else {
-//         return res.status(config.BAD_REQUEST).json({ 'message': "Error while featching", "status": 0 });
+//         return res.status(config.BAD_REQUEST).json({ 'message': "Error while fetching", "status": 0 });
 //     }
 // });
 
@@ -267,7 +267,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (salary_bracket_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Salary Bracket update successfully", "data": salary_bracket_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Salary Bracket is Updated successfully", "data": salary_bracket_upadate });
     }
 
 })
@@ -291,7 +291,7 @@ router.get('/:id', async (req, res) => {
     var id = req.params.id;
     var salary_brcaket_detail = await salary_bracket.findOne({ "_id": ObjectId(id) }).populate("country")
     if (salary_brcaket_detail) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Salary Bracket fetched successfully", "data": salary_brcaket_detail });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Salary Bracket is fetched successfully", "data": salary_brcaket_detail });
     }
     else {
         res.status(config.BAD_REQUEST).json({ "message": "No data found" });

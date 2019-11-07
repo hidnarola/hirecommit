@@ -167,7 +167,7 @@ router.post("/", async (req, res) => {
             });
             console.log('mail_resp', mail_resp);
 
-            res.json({ "message": "Offer Added successfully", "data": interest_resp })
+            res.json({ "message": "Offer is Added successfully", "data": interest_resp })
         }
     }
     else {
@@ -452,6 +452,7 @@ router.post('/get', async (req, res) => {
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+
         if (req.body.search && req.body.search.value != '') {
             aggregate.push({
                 "$match":
@@ -535,7 +536,7 @@ router.put("/status_change", async (req, res) => {
     var interest = await common_helper.insert(History, obj);
 
     var update_status = await common_helper.update(Offer, { "_id": req.body.id }, obj)
-    res.status(config.OK_STATUS).json({ "message": "status changed", "status": obj.status });
+    res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
 
 });
 
@@ -552,10 +553,10 @@ router.put("/deactive_offer/:id", async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
     } else if (resp_data.status == 1) {
         logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+        res.status(config.OK_STATUS).json({ "message": "Offer is Updated successfully", resp_data });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while fetching data." });
     }
 });
 
@@ -679,10 +680,10 @@ router.put('/', async (req, res) => {
                 "msg": content
             });
         }
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer update successfully", "data": offer_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
     }
     else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while featching data." });
+        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while fetching data." });
     }
 })
 
@@ -805,7 +806,7 @@ router.get("/status_list/:status", async (req, res) => {
             { label: 'Inactive', value: 'Inactive' }
         ];
     }
-    res.status(config.OK_STATUS).json({ "message": "status changed", "status": obj.status });
+    res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
 });
 
 module.exports = router;
