@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   public isFormSubmitted;
   public formData: any;
   show_spinner = false;
+  userData: any = {};
   constructor(
     public router: Router,
     private service: CommonService,
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', token);
         localStorage.setItem('user', res['role']);
         localStorage.setItem('userid', res['id']);
-        console.log(' log res => ', res);
+        console.log(' login res => ', res);
         if (res['role'] !== 'admin' && res['role'] !== 'sub-employer') {
           let countryId;
           countryId = res[`userDetails`][0].country ? res[`userDetails`][0].country._id : undefined;
@@ -59,7 +60,7 @@ export class LoginComponent implements OnInit {
           documentId = res[`userDetails`][0].document ? res[`userDetails`][0].document._id : undefined;
           let businessId;
           businessId = res[`userDetails`][0].business ? res[`userDetails`][0].business._id : undefined;
-          const userData = {
+          this.userData = {
             ...res[`data`],
             ...res[`userDetails`][0].userDetail,
             countryId,
@@ -69,7 +70,10 @@ export class LoginComponent implements OnInit {
             businessId,
             ...res[`userDetails`][0].business
           };
-          this.service.setProfileDetail(userData);
+          this.service.setProfileDetail(this.userData);
+
+
+          console.log('userData ===============================> ', this.userData);
         }
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         if (res['role'] === 'admin') {
@@ -77,7 +81,11 @@ export class LoginComponent implements OnInit {
         } else if (res['role'] === 'employer') {
           this.router.navigate(['employer']);
         } else if (res['role'] === 'candidate') {
-          this.router.navigate(['candidate']);
+          if (this.userData.email_verified) {
+            this.router.navigate(['candidate']);
+          } else {
+            this.router.navigate(['candidate/account_verification']);
+          }
         } else if (res['role'] === 'sub-employer') {
           console.log('here => ');
           this.router.navigate(['sub_employer']);

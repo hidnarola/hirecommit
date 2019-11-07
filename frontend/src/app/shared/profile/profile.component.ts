@@ -29,7 +29,7 @@ export class ProfileComponent implements OnInit {
     private router: ActivatedRoute,
     public fb: FormBuilder,
     private Employerservice: EmployerService,
-    private CandidateService: CandidateService,
+    private candidateService: CandidateService,
     private tostsr: ToastrService,
     private route: Router,
     private confirmationService: ConfirmationService, ) {
@@ -42,7 +42,7 @@ export class ProfileComponent implements OnInit {
     // console.log('get user from local storage => ', this.userType);
     this.profileForm = this.fb.group({
       country: new FormControl('', [Validators.required])
-    })
+    });
 
     // }
   }
@@ -60,19 +60,17 @@ export class ProfileComponent implements OnInit {
           if (profile) {
             this.profileData = JSON.parse(profile);
             console.log('profileData==>', this.profileData);
-            this.businessType(this.profileData.country)
+            this.businessType(this.profileData.country);
           } else {
             console.log('profile data not found');
           }
         }
       });
-    }
-    else {
+    } else {
       console.log('it is admin!');
     }
-
-
   }
+
   edit(id) {
     this.show_spinner = true;
 
@@ -84,14 +82,14 @@ export class ProfileComponent implements OnInit {
       'companyname': this.profileData.companyname,
       'businesstype': this.businessCode,
       'contactno': this.profileData.contactno
-    }
+    };
     this.confirmationService.confirm({
       message: 'Are you sure that you want to update your Profile?',
       accept: () => {
         this.Employerservice.update_Profile(this.obj).subscribe(res => {
           console.log('edited!!', res);
           this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
-        })
+        });
       }
     });
     this.show_spinner = false;
@@ -105,15 +103,15 @@ export class ProfileComponent implements OnInit {
       'email': this.profileData.email,
       'contactno': this.profileData.contactno,
 
-    }
+    };
     this.confirmationService.confirm({
       message: 'Are you sure that you want to update your Profile?',
       accept: () => {
-        this.CandidateService.update_Profile_candidate(this.obj1).subscribe(res => {
+        this.candidateService.update_Profile_candidate(this.obj1).subscribe(res => {
           console.log('edited', res);
 
-          this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 })
-        })
+          this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+        });
       }
     });
     this.show_spinner = false;
@@ -126,20 +124,19 @@ export class ProfileComponent implements OnInit {
         res['data'].forEach(element => {
           this.Business_Type.push({ 'label': element.name, 'value': element._id });
         });
-      })
+      });
     }
   }
   value(event) {
     console.log('value', event.value);
-    this.businessCode = event.value
-
+    this.businessCode = event.value;
   }
 
   cancel() {
-    this.route.navigate(['/employer/offers/list'])
+    this.route.navigate(['/employer/offers/list']);
   }
 
   cancel1() {
-    this.route.navigate(['/candidate/offers/list'])
+    this.route.navigate(['/candidate/offers/list']);
   }
 }

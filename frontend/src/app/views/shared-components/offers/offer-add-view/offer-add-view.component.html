@@ -245,7 +245,7 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_expiry_date">
+                                    [disabled]="is_View" [minDate]="min_date">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">

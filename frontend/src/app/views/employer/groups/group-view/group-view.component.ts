@@ -15,7 +15,7 @@ export class GroupViewComponent implements OnInit {
   id: any;
   groupData: any = [];
   communicationData: any = [];
-  cancel_link = '/employer/groups/list'
+  cancel_link = '/employer/groups/list';
   constructor(
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,

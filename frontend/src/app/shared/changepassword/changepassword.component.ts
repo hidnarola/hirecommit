@@ -72,14 +72,11 @@ export class ChangepasswordComponent implements OnInit {
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
               if (this.userDetail.role === 'employer') {
                 this.router.navigate(['/employer/offers/list']);
-              }
-              else if (this.userDetail.role === 'candidate') {
+              } else if (this.userDetail.role === 'candidate') {
                 this.router.navigate(['/candidate/offers/list']);
-              }
-              else if (this.userDetail.role === 'admin') {
+              } else if (this.userDetail.role === 'admin') {
                 this.router.navigate(['/admin/employers/approved_employer']);
-              }
-              else if (this.userDetail.role === 'sub-employer') {
+              } else if (this.userDetail.role === 'sub-employer') {
                 this.router.navigate(['/sub_employer/offers/list']);
               }
             }

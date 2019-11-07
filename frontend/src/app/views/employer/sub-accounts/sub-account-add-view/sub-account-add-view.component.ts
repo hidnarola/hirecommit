@@ -59,9 +59,6 @@ export class SubAccountAddViewComponent implements OnInit {
     } else {
       this.spinner.hide();
     }
-
-
-
   }
 
   // Remove white spaces
@@ -72,7 +69,6 @@ export class SubAccountAddViewComponent implements OnInit {
       return isValid ? null : { 'whitespace': true };
     }
   }
-
 
   getDetail(id) {
     if (this.id) {
@@ -87,7 +83,6 @@ export class SubAccountAddViewComponent implements OnInit {
             email: res['data']['user_id']['email'],
             admin_rights: false
           };
-          this.detail
         } else if (res['data']['user_id']['admin_rights'] === 'yes') {
           this.detail = {
             username: res['data']['username'],
@@ -101,8 +96,6 @@ export class SubAccountAddViewComponent implements OnInit {
         //   admin_rights: res['data']['user_id']['admin_rights']
         // };
         this.update_data_id = res['data']['user_id']['_id'];
-
-
       });
     } else {
       this.detail = {
@@ -119,14 +112,11 @@ export class SubAccountAddViewComponent implements OnInit {
 
   get f() { return this.addAccount.controls; }
 
-  checkValue(e) {
-
-  }
+  checkValue(e) { }
 
   onSubmit(flag: boolean) {
     this.submitted = true;
     if (this.id && flag) {
-      console.log(this.detail['admin_rights']);
       if (this.detail['admin_rights'] === false) {
         this.obj = {
           username: this.detail['username'],
@@ -159,8 +149,6 @@ export class SubAccountAddViewComponent implements OnInit {
     } else {
       if (flag) {
         this.show_spinner = true;
-        console.log(this.addAccount.value['admin_rights']);
-
         if (this.addAccount.value['admin_rights'] === false) {
           this.obj = {
             username: this.addAccount.value['username'],
@@ -172,19 +160,16 @@ export class SubAccountAddViewComponent implements OnInit {
             username: this.addAccount.value['username'],
             email: this.addAccount.value['email'],
             admin_rights: 'yes'
-          }
-        }
-        else if (this.addAccount.value['admin_rights'] === undefined) {
+          };
+        } else if (this.addAccount.value['admin_rights'] === undefined) {
           this.obj = {
             username: this.addAccount.value['username'],
             email: this.addAccount.value['email'],
             admin_rights: 'no'
           };
         }
-        console.log(this.obj);
         this.service.add_sub_account(this.obj).subscribe(res => {
           if (res['data']['status'] === 1) {
-
             this.submitted = false;
             this.addAccount.reset();
             this.router.navigate([this.cancel_link]);

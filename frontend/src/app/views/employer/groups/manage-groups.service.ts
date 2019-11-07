@@ -18,10 +18,8 @@ export class GroupService {
 
   edit_group(data): Observable<any[]> {
     console.log('in service =>> ', data);
-
     return this.http.put<any[]>(`${this.url}` + '/group', data);
   }
-
 
   view_groups(params): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/group/get', { ...params });
@@ -50,6 +48,6 @@ export class GroupService {
   deactivate_communication(id): Observable<any[]> {
     console.log('>><<', id);
 
-    return this.http.put<any[]>(`${this.url}` + '/group/deactivate_communication/' + id, {})
+    return this.http.put<any[]>(`${this.url}` + '/group/deactivate_communication/' + id, {});
   }
 }

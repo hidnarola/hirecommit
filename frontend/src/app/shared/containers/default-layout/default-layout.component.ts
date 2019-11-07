@@ -15,6 +15,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public element: HTMLElement;
   currentYear = new Date().getFullYear();
   userDetail;
+  _profile_data: any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -53,12 +54,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.router.navigate(['employer/profile']);
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['candidate/profile']);
-    }
-    else if (this.userDetail.role === 'sub-employer') {
+    } else if (this.userDetail.role === 'sub-employer') {
       this.router.navigate(['sub_employer/profile']);
     }
   }
-
 
   logout() {
     localStorage.removeItem('token');
@@ -79,12 +78,24 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const userType = localStorage.getItem('user');
+    console.log('userType *********************=================> ', userType, this.userDetail);
+    if (this.userDetail.role !== 'admin') {
+      this.commonService.getDecryptedProfileDetail().then(res => {
+        this._profile_data = res;
+        console.log('profile ////////////////////////////=> ', this._profile_data);
+      });
+    }
+
     if (userType === 'admin') {
       this.navItems = admin;
     } else if (userType === 'employer') {
       this.navItems = employer;
     } else if (userType === 'candidate') {
-      this.navItems = candidate;
+      if (this._profile_data && this._profile_data.email_verified) {
+        this.navItems = candidate;
+      } else {
+        this.navItems = [];
+      }
     } else if (userType === 'sub-employer') {
       this.navItems = sub_employer;
     }

@@ -12,9 +12,9 @@ const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
-    data: {
-      title: 'Home'
-    },
+    // data: {
+    //   title: 'Home'
+    // },
     children: [
       {
         path: 'offers',
@@ -22,6 +22,10 @@ const routes: Routes = [
       },
       { path: 'profile', component: ProfileComponent },
       { path: 'change-password', component: ChangepasswordComponent },
+      {
+        path: 'account_verification',
+        loadChildren: () => import('../../shared/check-verification/check-verification.module').then(m => m.CheckVerificationModule)
+      }
     ]
   }
 ];

@@ -41,7 +41,7 @@ export class TimelineComponent implements OnInit {
       console.log('history', this.employer);
 
       console.log('offer', this.history);
-    })
+    });
 
   }
 
