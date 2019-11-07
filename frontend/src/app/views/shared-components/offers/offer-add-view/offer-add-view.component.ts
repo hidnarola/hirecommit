@@ -255,6 +255,7 @@ export class OfferAddViewComponent implements OnInit {
           }
         });
     } else if (this.userDetail.role === 'candidate') {
+      this.spinner.hide();
       this.getDetail();
     }
 
@@ -353,7 +354,7 @@ export class OfferAddViewComponent implements OnInit {
                   this.customfieldItem.setControl(
                     index,
                     this.fb.group({
-                      value: [value],
+                      value: [value, [this.noWhitespaceValidator]],
                       key: [element.key]
                     })
                   );
@@ -374,9 +375,9 @@ export class OfferAddViewComponent implements OnInit {
             this.service.offer_detail_candidate(this.id).subscribe(
               res => {
                 console.log('res[`data`] => ', res[`data`]);
-                this.resData = res[`data`];
                 this.spinner.hide();
                 this.is_View = true;
+                this.resData = res[`data`];
                 this.resData.groupName = res[`data`]['groups']['name'];
               });
           }
@@ -457,7 +458,7 @@ export class OfferAddViewComponent implements OnInit {
           this.customfieldItem.setControl(
             index,
             this.fb.group({
-              value: [''],
+              value: ['', [this.noWhitespaceValidator]],
               key: [element.key],
             })
           );

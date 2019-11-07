@@ -81,7 +81,7 @@
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
                                         class="btn btn-sm btn-primary" (click)="onAccept(offer._id)"
-                                        [disabled]="offer.status === 'Accepted'">
+                                        [disabled]="offer.status === 'Accepted' || accept_btn">
                                         <i class="icon-check"></i></button>
                                 </td>
                             </tr>

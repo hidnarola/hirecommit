@@ -245,7 +245,7 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_expiry_date">
+                                    [disabled]="is_View" [minDate]="min_date">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
@@ -340,65 +340,58 @@
                                                         <option value="beforeExpiry">Before Expiry</option>
                                                         <option value="afterExpiry">After Expiry</option>
                                                     </select>
-                                                    <div class="cust_err_msg"
-                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['trigger'].valid">
-                                                        <span
-                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['trigger'].errors['required']"
-                                                            class="text-danger">
-                                                            This field is required.
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-2 col-form-label" for="day">Day</label>
-                                                <div class="col-md-4">
-                                                    <input type="text" id="day" name="day" class="form-control"
-                                                        placeholder="Enter Days" formControlName="day"
-                                                        [(ngModel)]="customfield.day">
+                                                    < </div> </div> <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label" for="day">Day</label>
+                                                        <div class="col-md-4">
+                                                            <input type="text" id="day" name="day" class="form-control"
+                                                                placeholder="Enter Days" formControlName="day"
+                                                                [(ngModel)]="customfield.day">
 
-                                                    <div class="cust_err_msg"
-                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
-                                                        <span
-                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
-                                                            class="text-danger">
-                                                            This field is required.
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                            <div class="cust_err_msg"
+                                                                *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
+                                                                <span
+                                                                    *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
+                                                                    class="text-danger">
+                                                                    This field is required.
+                                                                </span>
+                                                            </div>
+                                                        </div>
 
-                                                <label class="col-md-1 col-form-label" for="trigger">Priority</label>
-                                                <div class="col-md-4">
-                                                    <select id="priority" name="select1" class="form-control"
-                                                        formControlName="priority" [(ngModel)]="customfield.priority">
-                                                        <option value="" selected="selected">Please select priority
-                                                        </option>
-                                                        <option value="High">High</option>
-                                                        <option value="Medium">Medium</option>
-                                                        <option value="Low">Low</option>
-                                                    </select>
-                                                    <div class="cust_err_msg"
-                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['priority'].valid">
-                                                        <span
-                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['priority'].errors['required']"
-                                                            class="text-danger">
-                                                            This field is required.
-                                                        </span>
-                                                    </div>
+                                                        <label class="col-md-1 col-form-label"
+                                                            for="trigger">Priority</label>
+                                                        <div class="col-md-4">
+                                                            <select id="priority" name="select1" class="form-control"
+                                                                formControlName="priority"
+                                                                [(ngModel)]="customfield.priority">
+                                                                <option value="" selected="selected">Please select
+                                                                    priority
+                                                                </option>
+                                                                <option value="High">High</option>
+                                                                <option value="Medium">Medium</option>
+                                                                <option value="Low">Low</option>
+                                                            </select>
+                                                            <div class="cust_err_msg"
+                                                                *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['priority'].valid">
+                                                                <span
+                                                                    *ngIf="form.controls['communicationFieldItems'].controls[i].controls['priority'].errors['required']"
+                                                                    class="text-danger">
+                                                                    This field is required.
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-2 col-form-label" for="message">Message</label>
-                                                <div class="col-md-9">
-                                                    <ckeditor [editor]="Editor" formControlName="message"
-                                                        [(ngModel)]="customfield.message" (ready)="onReady($event)">
-                                                    </ckeditor>
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 col-form-label" for="message">Message</label>
+                                                    <div class="col-md-9">
+                                                        <ckeditor [editor]="Editor" formControlName="message"
+                                                            [(ngModel)]="customfield.message" (ready)="onReady($event)">
+                                                        </ckeditor>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         </ng-container>
                         <!-- communication -->
 
@@ -438,6 +431,15 @@
                                 <div class="col-md-6">
                                     <input type="text" formControlName="value" class="form-control"
                                         placeholder="Enter value" id="value">
+
+                                    <div class="cust_err_msg"
+                                        *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
+                                        <span
+                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['whitespace']"
+                                            class="text-danger">
+                                            Enter valid data.
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
