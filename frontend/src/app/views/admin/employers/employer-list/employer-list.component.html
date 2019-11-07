@@ -32,12 +32,19 @@
                                     </label></td> -->
                                 <td>
                                     <button tooltip='View' *ngIf="employer_type === 'Approved'" type="button"
-                                        class="btn btn-md btn-success"
+                                        class="btn btn-sm btn-success" tooltip="View"
                                         [routerLink]="['/admin/employers/approved_employer/view/',emp._id]">
                                         <i class="icon-eye"></i>
                                     </button>
+
+                                    <button tooltip='View' *ngIf="employer_type === 'Approved'" type="button"
+                                        class="btn btn-sm btn-primary" tooltip="Report"
+                                        [routerLink]="['/admin/employers/report/',emp._id]">
+                                        <i class="fa fa-file"></i>
+                                    </button>
+
                                     <button tooltip='View' *ngIf="employer_type === 'New'" type="button"
-                                        class="btn btn-md btn-success"
+                                        class="btn btn-sm btn-success" tooltip="View"
                                         [routerLink]="['/admin/employers/new_employer/view/',emp._id]">
                                         <i class="icon-eye"></i>
                                     </button>
@@ -45,7 +52,7 @@
                                         (click)="delete(emp.user_id._id)">
                                         <i class="icon-trash"></i>
                                     </button> -->
-                                    <button *ngIf="employer_type === 'New'" type="button" class="btn btn-md btn-primary"
+                                    <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-primary"
                                         tooltip='Approv' (click)="aprrove(emp.user_id)">
                                         <i class="icon-check"></i>
                                     </button>

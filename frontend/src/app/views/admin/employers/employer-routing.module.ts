@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { EmployerListComponent } from './employer-list/employer-list.component';
 import { EmployerViewComponent } from './employer-view/employer-view.component';
+import { ReportComponent } from './report/report.component';
 
 const routes: Routes = [
   {
@@ -60,6 +61,14 @@ const routes: Routes = [
         data: {
           title: 'View New Employer',
           type: 'new'
+        }
+      },
+      {
+        path: 'report/:id',
+        component: ReportComponent,
+        data: {
+          title: 'Offer Report',
+          // type: 'new'
         }
       },
     ]

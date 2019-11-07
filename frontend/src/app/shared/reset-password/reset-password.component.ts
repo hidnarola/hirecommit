@@ -27,8 +27,13 @@ export class ResetPasswordComponent implements OnInit {
   ) {
     this.formData = {};
     this.form = this.fb.group({
-      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator,  Validators.minLength(8)])),
-      confirmpassword: new FormControl('', [Validators.required, this.noWhitespaceValidator])
+      password: new FormControl('',
+        Validators.compose([Validators.required,
+        this.noWhitespaceValidator,
+        Validators.minLength(8),
+        Validators.pattern(/((?=.*\d)(?=.*[A-Z])(?=.*[a-z]))/)])),
+      confirmpassword: new FormControl('',
+        Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
     }, { validator: this.checkPasswords });
   }
 
@@ -50,6 +55,8 @@ export class ResetPasswordComponent implements OnInit {
 
   confirm(valid) {
     this.isFormSubmitted = true;
+    console.log('check for form validation', valid);
+
     if (valid) {
       this.submitform = new FormGroup({
         token: new FormControl(this.params_token.token),

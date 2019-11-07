@@ -22,6 +22,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   employer: any;
   offerData: any[];
   form = false;
+  accept_btn: boolean = false;
   profileData: any = [];
   // offer type options
   offer_type_optoins = [
@@ -237,6 +238,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   detail(id) {
+
     if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/view/' + id]);
     } else if (this.userDetail.role === 'sub-employer') {
@@ -274,6 +276,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAccept(id) {
+    this.accept_btn = true;
     console.log('accept id', id);
     const obj = {
       'id': id
@@ -281,11 +284,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.service.offer_accept(obj).subscribe(res => {
       console.log('accepted!!');
       this.rrerender();
+      this.accept_btn = false;
       if (res['data'].status === 1) {
-        Swal.fire({
-          type: 'success',
-          text: res['message']
-        });
+        Swal.fire(
+          {
+            type: 'success',
+            text: res['message']
+          }
+        );
       }
     });
 
