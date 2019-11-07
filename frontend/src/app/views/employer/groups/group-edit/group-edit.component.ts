@@ -225,7 +225,7 @@ export class GroupEditComponent implements OnInit {
         }
 
         this.confirmationService.confirm({
-          message: 'Are you sure that you want to Delete this record?',
+          message: 'Are you sure that you want to Update this record?',
           accept: () => {
             this.show_spinner = true;
             this.service.edit_group(this.formData).subscribe(res => {
