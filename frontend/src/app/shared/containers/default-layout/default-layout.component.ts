@@ -78,11 +78,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const userType = localStorage.getItem('user');
-    console.log('userType *********************=================> ', userType, this.userDetail);
     if (this.userDetail.role !== 'admin') {
       this.commonService.getDecryptedProfileDetail().then(res => {
         this._profile_data = res;
-        console.log('profile ////////////////////////////=> ', this._profile_data);
       });
     }
 

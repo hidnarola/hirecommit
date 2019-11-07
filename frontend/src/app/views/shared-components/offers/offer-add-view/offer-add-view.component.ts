@@ -175,10 +175,8 @@ export class OfferAddViewComponent implements OnInit {
           if (this.route.snapshot.data.title === 'Edit') {
             const locationById = this.location.find(x => x._id === this.resData.location._id);
             this.form.controls.location.setValue(locationById);
-
             const salarybracketById = this.salarybracketList.find(x => x.value === this.resData.salarybracket._id);
             this.form.controls.salarybracket.setValue(salarybracketById.value);
-
           }
           resolve(this.salarybracketList);
         },
@@ -251,8 +249,6 @@ export class OfferAddViewComponent implements OnInit {
           }
         });
     } else if (this.userDetail.role === 'candidate') {
-      // hide spinner
-      this.spinner.hide();
       this.getDetail();
     }
 
@@ -262,6 +258,7 @@ export class OfferAddViewComponent implements OnInit {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
+          console.log('res => ', res);
           this.resData = res[`data`];
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
@@ -356,16 +353,16 @@ export class OfferAddViewComponent implements OnInit {
               }
             );
 
-          } else if (this.userDetail.role === 'candidate') {
-            this.service.offer_detail_candidate(this.id).subscribe(
-              res => {
-                this.resData = res[`data`];
-                this.spinner.hide();
-                this.is_View = true;
-                this.resData = res[`data`];
-                this.resData.groupName = res[`data`]['groups']['name'];
-              });
           }
+        });
+    } else if (this.userDetail.role === 'candidate') {
+      this.service.offer_detail_candidate(this.id).subscribe(
+        res => {
+          this.resData = res[`data`];
+          this.spinner.hide();
+          this.is_View = true;
+          this.resData = res[`data`];
+          this.resData.groupName = res[`data`]['groups']['name'];
         });
     }
   }
