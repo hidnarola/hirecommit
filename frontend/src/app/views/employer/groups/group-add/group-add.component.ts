@@ -83,11 +83,11 @@ export class GroupAddComponent implements OnInit {
     };
 
     this.communicationFieldItems.setControl(index, this.fb.group({
-      communicationname: ['', Validators.required],
+      communicationname: ['', Validators.required, this.noWhitespaceValidator],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', Validators.required],
-      message: ['']
+      message: ['', Validators.required]
       // message: ['', Validators.required]
     }));
 

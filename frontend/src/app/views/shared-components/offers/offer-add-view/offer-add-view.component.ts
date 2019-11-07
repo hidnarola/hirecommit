@@ -9,6 +9,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { visitValue } from '@angular/compiler/src/util';
 import { ConfirmationService } from 'primeng/api';
+import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -227,12 +228,12 @@ export class OfferAddViewComponent implements OnInit {
       this.getCandidateList()
         .then(res => {
           this.groupList();
+          this.customFieldList();
         })
         .then(res => {
           if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
 
-
-            this.customFieldList();
+            // this.customFieldList();
             //  spinner hide
             this.spinner.hide();
           } else {
@@ -330,37 +331,56 @@ export class OfferAddViewComponent implements OnInit {
             }
 
             const _array = [];
-            res[`data`]['customfeild'].forEach((element, index) => {
-              const new_customfield = {
-                key: element.key,
-                value: element.value
-              };
-              this.customfieldItem.setControl(
-                index,
-                this.fb.group({
-                  value: [element.value],
-                  key: [element.key]
-                })
-              );
-              this.customfieldItem.updateValueAndValidity();
-              _array.push(new_customfield);
-            });
-            this.offer_data.customfieldItem = _array;
+            const test = res[`data`]['customfeild'];
+            console.log("res[`data`]['customfeild']", res[`data`]['customfeild']);
+
+            // res[`data`]['customfeild'].forEach((element, index) => {
+            this.service.get_customfield().subscribe(
+              res => {
+                this.customfield = res['data'];
+
+                this.customfield.forEach((element, index) => {
+                  console.log("key", element.key);
+
+                  const value = test.find(c => c.key === element.key) ?
+                    test.find(c => c.key === element.key).value : "";
+                  console.log("value==>", value);
+
+                  const new_customfield = {
+                    key: element.key,
+                    value,
+                  };
+                  this.customfieldItem.setControl(
+                    index,
+                    this.fb.group({
+                      value: [value],
+                      key: [element.key]
+                    })
+                  );
+                  this.customfieldItem.updateValueAndValidity();
+                  _array.push(new_customfield);
+                  // });
+                });
+                console.log("array", _array);
+
+                this.offer_data.customfieldItem = _array;
+              },
+              err => {
+                console.log(err);
+              }
+            );
+
+          } else if (this.userDetail.role === 'candidate') {
+            this.service.offer_detail_candidate(this.id).subscribe(
+              res => {
+                console.log('res[`data`] => ', res[`data`]);
+                this.resData = res[`data`];
+                this.spinner.hide();
+                this.is_View = true;
+                this.resData.groupName = res[`data`]['groups']['name'];
+              });
           }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    } else if (this.userDetail.role === 'candidate') {
-      this.service.offer_detail_candidate(this.id).subscribe(
-        res => {
-          console.log('res[`data`] => ', res[`data`]);
-          this.resData = res[`data`];
-          this.spinner.hide();
-          this.is_View = true;
-          this.resData.groupName = res[`data`]['groups']['name'];
-        });
+        })
     }
   }
 
@@ -427,7 +447,6 @@ export class OfferAddViewComponent implements OnInit {
     this.service.get_customfield().subscribe(
       res => {
         this.customfield = res['data'];
-
 
         const _array = [];
         this.customfield.forEach((element, index) => {
@@ -653,12 +672,12 @@ export class OfferAddViewComponent implements OnInit {
     console.log('CF', this.form.value.customfieldItem);
 
     this.form.value.customfieldItem.forEach(element => {
-      // if (element.value) {
-      _coustomisedFieldsArray.push({
-        key: element.key,
-        value: element.value
-      });
-      // }
+      if (element.value) {
+        _coustomisedFieldsArray.push({
+          key: element.key,
+          value: element.value
+        });
+      }
     });
     // communication records
     const communication_array = [];
@@ -719,18 +738,17 @@ export class OfferAddViewComponent implements OnInit {
     // if (this.form.value.salaryduration) {
     //   this.formData.append('salaryduration', this.form.value.salaryduration);
     // }
-    console.log('flag => ', flag);
+
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
         this.confirmationService.confirm({
-          message: 'Are you sure that you want to Update This Offer this record?',
+          message: 'Are you sure that you want to Update this record?',
           accept: () => {
             this.show_spinner = true;
             this.service.update_offer(this.formData).subscribe(
               res => {
-                this.show_spinner = true;
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -756,7 +774,6 @@ export class OfferAddViewComponent implements OnInit {
               this.show_spinner = true;
               this.service.add_offer(this.formData).subscribe(
                 res => {
-                  this.show_spinner = true;
                   this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                   if (this.userDetail.role === 'employer') {
                     this.router.navigate([this.cancel_link]);

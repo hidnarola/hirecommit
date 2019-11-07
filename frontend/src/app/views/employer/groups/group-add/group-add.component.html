@@ -258,6 +258,14 @@
                                                     <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
                                                     </ckeditor>
+                                                    [(ngModel)]="customfield.communicationname">
+                                                    <!-- <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
+                                                        style="color: red;">
+                                                        <div
+                                                            *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']">
+                                                            No white space.
+                                                        </div>
+                                                    </div> -->
                                                 </div>
                                             </div>
                                         </div>
