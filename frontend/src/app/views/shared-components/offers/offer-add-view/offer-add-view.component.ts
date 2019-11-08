@@ -10,6 +10,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { visitValue } from '@angular/compiler/src/util';
 import { ConfirmationService } from 'primeng/api';
 import { KeyValuePipe } from '@angular/common';
+import { EmployerService } from '../../../admin/employers/employer.service';
 
 @Component({
   selector: 'app-offer-add-view',
@@ -36,7 +37,7 @@ export class OfferAddViewComponent implements OnInit {
   group_optoins: any = [];
   arrayItems: any = [];
   key: any;
-
+  commitstatus: any = [];
   offerStatus: any = [];
   // gname: any;
   custom_field: any = [];
@@ -57,12 +58,13 @@ export class OfferAddViewComponent implements OnInit {
     { label: 'Both Commit', value: 'bothCommit' }
   ];
   // commit status options
-  commitstatus_optoins = [
-    { label: 'Select Commit Status', value: '' },
-    { label: 'High', value: 'high' },
-    { label: 'Medium', value: 'medium' },
-    { label: 'Low', value: 'low' }
-  ];
+  commitstatus_optoins: any = [];
+  // = [
+  //   { label: 'Select Commit Status', value: '' },
+  //   { label: 'High', value: 'high' },
+  //   { label: 'Medium', value: 'medium' },
+  //   { label: 'Low', value: 'low' }
+  // ];
   contryList: any;
   cancel_link = '/employer/offers/list';
   cancel_link1 = '/sub_employer/offers/list';
@@ -87,6 +89,7 @@ export class OfferAddViewComponent implements OnInit {
     private commonService: CommonService,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
+    private adminService: EmployerService
   ) {
     // show spinner
     // if (this.is_Edit || this.is_View) {
@@ -247,8 +250,10 @@ export class OfferAddViewComponent implements OnInit {
             this.panelTitle = 'Add';
             this.spinner.hide();
           }
+
         });
-    } else if (this.userDetail.role === 'candidate') {
+    } else if (this.userDetail.role === 'candidate' || this.userDetail.role === 'admin') {
+      // this.spinner.hide();
       this.getDetail();
     }
 
@@ -260,9 +265,14 @@ export class OfferAddViewComponent implements OnInit {
         res => {
           console.log('res => ', res);
           this.resData = res[`data`];
+          // this.commitstatus = res['commitstatus']
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
           });
+          this.commitstatus = res['data']['commitstatus']
+          console.log(this.commitstatus);
+
+
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
           this.groupDetail(res[`data`].groups);
@@ -304,6 +314,7 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
+            // .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
@@ -357,6 +368,16 @@ export class OfferAddViewComponent implements OnInit {
         });
     } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
+        res => {
+          this.resData = res[`data`];
+          this.spinner.hide();
+          this.is_View = true;
+          this.resData = res[`data`];
+          this.resData.groupName = res[`data`]['groups']['name'];
+        });
+    } else if (this.userDetail.role === 'admin') {
+      //  do code here for admin side - offer detail 
+      this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
           this.resData = res[`data`];
           this.spinner.hide();
@@ -469,6 +490,22 @@ export class OfferAddViewComponent implements OnInit {
     if (this.is_View) {
       this.resData.groupName = groupById.name;
     }
+  }
+  forCommit(event) {
+    const id = event.value._id;
+    console.log(event.value._id);
+    this.service.commit_status(id).subscribe(res => {
+      console.log(res['commitstatus']);
+      res['commitstatus'].forEach(element => {
+        this.commitstatus.push({
+          label: element.lable,
+          value: element.value
+        });
+      }
+      ); console.log(this.commitstatus_optoins)
+
+    })
+
   }
 
   // get joining date
@@ -623,6 +660,11 @@ export class OfferAddViewComponent implements OnInit {
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
     }
+    else if (this.userDetail.role === 'admin') {
+      const backID = this.route.snapshot.params.report_id;
+      this.router.navigate(['/admin/employers/approved_employer/report/' + backID + '/list']);
+      // }
+    }
   }
   noWhitespaceValidator(control: FormControl) {
     if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
@@ -656,12 +698,12 @@ export class OfferAddViewComponent implements OnInit {
     // customised fields
     const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {
-      if (element.value) {
-        _coustomisedFieldsArray.push({
-          key: element.key,
-          value: element.value
-        });
-      }
+      // if (element.value) {
+      _coustomisedFieldsArray.push({
+        key: element.key,
+        value: element.value
+      });
+      // }
     });
     // communication records
     const communication_array = [];
@@ -726,6 +768,7 @@ export class OfferAddViewComponent implements OnInit {
       if (this.route.snapshot.data.title === 'Edit') {
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
+        this.formData.append('commitstatus', this.form.value.commitstatus.value);
         this.confirmationService.confirm({
           message: 'Are you sure that you want to Update this record?',
           accept: () => {

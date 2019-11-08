@@ -281,7 +281,8 @@
                             <label class="col-md-3 col-form-label" for="group">Group</label>
                             <div class="col-md-6">
                                 <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" optionLabel="name"
-                                    optionValue="_id" formControlName="group" placeholder="Select Group" id="group">
+                                    optionValue="_id" formControlName="group" placeholder="Select Group" id="group"
+                                    (onChange)="forCommit($event)">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
                                     <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
@@ -399,9 +400,14 @@
                             <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
                             </label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
-                                    formControlName="commitstatus" id="commitstatus">
+                                <p-dropdown [options]="commitstatus" [style]="{'width':'100%'}"
+                                    formControlName="commitstatus" id="commitstatus"
+                                    placeholder="Please Select Commit Status">
                                 </p-dropdown>
+
+                                <!-- <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
+                                    optionValue="value" formControlName="offerStatus" id="offerStatus"
+                                    placeholder="Please Select Status"> -->
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['commitstatus'].valid">
                                     <span *ngIf="form.controls['commitstatus'].errors['required']" class="text-danger">

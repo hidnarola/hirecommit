@@ -68,7 +68,7 @@ const routes: Routes = [
         path: 'approved_employer/report/:id/list',
         component: ReportComponent,
         data: {
-          title: 'Offer Report',
+          title: 'Report',
           // type: 'new'
         }
       },
@@ -81,7 +81,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'approved_employer/report/:id/view/:id',
+        path: 'approved_employer/report/:report_id/view/:id',
         component: OfferAddViewComponent,
         data: {
           title: 'Offer View',
