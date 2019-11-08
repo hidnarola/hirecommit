@@ -212,3 +212,11 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .card-header button i {margin-right: 5px;font-size: 16px;}
 .card-header button {padding: 4px 20px;font-size: 16px;}
 // table.dataTable tbody td button {margin: 0;}
+.not_verified_block{
+    text-align: center;
+    padding: 100px 20px;
+    i{
+        font-size: 100px;
+        color: red;
+    }
+}

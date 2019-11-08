@@ -31,6 +31,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: 'Candidate Commit', value: 'candidateCommit' },
     { label: 'Both Commit', value: 'bothCommit' }
   ];
+  hide_list = false;
 
   userDetail: any = [];
   constructor(
@@ -61,28 +62,30 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    // if (this.userDetail.role !== 'admin') {
-    //   this.commonService.getprofileDetail.subscribe(async res => {
-    //     if (res) {
-    //       this.profileData = res;
-    //       console.log('from profile +>>', this.profileData);
-    //     } else {
-    //       const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
-    //       // console.log('profile==>', profile);
+    if (this.userDetail.role !== 'admin') {
+      this.commonService.getprofileDetail.subscribe(async res => {
+        if (res) {
+          this.profileData = res;
+          console.log('from profile +>>', this.profileData);
+        } else {
+          const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
+          // console.log('profile==>', profile);
 
-    //       if (profile) {
-    //         this.profileData = JSON.parse(profile);
-    //         console.log('profileData==>', this.profileData.email_verified);
+          if (profile) {
+            this.profileData = JSON.parse(profile);
+            console.log('profileData email verified==>', this.profileData.email_verified);
+            if (!this.profileData.email_verified) {
+              this.hide_list = true;
+            }
 
-    //       } else {
-    //         console.log('profile data not found');
-    //       }
-    //     }
-    //   });
-    // }
-    // else {
-    //   console.log('it is admin!');
-    // }
+          } else {
+            console.log('profile data not found');
+          }
+        }
+      });
+    } else {
+      console.log('it is admin!');
+    }
 
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.dtOptions = {

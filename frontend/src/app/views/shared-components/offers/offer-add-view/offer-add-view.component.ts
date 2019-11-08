@@ -120,13 +120,11 @@ export class OfferAddViewComponent implements OnInit {
 
     this.userDetail = this.commonService.getLoggedUserDetail();
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-      console.log('here => ');
       this.getLocation();
     }
     if (this.userDetail.role === 'employer') {
       this.commonService.getDecryptedProfileDetail().then(res => {
         this.profileData = res;
-        console.log('profiledata => ', this.profileData);
       });
     }
 
@@ -177,10 +175,8 @@ export class OfferAddViewComponent implements OnInit {
           if (this.route.snapshot.data.title === 'Edit') {
             const locationById = this.location.find(x => x._id === this.resData.location._id);
             this.form.controls.location.setValue(locationById);
-
             const salarybracketById = this.salarybracketList.find(x => x.value === this.resData.salarybracket._id);
             this.form.controls.salarybracket.setValue(salarybracketById.value);
-
           }
           resolve(this.salarybracketList);
         },
@@ -197,9 +193,7 @@ export class OfferAddViewComponent implements OnInit {
     const promise = new Promise((resolve, reject) => {
       this.service.get_locations().subscribe(
         async res => {
-          console.log('res for location => ', res);
           this.location = await res[`data`].data;
-          console.log('location', this.location);
         },
         err => {
           console.log(err);
@@ -255,7 +249,6 @@ export class OfferAddViewComponent implements OnInit {
           }
         });
     } else if (this.userDetail.role === 'candidate') {
-      this.spinner.hide();
       this.getDetail();
     }
 
@@ -265,10 +258,10 @@ export class OfferAddViewComponent implements OnInit {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
+          console.log('res => ', res);
           this.resData = res[`data`];
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
-            console.log('this.offerStatus => ', this.offerStatus);
           });
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
@@ -312,7 +305,6 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
             this.form.controls['notes'].setValue(res[`data`].notes);
-            console.log('res[`data`][`status`] => ', res[`data`]['status']);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
             if (res[`data`].salary) {
@@ -330,23 +322,15 @@ export class OfferAddViewComponent implements OnInit {
               this.form.controls['salarybracket'].setErrors(null);
               this.updateValidation();
             }
-
             const _array = [];
             const test = res[`data`]['customfeild'];
-            console.log("res[`data`]['customfeild']", res[`data`]['customfeild']);
-
             // res[`data`]['customfeild'].forEach((element, index) => {
             this.service.get_customfield().subscribe(
               res => {
                 this.customfield = res['data'];
-
                 this.customfield.forEach((element, index) => {
-                  console.log("key", element.key);
-
                   const value = test.find(c => c.key === element.key) ?
-                    test.find(c => c.key === element.key).value : "";
-                  console.log("value==>", value);
-
+                    test.find(c => c.key === element.key).value : '';
                   const new_customfield = {
                     key: element.key,
                     value,
@@ -354,7 +338,7 @@ export class OfferAddViewComponent implements OnInit {
                   this.customfieldItem.setControl(
                     index,
                     this.fb.group({
-                      value: [value, [this.noWhitespaceValidator]],
+                      value: [value, [this.noWhitespaceValidatorForNotRequired]],
                       key: [element.key]
                     })
                   );
@@ -362,8 +346,6 @@ export class OfferAddViewComponent implements OnInit {
                   _array.push(new_customfield);
                   // });
                 });
-                console.log("array", _array);
-
                 this.offer_data.customfieldItem = _array;
               },
               err => {
@@ -371,17 +353,17 @@ export class OfferAddViewComponent implements OnInit {
               }
             );
 
-          } else if (this.userDetail.role === 'candidate') {
-            this.service.offer_detail_candidate(this.id).subscribe(
-              res => {
-                console.log('res[`data`] => ', res[`data`]);
-                this.spinner.hide();
-                this.is_View = true;
-                this.resData = res[`data`];
-                this.resData.groupName = res[`data`]['groups']['name'];
-              });
           }
-        })
+        });
+    } else if (this.userDetail.role === 'candidate') {
+      this.service.offer_detail_candidate(this.id).subscribe(
+        res => {
+          this.resData = res[`data`];
+          this.spinner.hide();
+          this.is_View = true;
+          this.resData = res[`data`];
+          this.resData.groupName = res[`data`]['groups']['name'];
+        });
     }
   }
 
@@ -391,9 +373,6 @@ export class OfferAddViewComponent implements OnInit {
       this.service.get_candidate_list().subscribe(
         async res => {
           this.candidate = await res['data'];
-          console.log(':', this.candidate);
-
-
           // res['data'].forEach(element => {
           for (const element of res['data']) {
             this.candidateList.push({
@@ -411,7 +390,6 @@ export class OfferAddViewComponent implements OnInit {
 
   // get candidate detail
   async getCandidateDetail(id) {
-    console.log('./', this.candidate);
     const candidateDataById = this.candidate.filter(x => x.user._id === id);
     this.form.controls.email.setValue(candidateDataById[0].user.email);
 
@@ -458,7 +436,7 @@ export class OfferAddViewComponent implements OnInit {
           this.customfieldItem.setControl(
             index,
             this.fb.group({
-              value: ['', [this.noWhitespaceValidator]],
+              value: ['', [this.noWhitespaceValidatorForNotRequired]],
               key: [element.key],
             })
           );
@@ -487,7 +465,6 @@ export class OfferAddViewComponent implements OnInit {
 
   async groupDetail(id) {
     const groupById = this.group_optoins.find(x => x._id === id);
-    console.log('groupById => ', groupById);
     this.form.controls.group.setValue(groupById);
     if (this.is_View) {
       this.resData.groupName = groupById.name;
@@ -654,6 +631,15 @@ export class OfferAddViewComponent implements OnInit {
       return isValid ? null : { 'whitespace': true };
     }
   }
+  noWhitespaceValidatorForNotRequired(control: FormControl) {
+    if (control.value.length > 0) {
+      if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+        const isWhitespace = (control.value || '').trim().length === 0;
+        const isValid = !isWhitespace;
+        return isValid ? null : { '_whitespace': true };
+      }
+    }
+  }
   // onlyInteger(control: FormControl) {
   //   if (!((control.value > 95 && control.value < 106)
   //     || (control.value > 47 && control.value < 58)
@@ -669,9 +655,6 @@ export class OfferAddViewComponent implements OnInit {
   onSubmit(flag) {
     // customised fields
     const _coustomisedFieldsArray = [];
-    console.log('this.form.controls => ', this.form.value);
-    console.log('CF', this.form.value.customfieldItem);
-
     this.form.value.customfieldItem.forEach(element => {
       if (element.value) {
         _coustomisedFieldsArray.push({
@@ -710,7 +693,6 @@ export class OfferAddViewComponent implements OnInit {
 
       // 'salaryduration'
     ];
-    console.log('this.form.value.offerStatus => ', this.form.value.offerStatus);
     const data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
