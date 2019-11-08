@@ -48,7 +48,7 @@ export class SignUpComponent implements OnInit {
           Validators.required,
           this.noWhitespaceValidator,
           Validators.minLength(8),
-          Validators.pattern(/((?=.*\d)(?=.*[A-Z])(?=.*[a-z]))/)])),
+          Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
       country: new FormControl('', [Validators.required]),
       businesstype: new FormControl('', [Validators.required]),
       companyname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),

@@ -171,7 +171,12 @@ router.post("/candidate_register", async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
 
-    let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase() });
+    let user_resp = await common_helper.findOne(User, {
+      "email": req.body.email.toLowerCase(),
+      // "is_del": true
+    });
+    // console.log(user_resp.data.status); return false;
+
 
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
