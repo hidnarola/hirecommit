@@ -1,13 +1,18 @@
 var express = require("express");
 var router = express.Router();
 var config = require('../../config')
+var ObjectId = require('mongodb').ObjectID;
 var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
 var user_helper = require('../../helpers/user_helper');
+var offer_helper = require('../../helpers/offer_helper');
 var Candidate = require('../../models/candidate-detail');
 var logger = config.logger;
 var User = require('../../models/user');
 var Employer = require('../../models/employer-detail');
+var Offer = require('../../models/offer');
+var History = require('../../models/offer_history');
+
 
 
 
@@ -412,5 +417,264 @@ router.get('/', async (req, res) => {
     }
 
 });
+
+// offer report
+router.post('/get_report/:id', async (req, res) => {
+    var schema = {};
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        let id = req.params.id;
+
+        var user = await common_helper.findOne(User, { _id: new ObjectId(id) })
+        console.log('user', user);
+
+        if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
+        }
+        else {
+            var user_id = id
+        }
+        var aggregate = [
+            { $match: { $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
+            {
+                $lookup:
+                {
+                    from: "group",
+                    localField: "groups",
+                    foreignField: "_id",
+                    as: "group"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$group",
+                    // preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "employer_id",
+                    foreignField: "_id",
+                    as: "employer_id"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employer_id",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "location",
+                    localField: "location",
+                    foreignField: "_id",
+                    as: "location"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$location",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "salary_bracket",
+                    localField: "salarybracket",
+                    foreignField: "_id",
+                    as: "salarybracket"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$salarybracket",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+        ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+
+        if (req.body.search && req.body.search.value != '') {
+            aggregate.push({
+                "$match":
+                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
+            });
+        }
+
+        let totalMatchingCountRecords = await Offer.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
+
+        var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+
+        if (resp_data.status == 1) {
+            res.status(config.OK_STATUS).json(resp_data);
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+    } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
+router.get('/history/:id', async (req, res) => {
+    var id = req.params.id;
+    try {
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+
+        var history_data = await History.aggregate([
+            {
+                $match: {
+                    "offer_id": new ObjectId(id)
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "offer",
+                    localField: "offer_id",
+                    foreignField: "_id",
+                    as: "offer"
+                }
+            },
+
+            {
+                $unwind: "$offer"
+            },
+            {
+                $lookup:
+                {
+                    from: "employerDetail",
+                    localField: "offer.employer_id",
+                    foreignField: "user_id",
+                    as: "employer"
+                }
+            },
+
+            {
+                $unwind: "$employer"
+            },
+            {
+                $lookup:
+                {
+                    from: "candidateDetail",
+                    localField: "offer.user_id",
+                    foreignField: "user_id",
+                    as: "candidate"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$candidate"
+                },
+            },
+        ])
+        if (history_data) {
+            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history_data });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
+});
+
+
+
+router.post('/filter_by_date', async (req, res) => {
+    // if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+    //     var user_id = user.data.emp_id
+    // }
+    // else {
+    //     var user_id = id
+    // }
+    // var aggregate = [
+    //     { $match: { $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
+    //     {
+    //         $lookup:
+    //         {
+    //             from: "group",
+    //             localField: "groups",
+    //             foreignField: "_id",
+    //             as: "group"
+    //         }
+    //     },
+    //     {
+    //         $unwind: {
+    //             path: "$group",
+    //             // preserveNullAndEmptyArrays: true
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             from: "user",
+    //             localField: "employer_id",
+    //             foreignField: "_id",
+    //             as: "employer_id"
+    //         }
+    //     },
+    //     {
+    //         $unwind: {
+    //             path: "$employer_id",
+    //             preserveNullAndEmptyArrays: true
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             from: "location",
+    //             localField: "location",
+    //             foreignField: "_id",
+    //             as: "location"
+    //         }
+    //     },
+    //     {
+    //         $unwind: {
+    //             path: "$location",
+    //             preserveNullAndEmptyArrays: true
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             from: "salary_bracket",
+    //             localField: "salarybracket",
+    //             foreignField: "_id",
+    //             as: "salarybracket"
+    //         }
+    //     },
+    //     {
+    //         $unwind: {
+    //             path: "$salarybracket",
+    //             preserveNullAndEmptyArrays: true
+    //         }
+    //     },
+    // ]
+
+    // let offer_list = await Offer.aggregate(aggregate);
+
+    // if (offer_list) {
+    //     return res.status(config.OK_STATUS).json({ 'message': "Filter data.", "status": 1, data: offer_list });
+    // }
+    // else {
+    //     return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+    // }
+});
+
+
 
 module.exports = router;
