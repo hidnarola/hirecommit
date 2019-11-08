@@ -52,6 +52,15 @@ export class EmployerService {
   // }
 
   approved(data): Observable<any[]> {
-      return this.http.put<any[]>(`${this.url}` + '/candidate', data);
+    return this.http.put<any[]>(`${this.url}` + '/candidate', data);
   }
+
+  offer_report(id, params): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/employer/get_report/' + id, { ...params });
+  }
+
+  history(id): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + '/employer/history/' + id);
+  }
+  //admin/employer/history/:id
 }

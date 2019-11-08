@@ -34,7 +34,7 @@ export class ChangepasswordComponent implements OnInit {
           Validators.required,
           this.noWhitespaceValidator,
           Validators.minLength(8),
-          Validators.pattern(/((?=.*\d)(?=.*[A-Z])(?=.*[a-z]))/)])),
+          Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
       'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
 

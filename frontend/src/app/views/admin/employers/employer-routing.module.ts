@@ -3,7 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { EmployerListComponent } from './employer-list/employer-list.component';
 import { EmployerViewComponent } from './employer-view/employer-view.component';
 import { ReportComponent } from './report/report.component';
-
+import { ReportHistoryComponent } from './report/report-history/report-history.component'
+import { OfferAddViewComponent } from '../../shared-components/offers/offer-add-view/offer-add-view.component';
 const routes: Routes = [
   {
     path: '',
@@ -64,13 +65,37 @@ const routes: Routes = [
         }
       },
       {
-        path: 'report/:id',
+        path: 'approved_employer/report/:id/list',
         component: ReportComponent,
         data: {
           title: 'Offer Report',
           // type: 'new'
         }
       },
+      {
+        path: 'approved_employer/report/:id/history/:id',
+        component: ReportHistoryComponent,
+        data: {
+          title: 'Offer History',
+          // type: 'new'
+        }
+      },
+      {
+        path: 'approved_employer/report/:id/view/:id',
+        component: OfferAddViewComponent,
+        data: {
+          title: 'Offer View',
+          // type: 'new'
+        }
+      },
+      // {
+      //   path: 'history/:id',
+      //   component: TimelineComponent,
+      //   data: {
+      //     title: 'Offer History',
+      //     // type: 'new'
+      //   }
+      // }
     ]
   }
 ];

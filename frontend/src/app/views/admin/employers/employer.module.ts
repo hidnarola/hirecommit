@@ -10,11 +10,15 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { ReportComponent } from './report/report.component';
+import { ReportHistoryComponent } from './report/report-history/report-history.component';
+import { OffersModule } from '../../shared-components/offers/offers.module'
 @NgModule({
   declarations: [
     EmployerListComponent,
     EmployerViewComponent,
-    ReportComponent
+    ReportComponent,
+    ReportHistoryComponent,
+    // OfferAddViewComponent
   ],
   imports: [
     CommonModule,
@@ -23,7 +27,8 @@ import { ReportComponent } from './report/report.component';
     HttpClientModule,
     DataTablesModule,
     ConfirmDialogModule,
-    TooltipModule
+    TooltipModule,
+    OffersModule
   ], providers: [ConfirmationService]
 
 })
