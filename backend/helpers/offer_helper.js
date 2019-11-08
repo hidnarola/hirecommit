@@ -210,8 +210,6 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
 
 
     let offer = await collection.aggregate(aggregate);
-    // console.log(offer);
-
     if (offer) {
       return { "status": 1, "message": "offer list found", "offer": offer, "recordsTotal": recordsTotal };
     } else {

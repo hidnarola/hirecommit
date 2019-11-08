@@ -165,7 +165,6 @@ router.put('/', async (req, res) => {
     reg_obj.offer_id = req.body.id;
 
     var candidate = await common_helper.findOne(Candidate, { "user_id": req.userInfo.id });
-    console.log('Accepted : candidate ==> ', candidate, offer);
     reg_obj.message = `<span>${candidate.data.firstname}</span> <span>${candidate.data.lastname}</span> has accepted your offer.`;
 
     var interest = await common_helper.insert(History, reg_obj);
@@ -176,7 +175,6 @@ router.put('/', async (req, res) => {
         var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
         var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
         var status = await common_helper.findOne(Status, { 'status': 'Accepted' });
-        // console.log("status===>", status); return false;
 
         let content = status.data.MessageContent;
         content = content.replace('{title}', offer.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
@@ -187,7 +185,6 @@ router.put('/', async (req, res) => {
         }, {
             "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
         });
-        console.log('mail_resp', mail_resp);
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Accepted", "data": sub_account_upadate });
     }
     else {

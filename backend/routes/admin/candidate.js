@@ -8,7 +8,6 @@ var logger = config.logger;
 var User = require('../../models/user');
 
 
-
 router.post('/get_new', async (req, res) => {
 
     var schema = {};
@@ -103,7 +102,6 @@ router.post('/get_approved', async (req, res) => {
             {
                 $match: {
                     "is_del": false,
-
                 }
             },
             {
