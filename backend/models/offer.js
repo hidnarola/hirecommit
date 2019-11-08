@@ -24,6 +24,10 @@ const OfferSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
+  mail_status: {
+    type: String,
+    default: "UnOpened"
+  },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
