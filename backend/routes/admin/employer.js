@@ -534,7 +534,7 @@ router.post('/get_report/:id', async (req, res) => {
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
     try {
-        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
         var history_data = await History.aggregate([
             {
@@ -542,47 +542,46 @@ router.get('/history/:id', async (req, res) => {
                     "offer_id": new ObjectId(id)
                 }
             },
-            {
-                $lookup:
-                {
-                    from: "offer",
-                    localField: "offer_id",
-                    foreignField: "_id",
-                    as: "offer"
-                }
-            },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "offer",
+            //         localField: "offer_id",
+            //         foreignField: "_id",
+            //         as: "offer"
+            //     }
+            // },
 
-            {
-                $unwind: "$offer"
-            },
-            {
-                $lookup:
-                {
-                    from: "employerDetail",
-                    localField: "offer.employer_id",
-                    foreignField: "user_id",
-                    as: "employer"
-                }
-            },
+            // {
+            //     $unwind: "$offer"
+            // },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "employerDetail",
+            //         localField: "offer.employer_id",
+            //         foreignField: "user_id",
+            //         as: "employer"
+            //     }
+            // },
 
-            {
-                $unwind: "$employer"
-            },
-            {
-                $lookup:
-                {
-                    from: "candidateDetail",
-                    localField: "offer.user_id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                }
-            },
-
-            {
-                $unwind: {
-                    path: "$candidate"
-                },
-            },
+            // {
+            //     $unwind: "$employer"
+            // },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "candidateDetail",
+            //         localField: "offer.user_id",
+            //         foreignField: "user_id",
+            //         as: "candidate"
+            //     }
+            // },
+            // {
+            //     $unwind: {
+            //         path: "$candidate"
+            //     },
+            // }
         ])
         if (history_data) {
             return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history_data });

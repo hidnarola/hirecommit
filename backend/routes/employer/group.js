@@ -12,6 +12,7 @@ var logger = config.logger;
 var group = require('../../models/group');
 var GroupDetail = require('../../models/group-detail');
 var Offer = require('../../models/offer');
+var GroupDetail = require('../../models/group-detail');
 
 var User = require('../../models/user');
 
@@ -452,5 +453,21 @@ router.put("/deactivate_communication/:id", async (req, res) => {
 //         return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
 //     }
 // })
+
+router.get('/commit_status/:id', async (req, res) => {
+    var group_details = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
+
+    console.log("====>", group_details.data[0].communication);
+    if (group_details.status === 1) {
+
+        return res.status(config.OK_STATUS).json({ 'message': "Group details are fetched successfully", "status": 1, communication: group_details });
+    }
+    else if (group_details.status === 2) {
+        return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
+    }
+});
 
 module.exports = router;

@@ -30,6 +30,7 @@ var Employer_Detail = require('./../models/employer-detail');
 var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
+var Offer = require('./../models/offer');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
@@ -43,6 +44,17 @@ var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
 router.get("/user", async (req, res) => {
   var response = await common_helper.find(User);
   res.status(config.OK_STATUS).send(response);
+});
+
+router.get("/offer/:id", async (req, res) => {
+  console.log('1=====', 1);
+
+  var obj = {
+    mail_status: "Opened"
+  }
+  var response = await common_helper.update(Offer, { "_id": req.params.id }, obj);
+  console.log('response', response);
+
 });
 
 // Add role Registration
