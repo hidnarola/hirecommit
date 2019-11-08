@@ -140,14 +140,12 @@ router.post("/", async (req, res) => {
             }
 
         };
-        console.log('Create : employer ==> ', employer);
 
 
         var interest_resp = await common_helper.insert(Offer, obj);
 
         obj.offer_id = interest_resp.data._id
         var interest = await common_helper.insert(History, obj);
-        // console.log("history data", interest)
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
@@ -155,17 +153,16 @@ router.post("/", async (req, res) => {
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
             let content = status.data.MessageContent;
-
             content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
-            // console.log("content===>", content); return false;
 
             let mail_resp = await mail_helper.send("offer", {
                 "to": user.data.email,
                 "subject": "Offer"
             }, {
-                "msg": content
+                "msg": content,
+                "url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+
             });
-            console.log('mail_resp', mail_resp);
 
             res.json({ "message": "Offer is Added successfully", "data": interest_resp })
         }
@@ -227,21 +224,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
             }
         ]
     )
-    // console.log("resp_data", resp_data);
 
     var current_date = moment().format("DD-MM-YYYY")
 
     for (const resp of resp_data) {
         for (const comm of resp.communication.communication) {
-            // console.log('comm.trigger====>', comm.trigger == "afterOffer");
-            // console.log('comm : comm ==> ', comm);
-            // console.log('resp : resp ==> ', resp.candidate.email);
             if (comm.trigger == "afterOffer") {
                 var offer_date = moment(resp.createdAt).add(1, 'day')
                 offer_date = moment(offer_date).format("DD-MM-YYYY")
-                console.log(' offer_date : offer_date ==> ', offer_date);
-
-                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 var message = comm.message;
                 var email = resp.candidate.email
                 if (moment(current_date).isSame(offer_date) == true) {
@@ -252,7 +242,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         "msg": message
                     });
-                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for after offer", "msg": msg });
                 }
 
             }
@@ -263,7 +252,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 var message = comm.message;
                 var email = resp.candidate.email
-                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
+
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": resp.candidate.email,
@@ -272,7 +261,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         "msg": message
                     });
-                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", "msg": msg });
+
                 }
             }
 
@@ -282,7 +271,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 var message = comm.message;
                 var email = resp.candidate.email
-                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -291,7 +279,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         "msg": message
                     });
-                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for after joining", "msg": msg });
                 }
 
             }
@@ -301,7 +288,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 var message = comm.message;
                 var email = resp.candidate.email
-                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -310,7 +296,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         "msg": message
                     });
-                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before expiry", "msg": msg });
                 }
 
             }
@@ -320,7 +305,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 var message = comm.message;
                 var email = resp.candidate.email
-                console.log('compare date:   moment(current_date).isSame(offer_date) == true==>', moment(current_date).isSame(offer_date) == true);
                 if (moment(current_date).isSame(offer_date) == true) {
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
@@ -329,7 +313,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         "msg": message
                     });
-                    // res.status(config.OK_STATUS).json({ "mesage": "mail sent for after expiry", "msg": msg });
                 }
 
             }
@@ -343,28 +326,10 @@ cron.schedule('00 00 * * *', async (req, res) => {
 });
 
 router.post('/get', async (req, res) => {
-    // try {
-    //     const offer_list = await offer.find({is_del: false})
-    //     .populate([
-    //     { path: 'employer_id'},
-    //     { path: 'salarybracket'},
-    //     { path: 'group'},
-    //     ])
-    //     .lean();
-    //     return res.status(config.OK_STATUS).json({ 'message': "Sub-Account List", "status": 1, data: offer_list });
-    //   } catch (error) {
-    //     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false})
-    //   }
+
 
     var schema = {
-        // "page_no": {
-        //   notEmpty: true,
-        //   errorMessage: "page_no is required"
-        // },
-        // "page_size": {
-        //   notEmpty: true,
-        //   errorMessage: "page_size is required"
-        // }
+
     };
     req.checkBody(schema);
     var errors = req.validationErrors();
@@ -376,10 +341,8 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
-        console.log('req.userInfo.id==>', req.userInfo.id);
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        console.log('user', user);
 
         if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id

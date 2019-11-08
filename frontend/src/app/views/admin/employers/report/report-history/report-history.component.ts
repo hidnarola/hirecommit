@@ -1,22 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-
-import { OfferService } from '../../shared-components/offers/offer.service';
+import { EmployerService } from '../../employer.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import * as  moment from 'moment';
-
 @Component({
-  selector: 'app-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss']
+  selector: 'app-report-history',
+  templateUrl: './report-history.component.html',
+  styleUrls: ['./report-history.component.scss']
 })
-export class TimelineComponent implements OnInit {
+export class ReportHistoryComponent implements OnInit {
   id: any;
   candidate: any = {};
   employer: any = [];
   offer: any = [];
   history: any[] = [];
   moment: any;
-  constructor(private service: OfferService,
+  constructor(private service: EmployerService,
     private route: ActivatedRoute, ) {
     console.log(localStorage.getItem['user']);
   }
@@ -48,7 +46,6 @@ export class TimelineComponent implements OnInit {
     });
 
   }
-
 
 
 }
