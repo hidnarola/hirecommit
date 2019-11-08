@@ -603,7 +603,7 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-    // console.log('user', req.body.user_id); return false;
+
     var candidate = await common_helper.findOne(CandidateDetail,
         { user_id: new ObjectId(req.body.user_id) });
 
@@ -615,7 +615,6 @@ router.put('/', async (req, res) => {
 
     var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
-    console.log(offer, offer_upadate);
 
     obj.offer_id = offer_upadate.data._id;
     // obj.status = offer_upadate.data.status;
@@ -632,7 +631,6 @@ router.put('/', async (req, res) => {
         if (offer.data.status !== offer_upadate.data.status) {
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
-            // console.log("status===>", status); return false;
 
             let content = status.data.MessageContent;
             content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
@@ -739,7 +737,6 @@ router.get('/history/:id', async (req, res) => {
 
 router.get("/status_list/:status", async (req, res) => {
     var status = req.params.status;
-    // console.log("HIII", status);
     var obj = {};
     if (status === 'On Hold') {
         obj.status = [

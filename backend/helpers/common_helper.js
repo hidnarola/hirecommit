@@ -327,7 +327,6 @@ common_helper.updateMany = async (collection, condition) => {
 }
 
 common_helper.deleteMany = async (collection, condition) => {
-    console.log(condition);
     try {
         var data = await collection.updateMany(
             { location: { $in: condition } },

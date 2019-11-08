@@ -20,16 +20,11 @@ var User = require('../../models/user');
 
 router.get("/groups_list", async (req, res) => {
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-    console.log('user', user);
 
     if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-        console.log('1', 1);
-
-
         var user_id = user.data.emp_id
     }
     else {
-        console.log('1', 2);
         var user_id = req.userInfo.id
     }
     var group_list = await common_helper.find(group, { is_del: false, "emp_id": new ObjectId(user_id) });
@@ -457,10 +452,23 @@ router.put("/deactivate_communication/:id", async (req, res) => {
 router.get('/commit_status/:id', async (req, res) => {
     var group_details = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
 
-    console.log("====>", group_details.data[0].communication);
+    let priority = [];
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+    for (let index = 0; index < group_details.data[0].communication.length; index++) {
+        const element = group_details.data[0].communication[index];
+        priority.push(element.priority)
+    }
+    var unique = priority.filter(onlyUnique);
+    commitstatus = [];
+    for (let index = 0; index < unique.length; index++) {
+        const element = unique[index];
+        var data = { 'lable': element, 'value': element }
+        commitstatus.push(data);
+    }
     if (group_details.status === 1) {
-
-        return res.status(config.OK_STATUS).json({ 'message': "Group details are fetched successfully", "status": 1, communication: group_details });
+        return res.status(config.OK_STATUS).json({ 'message': "Group details are fetched successfully", "status": 1, commitstatus: commitstatus });
     }
     else if (group_details.status === 2) {
         return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
