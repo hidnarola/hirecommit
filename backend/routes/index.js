@@ -47,14 +47,14 @@ router.get("/user", async (req, res) => {
 });
 
 router.get("/offer/:id", async (req, res) => {
-  console.log('1=====', 1);
 
   var obj = {
     mail_status: "Opened"
   }
   var response = await common_helper.update(Offer, { "_id": req.params.id }, obj);
-  console.log('response', response);
+  console.log('response======================>', response);
 
+  res.send("☺☻");
 });
 
 // Add role Registration
@@ -173,9 +173,8 @@ router.post("/candidate_register", async (req, res) => {
 
     let user_resp = await common_helper.findOne(User, {
       "email": req.body.email.toLowerCase(),
-      // "is_del": true
+
     });
-    // console.log(user_resp.data.status); return false;
 
 
     if (user_resp.status === 1) {

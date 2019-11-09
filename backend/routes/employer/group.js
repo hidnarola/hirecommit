@@ -19,16 +19,11 @@ var User = require('../../models/user');
 
 router.get("/groups_list", async (req, res) => {
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-    console.log('user', user);
 
     if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-        console.log('1', 1);
-
-
         var user_id = user.data.emp_id
     }
     else {
-        console.log('1', 2);
         var user_id = req.userInfo.id
     }
     var group_list = await common_helper.find(group, { is_del: false, "emp_id": new ObjectId(user_id) });

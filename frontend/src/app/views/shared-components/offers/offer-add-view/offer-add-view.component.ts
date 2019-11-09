@@ -656,12 +656,12 @@ export class OfferAddViewComponent implements OnInit {
     // customised fields
     const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {
-      if (element.value) {
-        _coustomisedFieldsArray.push({
-          key: element.key,
-          value: element.value
-        });
-      }
+      // if (element.value) {
+      _coustomisedFieldsArray.push({
+        key: element.key,
+        value: element.value
+      });
+      // }
     });
     // communication records
     const communication_array = [];

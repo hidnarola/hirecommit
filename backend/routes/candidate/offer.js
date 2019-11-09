@@ -165,7 +165,6 @@ router.put('/', async (req, res) => {
     reg_obj.offer_id = req.body.id;
 
     var candidate = await common_helper.findOne(Candidate, { "user_id": req.userInfo.id });
-    console.log('Accepted : candidate ==> ', candidate, offer);
     reg_obj.message = `<span>${candidate.data.firstname}</span> <span>${candidate.data.lastname}</span> has accepted your offer.`;
 
     var interest = await common_helper.insert(History, reg_obj);
@@ -187,7 +186,6 @@ router.put('/', async (req, res) => {
         }, {
             "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
         });
-        console.log('mail_resp', mail_resp);
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Accepted", "data": sub_account_upadate });
     }
     else {

@@ -160,7 +160,8 @@ router.post("/", async (req, res) => {
                 "subject": "Offer"
             }, {
                 "msg": content,
-                "url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+                // "url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+                "url": "http://localhost:3000/offer/" + obj.offer_id,
 
             });
 
@@ -632,7 +633,6 @@ router.put('/', async (req, res) => {
         if (offer.data.status !== offer_upadate.data.status) {
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
-            // console.log("status===>", status); return false;
 
             let content = status.data.MessageContent;
             content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
@@ -739,7 +739,6 @@ router.get('/history/:id', async (req, res) => {
 
 router.get("/status_list/:status", async (req, res) => {
     var status = req.params.status;
-    // console.log("HIII", status);
     var obj = {};
     if (status === 'On Hold') {
         obj.status = [
