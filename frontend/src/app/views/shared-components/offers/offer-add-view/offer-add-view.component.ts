@@ -270,9 +270,6 @@ export class OfferAddViewComponent implements OnInit {
             this.offerStatus = resp['status'];
           });
           this.commitstatus = res['data']['commitstatus']
-          console.log(this.commitstatus);
-
-
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
           this.groupDetail(res[`data`].groups);
@@ -492,6 +489,7 @@ export class OfferAddViewComponent implements OnInit {
     }
   }
   forCommit(event) {
+    this.commitstatus = [];
     const id = event.value._id;
     console.log(event.value._id);
     this.service.commit_status(id).subscribe(res => {
