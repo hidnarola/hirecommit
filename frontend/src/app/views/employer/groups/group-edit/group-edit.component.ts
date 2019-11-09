@@ -28,6 +28,7 @@ export class GroupEditComponent implements OnInit {
   arr: FormArray;
   is_communication_added: boolean = false;
   formData: FormData;
+  Comm_Flag: boolean = true
   show_spinner = false;
   constructor(
     public fb: FormBuilder,
@@ -93,7 +94,10 @@ export class GroupEditComponent implements OnInit {
         this.communicationData = _array;
       } else {
         console.log('no communicaiondata found => ');
-        // this.add_new_communication();
+        // if (this.Comm_Flag) {
+
+        this.add_new_communication();
+        // }
       }
       // set communication
     });

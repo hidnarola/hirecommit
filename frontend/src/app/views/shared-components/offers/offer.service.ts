@@ -10,7 +10,7 @@ import * as env from '../../../../environments/environment';
 export class OfferService {
     private employer_url = env.environment.API_URL + 'employer';
     private candidate_url = env.environment.API_URL + 'candidate';
-    private sub_employer_url = env.environment.API_URL + 'sub-employer';
+
 
     constructor(private http: HttpClient, private route: Router) { }
 
@@ -105,6 +105,10 @@ export class OfferService {
     }
     status(status): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + '/offer/status_list/' + status);
+    }
+
+    commit_status(id): Observable<any[]> {
+        return this.http.get<any[]>(`${this.employer_url}` + '/group/commit_status/' + id);
     }
     // Candidate Service
 

@@ -12,7 +12,6 @@ var logger = config.logger;
 var group = require('../../models/group');
 var GroupDetail = require('../../models/group-detail');
 var Offer = require('../../models/offer');
-var GroupDetail = require('../../models/group-detail');
 
 var User = require('../../models/user');
 
@@ -222,9 +221,19 @@ router.put('/', async (req, res) => {
     var find_communication = await common_helper.findOne(GroupDetail, { "group_id": req.body.id })
     if (find_communication.status == 1) {
         var response = await common_helper.update(GroupDetail, { "group_id": req.body.id }, grp_data);
+        var obj = {
+            flag: "undraft"
+        }
+        var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
+        console.log('responses======>', responses);
     }
     else {
         var response = await common_helper.insert(GroupDetail, grp_data);
+        var obj = {
+            flag: "undraft"
+        }
+        var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
+        console.log('responses======>', responses);
     }
 
 
@@ -268,6 +277,8 @@ router.post("/communication/:id", async (req, res) => {
             communication: reqData
         };
         var response = await common_helper.insert(GroupDetail, grp_data);
+
+
         if (response.status === 0) {
             throw new Error('Error occured while inserting data');
         }

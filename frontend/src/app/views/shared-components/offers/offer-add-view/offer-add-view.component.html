@@ -281,7 +281,8 @@
                             <label class="col-md-3 col-form-label" for="group">Group</label>
                             <div class="col-md-6">
                                 <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" optionLabel="name"
-                                    optionValue="_id" formControlName="group" placeholder="Select Group" id="group">
+                                    optionValue="_id" formControlName="group" placeholder="Select Group" id="group"
+                                    (onChange)="forCommit($event)">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
                                     <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
@@ -395,13 +396,20 @@
                         </ng-container>
                         <!-- communication -->
 
+
+                        {{form.value.commitstatus | json}}
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
                             </label>
                             <div class="col-md-6">
                                 <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
-                                    formControlName="commitstatus" id="commitstatus">
+                                    optionValue="value" formControlName="commitstatus" id="commitstatus"
+                                    placeholder="Please Select Commit Status" (onChange)="check($event)">
                                 </p-dropdown>
+
+                                <!-- <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
+                                    optionValue="value" formControlName="offerStatus" id="offerStatus"
+                                    placeholder="Please Select Status"> -->
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['commitstatus'].valid">
                                     <span *ngIf="form.controls['commitstatus'].errors['required']" class="text-danger">
@@ -422,6 +430,7 @@
                             </div>
                         </div>
 
+                        <!-- Custom Field -->
                         <ng-container formArrayName="customfieldItem">
                             <div class="form-group row" formGroupName="{{i}}"
                                 *ngFor="let customfield of offer_data.customfieldItem; let i=index">
@@ -445,6 +454,7 @@
                                 </div>
                             </div>
                         </ng-container>
+                        <!-- Custom Field -->
 
                         <div class="form-group row" *ngIf="is_Edit">
                             <label class="col-md-3 col-form-label" for="offerStatus">Offer Status</label>

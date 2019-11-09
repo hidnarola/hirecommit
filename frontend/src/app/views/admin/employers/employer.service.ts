@@ -62,5 +62,10 @@ export class EmployerService {
   history(id): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}` + '/employer/history/' + id);
   }
-  //admin/employer/history/:id
+
+
+  offer_detail_admin(id): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + '/employer/details/' + id);
+  }
+  //http://localhost:3000/admin/employer/details/5dc53b1c42b0a03b045f050a
 }
