@@ -52,9 +52,14 @@ router.get("/offer/:id", async (req, res) => {
     mail_status: "Opened"
   }
   var response = await common_helper.update(Offer, { "_id": req.params.id }, obj);
-  console.log('response======================>', response);
+  var data = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==";
+  var img = new Buffer(data, 'base64');
 
-  res.send("☺☻");
+  res.writeHead(200, {
+    'Content-Type': 'image/png',
+    'Content-Length': img.length
+  });
+  res.end(img);
 });
 
 // Add role Registration
