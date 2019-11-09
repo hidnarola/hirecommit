@@ -3,7 +3,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var offer_helper = {};
 
 
-offer_helper.get_all_offer = async (collection, id, search, start, length, recordsTotal, sort) => {
+offer_helper.get_all_offer = async (collection, id, search, start, length, recordsTotal, sort, startdate, enddate) => {
 
   try {
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
@@ -75,6 +75,18 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
       //   }
       // },
     ]
+
+    if (startdate && enddate) {
+      let start_date = moment(req.body.startdate).utc().startOf('day');
+      let end_date = moment(req.body.enddate).utc().endOf('day');
+      console.log(' : I m here ==> ', 1, start_date.format(), end_date.format(), moment(start_date).toDate(), moment(end_date).toDate());
+      aggregate.push({
+        $match: {
+          "createdAt": { $gte: moment(start_date).toDate() },
+          "createdAt": { $lte: moment(end_date).toDate() }
+        }
+      });
+    }
 
     if (search && search.value != '') {
       aggregate.push({

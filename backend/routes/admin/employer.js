@@ -541,18 +541,30 @@ router.post('/get_report/:id', async (req, res) => {
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-
         if (req.body.search && req.body.search.value != '') {
             aggregate.push({
                 "$match":
                     { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
             });
         }
+        if (req.body.startdate && req.body.enddate) {
+            let start_date = moment(req.body.startdate).utc().startOf('day');
+            let end_date = moment(req.body.enddate).utc().endOf('day');
+            console.log(' : I m here ==> ', 1, start_date.format(), end_date.format(), moment(start_date).toDate(), moment(end_date).toDate());
+            console.log("======>", end_date);
+
+            aggregate.push({
+                $match: {
+                    "createdAt": { $gte: moment(start_date).toDate() },
+                    "createdAt": { $lte: moment(end_date).toDate() }
+                }
+            });
+        }
 
         let totalMatchingCountRecords = await Offer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, req.body.startdate, req.body.enddate);
 
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
