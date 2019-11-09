@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { EmployerService } from '../employer.service';
 import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
+import { Subject, from } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { OfferService } from '../../../shared-components/offers/offer.service';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 @Component({
   selector: 'app-report',
@@ -16,6 +17,8 @@ export class ReportComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
   offerData: any;
   id: any;
+  from: any;
+  to: any;
   first_custom_field = 'Custom Field';
   constructor(
     private service: EmployerService,
@@ -120,22 +123,26 @@ export class ReportComponent implements OnInit {
       }
     });
   }
-  // onFrom(e) {
-  //   var date = new Date(e);
-  //   var month = date.getMonth() + 1;
-  //   console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
+  onFrom(e) {
+    var date = new Date(e);
+    var month = date.getMonth() + 1;
+    this.from = date.getDate() + '/' + month + '/' + date.getFullYear()
+    console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
 
-  // }
+  }
 
-  // onTo(e) {
-  //   var date = new Date(e);
-  //   var month = date.getMonth() + 1;
-  //   console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
-  //   // console.log('val 2', e);
-  // }
-  // check() {
+  onTo(e) {
+    var date = new Date(e);
+    var month = date.getMonth() + 1;
+    this.to = date.getDate() + '/' + month + '/' + date.getFullYear()
+    console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
+    // console.log('val 2', e);
+  }
+  check() {
+    console.log('this.from, this,to=>', this.from, this.to);
 
-  // }
+
+  }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

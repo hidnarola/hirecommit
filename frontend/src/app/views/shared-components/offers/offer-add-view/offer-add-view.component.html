@@ -396,13 +396,15 @@
                         </ng-container>
                         <!-- communication -->
 
+
+                        {{form.value.commitstatus | json}}
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
                             </label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="commitstatus" [style]="{'width':'100%'}"
-                                    formControlName="commitstatus" id="commitstatus"
-                                    placeholder="Please Select Commit Status">
+                                <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
+                                    optionValue="value" formControlName="commitstatus" id="commitstatus"
+                                    placeholder="Please Select Commit Status" (onChange)="check($event)">
                                 </p-dropdown>
 
                                 <!-- <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
@@ -428,6 +430,7 @@
                             </div>
                         </div>
 
+                        <!-- Custom Field -->
                         <ng-container formArrayName="customfieldItem">
                             <div class="form-group row" formGroupName="{{i}}"
                                 *ngFor="let customfield of offer_data.customfieldItem; let i=index">
@@ -451,6 +454,7 @@
                                 </div>
                             </div>
                         </ng-container>
+                        <!-- Custom Field -->
 
                         <div class="form-group row" *ngIf="is_Edit">
                             <label class="col-md-3 col-form-label" for="offerStatus">Offer Status</label>

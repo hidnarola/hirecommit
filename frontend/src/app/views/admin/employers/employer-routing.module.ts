@@ -24,6 +24,32 @@ const routes: Routes = [
           type: 'approved'
         },
       },
+
+      {
+        path: 'approved_employer/report/:id/list',
+        component: ReportComponent,
+        data: {
+          title: 'Report',
+          // type: 'new'
+        }
+      },
+      {
+        path: 'approved_employer/report/:id/history/:id',
+        component: ReportHistoryComponent,
+        data: {
+          title: 'Offer History',
+          // type: 'new'
+        }
+      },
+      {
+        path: 'approved_employer/report/:report_id/view/:id',
+        component: OfferAddViewComponent,
+        data: {
+          title: 'Offer View',
+          // type: 'new'
+        }
+      },
+
       {
         path: 'approved_employer/add',
         component: EmployerViewComponent,
@@ -64,30 +90,7 @@ const routes: Routes = [
           type: 'new'
         }
       },
-      {
-        path: 'approved_employer/report/:id/list',
-        component: ReportComponent,
-        data: {
-          title: 'Report',
-          // type: 'new'
-        }
-      },
-      {
-        path: 'approved_employer/report/:id/history/:id',
-        component: ReportHistoryComponent,
-        data: {
-          title: 'Offer History',
-          // type: 'new'
-        }
-      },
-      {
-        path: 'approved_employer/report/:report_id/view/:id',
-        component: OfferAddViewComponent,
-        data: {
-          title: 'Offer View',
-          // type: 'new'
-        }
-      },
+
       // {
       //   path: 'history/:id',
       //   component: TimelineComponent,

@@ -269,7 +269,10 @@ export class OfferAddViewComponent implements OnInit {
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
           });
-          this.commitstatus = res['data']['commitstatus']
+          // this.service.commit_status(this.resData.groups).subscribe(res => {
+
+          // })
+          this.getCommitStatusOptions(this.resData.groups);
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
           this.groupDetail(res[`data`].groups);
@@ -310,8 +313,12 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
-            this.form.controls['commitstatus'].setValue(res[`data`].commitstatus);
-            // .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
+            this.form.controls['commitstatus']
+              .setValue(res[`data`]['commitstatus']);
+            // .setValue({ label: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
+            console.log(this.form.controls['commitstatus'].value);
+            // this.form.controls['commitstatus'].updateValueAndValidity();
+
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
@@ -489,13 +496,18 @@ export class OfferAddViewComponent implements OnInit {
     }
   }
   forCommit(event) {
-    this.commitstatus = [];
+
     const id = event.value._id;
     console.log(event.value._id);
+    this.getCommitStatusOptions(event.value._id);
+  }
+
+  getCommitStatusOptions(id) {
+    this.commitstatus_optoins = [];
     this.service.commit_status(id).subscribe(res => {
       console.log(res['commitstatus']);
       res['commitstatus'].forEach(element => {
-        this.commitstatus.push({
+        this.commitstatus_optoins.push({
           label: element.lable,
           value: element.value
         });
@@ -503,58 +515,12 @@ export class OfferAddViewComponent implements OnInit {
       ); console.log(this.commitstatus_optoins)
 
     })
-
   }
 
   // get joining date
   getJoiningDate() {
     this.min_expiry_date = this.form.value.joiningdate;
   }
-
-  // on change of group
-  // changeGroup() {
-  //   console.log('this.form.value.group._id => ', this.form.value.group._id);
-  //   // this.add_new_communication();
-  //   // this.communicationDetail(this.form.value.group._id);
-  // }
-
-  // // get communication detail by id
-  // communicationDetail(id) {
-  //   this.communicationData = [];
-  //   console.log('function called => ');
-  //   this.groupService.get_detail(id).subscribe(res => {
-  //     console.log('res of communication details by id => ', res);
-  //     if (res['communication']['data'] && res['communication']['data'].length > 0) {
-  //       this.communicationData = res['communication']['data'][0]['communication'];
-  //       // set communication
-  //       const _array = [];
-  //       this.communicationData.forEach((element, index) => {
-  //         console.log('element => ', element);
-  //         const new_communication = {
-  //           'communicationname': element.communicationname,
-  //           'trigger': element.trigger,
-  //           'priority': element.priority,
-  //           'day': element.day,
-  //           'message': element.message,
-  //         };
-  //         this.communicationFieldItems.setControl(index, this.fb.group({
-  //           communicationname: ['', Validators.required],
-  //           trigger: ['', Validators.required],
-  //           priority: ['', Validators.required],
-  //           day: ['', Validators.required],
-  //           message: ['']
-  //           // message: ['', Validators.required]
-  //         }));
-  //         _array.push(new_communication);
-  //       });
-  //       this.communicationData = _array;
-  //       // set communication
-  //     } else {
-  //       this.add_new_communication();
-  //     }
-  //   });
-
-  // }
 
   // add more communication
   addMoreCommunication() {
@@ -837,5 +803,10 @@ export class OfferAddViewComponent implements OnInit {
     this.form_validation = !flag;
   }
 
+  // testing purpose only
+  check(e) {
+    console.log('e=>', e.value);
+
+  }
 
 }
