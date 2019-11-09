@@ -34,7 +34,7 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false
   },
-  "flag": {
+  flag: {
     type: Number,
     default: 1
   },

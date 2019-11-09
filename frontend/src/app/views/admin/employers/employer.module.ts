@@ -12,6 +12,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import { ReportComponent } from './report/report.component';
 import { ReportHistoryComponent } from './report/report-history/report-history.component';
 import { OffersModule } from '../../shared-components/offers/offers.module'
+import { CalendarModule } from 'primeng/calendar';
 @NgModule({
   declarations: [
     EmployerListComponent,
@@ -28,7 +29,8 @@ import { OffersModule } from '../../shared-components/offers/offers.module'
     DataTablesModule,
     ConfirmDialogModule,
     TooltipModule,
-    OffersModule
+    OffersModule,
+    CalendarModule
   ], providers: [ConfirmationService]
 
 })

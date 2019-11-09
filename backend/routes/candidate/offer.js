@@ -175,7 +175,6 @@ router.put('/', async (req, res) => {
         var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
         var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
         var status = await common_helper.findOne(Status, { 'status': 'Accepted' });
-        // console.log("status===>", status); return false;
 
         let content = status.data.MessageContent;
         content = content.replace('{title}', offer.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);

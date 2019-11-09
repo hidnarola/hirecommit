@@ -492,6 +492,7 @@ router.post('/login', async (req, res) => {
   if (!errors) {
     // let user_resp = await common_helper.findOne(User, { "email": req.body.email })
     let user_resp = await User.findOne({ "email": req.body.email }).populate("role_id").lean();
+    console.log(req.body, user_resp);
 
     if (!user_resp) {
       logger.trace("Login checked resp = ", user_resp);
@@ -731,7 +732,6 @@ router.post('/login', async (req, res) => {
             res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
           }
         }
-        // console.log(user_resp.data); return false;
       }
       else {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
@@ -859,7 +859,6 @@ router.post('/reset_password', async (req, res) => {
     logger.trace("Verifying JWT");
     jwt.verify(Buffer.from(req.body.token, 'base64').toString(), config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
       if (err) {
-        console.log(err);
         if (err.name === "TokenExpiredError") {
           logger.trace("Link has expired");
           res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Link has been expired" });
