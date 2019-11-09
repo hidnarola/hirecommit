@@ -47,6 +47,10 @@ const GroupSchema = new Schema({
   end: {
     type: Date
   },
+  flag: {
+    type: String,
+    default: "draft"
+  },
   createdAt: {
     type: Date,
     default: Date.now

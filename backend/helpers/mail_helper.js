@@ -5,6 +5,7 @@ var config = require("./../config");
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    disableUrlAccess: false,
     tls: { rejectUnauthorized: false },
     auth: {
         //  user: 'demo.narola@gmail.com',

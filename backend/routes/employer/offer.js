@@ -160,7 +160,7 @@ router.post("/", async (req, res) => {
                 "subject": "Offer"
             }, {
                 "msg": content,
-                // "url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+                //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
                 "url": "http://localhost:3000/offer/" + obj.offer_id,
 
             });
