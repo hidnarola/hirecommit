@@ -2,7 +2,8 @@ var express = require("express");
 var router = express.Router();
 var config = require('../../config')
 var ObjectId = require('mongodb').ObjectID;
-var moment = require('moment');
+// var moment = require('moment');
+var moment = require('moment-timezone');
 var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
 var user_helper = require('../../helpers/user_helper');
@@ -170,9 +171,6 @@ router.post('/get_approved', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
-
-
-
 
 router.put("/deactive_candidate/:id", async (req, res) => {
     var obj = {
@@ -352,98 +350,104 @@ router.put("/deactive_employee/:id", async (req, res) => {
 
 router.post('/filter_offers', async (req, res) => {
 
-    // let id = req.body.id;
-    // var user = await common_helper.findOne(User, { _id: new ObjectId(id) })
+    let id = req.body.id;
 
-    // if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-    //     var user_id = user.data.emp_id
-    // }
-    // else {
-    //     var user_id = id
-    // }
-    // var aggregate = [
-    //     {
-    //         $match: {
-    //             $or: [
-    //                 { "employer_id": new ObjectId(id) },
-    //                 { "employer_id": new ObjectId(user_id) }
-    //             ],
-    //             "is_del": false,
-    //              {
-    //                  createdAt: {
-    //                  $gte: moment("2019-11-08 09:53:32.271Z").toDate(),
-    //                  $lte: moment("2019-11-30 09:26:48.207Z").toDate()
-    //              }
-    //         }
-    //     },
-    //     {
-    //         $lookup:
-    //         {
-    //             from: "group",
-    //             localField: "groups",
-    //             foreignField: "_id",
-    //             as: "group"
-    //         }
-    //     },
-    //     {
-    //         $unwind: {
-    //             path: "$group",
-    //             // preserveNullAndEmptyArrays: true
-    //         }
-    //     },
-    //     {
-    //         $lookup:
-    //         {
-    //             from: "user",
-    //             localField: "employer_id",
-    //             foreignField: "_id",
-    //             as: "employer_id"
-    //         }
-    //     },
-    //     {
-    //         $unwind: {
-    //             path: "$employer_id",
-    //             preserveNullAndEmptyArrays: true
-    //         }
-    //     },
-    //     {
-    //         $lookup:
-    //         {
-    //             from: "location",
-    //             localField: "location",
-    //             foreignField: "_id",
-    //             as: "location"
-    //         }
-    //     },
-    //     {
-    //         $unwind: {
-    //             path: "$location",
-    //             preserveNullAndEmptyArrays: true
-    //         }
-    //     },
-    //     {
-    //         $lookup:
-    //         {
-    //             from: "salary_bracket",
-    //             localField: "salarybracket",
-    //             foreignField: "_id",
-    //             as: "salarybracket"
-    //         }
-    //     },
-    //     {
-    //         $unwind: {
-    //             path: "$salarybracket",
-    //             preserveNullAndEmptyArrays: true
-    //         }
-    //     },
-    // ]
-
-    var offer = await common_helper.find(Offer, {
-        createdAt: {
-            $gte: moment("2019-11-08 09:53:32.271Z").toDate(),
-            $lte: moment("2019-11-30 09:26:48.207Z").toDate()
+    var user = await common_helper.findOne(User, { _id: new ObjectId(id) })
+    if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+        var user_id = user.data.emp_id
+    }
+    else {
+        var user_id = id
+    }
+    var aggregate = [];
+    if (req.body.startdate && req.body.enddate) {
+        let start_date = moment(req.body.startdate).utc().startOf('day');
+        let end_date = moment(req.body.enddate).utc().endOf('day');
+        console.log(' : I m here ==> ', 1, start_date.format(), end_date.format(), moment(start_date).toDate(), moment(end_date).toDate());
+        aggregate.push({
+            $match: {
+                "createdAt": { $gte: moment(start_date).toDate() },
+                "createdAt": { $lte: moment(end_date).toDate() }
+            }
+        });
+    }
+    aggregate.push(
+        {
+            $match: {
+                $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(user_id) }],
+                "is_del": false,
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "group",
+                localField: "groups",
+                foreignField: "_id",
+                as: "group"
+            }
+        },
+        {
+            $unwind: {
+                path: "$group",
+                // preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "user",
+                localField: "employer_id",
+                foreignField: "_id",
+                as: "employer_id"
+            }
+        },
+        {
+            $unwind: {
+                path: "$employer_id",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "location",
+                localField: "location",
+                foreignField: "_id",
+                as: "location"
+            }
+        },
+        {
+            $unwind: {
+                path: "$location",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup:
+            {
+                from: "salary_bracket",
+                localField: "salarybracket",
+                foreignField: "_id",
+                as: "salarybracket"
+            }
+        },
+        {
+            $unwind: {
+                path: "$salarybracket",
+                preserveNullAndEmptyArrays: true
+            }
         }
-    })
+    )
+
+    console.log('final : aggregate ==> ', aggregate);
+    let offer = await Offer.aggregate(aggregate);
+    // var offer = await common_helper.find(Offer, {
+    // createdAt: {
+    //     $gte: moment("2019-11-08 09:53:32.271Z").toDate(),
+    //     $lte: moment("2019-11-30 09:26:48.207Z").toDate()
+    // }
+    // })
     // console.log('==============>'), offer;
     res.status(config.OK_STATUS).json(offer);
 });
