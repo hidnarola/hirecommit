@@ -47,11 +47,14 @@ router.get("/user", async (req, res) => {
 });
 
 router.get("/offer/:id", async (req, res) => {
+
   var obj = {
     mail_status: "Opened"
   }
   var response = await common_helper.update(Offer, { "_id": req.params.id }, obj);
+  console.log('response======================>', response);
 
+  res.send("☺☻");
 });
 
 // Add role Registration
@@ -170,8 +173,9 @@ router.post("/candidate_register", async (req, res) => {
 
     let user_resp = await common_helper.findOne(User, {
       "email": req.body.email.toLowerCase(),
-      // "is_del": true
+
     });
+
 
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
