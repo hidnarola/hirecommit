@@ -327,8 +327,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
 });
 
 router.post('/get', async (req, res) => {
-
-
     var schema = {
 
     };
