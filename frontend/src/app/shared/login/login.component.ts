@@ -71,24 +71,20 @@ export class LoginComponent implements OnInit {
             ...res[`userDetails`][0].business
           };
           this.service.setProfileDetail(this.userData);
-
-
-          console.log('userData ===============================> ', this.userData);
         }
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         if (res['role'] === 'admin') {
           this.router.navigate(['admin']);
         } else if (res['role'] === 'employer') {
           this.router.navigate(['employer']);
+        } else if (res['role'] === 'sub-employer') {
+          this.router.navigate(['sub_employer']);
         } else if (res['role'] === 'candidate') {
           if (this.userData.email_verified) {
             this.router.navigate(['candidate']);
           } else {
             this.router.navigate(['candidate/account_verification']);
           }
-        } else if (res['role'] === 'sub-employer') {
-          console.log('here => ');
-          this.router.navigate(['sub_employer']);
         }
       }, (err) => {
         this.show_spinner = false;

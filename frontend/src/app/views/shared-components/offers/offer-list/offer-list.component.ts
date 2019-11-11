@@ -41,8 +41,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private confirmationService: ConfirmationService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('candidate: offerlist component => ', this.userDetail);
-    console.log('userDetails => ', this.userDetail);
     if (this.userDetail.role === 'employer') {
       this.getCustomField();
     }
@@ -51,7 +49,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   // get first custom field
   getCustomField() {
     this.service.get_first_custom_field().subscribe(res => {
-      console.log('res for first custom field => ', res);
       if (res['data']) {
         this.first_custom_field = res['data'][0]['key'];
       } else {
@@ -66,14 +63,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.commonService.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;
-          console.log('from profile +>>', this.profileData);
         } else {
           const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
           // console.log('profile==>', profile);
 
           if (profile) {
             this.profileData = JSON.parse(profile);
-            console.log('profileData email verified==>', this.profileData.email_verified);
             if (!this.profileData.email_verified) {
               this.hide_list = true;
             }
@@ -99,7 +94,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         ajax: (dataTablesParameters: any, callback) => {
 
           this.service.view_offer(dataTablesParameters).subscribe(res => {
-            console.log('Offerresres => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
               this.offerData.forEach(offer => {
@@ -170,7 +164,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         ajax: (dataTablesParameters: any, callback) => {
 
           this.service.view_offer_candidate(dataTablesParameters).subscribe(res => {
-            console.log('res => ', res);
             if (res['status']) {
               this.offerData = res['offer'];
               this.offerData.forEach(offer => {
@@ -277,12 +270,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onAccept(id) {
     this.accept_btn = true;
-    console.log('accept id', id);
     const obj = {
       'id': id
     };
     this.service.offer_accept(obj).subscribe(res => {
-      console.log('accepted!!');
       this.rrerender();
       this.accept_btn = false;
       if (res['data'].status === 1) {

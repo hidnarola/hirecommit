@@ -16,7 +16,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
-  employer_data: any[];
+  employer_data: any = [];
   country: any;
   userDetail: any = [];
   employer_type = 'Approved';
@@ -49,9 +49,6 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('res of approved employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
-              // this.country = res['user'][0].country.country;
-              console.log('country>>', this.employer_data);
-
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -59,10 +56,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         } else if (this.router.snapshot.data.type === 'new') {
           this.service.get_new_employer(dataTablesParameters).subscribe(res => {
-            console.log('res of new employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
-
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -122,7 +117,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
           this.rrerender();
         }, (err) => {
-          console.log(err);
+          ;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
         });
       }
@@ -133,9 +128,19 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   //   this.route.navigate(['admin/employers/detail/' + id]);
   // }emplo
 
-  // delete(id) {
-  //   this.service.deactivate_employer(id).subscribe(res => { });
-  // }
+  delete(id) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to Delete this record?',
+      accept: () => {
+        this.service.deactivate_employer(id).subscribe(res => {
+          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.rrerender();
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+        });
+      }
+    });
+  }
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

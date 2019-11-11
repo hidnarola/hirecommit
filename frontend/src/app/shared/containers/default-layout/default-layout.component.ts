@@ -54,9 +54,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.router.navigate(['employer/profile']);
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['candidate/profile']);
-    } else if (this.userDetail.role === 'sub-employer') {
-      this.router.navigate(['sub_employer/profile']);
     }
+    // else if (this.userDetail.role === 'sub-employer') {
+    //   this.router.navigate(['sub_employer/profile']);
+    // }
   }
 
   logout() {
@@ -84,10 +85,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
     if (userType === 'admin') {
       this.navItems = admin;
+    } else if (userType === 'sub-employer') {
+      this.navItems = sub_employer;
     } else {
       this.commonService.getDecryptedProfileDetail().then(res => {
         this._profile_data = res;
-        console.log(' this._profile_data ==============> ', this._profile_data);
         if (userType === 'employer') {
           this.navItems = employer;
         } else if (userType === 'candidate') {
@@ -96,8 +98,6 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
           } else {
             this.navItems = [];
           }
-        } else if (userType === 'sub-employer') {
-          this.navItems = sub_employer;
         }
       });
     }
