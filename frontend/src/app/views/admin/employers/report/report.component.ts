@@ -42,6 +42,10 @@ export class ReportComponent implements OnInit {
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
+        // if (this.from && this.to) {
+        //   dataTablesParameters['startdate'] = this.from;
+        //   dataTablesParameters['enddate'] = this.to;
+        // }
         // if (this.router.snapshot.data.type === 'approved') {
         this.service.offer_report(this.id, dataTablesParameters).subscribe(res => {
           console.log('res of approved employer => ', this.id);
@@ -113,6 +117,7 @@ export class ReportComponent implements OnInit {
       ]
     };
   }
+
   getCustomField() {
     this.offerService.get_first_custom_field().subscribe(res => {
       console.log('res for first custom field => ', res);
@@ -123,26 +128,38 @@ export class ReportComponent implements OnInit {
       }
     });
   }
-  onFrom(e) {
-    var date = new Date(e);
-    var month = date.getMonth() + 1;
-    this.from = date.getDate() + '/' + month + '/' + date.getFullYear()
-    console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
+  // onFrom(e) {
+  //   var date = new Date(e);
+  //   var month = date.getMonth() + 1;
+  //   this.from = date.getDate() + '/' + month + '/' + date.getFullYear()
+  //   console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
 
-  }
+  // }
 
-  onTo(e) {
-    var date = new Date(e);
-    var month = date.getMonth() + 1;
-    this.to = date.getDate() + '/' + month + '/' + date.getFullYear()
-    console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
-    // console.log('val 2', e);
-  }
-  check() {
-    console.log('this.from, this,to=>', this.from, this.to);
+  // onTo(e) {
+  //   var date = new Date(e);
+  //   var month = date.getMonth() + 1;
+  //   this.to = date.getDate() + '/' + month + '/' + date.getFullYear()
+  //   console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
+  //   // console.log('val 2', e);
+  // }
+
+  // filterWithDateRange() {
+  //   console.log('this.from, this,to=>', this.from, this.to);
+  //   if (this.from && this.to) {
+  //     console.log('if');
+  //     // this.rrerender();
+  //     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+  //       dtInstance.draw();
+  //     });
+  //   } else {
+
+  //     console.log('else');
+  //   }
+  // }
 
 
-  }
+
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

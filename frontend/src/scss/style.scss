@@ -220,3 +220,7 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
         color: red;
     }
 }
+
+.inline_input {display: flex;padding: 15px;background: #f4f4f4;margin: 10px 10px;flex-wrap: wrap;justify-content: flex-end;}
+.inline_input p-calendar {margin-right: 15px;}
+.error {margin: 0 !important;}
