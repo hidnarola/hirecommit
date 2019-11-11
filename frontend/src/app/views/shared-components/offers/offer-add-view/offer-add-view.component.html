@@ -323,7 +323,8 @@
                                                     <div class="cust_err_msg"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                         <span
-                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required']"
+                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] ||
+                                                            form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
                                                             class="text-danger">
                                                             This field is required.
                                                         </span>
@@ -346,9 +347,9 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 col-form-label" for="day">Day</label>
                                                 <div class="col-md-4">
-                                                    <input type="text" id="day" name="day" class="form-control"
-                                                        placeholder="Enter Days" formControlName="day"
-                                                        [(ngModel)]="customfield.day">
+                                                    <input type="number" min="1" id="day" name="day"
+                                                        class="form-control" placeholder="Enter Days"
+                                                        formControlName="day" [(ngModel)]="customfield.day">
 
                                                     <div class="cust_err_msg"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
@@ -357,8 +358,13 @@
                                                             class="text-danger">
                                                             This field is required.
                                                         </span>
+                                                        <span
+                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
+                                                            class="text-danger">Only Positive
+                                                            Number</span>
                                                     </div>
                                                 </div>
+
 
                                                 <label class="col-md-1 col-form-label" for="trigger">Priority</label>
                                                 <div class="col-md-4">
@@ -387,6 +393,15 @@
                                                     <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
                                                     </ckeditor>
+                                                    <div class="cust_err_msg"
+                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['message'].valid">
+                                                        <span
+                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] ||
+                                                        form.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']"
+                                                            class="text-danger">
+                                                            This field is required.
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
