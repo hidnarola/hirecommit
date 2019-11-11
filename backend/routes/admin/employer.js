@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 var config = require('../../config')
 var ObjectId = require('mongodb').ObjectID;
-// var moment = require('moment');
-var moment = require('moment-timezone');
+var moment = require('moment');
+// var moment = require('moment-timezone');
 var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
 var user_helper = require('../../helpers/user_helper');
@@ -190,12 +190,13 @@ router.put("/deactive_candidate/:id", async (req, res) => {
     }
 });
 
-router.put("/deactive_employee/:id", async (req, res) => {
+router.put("/deactive_employer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    var resp_data = await common_helper.update(Employer, { "_id": req.params.id }, obj);
-    var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
+    console.log(' : req.params.id ==> ', req.params.id);
+    var resp_data = await common_helper.update(Employer, { "user_id": req.params.id }, obj);
+    var resp_data = await common_helper.update(User, { "_id": req.params.id }, obj);
     if (resp_data.status == 0) {
         logger.error("Error occured while fetching User = ", resp_data);
         res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
@@ -222,7 +223,6 @@ router.put("/deactive_employee/:id", async (req, res) => {
 //         documenttype: req.body.documenttype,
 //         documentimage: req.body.documentimage,
 //         is_del: req.body.is_del
-
 //     };
 //     var id = req.params.id;
 
@@ -348,111 +348,6 @@ router.put("/deactive_employee/:id", async (req, res) => {
 //     }
 // })
 
-router.post('/filter_offers', async (req, res) => {
-
-    let id = req.body.id;
-
-    var user = await common_helper.findOne(User, { _id: new ObjectId(id) })
-    if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-        var user_id = user.data.emp_id
-    }
-    else {
-        var user_id = id
-    }
-    var aggregate = [];
-    if (req.body.startdate && req.body.enddate) {
-        let start_date = moment(req.body.startdate).utc().startOf('day');
-        let end_date = moment(req.body.enddate).utc().endOf('day');
-        console.log(' : I m here ==> ', 1, start_date.format(), end_date.format(), moment(start_date).toDate(), moment(end_date).toDate());
-        aggregate.push({
-            $match: {
-                "createdAt": { $gte: moment(start_date).toDate() },
-                "createdAt": { $lte: moment(end_date).toDate() }
-            }
-        });
-    }
-    aggregate.push(
-        {
-            $match: {
-                $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(user_id) }],
-                "is_del": false,
-            }
-        },
-        {
-            $lookup:
-            {
-                from: "group",
-                localField: "groups",
-                foreignField: "_id",
-                as: "group"
-            }
-        },
-        {
-            $unwind: {
-                path: "$group",
-                // preserveNullAndEmptyArrays: true
-            }
-        },
-        {
-            $lookup:
-            {
-                from: "user",
-                localField: "employer_id",
-                foreignField: "_id",
-                as: "employer_id"
-            }
-        },
-        {
-            $unwind: {
-                path: "$employer_id",
-                preserveNullAndEmptyArrays: true
-            }
-        },
-        {
-            $lookup:
-            {
-                from: "location",
-                localField: "location",
-                foreignField: "_id",
-                as: "location"
-            }
-        },
-        {
-            $unwind: {
-                path: "$location",
-                preserveNullAndEmptyArrays: true
-            }
-        },
-        {
-            $lookup:
-            {
-                from: "salary_bracket",
-                localField: "salarybracket",
-                foreignField: "_id",
-                as: "salarybracket"
-            }
-        },
-        {
-            $unwind: {
-                path: "$salarybracket",
-                preserveNullAndEmptyArrays: true
-            }
-        }
-    )
-
-    console.log('final : aggregate ==> ', aggregate);
-    let offer = await Offer.aggregate(aggregate);
-    // var offer = await common_helper.find(Offer, {
-    // createdAt: {
-    //     $gte: moment("2019-11-08 09:53:32.271Z").toDate(),
-    //     $lte: moment("2019-11-30 09:26:48.207Z").toDate()
-    // }
-    // })
-    // console.log('==============>'), offer;
-    res.status(config.OK_STATUS).json(offer);
-});
-
-
 // offer report
 router.post('/get_report/:id', async (req, res) => {
     var schema = {};
@@ -547,16 +442,13 @@ router.post('/get_report/:id', async (req, res) => {
                     { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
             });
         }
-        if (req.body.startdate && req.body.enddate) {
-            let start_date = moment(req.body.startdate).utc().startOf('day');
-            let end_date = moment(req.body.enddate).utc().endOf('day');
-            console.log(' : I m here ==> ', 1, start_date.format(), end_date.format(), moment(start_date).toDate(), moment(end_date).toDate());
-            console.log("======>", end_date);
-
+        if (req.body.startdate != undefined && req.body.startdate != "" && req.body.enddate != undefined && req.body.enddate != "") {
+            let start_date = moment(req.body.startdate).utc().startOf('day').add(1, 'days');
+            let end_date = moment(req.body.enddate).utc().endOf('day').add(1, 'days');
+            console.log(' : I m here ==> ', 1, moment(start_date).toDate(), moment(end_date).toDate());
             aggregate.push({
                 $match: {
-                    "createdAt": { $gte: moment(start_date).toDate() },
-                    "createdAt": { $lte: moment(end_date).toDate() }
+                    "createdAt": { $gte: moment(start_date).toDate(), $lte: moment(end_date).toDate() }
                 }
             });
         }
@@ -564,7 +456,7 @@ router.post('/get_report/:id', async (req, res) => {
         let totalMatchingCountRecords = await Offer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, req.body.startdate, req.body.enddate);
+        var resp_data = await offer_helper.get_all_created_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, req.body.startdate, req.body.enddate);
 
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);

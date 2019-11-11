@@ -497,7 +497,7 @@ router.post('/login', async (req, res) => {
   if (!errors) {
     // let user_resp = await common_helper.findOne(User, { "email": req.body.email })
     let user_resp = await User.findOne({ "email": req.body.email }).populate("role_id").lean();
-    console.log(req.body, user_resp);
+    // console.log(req.body, user_resp);
 
     if (!user_resp) {
       logger.trace("Login checked resp = ", user_resp);
