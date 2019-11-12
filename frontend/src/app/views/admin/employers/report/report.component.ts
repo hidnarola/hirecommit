@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EmployerService } from '../employer.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, from } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { OfferService } from '../../../shared-components/offers/offer.service';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
+
 
 @Component({
   selector: 'app-report',
@@ -12,9 +12,11 @@ import { analyzeAndValidateNgModules } from '@angular/compiler';
   styleUrls: ['./report.component.scss']
 })
 export class ReportComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  // dtInstance:
   offerData: any;
   id: any;
   from: any;
@@ -27,12 +29,9 @@ export class ReportComponent implements OnInit {
     this.router.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
-    console.log('res of approved employer => ', this.id);
   }
 
   ngOnInit() {
-    console.log(this.id);
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -42,36 +41,20 @@ export class ReportComponent implements OnInit {
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        // if (this.from && this.to) {
-        //   dataTablesParameters['startdate'] = this.from;
-        //   dataTablesParameters['enddate'] = this.to;
-        // }
+        if (this.from && this.to) {
+          dataTablesParameters['startdate'] = this.from;
+          dataTablesParameters['enddate'] = this.to;
+        }
         // if (this.router.snapshot.data.type === 'approved') {
         this.service.offer_report(this.id, dataTablesParameters).subscribe(res => {
-          console.log('res of approved employer => ', this.id);
           if (res['status'] === 1) {
             this.offerData = res['offer'];
-            console.log('>>', this.offerData);
-
-            // this.country = res['user'][0].country.country;
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
-        // }
-        // else if (this.router.snapshot.data.type === 'new') {
-        //   this.service.get_new_employer(dataTablesParameters).subscribe(res => {
-        //     console.log('res of new employer => ', res);
-        //     if (res['status'] === 1) {
-        //       this.offerData = res['user'];
 
-        //       callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
-        //     }
-        //   }, err => {
-        //     callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-        //   });
-        // }
       },
       columnDefs: [{ orderable: false, targets: 11 }],
       columns: [
@@ -93,9 +76,7 @@ export class ReportComponent implements OnInit {
         {
           data: 'joiningdate'
         },
-        // {
-        //   data: 'status'
-        // },
+
         {
           data: 'offertype'
         },
@@ -120,7 +101,6 @@ export class ReportComponent implements OnInit {
 
   getCustomField() {
     this.offerService.get_first_custom_field().subscribe(res => {
-      console.log('res for first custom field => ', res);
       if (res['data']) {
         this.first_custom_field = res['data'][0]['key'];
       } else {
@@ -128,37 +108,32 @@ export class ReportComponent implements OnInit {
       }
     });
   }
-  // onFrom(e) {
-  //   var date = new Date(e);
-  //   var month = date.getMonth() + 1;
-  //   this.from = date.getDate() + '/' + month + '/' + date.getFullYear()
-  //   console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
 
-  // }
+  onFrom(e) {
+    var date = new Date(e);
+    var month = date.getMonth() + 1;
+    this.from = date.getFullYear() + '-' + month + '-' + date.getDate()
 
-  // onTo(e) {
-  //   var date = new Date(e);
-  //   var month = date.getMonth() + 1;
-  //   this.to = date.getDate() + '/' + month + '/' + date.getFullYear()
-  //   console.log('val', date.getDate() + '/' + month + '/' + date.getFullYear());
-  //   // console.log('val 2', e);
-  // }
+  }
 
-  // filterWithDateRange() {
-  //   console.log('this.from, this,to=>', this.from, this.to);
-  //   if (this.from && this.to) {
-  //     console.log('if');
-  //     // this.rrerender();
-  //     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-  //       dtInstance.draw();
-  //     });
-  //   } else {
+  onTo(e) {
+    var date = new Date(e);
+    var month = date.getMonth() + 1;
+    this.to = date.getFullYear() + '-' + month + '-' + date.getDate()
+  }
 
-  //     console.log('else');
-  //   }
-  // }
+  filterWithDateRange() {
+    this.rrerender();
+  }
+
+  onClearFrom() {
+    this.from = undefined;
+  }
 
 
+  onClearTo() {
+    this.to = undefined;
+  }
 
 
   rrerender(): void {

@@ -82,10 +82,10 @@ export class GroupEditComponent implements OnInit {
             'message': element.message,
           };
           this.communicationFieldItems.setControl(index, this.fb.group({
-            communicationname: ['', 0],
+            communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
             trigger: ['', Validators.required],
             priority: ['', Validators.required],
-            day: ['', Validators.required],
+            day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
             message: ['', [Validators.required, this.noWhitespaceValidator]]
             // message: ['', Validators.required]
           }));
@@ -156,12 +156,11 @@ export class GroupEditComponent implements OnInit {
     };
 
     this.communicationFieldItems.setControl(index, this.fb.group({
-      communicationname: ['', Validators.required],
+      communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
-      day: ['', Validators.required],
-      message: ['']
-      // message: ['', Validators.required]
+      day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
 
     this.communicationData.push(new_communication);

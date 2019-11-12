@@ -21,5 +21,5 @@ export const environment = {
   // API_URL: ' http://13.235.235.178:3000/',
   // API_URL: 'localhost:3000/',
   imageUrl: str + host + ':' + port + '/upload/'
-  //  imageUrl: str + host + ':' + port + '/upload/'
+  // imageUrl: ' http://13.235.235.178' + '/upload/'
 };

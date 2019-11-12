@@ -266,7 +266,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
-          console.log('res => ', res);
           this.resData = res[`data`];
           this.grpId = this.resData.user_id;
           this.socketService.joinGrp(this.resData.user_id);

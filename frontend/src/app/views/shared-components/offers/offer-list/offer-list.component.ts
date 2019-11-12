@@ -46,8 +46,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private spinner: NgxSpinnerService,
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('candidate: offerlist component => ', this.userDetail);
-    console.log('userDetails => ', this.userDetail);
     if (this.userDetail.role === 'employer') {
       this.getCustomField();
     }
@@ -58,7 +56,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   // get first custom field
   getCustomField() {
     this.service.get_first_custom_field().subscribe(res => {
-      console.log('res for first custom field => ', res);
       if (res['data']) {
         this.first_custom_field = res['data'][0]['key'];
       } else {
@@ -103,7 +100,6 @@ this.socketService.joinGrp(id);
 
           if (profile) {
             this.profileData = JSON.parse(profile);
-            console.log('profileData email verified==>', this.profileData.email_verified);
             if (!this.profileData.email_verified) {
               this.hide_list = true;
             }
@@ -142,7 +138,6 @@ this.socketService.joinGrp(id);
         destroy: true,
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_offer(dataTablesParameters).subscribe(res => {
-            console.log('Offerresres => ', res);
             if (res['status']) {
                        // To hide spinner
           this.spinner.hide();
@@ -217,7 +212,6 @@ this.socketService.joinGrp(id);
         destroy: true,
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_offer_candidate(dataTablesParameters).subscribe(res => {
-            console.log('res => ', res);
             if (res['status']) {
                        // To hide spinner
           this.spinner.hide();
@@ -328,7 +322,6 @@ this.socketService.joinGrp(id);
 
   onAccept(id) {
     this.accept_btn = true;
-    console.log('accept id', id);
     const obj = {
       'id': id
     };

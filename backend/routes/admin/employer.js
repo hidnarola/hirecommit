@@ -445,8 +445,10 @@ router.post('/get_report/:id', async (req, res) => {
             });
         }
         if (req.body.startdate != undefined && req.body.startdate != "" && req.body.enddate != undefined && req.body.enddate != "") {
-            let start_date = moment(req.body.startdate).utc().startOf('day').add(1, 'days');
-            let end_date = moment(req.body.enddate).utc().endOf('day').add(1, 'days');
+            // let start_date = moment(req.body.startdate).utc().startOf('day').add(1, 'days');
+            // let end_date = moment(req.body.enddate).utc().endOf('day').add(1, 'days');
+            let start_date = moment(req.body.startdate).utc().startOf('day');
+            let end_date = moment(req.body.enddate).utc().endOf('day');
             console.log(' : I m here ==> ', 1, moment(start_date).toDate(), moment(end_date).toDate());
             aggregate.push({
                 $match: {

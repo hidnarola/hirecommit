@@ -12,19 +12,19 @@
                     </button> -->
 
                 </div>
-                <!-- <div class="inline_input">
-                    <h6 class="mr-2" style="line-height: 2.2;">Start Date </h6>
+                <div class="inline_input">
+                    <h6 class="mr-2">Start Date </h6>
                     <p-calendar id="from" (onSelect)="onFrom($event)" showButtonBar="true" dateFormat="mm/dd/yy"
-                        [readonlyInput]="true" placeholder="DD/MM/YYYY">
+                        [readonlyInput]="true" placeholder="MM/DD/YYYY" (onClearClick)="onClearFrom()">
                     </p-calendar>
-                    <h6 class="mr-2" style="line-height: 2.2;">End date </h6>
+                    <h6 class="mr-2">End date </h6>
                     <p-calendar id="to" (onSelect)="onTo($event)" showButtonBar="true" dateFormat="mm/dd/yy"
-                        [readonlyInput]="true" placeholder="DD/MM/YYYY">
+                        [readonlyInput]="true" placeholder="MM/DD/YYYY" (onClearClick)="onClearTo()">
                     </p-calendar>
 
-                    <button class="btn btn-sm btn-primary" style="padding: 0.2-5rem 0.5rem;" type="button"
-                        (click)="filterWithDateRange()" id="check"><i class="fa fa-search"></i></button>
-                </div> -->
+                    <button class="btn btn-sm btn-primary" type="button" (click)="filterWithDateRange()" id="check"><i
+                            class="fa fa-search"></i></button>
+                </div>
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
 

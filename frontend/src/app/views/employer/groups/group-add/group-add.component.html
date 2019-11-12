@@ -222,7 +222,7 @@
                                                 <label class="col-md-2 col-form-label" for="day">Day</label>
                                                 <div class="col-md-4">
                                                     <input type="number" id="day" name="day" class="form-control"
-                                                        placeholder="Enter Days" formControlName="day"
+                                                        placeholder="Enter Days" formControlName="day" min="1"
                                                         [(ngModel)]="customfield.day">
                                                     <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
                                                         style="color: red;">
@@ -230,6 +230,10 @@
                                                             *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
                                                             This field is required.
                                                         </div>
+                                                        <span
+                                                            *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
+                                                            class="text-danger">Only Positive
+                                                            Number</span>
                                                     </div>
                                                 </div>
 

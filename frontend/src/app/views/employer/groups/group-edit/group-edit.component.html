@@ -207,7 +207,7 @@
                                                         class="cust_err_msg">
                                                         <div class="text-danger"
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] 
-                                                            || communicationForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']">
+                                                            || groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']">
                                                             This field is required.
                                                         </div>
                                                     </div>
@@ -245,6 +245,10 @@
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
                                                             This field is required.
                                                         </div>
+                                                        <span
+                                                            *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
+                                                            class="text-danger">Only Positive
+                                                            Number</span>
                                                     </div>
                                                 </div>
 
@@ -274,13 +278,18 @@
                                                     <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
                                                     </ckeditor>
-                                                    <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
-                                                        style="color: red;">
-                                                        <div
-                                                            *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
+
+
+
+
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
+                                                        class="cust_err_msg">
+                                                        <div class="text-danger"
+                                                            *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required']  || groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']">
                                                             This field is required.
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>

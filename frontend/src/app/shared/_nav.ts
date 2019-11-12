@@ -128,22 +128,6 @@ export const employer: NavData[] = [
   //   icon: 'icon-user'
   // }
 ];
-
-export const candidate: NavData[] = [
-  {
-    name: 'Offers',
-    // name: 'Manager Offers',
-    url: 'offers/list',
-    icon: 'icon-grid',
-    // children: [
-    //   {
-    //     name: 'Offer List',
-    //     url: 'offers/list'
-    //   }
-    // ]
-  }
-];
-
 export const sub_employer: NavData[] = [
   {
     name: 'Offer',
@@ -169,3 +153,20 @@ export const sub_employer: NavData[] = [
     icon: 'icon-paper-clip'
   }
 ];
+
+export const candidate: NavData[] = [
+  {
+    name: 'Offers',
+    // name: 'Manager Offers',
+    url: 'offers/list',
+    icon: 'icon-grid',
+    // children: [
+    //   {
+    //     name: 'Offer List',
+    //     url: 'offers/list'
+    //   }
+    // ]
+  }
+];
+
+

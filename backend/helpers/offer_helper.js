@@ -286,8 +286,10 @@ offer_helper.get_all_created_offer = async (collection, id, search, start, lengt
     }
 
     if (startdate != undefined && startdate != "" && enddate != undefined && enddate != "") {
-      let start_date = moment(startdate).utc().startOf('day').add(1, 'days');
-      let end_date = moment(enddate).utc().endOf('day').add(1, 'days');
+      // let start_date = moment(startdate).utc().startOf('day').add(1, 'days');
+      // let end_date = moment(enddate).utc().endOf('day').add(1, 'days');
+      let start_date = moment(startdate).utc().startOf('day');
+      let end_date = moment(enddate).utc().endOf('day');
       aggregate.push({
         $match: {
           "createdAt": { $gte: moment(start_date).toDate(), $lte: moment(end_date).toDate() }
