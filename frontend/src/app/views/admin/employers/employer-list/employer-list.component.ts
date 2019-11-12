@@ -70,18 +70,18 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }
       },
-      columnDefs: [{ orderable: false, targets: 5 }],
+      columnDefs: [{ orderable: false, targets:  1 }, { orderable: false, targets: 5 }],
       columns: [
         {
           data: 'firstname'
         }, {
-          data: 'lastname'
+          data: 'lsatname'
         }, {
-          data: 'email'
+          data: 'user.email'
         }, {
-          data: 'country'
+          data: 'business.country'
         }, {
-          data: 'coampany_name'
+          data: 'companyname'
         }, {
           data: 'action'
         }

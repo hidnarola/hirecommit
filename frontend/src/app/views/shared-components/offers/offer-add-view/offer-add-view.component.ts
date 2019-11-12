@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Params, ActivatedRouteSnapshot } from '@angular/router';
 import { OfferService } from '../offer.service';
@@ -11,13 +11,14 @@ import { visitValue } from '@angular/compiler/src/util';
 import { ConfirmationService } from 'primeng/api';
 import { KeyValuePipe } from '@angular/common';
 import { EmployerService } from '../../../admin/employers/employer.service';
-
+import Swal from 'sweetalert2';
+import { SocketService } from '../../../../services/socket.service';
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
   styleUrls: ['./offer-add-view.component.scss']
 })
-export class OfferAddViewComponent implements OnInit {
+export class OfferAddViewComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   resData: any;
   form: FormGroup;
@@ -78,6 +79,7 @@ export class OfferAddViewComponent implements OnInit {
   min_expiry_date = new Date();
   userDetail: any = [];
   offerList: any;
+  grpId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -89,7 +91,8 @@ export class OfferAddViewComponent implements OnInit {
     private commonService: CommonService,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-    private adminService: EmployerService
+    private adminService: EmployerService,
+    private socketService: SocketService
   ) {
     // show spinner
     // if (this.is_Edit || this.is_View) {
@@ -265,13 +268,13 @@ export class OfferAddViewComponent implements OnInit {
         res => {
           console.log('res => ', res);
           this.resData = res[`data`];
+          this.grpId = this.resData.user_id;
+          this.socketService.joinGrp(this.resData.user_id);
           // this.commitstatus = res['commitstatus']
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
           });
-          // this.service.commit_status(this.resData.groups).subscribe(res => {
 
-          // })
           this.getCommitStatusOptions(this.resData.groups);
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
@@ -314,11 +317,7 @@ export class OfferAddViewComponent implements OnInit {
             this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['commitstatus']
-              .setValue(res[`data`]['commitstatus']);
-            // .setValue({ label: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
-            console.log(this.form.controls['commitstatus'].value);
-            // this.form.controls['commitstatus'].updateValueAndValidity();
-
+              .setValue({ lable: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
@@ -380,7 +379,7 @@ export class OfferAddViewComponent implements OnInit {
           this.resData.groupName = res[`data`]['groups']['name'];
         });
     } else if (this.userDetail.role === 'admin') {
-      //  do code here for admin side - offer detail 
+      //  do code here for admin side - offer detail
       this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
           this.resData = res[`data`];
@@ -505,16 +504,37 @@ export class OfferAddViewComponent implements OnInit {
   getCommitStatusOptions(id) {
     this.commitstatus_optoins = [];
     this.service.commit_status(id).subscribe(res => {
-      console.log(res['commitstatus']);
-      res['commitstatus'].forEach(element => {
-        this.commitstatus_optoins.push({
-          label: element.lable,
-          value: element.value
-        });
-      }
-      ); console.log(this.commitstatus_optoins)
+      this.commitstatus_optoins = res['commitstatus'];
+      // res['commitstatus'].forEach(element => {
+      //   this.commitstatus_optoins.push({
+      //     label: element.lable,
+      //     value: element.value
+      //   });
+    }
+    );
+    // })
+  }
 
-    })
+  Accept(id) {
+
+    console.log('id=>', id);
+    const obj = {
+      'id': id
+    };
+    this.service.offer_accept(obj).subscribe(res => {
+      if (res['data'].status === 1) {
+        this.spinner.show();
+        Swal.fire(
+          {
+            type: 'success',
+            text: res['message']
+          }
+        );
+        this.spinner.hide();
+      }
+    });
+
+
   }
 
   // get joining date
@@ -551,11 +571,11 @@ export class OfferAddViewComponent implements OnInit {
     };
 
     this.communicationFieldItems.setControl(index, this.fb.group({
-      communicationname: ['', Validators.required],
+      communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
-      day: ['', Validators.required],
-      message: ['']
+      day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      message: ['', [Validators.required, this.noWhitespaceValidator]]
       // message: ['', Validators.required]
     }));
 
@@ -623,8 +643,7 @@ export class OfferAddViewComponent implements OnInit {
       this.router.navigate([this.cancel_link1]);
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
-    }
-    else if (this.userDetail.role === 'admin') {
+    } else if (this.userDetail.role === 'admin') {
       const backID = this.route.snapshot.params.report_id;
       this.router.navigate(['/admin/employers/approved_employer/report/' + backID + '/list']);
       // }
@@ -691,6 +710,7 @@ export class OfferAddViewComponent implements OnInit {
       'group',
       'offerStatus',
       'status',
+      // 'commitstatus',
       'employer_id',
       'communicationFieldItems',
       'salarybracket',
@@ -699,12 +719,15 @@ export class OfferAddViewComponent implements OnInit {
 
       // 'salaryduration'
     ];
-    const data = {
+    console.log('this.form.value ==== check for value =====>', this.form.value);
+
+    const form_data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
       location: this.form.value.location._id,
       groups: this.form.value.group._id,
       // country: this.profileData._id,
+      commitstatus: this.form.value.commitstatus.value,
       salary: this.form.value.salarybracket ? this.form.value.salarybracket : '',
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
@@ -712,15 +735,17 @@ export class OfferAddViewComponent implements OnInit {
       // status: this.form.value.offerStatus,
       data: JSON.stringify(communication_array)
     };
-    Object.keys(data).map(key => {
+    console.log('data ====>  chek here=>', form_data);
+
+    Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {
-        delete data[key];
+        delete form_data[key];
       }
     });
 
-    for (const key in data) {
+    for (const key in form_data) {
       if (key) {
-        const value = data[key];
+        const value = form_data[key];
         this.formData.append(key, value);
       }
     }
@@ -732,13 +757,19 @@ export class OfferAddViewComponent implements OnInit {
       if (this.route.snapshot.data.title === 'Edit') {
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
-        this.formData.append('commitstatus', this.form.value.commitstatus.value);
+        // this.formData.append('commitstatus', this.form.value.commitstatus.value);
         this.confirmationService.confirm({
           message: 'Are you sure that you want to Update this record?',
           accept: () => {
             this.show_spinner = true;
             this.service.update_offer(this.formData).subscribe(
               res => {
+                console.log('<====>', res['data']['data'].employer_id);
+                this.socketService.changeOffer(this.grpId);
+                this.socketService.leaveGrp(this.grpId);
+                this.socketService.joinGrp(res['data']['data'].employer_id);
+                this.socketService.changeOffer(res['data']['data'].employer_id);
+                // this.socketService.leaveGrp(res['data']['data'].employer_id);
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -757,6 +788,7 @@ export class OfferAddViewComponent implements OnInit {
           }
         });
       } else {
+
         if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
           this.confirmationService.confirm({
             message: 'Are you sure that you want to Add this Offer?',
@@ -805,8 +837,11 @@ export class OfferAddViewComponent implements OnInit {
 
   // testing purpose only
   check(e) {
-    console.log('e=>', e.value);
+    console.log('e=>', e);
 
+  }
+   ngOnDestroy(): void {
+    this.socketService.leaveGrp(this.grpId);
   }
 
 }

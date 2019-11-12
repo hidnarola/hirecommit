@@ -16,7 +16,7 @@ router.post('/get_new', async (req, res) => {
 
     if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'firstname' : req.body.columns[sortOrderColumnIndex].data;
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
             [sortOrderColumn]: sortOrder
@@ -64,7 +64,10 @@ router.post('/get_new', async (req, res) => {
         if (req.body.search && req.body.search != "") {
             aggregate.push({
                 "$match":
-                    { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+                {
+                    $or: [{ "username": RE },
+                    { "user.email": RE }, { "business.country": RE }, { "companyname": RE }]
+                }
             });
         }
 
@@ -93,7 +96,7 @@ router.post('/get_approved', async (req, res) => {
 
     if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'firstname' : req.body.columns[sortOrderColumnIndex].data;
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
             [sortOrderColumn]: sortOrder
@@ -133,15 +136,34 @@ router.post('/get_approved', async (req, res) => {
                 $unwind: "$user"
             },
             {
+                $lookup:
+                {
+                    from: "document_type",
+                    localField: "documenttype",
+                    foreignField: "_id",
+                    as: "document"
+                }
+            },
+            {
+                $unwind:
+                {
+                    path: "$document",
+                    // preserveNullAndEmptyArrays: true
+                }
+
+            },
+            {
                 $match: { "user.isAllow": true }
             }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        console.log(RE);
+
         if (req.body.search && req.body.search != "") {
             aggregate.push({
                 "$match":
-                    { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+                    { $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }] }
             });
         }
 
