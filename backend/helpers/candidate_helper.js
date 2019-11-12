@@ -3,6 +3,7 @@ var ObjectId = require('mongodb').ObjectID;
 var candidate_helper = {};
 candidate_helper.get_all_approved_candidate = async (collection, search, start, length, recordsTotal, sort) => {
   try {
+    console.log(sort);
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
@@ -59,7 +60,6 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
           path: "$document",
           // preserveNullAndEmptyArrays: true
         }
-
       },
       {
         $match: { "user.isAllow": true }
@@ -71,8 +71,7 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
       aggregate.push({
         "$match":
         {
-          $or: [{ "username": RE },
-          { "user.email": RE }]
+          $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "createdAt": RE }, { "status": RE },]
         }
       });
     }
@@ -170,8 +169,9 @@ candidate_helper.get_all_new_candidate = async (collection, search, start, lengt
     if (search && search.value != '') {
       aggregate.push({
         "$match":
-
-          { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+        {
+          $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "createdAt": RE }, { "status": RE }]
+        }
 
       });
     }

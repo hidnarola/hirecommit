@@ -31,6 +31,11 @@ export function getToken(): string {
 import { ConfirmationService } from 'primeng/api';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { TooltipModule } from 'ng2-tooltip-directive';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -56,7 +61,8 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     NgxCaptchaModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'
-    })
+    }),
+    SocketIoModule.forRoot(config)
   ],
   declarations: [
     AppComponent,

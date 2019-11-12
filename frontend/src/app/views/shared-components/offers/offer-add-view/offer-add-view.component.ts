@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Params, ActivatedRouteSnapshot } from '@angular/router';
 import { OfferService } from '../offer.service';
@@ -12,12 +12,13 @@ import { ConfirmationService } from 'primeng/api';
 import { KeyValuePipe } from '@angular/common';
 import { EmployerService } from '../../../admin/employers/employer.service';
 import Swal from 'sweetalert2';
+import { SocketService } from '../../../../services/socket.service';
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
   styleUrls: ['./offer-add-view.component.scss']
 })
-export class OfferAddViewComponent implements OnInit {
+export class OfferAddViewComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   resData: any;
   form: FormGroup;
@@ -78,6 +79,7 @@ export class OfferAddViewComponent implements OnInit {
   min_expiry_date = new Date();
   userDetail: any = [];
   offerList: any;
+  grpId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -89,7 +91,8 @@ export class OfferAddViewComponent implements OnInit {
     private commonService: CommonService,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-    private adminService: EmployerService
+    private adminService: EmployerService,
+    private socketService: SocketService
   ) {
     // show spinner
     // if (this.is_Edit || this.is_View) {
@@ -264,6 +267,8 @@ export class OfferAddViewComponent implements OnInit {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
+          this.grpId = this.resData.user_id;
+          this.socketService.joinGrp(this.resData.user_id);
           // this.commitstatus = res['commitstatus']
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
@@ -373,7 +378,7 @@ export class OfferAddViewComponent implements OnInit {
           this.resData.groupName = res[`data`]['groups']['name'];
         });
     } else if (this.userDetail.role === 'admin') {
-      //  do code here for admin side - offer detail 
+      //  do code here for admin side - offer detail
       this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
           this.resData = res[`data`];
@@ -633,8 +638,7 @@ export class OfferAddViewComponent implements OnInit {
       this.router.navigate([this.cancel_link1]);
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
-    }
-    else if (this.userDetail.role === 'admin') {
+    } else if (this.userDetail.role === 'admin') {
       const backID = this.route.snapshot.params.report_id;
       this.router.navigate(['/admin/employers/approved_employer/report/' + backID + '/list']);
       // }
@@ -752,6 +756,12 @@ export class OfferAddViewComponent implements OnInit {
             this.show_spinner = true;
             this.service.update_offer(this.formData).subscribe(
               res => {
+                console.log('<====>', res['data']['data'].employer_id);
+                this.socketService.changeOffer(this.grpId);
+                this.socketService.leaveGrp(this.grpId);
+                this.socketService.joinGrp(res['data']['data'].employer_id);
+                this.socketService.changeOffer(res['data']['data'].employer_id);
+                // this.socketService.leaveGrp(res['data']['data'].employer_id);
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -815,6 +825,10 @@ export class OfferAddViewComponent implements OnInit {
 
     }
     this.form_validation = !flag;
+  }
+
+  ngOnDestroy(): void {
+    this.socketService.leaveGrp(this.grpId);
   }
 
 }

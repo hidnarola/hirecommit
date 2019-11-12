@@ -136,7 +136,7 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
         "$match":
         {
           $or: [{ "username": RE },
-          { "user.email": RE }]
+          { "user.email": RE }, { "business.country": RE }, { "companyname": RE }]
         }
       });
     }
@@ -233,7 +233,10 @@ user_helper.get_all_new_employer = async (collection, search, start, length, rec
       aggregate.push({
         "$match":
 
-          { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+        {
+          $or: [{ "username": RE },
+          { "user.email": RE }, { "business.country": RE }, { "companyname": RE }]
+        }
 
       });
     }

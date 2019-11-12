@@ -526,6 +526,7 @@ router.put("/deactive_offer/:id", async (req, res) => {
 router.put('/', async (req, res) => {
     var obj = {};
 
+    console.log('Update : body ==> ', req.body);
     // if (req.body.email && req.body.email != "") {
     //     obj.email = req.body.email
     // }
@@ -614,7 +615,7 @@ router.put('/', async (req, res) => {
 
     var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
-
+    console.log('Update : offer_upadate ==> ', offer_upadate);
     obj.offer_id = offer_upadate.data._id;
     // obj.status = offer_upadate.data.status;
 

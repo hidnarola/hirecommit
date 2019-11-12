@@ -9,6 +9,8 @@ var candidate_helper = require('../../helpers/candidate_helper');
 var user_helper = require('../../helpers/user_helper');
 var offer_helper = require('../../helpers/offer_helper');
 var Candidate = require('../../models/candidate-detail');
+var CustomField = require('../../models/customfield');
+
 var logger = config.logger;
 var User = require('../../models/user');
 var Employer = require('../../models/employer-detail');
@@ -108,8 +110,7 @@ router.post('/get_approved', async (req, res) => {
         var aggregate = [
             {
                 $match: {
-                    "is_del": false,
-
+                    "is_del": false
                 }
             },
             {
@@ -152,7 +153,7 @@ router.post('/get_approved', async (req, res) => {
         if (req.body.search && req.body.search != "") {
             aggregate.push({
                 "$match":
-                    { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+                    { $or: [{ "firstname": RE }, { "business.country": RE }, { "user.email": RE }, { "companyname": RE }] }
             });
         }
 
@@ -208,6 +209,7 @@ router.put("/deactive_employer/:id", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
     }
 });
+
 
 
 // router.put('/edit_approved_candidate/:id', async (req, res) => {
@@ -470,6 +472,24 @@ router.post('/get_report/:id', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
+
+router.get('/customfield/first/:id', async (req, res) => {
+    try {
+        var id = req.params.id;
+        // console.log();
+
+        const country = await CustomField.find({ "emp_id": id, is_del: false }).sort({ serial_number: 1 }).limit(1).lean();
+        return res.status(config.OK_STATUS).json({
+            success: true, message: 'country list fetched successfully.',
+            data: country
+        });
+    } catch (error) {
+        return res.status(config.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: 'Error occurred in Fetching country data', data: error
+        });
+    }
+})
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;

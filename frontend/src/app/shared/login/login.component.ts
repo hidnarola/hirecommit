@@ -46,6 +46,7 @@ export class LoginComponent implements OnInit {
     this.show_spinner = true;
     if (valid) {
       this.service.login(this.loginForm.value).subscribe(res => {
+        console.log('Login : res ==> ', res);
         this.isFormSubmitted = false;
         this.formData = {};
         const token = res['token'];
@@ -71,7 +72,18 @@ export class LoginComponent implements OnInit {
             ...res[`userDetails`][0].business
           };
           this.service.setProfileDetail(this.userData);
+
+
+          console.log('userData ===============================> ', this.userData);
+        } else if (res['role'] === 'sub-employer') {
+          this.userData = {
+            ...res[`data`],
+          };
+          console.log('Login : userData ==> ', this.userData);
+           this.service.setProfileDetail(this.userData);
         }
+
+
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         if (res['role'] === 'admin') {
           this.router.navigate(['admin']);
