@@ -489,9 +489,7 @@ export class OfferAddViewComponent implements OnInit {
     }
   }
   forCommit(event) {
-
     const id = event.value._id;
-    console.log(event.value._id);
     this.getCommitStatusOptions(event.value._id);
   }
 
@@ -510,8 +508,6 @@ export class OfferAddViewComponent implements OnInit {
   }
 
   Accept(id) {
-
-    console.log('id=>', id);
     const obj = {
       'id': id
     };
@@ -714,7 +710,6 @@ export class OfferAddViewComponent implements OnInit {
 
       // 'salaryduration'
     ];
-    console.log('this.form.value ==== check for value =====>', this.form.value);
 
     const form_data = {
       ...this.form.value,
@@ -730,8 +725,6 @@ export class OfferAddViewComponent implements OnInit {
       // status: this.form.value.offerStatus,
       data: JSON.stringify(communication_array)
     };
-    console.log('data ====>  chek here=>', form_data);
-
     Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {
         delete form_data[key];
@@ -822,12 +815,6 @@ export class OfferAddViewComponent implements OnInit {
 
     }
     this.form_validation = !flag;
-  }
-
-  // testing purpose only
-  check(e) {
-    console.log('e=>', e);
-
   }
 
 }

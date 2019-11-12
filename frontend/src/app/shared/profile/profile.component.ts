@@ -52,14 +52,11 @@ export class ProfileComponent implements OnInit {
       this.service.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;
-          console.log('from profile +>>', this.profileData);
         } else {
           const profile = await this.service.decrypt(localStorage.getItem('profile'));
-          console.log('profile==>', profile);
-
           if (profile) {
             this.profileData = JSON.parse(profile);
-            console.log('profileData==>', this.profileData);
+
             this.businessType(this.profileData.country);
           } else {
             console.log('profile data not found');
@@ -73,7 +70,6 @@ export class ProfileComponent implements OnInit {
 
   edit(id) {
     this.show_spinner = true;
-
     this.obj = {
       'id': id,
       'username': this.profileData.username,
@@ -86,14 +82,19 @@ export class ProfileComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to update your Profile?',
       accept: () => {
+        this.show_spinner = false;
         this.Employerservice.update_Profile(this.obj).subscribe(res => {
-          console.log('edited!!', res);
           this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
-        });
+        },
+          err => {
+            this.show_spinner = false;
+            this.tostsr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          }
+        )
       }
-    });
-    this.show_spinner = false;
+    })
   }
+
   candidate_profile(id) {
     this.show_spinner = true;
     this.obj1 = {
@@ -104,31 +105,38 @@ export class ProfileComponent implements OnInit {
       'contactno': this.profileData.contactno,
 
     };
+
     this.confirmationService.confirm({
       message: 'Are you sure that you want to update your Profile?',
       accept: () => {
+        this.show_spinner = false;
         this.candidateService.update_Profile_candidate(this.obj1).subscribe(res => {
-          console.log('edited', res);
-
           this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
-        });
+        },
+          err => {
+            this.show_spinner = false;
+            this.tostsr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          }
+        );
       }
-    });
-    this.show_spinner = false;
+    })
   }
+
 
   businessType(id) {
     if (this.profileData) {
       this.Business_Type = [];
       this.service.get_Type(id).subscribe(res => {
+
         res['data'].forEach(element => {
           this.Business_Type.push({ 'label': element.name, 'value': element._id });
         });
+        console.log('this.Business_Type=>', this.Business_Type);
+
       });
     }
   }
   value(event) {
-    console.log('value', event.value);
     this.businessCode = event.value;
   }
 

@@ -19,11 +19,12 @@
                     </p-calendar>
                     <h6 class="mr-2">End date </h6>
                     <p-calendar id="to" (onSelect)="onTo($event)" showButtonBar="true" dateFormat="mm/dd/yy"
-                        [readonlyInput]="true" placeholder="MM/DD/YYYY" (onClearClick)="onClearTo()">
+                        [readonlyInput]="true" placeholder="MM/DD/YYYY" (onClearClick)="onClearTo()"
+                        [minDate]="StartToDate" [disabled]="!from">
                     </p-calendar>
 
-                    <button class="btn btn-sm btn-primary" type="button" (click)="filterWithDateRange()" id="check"><i
-                            class="fa fa-search"></i></button>
+                    <button class="btn btn-sm btn-primary" type="button" (click)="filterWithDateRange()"
+                        [disabled]="!to" id="check"><i class="fa fa-search"></i></button>
                 </div>
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">

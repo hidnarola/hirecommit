@@ -177,8 +177,7 @@
                                     </span>
                                     <span
                                         *ngIf="form.controls['salarybracket'].errors['pattern'] || !form.controls['salarybracket'].errors['required']"
-                                        class="text-danger">Only Positive
-                                        Number</span>
+                                        class="text-danger">Enter valid value.</span>
                                 </div>
                             </div>
                         </div>
@@ -196,8 +195,7 @@
                                     </span>
                                     <span
                                         *ngIf="form.controls['salarybracket_from'].errors['pattern'] || !form.controls['salarybracket_from'].errors['required']"
-                                        class="text-danger">Only Positive
-                                        Number</span>
+                                        class="text-danger">Enter valid value.</span>
                                 </div>
                             </div>
                         </div>
@@ -215,8 +213,7 @@
                                     </span>
                                     <span
                                         *ngIf="form.controls['salarybracket_to'].errors['pattern'] || !form.controls['salarybracket_to'].errors['required']"
-                                        class="text-danger">Only Positive
-                                        Number</span>
+                                        class="text-danger">Enter valid value.</span>
                                 </div>
                             </div>
                         </div>
@@ -360,8 +357,7 @@
                                                         </span>
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
-                                                            class="text-danger">Only Positive
-                                                            Number</span>
+                                                            class="text-danger">Enter valid value.</span>
                                                     </div>
                                                 </div>
 
@@ -416,8 +412,7 @@
                             <div class="col-md-6">
                                 <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
                                     optionValue="value" optionLabel="lable" formControlName="commitstatus"
-                                    id="commitstatus" placeholder="Please Select Commit Status"
-                                    (onChange)="check($event)">
+                                    id="commitstatus" placeholder="Please Select Commit Status">
                                 </p-dropdown>
 
                                 <!-- <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"

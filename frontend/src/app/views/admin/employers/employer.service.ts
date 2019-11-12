@@ -67,5 +67,8 @@ export class EmployerService {
   offer_detail_admin(id): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}` + '/employer/details/' + id);
   }
+  get_customfield(id): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + '/employer/customfield/first/' + id);
+  }
   //http://localhost:3000/admin/employer/details/5dc53b1c42b0a03b045f050a
 }

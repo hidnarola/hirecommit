@@ -21,6 +21,7 @@ export class ReportComponent implements OnInit {
   id: any;
   from: any;
   to: any;
+  StartToDate = new Date();
   first_custom_field = 'Custom Field';
   constructor(
     private service: EmployerService,
@@ -28,6 +29,8 @@ export class ReportComponent implements OnInit {
     private offerService: OfferService) {
     this.router.params.subscribe((params: Params) => {
       this.id = params['id'];
+
+      this.getCustomField(this.id);
     });
   }
 
@@ -99,9 +102,11 @@ export class ReportComponent implements OnInit {
     };
   }
 
-  getCustomField() {
-    this.offerService.get_first_custom_field().subscribe(res => {
+  getCustomField(id) {
+    this.service.get_customfield(id).subscribe(res => {
       if (res['data']) {
+        console.log('res\=>', res['data'][0]['key']);
+
         this.first_custom_field = res['data'][0]['key'];
       } else {
         this.first_custom_field = 'Custom Field';
@@ -109,12 +114,18 @@ export class ReportComponent implements OnInit {
     });
   }
 
+
   onFrom(e) {
     var date = new Date(e);
+    console.log('e=>', date);
+
+    this.StartToDate = date;
     var month = date.getMonth() + 1;
     this.from = date.getFullYear() + '-' + month + '-' + date.getDate()
 
   }
+
+
 
   onTo(e) {
     var date = new Date(e);
@@ -128,6 +139,7 @@ export class ReportComponent implements OnInit {
 
   onClearFrom() {
     this.from = undefined;
+    this.onClearTo();
   }
 
 
