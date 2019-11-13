@@ -117,7 +117,6 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
           this.rrerender();
         }, (err) => {
-          ;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
         });
       }

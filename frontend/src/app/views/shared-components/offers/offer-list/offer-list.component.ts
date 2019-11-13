@@ -3,7 +3,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { SocketService } from '../../../../services/socket.service';
 import { OfferService } from '../offer.service';
-import { Router } from '@angular/router';
+import { Router, Params, ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { ConfirmationService } from 'primeng/api';
 import Swal from 'sweetalert2';
@@ -22,11 +22,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   // first_custom_field: any;
   first_custom_field = 'Custom Field';
   employer: any;
-  empId = '5dc177fc1b81361795365fa1';
+  empId;
   offerData: any[];
   form = false;
   accept_btn: boolean = false;
   profileData: any = [];
+
   // offer type options
   offer_type_optoins = [
     { label: 'Select Offer Type', value: '' },
@@ -44,6 +45,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private socketService: SocketService,
     private spinner: NgxSpinnerService,
+    private router: ActivatedRoute,
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     if (this.userDetail.role === 'employer') {
@@ -75,6 +77,7 @@ this.socketService.joinGrp(id);
       this.rrerender();
     });
 
+
     if (this.userDetail.role !== 'admin') {
       this.commonService.getprofileDetail.subscribe(async res => {
         if (res) {
@@ -105,18 +108,15 @@ this.socketService.joinGrp(id);
             }
 
             if (this.userDetail.role === 'employer') {
-            console.log('i m emp ==> ');
-            this.grpId = this.profileData.user_id;
-            this.joinGroup(this.profileData.user_id);
-          } else if (this.userDetail.role === 'candidate') {
-            console.log('i m can ==> ');
-            this.grpId = this.profileData.user_id;
-            this.joinGroup(this.profileData.user_id);
-          } else if (this.userDetail.role === 'sub-employer') {
-            console.log(' i m sub ==> ');
-            this.grpId = this.profileData.emp_id;
-             this.joinGroup(this.profileData.emp_id);
-          }
+              this.grpId = this.profileData.user_id;
+              this.joinGroup(this.profileData.user_id);
+            } else if (this.userDetail.role === 'candidate') {
+              this.grpId = this.profileData.user_id;
+              this.joinGroup(this.profileData.user_id);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.grpId = this.profileData.emp_id;
+              this.joinGroup(this.profileData.emp_id);
+            }
 
           } else {
             console.log('profile data not found');
@@ -327,7 +327,6 @@ this.socketService.joinGrp(id);
     };
     this.service.offer_accept(obj).subscribe(res => {
       console.log('accepted!!', res['data']['data'].employer_id);
-
       this.socketService.leaveGrp(this.grpId);
        this.socketService.joinGrp(res['data']['data'].employer_id);
       this.socketService.changeOffer(res['data']['data'].employer_id);

@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { EmployerService } from '../employer.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, from } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { OfferService } from '../../../shared-components/offers/offer.service';
+import { SocketService } from '../../../../services/socket.service';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { OfferService } from '../../../shared-components/offers/offer.service';
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss']
 })
-export class ReportComponent implements OnInit {
+export class ReportComponent implements OnInit, OnDestroy {
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -26,7 +27,8 @@ export class ReportComponent implements OnInit {
   constructor(
     private service: EmployerService,
     private router: ActivatedRoute,
-    private offerService: OfferService) {
+    private offerService: OfferService,
+    private socketService: SocketService) {
     this.router.params.subscribe((params: Params) => {
       this.id = params['id'];
 
@@ -34,7 +36,19 @@ export class ReportComponent implements OnInit {
     });
   }
 
+  joinGroup = (id) => {
+  this.socketService.joinGrp(id);
+  }
+
   ngOnInit() {
+     this.socketService.getOffer().subscribe(res => {
+      console.log('employer : res ==> ', res);
+      this.rrerender();
+    });
+
+    // this.grpId = this.empId;
+    this.joinGroup(this.id);
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -116,21 +130,21 @@ export class ReportComponent implements OnInit {
 
 
   onFrom(e) {
-    var date = new Date(e);
+    const date = new Date(e);
     console.log('e=>', date);
 
     this.StartToDate = date;
-    var month = date.getMonth() + 1;
-    this.from = date.getFullYear() + '-' + month + '-' + date.getDate()
+    const month = date.getMonth() + 1;
+    this.from = date.getFullYear() + '-' + month + '-' + date.getDate();
 
   }
 
 
 
   onTo(e) {
-    var date = new Date(e);
-    var month = date.getMonth() + 1;
-    this.to = date.getFullYear() + '-' + month + '-' + date.getDate()
+    const date = new Date(e);
+    const month = date.getMonth() + 1;
+    this.to = date.getFullYear() + '-' + month + '-' + date.getDate();
   }
 
   filterWithDateRange() {
@@ -164,6 +178,7 @@ export class ReportComponent implements OnInit {
   ngOnDestroy() {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+     this.socketService.leaveGrp(this.id);
   }
 
 

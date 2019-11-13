@@ -24,7 +24,7 @@ private candidate_url = environment.API_URL + 'candidate';
     }
   getOffer() {
     console.log('getOffer :  ==> ', );
-  return new Observable((observer) => {
+    return new Observable((observer) => {
       this.socket.on('Offer', (msg) => {
         console.log('Client : Offer ==> ');
         observer.next(msg);

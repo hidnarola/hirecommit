@@ -761,7 +761,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 this.socketService.leaveGrp(this.grpId);
                 this.socketService.joinGrp(res['data']['data'].employer_id);
                 this.socketService.changeOffer(res['data']['data'].employer_id);
-                // this.socketService.leaveGrp(res['data']['data'].employer_id);
+                this.socketService.leaveGrp(res['data']['data'].employer_id);
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -788,6 +788,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.show_spinner = true;
               this.service.add_offer(this.formData).subscribe(
                 res => {
+                  console.log('<====>', res);
+                  this.socketService.joinGrp(res['data']['data'].user_id);
+                  this.socketService.changeOffer(res['data']['data'].user_id);
+                  this.socketService.leaveGrp(res['data']['data'].user_id);
+                  this.socketService.joinGrp(res['data']['data'].employer_id);
+                  this.socketService.changeOffer(res['data']['data'].employer_id);
+                  this.socketService.leaveGrp(res['data']['data'].employer_id);
                   this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                   if (this.userDetail.role === 'employer') {
                     this.router.navigate([this.cancel_link]);

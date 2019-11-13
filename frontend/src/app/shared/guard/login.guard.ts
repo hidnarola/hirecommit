@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { sub_employer } from '../_nav';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,11 @@ export class LoginGuard implements CanActivate {
       islogin = false;
     }
     if (islogin) {
-      this.router.navigate([loginUser]);
+      if (loginUser !== 'sub-employer') {
+        this.router.navigate([loginUser]);
+      } else {
+        this.router.navigate(['sub_employer']);
+      }
       return false;
     }
     return true;
