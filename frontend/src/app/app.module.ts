@@ -25,6 +25,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
+import { environment } from '../environments/environment';
 export function getToken(): string {
   return localStorage.getItem('token');
 }
@@ -34,7 +35,9 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+console.log('url', environment.API_URL);
+
+const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
 
 @NgModule({
   imports: [

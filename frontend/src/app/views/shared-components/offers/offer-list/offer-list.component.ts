@@ -50,7 +50,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.getCustomField();
     }
     // To show spinner
-     this.spinner.show();
+    this.spinner.show();
   }
 
   // get first custom field
@@ -64,9 +64,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-joinGroup = (id) => {
-this.socketService.joinGrp(id);
-}
+  joinGroup = (id) => {
+    this.socketService.joinGrp(id);
+  }
 
   ngOnInit() {
 
@@ -92,7 +92,7 @@ this.socketService.joinGrp(id);
           } else if (this.userDetail.role === 'sub-employer') {
             console.log(' i m sub ==> ');
             this.grpId = this.profileData.emp_id;
-             this.joinGroup(this.profileData.emp_id);
+            this.joinGroup(this.profileData.emp_id);
           }
         } else {
           const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
@@ -105,18 +105,18 @@ this.socketService.joinGrp(id);
             }
 
             if (this.userDetail.role === 'employer') {
-            console.log('i m emp ==> ');
-            this.grpId = this.profileData.user_id;
-            this.joinGroup(this.profileData.user_id);
-          } else if (this.userDetail.role === 'candidate') {
-            console.log('i m can ==> ');
-            this.grpId = this.profileData.user_id;
-            this.joinGroup(this.profileData.user_id);
-          } else if (this.userDetail.role === 'sub-employer') {
-            console.log(' i m sub ==> ');
-            this.grpId = this.profileData.emp_id;
-             this.joinGroup(this.profileData.emp_id);
-          }
+              console.log('i m emp ==> ');
+              this.grpId = this.profileData.user_id;
+              this.joinGroup(this.profileData.user_id);
+            } else if (this.userDetail.role === 'candidate') {
+              console.log('i m can ==> ');
+              this.grpId = this.profileData.user_id;
+              this.joinGroup(this.profileData.user_id);
+            } else if (this.userDetail.role === 'sub-employer') {
+              console.log(' i m sub ==> ');
+              this.grpId = this.profileData.emp_id;
+              this.joinGroup(this.profileData.emp_id);
+            }
 
           } else {
             console.log('profile data not found');
@@ -136,11 +136,12 @@ this.socketService.joinGrp(id);
         order: [[0, 'desc']],
         language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
         destroy: true,
+        responsive: true,
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_offer(dataTablesParameters).subscribe(res => {
             if (res['status']) {
-                       // To hide spinner
-          this.spinner.hide();
+              // To hide spinner
+              this.spinner.hide();
               this.offerData = res['offer'];
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins
@@ -153,8 +154,8 @@ this.socketService.joinGrp(id);
               });
             }
           }, err => {
-                     // To hide spinner
-          this.spinner.hide();
+            // To hide spinner
+            this.spinner.hide();
             console.log('err => ', err);
           });
         },
@@ -213,8 +214,8 @@ this.socketService.joinGrp(id);
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_offer_candidate(dataTablesParameters).subscribe(res => {
             if (res['status']) {
-                       // To hide spinner
-          this.spinner.hide();
+              // To hide spinner
+              this.spinner.hide();
               this.offerData = res['offer'];
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
@@ -226,8 +227,8 @@ this.socketService.joinGrp(id);
               });
             }
           }, err => {
-                     // To hide spinner
-          this.spinner.hide();
+            // To hide spinner
+            this.spinner.hide();
             console.log('err => ', err);
           });
         },
@@ -329,7 +330,7 @@ this.socketService.joinGrp(id);
       console.log('accepted!!', res['data']['data'].employer_id);
 
       this.socketService.leaveGrp(this.grpId);
-       this.socketService.joinGrp(res['data']['data'].employer_id);
+      this.socketService.joinGrp(res['data']['data'].employer_id);
       this.socketService.changeOffer(res['data']['data'].employer_id);
       this.socketService.leaveGrp(res['data']['data'].employer_id);
       this.joinGroup(this.grpId);
@@ -368,5 +369,5 @@ this.socketService.joinGrp(id);
     this.dtTrigger.unsubscribe();
     this.socketService.leaveGrp(this.grpId);
   }
-
 }
+
