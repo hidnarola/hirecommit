@@ -41,7 +41,7 @@ export class RegisterComponent implements OnInit {
       firstname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       lastname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       // documentImage: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       country: new FormControl('', [Validators.required]),
       countrycode: new FormControl('', [Validators.required]),
       contactno: new FormControl('',

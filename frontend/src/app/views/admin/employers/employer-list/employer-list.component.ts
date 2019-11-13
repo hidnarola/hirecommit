@@ -65,7 +65,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }
       },
-      columnDefs: [{ orderable: false, targets:  1 }, { orderable: false, targets: 5 }],
+      columnDefs: [{ orderable: false, targets: 1 }, { orderable: false, targets: 5 }],
       columns: [
         {
           data: 'firstname'
@@ -113,7 +113,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
 
-        this.service.approved(obj).subscribe(res => {
+        this.service.aprroved_employer(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
           this.rrerender();
         }, (err) => {

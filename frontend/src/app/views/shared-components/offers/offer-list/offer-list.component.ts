@@ -48,6 +48,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: ActivatedRoute,
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
+    console.log('this.userDetail=>', this.userDetail);
+
     if (this.userDetail.role === 'employer') {
       this.getCustomField();
     }
@@ -81,19 +83,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.userDetail.role !== 'admin') {
       this.commonService.getprofileDetail.subscribe(async res => {
         if (res) {
-
           this.profileData = res;
-          console.log('from profile +>>', this.profileData);
           if (this.userDetail.role === 'employer') {
-            console.log('i m emp ==> ');
             this.grpId = this.profileData.user_id;
             this.joinGroup(this.profileData.user_id);
           } else if (this.userDetail.role === 'candidate') {
-            console.log('i m can ==> ');
             this.grpId = this.profileData.user_id;
             this.joinGroup(this.profileData.user_id);
           } else if (this.userDetail.role === 'sub-employer') {
-            console.log(' i m sub ==> ');
             this.grpId = this.profileData.emp_id;
             this.joinGroup(this.profileData.emp_id);
           }

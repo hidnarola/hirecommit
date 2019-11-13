@@ -43,8 +43,8 @@ export class EmployerService {
     return this.http.put<any[]>(`${this.url}` + '/employer/deactive_employer/' + id, null);
   }
 
-  aprroved_employer(id): Observable<any[]> {
-    return this.http.put<any[]>(`${this.url}` + '/approved_employer/' + id, null);
+  aprroved_employer(data): Observable<any[]> {
+    return this.http.put<any[]>(`${this.url}` + '/employer', data);
   }
 
   // delemployer(id): Observable<any[]> {

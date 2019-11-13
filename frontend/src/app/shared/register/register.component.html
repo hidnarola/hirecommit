@@ -53,8 +53,7 @@
                       <span
                         *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
                         field is required.</span>
-                      <span
-                        *ngIf="registerForm.controls['email'].errors.email && !registerForm.controls['email'].errors.whitespace">Email
+                      <span *ngIf="registerForm.controls['email'].errors.pattern">Email
                         must be in valid format.</span>
                     </div>
                   </div>

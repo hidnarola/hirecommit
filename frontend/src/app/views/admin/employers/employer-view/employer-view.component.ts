@@ -96,7 +96,7 @@ export class EmployerViewComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        this.service.approved(obj).subscribe(res => {
+        this.service.aprroved_employer(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
           this.router.navigate([this.cancel_link1]);
         }, (err) => {

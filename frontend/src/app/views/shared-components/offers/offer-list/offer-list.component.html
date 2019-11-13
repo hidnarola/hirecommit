@@ -5,7 +5,8 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Offers
                     <p class="pull-right"></p>
-                    <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
+                    <button
+                        *ngIf="userDetail.role === 'employer' || (userDetail.role === 'sub-employer' && profileData.admin_rights === 'yes')"
                         class="pull-right btn btn-sm btn-primary custom-margin" (click)="add()">
                         <i class="icon-plus"></i>
                         Add
@@ -70,7 +71,7 @@
                                         (click)='detail(offer._id)'><i class="icon-eye"></i></button>
 
                                     <button tooltip='Edit'
-                                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
+                                        *ngIf="userDetail.role === 'employer' || (userDetail.role === 'sub-employer' && profileData.admin_rights === 'yes')"
                                         type="button" class="btn btn-sm btn-primary" (click)="edit(offer._id)"><i
                                             class="icon-pencil"></i></button>
 

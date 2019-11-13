@@ -42,7 +42,7 @@ export class SignUpComponent implements OnInit {
   ) {
     this.formData = {};
     this.registerForm = this.fb.group({
-      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       password: new FormControl('',
         Validators.compose([
           Validators.required,
@@ -52,7 +52,7 @@ export class SignUpComponent implements OnInit {
       country: new FormControl('', [Validators.required]),
       businesstype: new FormControl('', [Validators.required]),
       companyname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      website: new FormControl(''),
+      website: new FormControl('', [Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/)]),
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length

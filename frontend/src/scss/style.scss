@@ -221,10 +221,13 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .error {margin: 0 !important;}
 .inline_input h6 {margin: 0;}
 .inline_input button {height: 100%;padding: 6px 10px;font-size: 14px;}
-.table.dataTable{overflow-x: auto; display: block; max-width:100%;}
+// .table.dataTable{overflow-x: auto; display: block; max-width:100%; min-width:100%;}
+// .table.dataTable thead, .table.dataTable tbody,
+.table.dataTable tfoot{ display:table; min-width: 100%;}
+
 .communication-fills .no-gutters.row{ margin-bottom:10px;}
 .communication-fills .no-gutters.row .col-md-6 + .col-md-6 label{ padding-left:15px;}
-
+.dataTables_wrapper { overflow: auto; padding: 0 0 20px;}
 
 
 /***** Media start it *****/
