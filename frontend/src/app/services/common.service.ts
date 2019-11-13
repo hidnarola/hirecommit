@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import * as env from '../../environments/environment';
 import jwt_decode from 'jwt-decode';
 import { AES, enc } from 'crypto-ts';
+import * as  moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +90,14 @@ export class CommonService {
     return this.http.get<any[]>(`${this.url}` + 'business_type/' + data);
   }
 
+  current_time_to_UTC(d: any) {
+    if (d && d !== '') {
+      const current_date = moment(d).format('YYYY/MM/DD');
+      const current_time = moment(new Date()).format('HH:mm:ss');
+      return moment(current_date + ' ' + current_time).toDate();
+    }
+    return '';
+  }
 
   // myObservableArray: Observable<any[]> = new Observable<any[]>();
   // employer = new BehaviorSubject(null);

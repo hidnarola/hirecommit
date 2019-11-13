@@ -35,10 +35,10 @@
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="city">
-                                City
+                                Location
                             </label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control" placeholder="Enter city" autocomplete="city"
+                                <input type="text" class="form-control" placeholder="Enter location" autocomplete="city"
                                     [(ngModel)]="detail.city" formControlName="city" id="city">
                                 <div class="cust_err_msg">
                                     <span *ngIf="!addLocation.get('city').valid && submitted" class="text-danger">

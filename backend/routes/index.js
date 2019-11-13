@@ -163,7 +163,7 @@ router.post("/candidate_register", async (req, res) => {
 
   var validate = passwordValidatorSchema
     .is().min(8)
-    .symbols()	                                 // Minimum length 8
+    // .symbols()	                                 // Minimum length 8
     .is().max(100)
     .letters()                                // Maximum length 100
     // .has().uppercase()                              // Must have uppercase letters
@@ -193,7 +193,7 @@ router.post("/candidate_register", async (req, res) => {
       }
 
       if (passwordValidatorSchema.validate(req.body.password) == false) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
       }
       else {
         var interest_user_resp = await common_helper.insert(User, user_reg_obg);
@@ -392,7 +392,7 @@ router.post("/employer_register", async (req, res) => {
 
   var validate = passwordValidatorSchema
     .is().min(8)
-    .symbols()	                                 // Minimum length 8
+    // .symbols()	                                 // Minimum length 8
     .is().max(100)
     .letters()                                // Maximum length 100
     // .has().uppercase()                              // Must have uppercase letters
@@ -424,7 +424,7 @@ router.post("/employer_register", async (req, res) => {
           }
 
           if (passwordValidatorSchema.validate(req.body.password) == false) {
-            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
           } else {
 
             var interest_user_resp = await common_helper.insert(User, user_reg_obj);
@@ -850,7 +850,7 @@ router.post('/reset_password', async (req, res) => {
   };
   var validat = passwordValidatorSchema
     .is().min(8)
-    .symbols()	                                 // Minimum length 8
+    // .symbols()	                                 // Minimum length 8
     .is().max(100)
     .letters()                                // Maximum length 100
     // .has().uppercase()                              // Must have uppercase letters
@@ -873,7 +873,7 @@ router.post('/reset_password', async (req, res) => {
         }
       } else {
         if (passwordValidatorSchema.validate(req.body.password) == false) {
-          res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
+          res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
         } else {
           var reset_user = await common_helper.findOne(User, { "_id": decoded._id }, 1);
           if (reset_user.data && reset_user.status === 1) {
@@ -923,7 +923,7 @@ router.put('/change_password', async (req, res) => {
 
   var validate = passwordValidatorSchema
     .is().min(8)
-    .symbols()	                                 // Minimum length 8
+    // .symbols()	                                 // Minimum length 8
     .is().max(100)
     .letters()                                // Maximum length 100
     // .has().uppercase()                              // Must have uppercase letters
@@ -941,7 +941,7 @@ router.put('/change_password', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid Token" });
       }
       if (passwordValidatorSchema.validate(req.body.newpassword) == false) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Uppercase,1 Lowercase,1 digit,1 special character" })
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "" })
       }
       else {
         const user = await common_helper.findOne(User, { "_id": decoded.id }, 1);

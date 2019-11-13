@@ -705,28 +705,26 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'group',
       'offerStatus',
       'status',
-      // 'commitstatus',
       'employer_id',
       'communicationFieldItems',
       'salarybracket',
       'salarybracket_from',
       'salarybracket_to',
-
-      // 'salaryduration'
     ];
+
 
     const form_data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
       location: this.form.value.location._id,
       groups: this.form.value.group._id,
-      // country: this.profileData._id,
       commitstatus: this.form.value.commitstatus.value,
+      expirydate: this.commonService.current_time_to_UTC(this.form.value.expirydate),
+      joiningdate: this.commonService.current_time_to_UTC(this.form.value.joiningdate),
       salary: this.form.value.salarybracket ? this.form.value.salarybracket : '',
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
-      // status: this.form.value.offerStatus,
       data: JSON.stringify(communication_array)
     };
     Object.keys(form_data).map(key => {

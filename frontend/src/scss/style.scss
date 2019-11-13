@@ -51,7 +51,7 @@ body{ font-weight:400; background-color:#f1f1f1;}
 /* Rounded sliders */
 .slider.round {border-radius: 34px;}
 .slider.round:before {border-radius: 50%;}
-.app-header .navbar-toggler{display:none !important;}
+// .app-header .navbar-toggler{display:none !important;}
 .dataTables_filter input[type="search"]{ border: 1px solid #e4e7ea; padding: 6px 10px; border-radius: 0 0.25rem 0.25rem 0; font-size: 0.875rem; margin: 0; border-left: 0; line-height:22px; min-width:291px;}
 .card-header{ margin-top:1px;}
 .dataTables_empty{ display: none;}
@@ -131,9 +131,6 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .step-form-btn button{ padding:5px 30px; margin: 0 auto; display:block;}
 .custom-margin{ margin:-4px 0;}
 
-
-
-
 // detail page
 .detail-box{
      .detail-panel{
@@ -207,7 +204,6 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .red_dot {border: 2px solid #ff0146;}
 .search_wrapper input:focus {outline: none;}
 
-
 .form-group .ck.ck-content.ck-editor__editable {min-height: 200px;}
 .card-header button i {margin-right: 5px;font-size: 16px;}
 .card-header button {padding: 4px 20px;font-size: 16px;}
@@ -220,9 +216,28 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
         color: red;
     }
 }
-
 .inline_input {display: flex;padding: 15px;background: #f4f4f4;margin: 10px 10px;flex-wrap: wrap;justify-content: flex-end;align-items: center;}
 .inline_input p-calendar {margin-right: 15px;}
 .error {margin: 0 !important;}
 .inline_input h6 {margin: 0;}
 .inline_input button {height: 100%;padding: 6px 10px;font-size: 14px;}
+.table.dataTable{overflow-x: auto; display: block; max-width:100%;}
+.communication-fills .no-gutters.row{ margin-bottom:10px;}
+.communication-fills .no-gutters.row .col-md-6 + .col-md-6 label{ padding-left:15px;}
+
+
+
+/***** Media start it *****/
+@media(min-width:992px){
+    .app-header .navbar-toggler{ display:none !important;}
+}
+
+@media(max-width:991px){
+    .app-header.navbar button.navbar-toggler{ display:none !important;}
+    .app-header.navbar button.navbar-toggler:first-child{ display:block !important;}
+}
+
+@media(max-width:767px){
+    .communication-fills .no-gutters.row{ margin-bottom:0;}
+    .communication-fills .no-gutters.row .col-md-6 + .col-md-6  label{ padding-left:0;}
+}
