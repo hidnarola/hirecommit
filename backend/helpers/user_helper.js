@@ -143,6 +143,13 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
     if (sort) {
       aggregate.push({
         "$sort": sort
+        // {
+        //   "$project": {
+        //     "username": 1,
+        //     "username": { "$toLower": "$username" }
+        //   }
+        // },
+        // { "$sort": { "username": sort } }
       });
     }
 
@@ -157,6 +164,8 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
       });
     }
     let user = await collection.aggregate(aggregate);
+    console.log(user);
+
     if (user) {
       return { "status": 1, "message": "user details found", "user": user, "recordsTotal": recordsTotal };
     } else {

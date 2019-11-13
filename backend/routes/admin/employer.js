@@ -4,6 +4,7 @@ var config = require('../../config')
 var ObjectId = require('mongodb').ObjectID;
 var moment = require('moment');
 // var moment = require('moment-timezone');
+var mail_helper = require('../../helpers/mail_helper');
 var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
 var user_helper = require('../../helpers/user_helper');
@@ -639,6 +640,29 @@ router.get('/', async (req, res) => {
 
 });
 
+
+router.put('/', async (req, res) => {
+    var reg_obj = {
+        "isAllow": true
+    }
+    var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
+    if (sub_account_upadate.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (sub_account_upadate.status == 1) {
+        logger.trace("sending mail");
+        let mail_resp = await mail_helper.send("employer_approval_email", {
+            "to": sub_account_upadate.data.email,
+            "subject": "Approved"
+        }, {
+            "confirm_url": config.WEBSITE_URL + '/login'
+        });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer is Approved successfully", "data": sub_account_upadate });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+    }
+})
 
 
 
