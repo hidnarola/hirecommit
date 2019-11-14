@@ -224,11 +224,46 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 // .table.dataTable{overflow-x: auto; display: block; max-width:100%; min-width:100%;}
 // .table.dataTable thead, .table.dataTable tbody,
 .table.dataTable tfoot{ display:table; min-width: 100%;}
-
 .communication-fills .no-gutters.row{ margin-bottom:10px;}
 .communication-fills .no-gutters.row .col-md-6 + .col-md-6 label{ padding-left:15px;}
-.dataTables_wrapper { overflow: auto; padding: 0 0 20px;}
+table.dataTable td:last-child{ white-space:nowrap;}
 
+
+/***** color combination changes *****/
+.sidebar {background: #162741;}
+.sidebar .nav-link.active {background: #121f34;}
+.dropdown-item.active, .dropdown-item:active{background: #121f34; color:#fff !important;}
+.sidebar-minimized .sidebar .nav-link:hover, 
+.sidebar-minimized .sidebar .nav-item:hover > .nav-link,
+.custom-control-input:checked ~ .custom-control-label::before,
+body .ui-dropdown-panel .ui-dropdown-items .ui-dropdown-item.ui-state-highlight, 
+body .ui-dropdown-panel .ui-dropdown-items .ui-dropdown-item-group.ui-state-highlight,
+.sidebar .nav-link:hover{ background:#bf7a68;}
+.custom-control-input:checked ~ .custom-control-label::before{ border-color:#bf7a68;}
+.btn-primary {background-color: #bf7a68; border-color: #bf7a68;}
+.btn-primary {background-color: #bf7a68; border-color: #bf7a68;}
+body .ui-button { background-color: #bf7a68; border: 1px solid #bf7a68;}
+body .ui-button:enabled:hover{    background-color: #121f34; border-color: #121f34;}
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle,
+.btn-primary:hover { background-color: #121f34; border-color: #121f34;}
+html body .card-body .dataTables_wrapper div.dataTables_paginate a.paginate_button:hover, 
+html body .card-body .dataTables_wrapper div.dataTables_paginate a.paginate_button.current { background-color:#162741; background:#162741;}
+body .ui-inputswitch.ui-inputswitch-checked:not(.ui-state-disabled):hover .ui-inputswitch-slider,
+body .ui-inputswitch.ui-inputswitch-checked .ui-inputswitch-slider { background-color: #bf7a68;}
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus, 
+.show > .btn-primary.dropdown-toggle:focus {box-shadow: none;}
+.overlay[_ngcontent-ltt-c1] > div[_ngcontent-ltt-c1]:not(.loading-text){ color: #bf7a68 !important;}
+.blue_dot { border: 2px solid #bf7a68;} 
+.bg-primary {background-color: #bf7a68 !important;}
+.card.bg-primary {border-color: #bf7a68;}
+.active .bs-stepper-circle{    background-color: #bf7a68 !important;}
+body .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #bf7a68; background-color: #bf7a68;}
+.swal2-styled.swal2-confirm {background-color: #bf7a68 !important; border-left-color:#bf7a68 !important; border-right-color:#bf7a68 !important;}
+.swal2-actions:not(.swal2-loading) .swal2-styled:hover{ background-color:#121f34 !important; border-left-color:#121f34 !important; border-right-color:#121f34 !important;}
+.dstepper-block .input-group-text {max-height: 35px;}
+
+.dataTables_wrapper {overflow-x: auto;}
 
 /***** Media start it *****/
 @media(min-width:992px){
@@ -243,4 +278,5 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 @media(max-width:767px){
     .communication-fills .no-gutters.row{ margin-bottom:0;}
     .communication-fills .no-gutters.row .col-md-6 + .col-md-6  label{ padding-left:0;}
+    .dataTables_filter input[type=search] {min-width:179px;}
 }
