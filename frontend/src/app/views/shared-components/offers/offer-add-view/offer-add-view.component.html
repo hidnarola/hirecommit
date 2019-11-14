@@ -18,7 +18,7 @@
                             <label class="col-md-3 col-form-label" for="email">Email</label>
                             <div class="col-md-6">
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    formControlName="email" id="email" [disabled]="is_Edit">
+                                    formControlName="email" id="email" (keyup)="findEmail($event)" [disabled]="is_Edit">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
@@ -38,8 +38,9 @@
                                     (onChange)="findEmail($event)" [disabled]="is_Edit">
                                 </p-dropdown> -->
 
-                                <input type="text" class="form-control" placeholder="Enter Name" autocomplete="name"
-                                    formControlName="candidate" id="candidate" [disabled]="is_Edit">
+                                <input type="text" class="form-control" placeholder="Enter Name"
+                                    autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name"
+                                    [disabled]="is_Edit">
                                 <!-- <p-dropdown *ngIf="!is_Edit" [options]="candidateList" placeholder="Select Candidate"
                                                             formControlName="candidate" [style]="{'width':'100%'}" id="candidate" #candidate
                                                             (onChange)="findEmail($event)">

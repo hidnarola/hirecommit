@@ -26,7 +26,7 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
       {
         $unwind: {
           path: "$group",
-          // preserveNullAndEmptyArrays: true
+          preserveNullAndEmptyArrays: true
         }
       },
       {

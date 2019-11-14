@@ -25,10 +25,10 @@ var History = require('../../models/offer_history');
 router.post("/", async (req, res) => {
 
     var schema = {
-        // "email": {
-        //     notEmpty: true,
-        //     errorMessage: "Email is required"
-        // },
+        "email": {
+            notEmpty: true,
+            errorMessage: "Email is required"
+        },
         // "name": {
         //     notEmpty: true,
         //     errorMessage: "Name is required"
@@ -65,30 +65,33 @@ router.post("/", async (req, res) => {
             notEmpty: true,
             errorMessage: "Offer Type  is required"
         },
-        "groups": {
-            notEmpty: true,
-            errorMessage: "Group is required"
-        },
-        "commitstatus": {
-            notEmpty: true,
-            errorMessage: "Commit Status is required"
-        }
+        // "groups": {
+        //     notEmpty: true,
+        //     errorMessage: "Group is required"
+        // },
+        // "commitstatus": {
+        //     notEmpty: true,
+        //     errorMessage: "Commit Status is required"
+        // }
     };
     req.checkBody(schema);
+    console.log(req.body);
 
     var errors = req.validationErrors();
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        var candidate = await common_helper.findOne(CandidateDetail,
-            { user_id: new ObjectId(req.body.user_id) });
+        // var candidate = await common_helper.findOne(CandidateDetail,
+        //     { user_id: new ObjectId(req.body.email) });
+
         var employer;
         if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
             var obj = {
                 "employer_id": user.data.emp_id,
-                "user_id": req.body.user_id,
-                // "name": req.body.name,
+                // "user_id": req.body.user_id,
+                "email": req.body.email,
+                "candidate_name": req.body.candidate_name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
@@ -108,15 +111,16 @@ router.post("/", async (req, res) => {
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data),
-                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
+                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${req.body.candidate_name}</span>`
             }
         }
         else {
             employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
             var obj = {
                 "employer_id": req.userInfo.id,
-                "user_id": req.body.user_id,
-                // "name": req.body.name,
+                // "user_id": req.body.user_id,
+                "email": req.body.email,
+                "candidate_name": req.body.candidate_name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
@@ -136,7 +140,7 @@ router.post("/", async (req, res) => {
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
-                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
+                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${req.body.candidate_name}</span>`
             }
 
         };
@@ -150,13 +154,15 @@ router.post("/", async (req, res) => {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
+            // console.log("123", interest_resp['data']['email']);
+
+            // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
             let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', interest_resp['data']['email']);
 
             let mail_resp = await mail_helper.send("offer", {
-                "to": user.data.email,
+                "to": interest_resp['data']['email'],
                 "subject": "Offer"
             }, {
                 "msg": content,
@@ -175,7 +181,7 @@ router.post("/", async (req, res) => {
 });
 
 
-cron.schedule('00 00 * * *', async (req, res) => {
+cron.schedule('00 * * * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
         [
             {
@@ -226,16 +232,25 @@ cron.schedule('00 00 * * *', async (req, res) => {
         ]
     )
 
-    var current_date = moment().format("DD-MM-YYYY")
+    var current_date = moment().format("YYYY-MM-DD")
 
     for (const resp of resp_data) {
         for (const comm of resp.communication.communication) {
             if (comm.trigger == "afterOffer") {
+                // console.log('====>', comm.trigger);
                 var offer_date = moment(resp.createdAt).add(1, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                // console.log('offer_date1 ==> ', moment(offer_date).format());
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
+                // console.log('offer_date ==> ', offer_date, current_date);
+                // console.log('------->', (moment(current_date).isSame(offer_date) == ));
+
                 var message = comm.message;
                 var email = resp.candidate.email
+
+
                 if (moment(current_date).isSame(offer_date) == true) {
+                    console.log('hiii', email, message);
+                    logger.trace("sending mail");
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
                         "subject": "Offer Letter"
@@ -249,7 +264,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
             if (comm.trigger == "beforeJoining") {
                 var offer_date = moment(resp.joiningdate).subtract(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -268,7 +283,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
             if (comm.trigger == "afterJoining") {
                 var offer_date = moment(resp.joiningdate).add(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -285,7 +300,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
             }
             if (comm.trigger == "beforeExpiry") {
                 var offer_date = moment(resp.expirydate).subtract(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -302,7 +317,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
             }
             if (comm.trigger == "afterExpiry") {
                 var offer_date = moment(resp.expirydate).add(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -363,7 +378,7 @@ router.post('/get', async (req, res) => {
             {
                 $unwind: {
                     path: "$group",
-                    // preserveNullAndEmptyArrays: true
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
@@ -421,6 +436,7 @@ router.post('/get', async (req, res) => {
                     { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
             });
         }
+
         let totalMatchingCountRecords = await Offer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
@@ -527,14 +543,14 @@ router.put('/', async (req, res) => {
     var obj = {};
 
     console.log('Update : body ==> ', req.body);
-    // if (req.body.email && req.body.email != "") {
-    //     obj.email = req.body.email
-    // }
+    if (req.body.email && req.body.email != "") {
+        obj.email = req.body.email
+    }
     if (req.body.groups && req.body.groups != "") {
         obj.groups = req.body.groups
     }
-    if (req.body.name && req.body.name != "") {
-        obj.name = req.body.name
+    if (req.body.candidate_name && req.body.candidate_name != "") {
+        obj.candidate_name = req.body.candidate_name
     }
     if (req.body.title && req.body.title != "") {
         obj.title = req.body.title
@@ -576,9 +592,9 @@ router.put('/', async (req, res) => {
     if (req.body.notes && req.body.notes != "") {
         obj.notes = req.body.notes
     }
-    if (req.body.commitstatus && req.body.commitstatus != "") {
-        obj.commitstatus = req.body.commitstatus
-    }
+    // if (req.body.commitstatus && req.body.commitstatus != "") {
+    //     obj.commitstatus = req.body.commitstatus
+    // }
     if (req.body.salary && req.body.salary != "") {
         obj.salary = req.body.salary
     }
@@ -603,9 +619,9 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-
-    var candidate = await common_helper.findOne(CandidateDetail,
-        { user_id: new ObjectId(req.body.user_id) });
+    //candidate
+    // var candidate = await common_helper.findOne(CandidateDetail,
+    //     { user_id: new ObjectId(req.body.user_id) });
 
     if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
         employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });

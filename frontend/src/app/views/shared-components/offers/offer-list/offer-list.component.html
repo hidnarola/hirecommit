@@ -9,7 +9,7 @@
                         *ngIf="userDetail.role === 'employer' || (userDetail.role === 'sub-employer' && profileData.admin_rights === 'yes')"
                         class="pull-right btn btn-sm btn-primary custom-margin" (click)="add()">
                         <i class="icon-plus"></i>
-                        Add
+                        Add Offers
                     </button>
 
                 </div>
@@ -31,8 +31,8 @@
                                 </th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Current
                                     Status</th>
-                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
-                                    Status</th>
+                                <!-- <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
+                                    Status</th> -->
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{first_custom_field |titlecase}}</th>
                                 <th style="width: 15%;">Action</th>
@@ -53,11 +53,11 @@
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{offer.group.name|titlecase}}</td>
+                                    {{offer.group ? offer.group.name : '-'}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.status|titlecase}}</td>
-                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{offer.commitstatus|titlecase}}</td>
+                                <!-- <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.commitstatus|titlecase}}</td> -->
                                 <td *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
                                     {{ offer.customfeild[0].key === first_custom_field || offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}}
                                 </td>

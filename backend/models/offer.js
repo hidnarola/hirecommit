@@ -28,18 +28,17 @@ const OfferSchema = new Schema({
     type: String,
     default: "UnOpened"
   },
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user'
-  },
   email: {
     type: String,
-    // required: true
+    required: true
   },
-  name: {
+  candidate_name: {
     type: String,
-    // required: true
   },
+  // user_id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'user'
+  // },
   title: {
     type: String,
     required: true
@@ -90,7 +89,7 @@ const OfferSchema = new Schema({
   },
   commitstatus: {
     type: String,
-    require: true
+    // require: true
   },
 
   customfeild: [
