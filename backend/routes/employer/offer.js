@@ -25,10 +25,10 @@ var History = require('../../models/offer_history');
 router.post("/", async (req, res) => {
 
     var schema = {
-        // "email": {
-        //     notEmpty: true,
-        //     errorMessage: "Email is required"
-        // },
+        "email": {
+            notEmpty: true,
+            errorMessage: "Email is required"
+        },
         // "name": {
         //     notEmpty: true,
         //     errorMessage: "Name is required"
@@ -65,30 +65,32 @@ router.post("/", async (req, res) => {
             notEmpty: true,
             errorMessage: "Offer Type  is required"
         },
-        "groups": {
-            notEmpty: true,
-            errorMessage: "Group is required"
-        },
-        "commitstatus": {
-            notEmpty: true,
-            errorMessage: "Commit Status is required"
-        }
+        // "groups": {
+        //     notEmpty: true,
+        //     errorMessage: "Group is required"
+        // },
+        // "commitstatus": {
+        //     notEmpty: true,
+        //     errorMessage: "Commit Status is required"
+        // }
     };
     req.checkBody(schema);
+    console.log(req.body);
 
     var errors = req.validationErrors();
     if (!errors) {
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        var candidate = await common_helper.findOne(CandidateDetail,
-            { user_id: new ObjectId(req.body.user_id) });
+        // var candidate = await common_helper.findOne(CandidateDetail,
+        //     { user_id: new ObjectId(req.body.user_id) });
         var employer;
         if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
             var obj = {
                 "employer_id": user.data.emp_id,
-                "user_id": req.body.user_id,
-                // "name": req.body.name,
+                // "user_id": req.body.user_id,
+                "email": req.body.email,
+                "candidate_name": req.body.candidate,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
@@ -108,15 +110,16 @@ router.post("/", async (req, res) => {
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data),
-                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
+                // "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
             }
         }
         else {
             employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
             var obj = {
                 "employer_id": req.userInfo.id,
-                "user_id": req.body.user_id,
-                // "name": req.body.name,
+                // "user_id": req.body.user_id,
+                "email": req.body.email,
+                "candidate_name": req.body.name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
                 "salaryduration": req.body.salaryduration,
@@ -136,7 +139,7 @@ router.post("/", async (req, res) => {
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
-                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
+                // "message": `<span>${employer.data.username}</span> has Created this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
             }
 
         };
@@ -144,26 +147,26 @@ router.post("/", async (req, res) => {
 
         var interest_resp = await common_helper.insert(Offer, obj);
 
-        obj.offer_id = interest_resp.data._id
-        var interest = await common_helper.insert(History, obj);
+        // obj.offer_id = interest_resp.data._id
+        // var interest = await common_helper.insert(History, obj);
         if (interest_resp.status == 0) {
             logger.debug("Error = ", interest_resp.error);
             res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
         } else {
-            var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
-            var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
-            let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+            // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
+            // var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
+            // let content = status.data.MessageContent;
+            // content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
 
-            let mail_resp = await mail_helper.send("offer", {
-                "to": user.data.email,
-                "subject": "Offer"
-            }, {
-                "msg": content,
-                //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
-                "url": "http://localhost:3000/offer/" + obj.offer_id,
+            // let mail_resp = await mail_helper.send("offer", {
+            //     "to": user.data.email,
+            //     "subject": "Offer"
+            // }, {
+            //     "msg": content,
+            //     //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+            //     "url": "http://localhost:3000/offer/" + obj.offer_id,
 
-            });
+            // });
 
             res.json({ "message": "Offer is Added successfully", "data": interest_resp })
         }
@@ -175,7 +178,7 @@ router.post("/", async (req, res) => {
 });
 
 
-cron.schedule('00 00 * * *', async (req, res) => {
+cron.schedule('00 * * * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
         [
             {
@@ -226,16 +229,25 @@ cron.schedule('00 00 * * *', async (req, res) => {
         ]
     )
 
-    var current_date = moment().format("DD-MM-YYYY")
+    var current_date = moment().format("YYYY-MM-DD")
 
     for (const resp of resp_data) {
         for (const comm of resp.communication.communication) {
             if (comm.trigger == "afterOffer") {
+                // console.log('====>', comm.trigger);
                 var offer_date = moment(resp.createdAt).add(1, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                // console.log('offer_date1 ==> ', moment(offer_date).format());
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
+                // console.log('offer_date ==> ', offer_date, current_date);
+                // console.log('------->', (moment(current_date).isSame(offer_date) == ));
+
                 var message = comm.message;
                 var email = resp.candidate.email
+
+
                 if (moment(current_date).isSame(offer_date) == true) {
+                    console.log('hiii', email, message);
+                    logger.trace("sending mail");
                     let mail_resp = await mail_helper.send("offer", {
                         "to": email,
                         "subject": "Offer Letter"
@@ -249,7 +261,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
             if (comm.trigger == "beforeJoining") {
                 var offer_date = moment(resp.joiningdate).subtract(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -268,7 +280,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
             if (comm.trigger == "afterJoining") {
                 var offer_date = moment(resp.joiningdate).add(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -285,7 +297,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
             }
             if (comm.trigger == "beforeExpiry") {
                 var offer_date = moment(resp.expirydate).subtract(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
@@ -302,7 +314,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
             }
             if (comm.trigger == "afterExpiry") {
                 var offer_date = moment(resp.expirydate).add(2, 'day')
-                offer_date = moment(offer_date).format("DD-MM-YYYY")
+                offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
                 var email = resp.candidate.email
