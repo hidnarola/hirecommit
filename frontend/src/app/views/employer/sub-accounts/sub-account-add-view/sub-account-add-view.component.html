@@ -24,15 +24,15 @@
                                 </span>
                             </div>
                         </div>
-                        {{isEdit}}
+
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="email">Email</label>
                             <div class="col-md-4">
-                                <input type="email" *ngIf="is_Edit" class="form-control" placeholder="Enter Email"
+                                <!-- <input type="email" *ngIf="is_Edit" class="form-control" placeholder="Enter Email"
                                     autocomplete="email" [(ngModel)]="detail.email" formControlName="email" id="email"
-                                    disabled>
-                                <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
-                                    autocomplete="email" [(ngModel)]="detail.email" formControlName="email" id="email">
+                                    disabled> -->
+                                <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
+                                    [(ngModel)]="detail.email" formControlName="email" id="email">
 
                                 <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">
                                     <span

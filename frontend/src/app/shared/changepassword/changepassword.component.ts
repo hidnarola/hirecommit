@@ -28,7 +28,12 @@ export class ChangepasswordComponent implements OnInit {
   ) {
     this.formData = {};
     this.form = this.fb.group({
-      'oldpassword': new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      'oldpassword': new FormControl('',
+        Validators.compose([
+          Validators.required,
+          this.noWhitespaceValidator,
+          Validators.minLength(8),
+          Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
       'newpassword': new FormControl('',
         Validators.compose([
           Validators.required,

@@ -213,7 +213,7 @@
 
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salaryduration">Hourly Salary Duration</label>
-                            <div class="col-md-6">
+                            <div class="col-md-3 append-week">
                                 <!-- <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration"
                                     id="salaryduration" [style]="{'width':'100%'}"
                                     [disabled]="!(form.controls['salarytype'].value === 'hourly')">
@@ -223,7 +223,9 @@
 
                                 <input type="number" class="form-control" placeholder="Enter to Salary Duration"
                                     formControlName="salaryduration" id="salaryduration" *ngIf="!disabled">
-
+                                <div class="input-group-append col-md-3">
+                                    <span class="input-group-text">Week</span>
+                                </div>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salaryduration'].valid">
                                     <span *ngIf="form.controls['salaryduration'].errors['required']"
@@ -518,7 +520,16 @@
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
                     <div class="row detail-panel"
-                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
+                        <div class="col-md-3 detail-label">
+                            Candidate Email
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.email}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel"
+                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
                         <div class="col-md-3 detail-label">
                             Candidate Name
                         </div>
@@ -526,15 +537,7 @@
                             {{resData.candidate_name}}
                         </div>
                     </div>
-                    <div class="row detail-panel"
-                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                        <div class="col-md-3 detail-label">
-                            Candidate Email
-                        </div>
-                        <div class="col-md-6 detail-input">
-                            {{resData.candidate_email}}
-                        </div>
-                    </div>
+
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label">
                             Title
@@ -545,28 +548,22 @@
                     </div>
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label">
-                            Salary Type
+                            Location
                         </div>
                         <div class="col-md-6 detail-input">
-                            {{resData.salarytype}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
-                        <div class="col-md-3 detail-label">
-                            Hourly Salary Duration
-                        </div>
-                        <div class="col-md-6 detail-input">
-                            {{resData.salaryduration}}
+                            {{resData.location.city | titlecase}}
                         </div>
                     </div>
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label">
-                            Location
+                            Salary Type
                         </div>
                         <div class="col-md-6 detail-input">
-                            {{resData.location.city}}
+                            {{resData.salarytype| titlecase}}
                         </div>
                     </div>
+
+
                     <div class="row detail-panel" *ngIf="resData.salary">
                         <div class="col-md-3 detail-label">
                             Salary
@@ -589,6 +586,14 @@
                         </div>
                         <div class="col-md-6 detail-input">
                             {{resData.salary_to}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
+                        <div class="col-md-3 detail-label">
+                            Hourly Salary Duration
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.salaryduration}}
                         </div>
                     </div>
                     <div class="row detail-panel">
@@ -621,6 +626,22 @@
                         </div>
                         <div class="col-md-6 detail-input">
                             {{resData.offertype}}
+                        </div>
+                    </div>
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Commit Status
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.commitstatus}}
+                        </div>
+                    </div> -->
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label">
+                            Notes
+                        </div>
+                        <div class="col-md-6 detail-input">
+                            {{resData.notes}}
                         </div>
                     </div>
                     <div class="row detail-panel">
@@ -677,23 +698,6 @@
                     </div>
                     <!-- communication -->
 
-
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
-                            Commit Status
-                        </div>
-                        <div class="col-md-6 detail-input">
-                            {{resData.commitstatus}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
-                            Notes
-                        </div>
-                        <div class="col-md-6 detail-input">
-                            {{resData.notes}}
-                        </div>
-                    </div>
                     <!-- custom fields -->
                     <div class="row detail-panel" *ngFor="let field of resData.customfeild">
                         <div class="col-md-3 detail-label">
