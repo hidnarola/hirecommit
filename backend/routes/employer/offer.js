@@ -159,7 +159,7 @@ router.post("/", async (req, res) => {
             // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
             let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', interest_resp['data']['email']);
+            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', interest_resp.data.candidate_name);
 
             let mail_resp = await mail_helper.send("offer", {
                 "to": interest_resp['data']['email'],
@@ -633,10 +633,10 @@ router.put('/', async (req, res) => {
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
     console.log('Update : offer_upadate ==> ', offer_upadate);
     obj.offer_id = offer_upadate.data._id;
-    // obj.status = offer_upadate.data.status;
+    obj.status = offer_upadate.data.status;
 
     if (offer.data.status !== req.body.status) {
-        obj.message = `<span>${employer.data.username}</span> has ${req.body.status} this offer for <span>${candidate.data.firstname} ${candidate.data.lastname}</span>`
+        obj.message = `<span>${employer.data.username}</span> has ${req.body.status} this offer for <span>${offer_upadate.data.candidate_name}</span>`
         var interest = await common_helper.insert(History, obj);
     }
 
@@ -645,16 +645,22 @@ router.put('/', async (req, res) => {
     }
     else if (offer_upadate.status == 1) {
         if (offer.data.status !== offer_upadate.data.status) {
-            var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
+
+
+            // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
 
             let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
+            content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
+
+            console.log(offer_upadate.data.email);
+
             let mail_resp = await mail_helper.send("offer", {
-                "to": user.data.email,
+                "to": offer_upadate.data.email,
                 "subject": "Change Status of offer."
             }, {
-                "msg": content
+                "msg": content,
+                "url": ""
             });
         }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
@@ -687,7 +693,7 @@ router.get('/details/:id', async (req, res) => {
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
     try {
-        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
         // if (user && user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
         //     var user_id = user.data.emp_id
@@ -712,7 +718,8 @@ router.get('/history/:id', async (req, res) => {
             },
 
             {
-                $unwind: "$offer"
+                $unwind: "$offer",
+                // preserveNullAndEmptyArrays: true
             },
             {
                 $lookup:
@@ -727,22 +734,25 @@ router.get('/history/:id', async (req, res) => {
             {
                 $unwind: "$employer"
             },
-            {
-                $lookup:
-                {
-                    from: "candidateDetail",
-                    localField: "offer.user_id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                }
-            },
+            // {
+            //     $lookup:
+            //     {
+            //         from: "candidateDetail",
+            //         localField: "offer.user_id",
+            //         foreignField: "user_id",
+            //         as: "candidate"
+            //     }
+            // },
 
-            {
-                $unwind: {
-                    path: "$candidate"
-                },
-            },
+            // {
+            //     $unwind: {
+            //         path: "$candidate"
+            //     },
+            // },
         ])
+        console.log("==========>", history_data);
+
+
         if (history_data) {
             return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history_data });
         }

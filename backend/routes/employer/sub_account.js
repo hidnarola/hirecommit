@@ -168,6 +168,9 @@ router.put('/details', async (req, res) => {
     if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
         obj.admin_rights = req.body.data.admin_rights
     }
+    if (req.body.data.email && req.body.data.email !== "") {
+        obj.email = req.body.data.email
+    }
     var id = req.body.id;
     // var sub_account_upadate = await common_helper.update(Sub_Employer_Detail, { "_id": req.body.id }, obj)
     var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
