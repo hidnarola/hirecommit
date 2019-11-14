@@ -38,7 +38,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   group_optoins: any = [];
   arrayItems: any = [];
   key: any;
-  commitstatus: any = [];
+  disabled: boolean = false;
+  error = false;
+  error_msg = 'can\'t be less then minimum salary!';
+  error_msg1 = 'can\'t be greater then maximum salary!';
+  // commitstatus: any = [];
   offerStatus: any = [];
   // gname: any;
   custom_field: any = [];
@@ -59,7 +63,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'Both Commit', value: 'bothCommit' }
   ];
   // commit status options
-  commitstatus_optoins: any = [];
+  // commitstatus_optoins: any = [];
   // = [
   //   { label: 'Select Commit Status', value: '' },
   //   { label: 'High', value: 'high' },
@@ -100,8 +104,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // }
     // Form Controls
     this.form = this.fb.group({
-      candidate: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      candidate: new FormControl(''),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       title: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
@@ -114,8 +118,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       joiningdate: new FormControl('', [Validators.required]),
       status: new FormControl(),
       offertype: new FormControl('', [Validators.required]),
-      group: new FormControl('', [Validators.required]),
-      commitstatus: new FormControl('', [Validators.required]),
+      group: new FormControl(''),
+      // commitstatus: new FormControl('', [Validators.required]),
       notes: new FormControl(''),
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
@@ -211,12 +215,18 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   //  On change of salary type
   getSalaryType() {
+
     if (this.form.value.salarytype === 'hourly') {
+      this.disabled = false;
       this.form.controls['salaryduration'].setValidators([Validators.required]);
+      // document.getElementById('salaryduration').setAttribute('disabled', 'false');
     } else {
+      this.disabled = true;
+      // document.getElementById('salaryduration').setAttribute('disabled', 'true');
       this.form.controls['salaryduration'].setValidators(null);
       this.form.controls['salaryduration'].setValue(null);
     }
+    console.log(this.disabled);
     this.updateValidation();
     this.form.controls['salaryduration'].updateValueAndValidity();
   }
@@ -274,7 +284,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.offerStatus = resp['status'];
           });
 
-          this.getCommitStatusOptions(this.resData.groups);
+          // this.getCommitStatusOptions(this.resData.groups);
           this.spinner.hide();
           this.getCandidateDetail(res[`data`].user_id);
           this.groupDetail(res[`data`].groups);
@@ -315,8 +325,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
-            this.form.controls['commitstatus']
-              .setValue({ lable: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
+            // this.form.controls['commitstatus']
+            //   .setValue({ lable: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
@@ -493,24 +503,25 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.resData.groupName = groupById.name;
     }
   }
-  forCommit(event) {
-    const id = event.value._id;
-    this.getCommitStatusOptions(event.value._id);
-  }
 
-  getCommitStatusOptions(id) {
-    this.commitstatus_optoins = [];
-    this.service.commit_status(id).subscribe(res => {
-      this.commitstatus_optoins = res['commitstatus'];
-      // res['commitstatus'].forEach(element => {
-      //   this.commitstatus_optoins.push({
-      //     label: element.lable,
-      //     value: element.value
-      //   });
-    }
-    );
-    // })
-  }
+  // forCommit(event) {
+  //   const id = event.value._id;
+  //   this.getCommitStatusOptions(event.value._id);
+  // }
+
+  // getCommitStatusOptions(id) {
+  //   this.commitstatus_optoins = [];
+  //   this.service.commit_status(id).subscribe(res => {
+  //     this.commitstatus_optoins = res['commitstatus'];
+  //     // res['commitstatus'].forEach(element => {
+  //     //   this.commitstatus_optoins.push({
+  //     //     label: element.lable,
+  //     //     value: element.value
+  //     //   });
+  //   }
+  //   );
+  //   // })
+  // }
 
   Accept(id) {
     const obj = {
@@ -629,7 +640,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else {
       document.getElementById('salarybracket').removeAttribute('disabled');
     }
+
+
   }
+
+
 
   cancel() {
     if (this.userDetail.role === 'employer') {
@@ -673,6 +688,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
+    console.log('this.formData=>', this.form.value.group);
+
     // customised fields
     const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {
@@ -717,8 +734,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       ...this.form.value,
       user_id: this.form.value.candidate,
       location: this.form.value.location._id,
-      groups: this.form.value.group._id,
-      commitstatus: this.form.value.commitstatus.value,
+
+      // groups: this.form.value.group._id,
+      // commitstatus: this.form.value.commitstatus.value,
       expirydate: this.commonService.current_time_to_UTC(this.form.value.expirydate),
       joiningdate: this.commonService.current_time_to_UTC(this.form.value.joiningdate),
       salary: this.form.value.salarybracket ? this.form.value.salarybracket : '',
@@ -739,11 +757,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.formData.append(key, value);
       }
     }
-    // if (this.form.value.salaryduration) {
-    //   this.formData.append('salaryduration', this.form.value.salaryduration);
-    // }
+    if (this.form.value.group) {
+      this.formData.append('groups', this.form.value.group._id);
+    }
+
 
     if (flag) {
+      console.log('this.FormData=>', this.formData);
+
       if (this.route.snapshot.data.title === 'Edit') {
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
@@ -802,7 +823,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 },
                 err => {
                   this.show_spinner = false;
-                  this.toastr.error(err['error']['message'], 'Error!', {
+                  this.toastr.error(err['error']['message'][0].msg, 'Error!', {
                     timeOut: 3000
                   });
                 }

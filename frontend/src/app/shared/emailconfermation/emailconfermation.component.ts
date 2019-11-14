@@ -18,15 +18,11 @@ export class EmailconfermationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private service: CommonService,
     private toastr: ToastrService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.activatedRoute.params.subscribe((params: Params) => {
       this.params_token = params;
     });
-  }
 
-  confirm() {
     this.service.verify_email(this.params_token).subscribe(res => {
       if (res['status'] === 1) {
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -34,7 +30,25 @@ export class EmailconfermationComponent implements OnInit {
       }
     }, (err) => {
       this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+      this.router.navigate(['/login']);
     });
   }
+
+  ngOnInit() {
+    // this.activatedRoute.params.subscribe((params: Params) => {
+    //   this.params_token = params;
+    // });
+  }
+
+  // confirm() {
+  //   this.service.verify_email(this.params_token).subscribe(res => {
+  //     if (res['status'] === 1) {
+  //       this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+  //       this.router.navigate(['/login']);
+  //     }
+  //   }, (err) => {
+  //     this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+  //   });
+  // }
 
 }
