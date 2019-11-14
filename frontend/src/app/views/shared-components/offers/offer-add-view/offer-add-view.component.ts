@@ -104,7 +104,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // }
     // Form Controls
     this.form = this.fb.group({
-      candidate: new FormControl(''),
+      candidate_name: new FormControl(''),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       title: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       salarytype: new FormControl('', [Validators.required]),
@@ -286,7 +286,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
           // this.getCommitStatusOptions(this.resData.groups);
           this.spinner.hide();
-          this.getCandidateDetail(res[`data`].user_id);
+          // this.getCandidateDetail(res[`data`].user_id);
           this.groupDetail(res[`data`].groups);
           if (res[`data`] && this.is_Edit) {
             // set communication
@@ -314,7 +314,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.communicationData = _communication_array;
             }
             // set communication
-            this.form.controls['candidate'].setValue(res[`data`].user_id);
+            this.form.controls['email'].setValue(res[`data`].email);
+            this.form.controls['candidate_name'].setValue(res[`data`].candidate_name);
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
             this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
@@ -422,15 +423,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   // get candidate detail
-  async getCandidateDetail(id) {
-    const candidateDataById = this.candidate.filter(x => x.user._id === id);
-    this.form.controls.email.setValue(candidateDataById[0].user.email);
+  // async getCandidateDetail(id) {
+  //   const candidateDataById = this.candidate.filter(x => x.user._id === id);
+  //   this.form.controls.email.setValue(candidateDataById[0].user.email);
 
-    if (this.is_View) {
-      this.resData.candidate_name = candidateDataById[0].firstname + ' ' + candidateDataById[0].lastname;
-      this.resData.candidate_email = candidateDataById[0].user.email;
-    }
-  }
+  //   if (this.is_View) {
+  //     this.resData.candidate_name = candidateDataById[0].firstname + ' ' + candidateDataById[0].lastname;
+  //     this.resData.candidate_email = candidateDataById[0].user.email;
+  //   }
+  // }
 
   async getCountryList() {
     this.service.get_salary_country().subscribe(
@@ -611,8 +612,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   findEmail(value) {
     this.candidate.forEach(element => {
-      if (value.value === element.user_id) {
-        this.form.controls.email.setValue(element.user.email);
+      console.log(' : element ==> ', element.user.email);
+      console.log(value.target.value);
+
+      if (value.target.value === element.user.email) {
+        this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
+      } else {
+        this.form.controls.candidate_name.setValue('');
       }
     });
   }
@@ -688,7 +694,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
-    console.log('this.formData=>', this.form.value.group);
+    console.log('this.formataD=>', this.form.value.group);
 
     // customised fields
     const _coustomisedFieldsArray = [];
