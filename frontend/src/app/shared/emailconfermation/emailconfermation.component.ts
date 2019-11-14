@@ -30,6 +30,7 @@ export class EmailconfermationComponent implements OnInit {
       }
     }, (err) => {
       this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+      this.router.navigate(['/login']);
     });
   }
 
