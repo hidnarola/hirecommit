@@ -17,17 +17,18 @@
                 </div>
                 <div class="card-body">
                     <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table"
+                        style="width:100%;">
                         <thead>
                             <tr>
                                 <th>No.</th>
                                 <th>Custom Fields</th>
 
-                                <th *ngIf="userDetail.role === 'employer'">Action</th>
+                                <th *ngIf=" userDetail.role==='employer'">Action</th>
                             </tr>
                         </thead>
 
-                        <tbody *ngIf="data?.length != 0">
+                        <tbody *ngIf=" data?.length !=0">
                             <tr *ngFor="let d of data; let i = index;">
                                 <td>{{d.serial_number}} </td>
                                 <td>{{d.key|titlecase}}</td>
