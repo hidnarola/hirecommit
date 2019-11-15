@@ -265,6 +265,11 @@ body .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #bf7a68; backgroun
 
 .dataTables_wrapper {overflow-x: auto;}
 
+.contact-number-field input{ width: 60px;}
+.contact-number-field input + input{     width: calc(100% - 75px); margin: 0 0 0 auto;}
+.append-week {display: flex;}
+.append-week .input-group-append {padding: 0px;}
+
 /***** Media start it *****/
 @media(min-width:992px){
     .app-header .navbar-toggler{ display:none !important;}
