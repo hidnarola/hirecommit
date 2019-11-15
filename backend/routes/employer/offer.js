@@ -16,6 +16,7 @@ var User = require('../../models/user');
 var CandidateDetail = require("../../models/candidate-detail");
 var SubEmployerDetail = require("../../models/sub-employer-detail");
 var EmployerDetail = require("../../models/employer-detail");
+var Role = require('../../models/role');
 var Status = require("../../models/status");
 var History = require('../../models/offer_history');
 
@@ -149,11 +150,22 @@ router.post("/", async (req, res) => {
 
         if (candidate_user.data.length <= 0) {
             var interest_candidate = await common_helper.insert(User, { 'email': req.body.email, 'role_id': '5d9d98e13a0c78039c6dd00e' });
+            let candidate_name = req.body.candidate_name.split(' ');
+            let newcandidate = {
+                'firstname': candidate_name[0],
+                'lastname': candidate_name[1],
+                'user_id': interest_candidate.data._id
+            }
+            var interest_candidate_detail = await common_helper.insert(CandidateDetail, newcandidate);
+            console.log(' : interest_candidate_detail ==> ', interest_candidate_detail); return false;
             obj.user_id = interest_candidate.data._id;
+            var role = await common_helper.findOne(Role, { '_id': interest_candidate.data.role_id });
         } else {
             obj.user_id = candidate_user.data[0]._id;
+            var role = await common_helper.findOne(Role, { '_id': candidate_user.data[0].role_id });
         }
-        if (candidate_user.data[0].role_id !== '5d9d98e13a0c78039c6dd00e') {
+
+        if (role.data.role !== 'candidate') {
             res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
         } else {
             var interest_resp = await common_helper.insert(Offer, obj);
@@ -165,18 +177,20 @@ router.post("/", async (req, res) => {
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             } else {
                 var user = await common_helper.findOne(User, { _id: new ObjectId(interest_resp.data.user_id) })
+                var candidate = await common_helper.findOne(CandidateDetail,
+                    { user_id: new ObjectId(interest_resp.data.user_id) });
                 var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
                 let content = status.data.MessageContent;
-                content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', interest_resp.data.candidate_name);
+
+                content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
 
                 let mail_resp = await mail_helper.send("offer", {
-                    "to": interest_resp['data']['email'],
+                    "to": user.data.email,
                     "subject": "Offer"
                 }, {
                     "msg": content,
                     //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
                     "url": "http://localhost:3000/offer/" + obj.offer_id,
-
                 });
 
                 res.json({ "message": "Offer is Added successfully", "data": interest_resp })
