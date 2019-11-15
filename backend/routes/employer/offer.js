@@ -181,7 +181,7 @@ router.post("/", async (req, res) => {
 });
 
 
-cron.schedule('00 * * * * *', async (req, res) => {
+cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
         [
             {
