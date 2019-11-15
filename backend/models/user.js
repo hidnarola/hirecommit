@@ -42,6 +42,10 @@ const UserSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
+  is_register: {
+    type: Boolean,
+    default: false
+  },
   createdate: {
     type: Date,
     default: Date.now

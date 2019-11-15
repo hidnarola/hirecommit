@@ -411,6 +411,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.get_candidate_list().subscribe(
         async res => {
           this.candidate = await res['data'];
+          console.log(res);
+
           // res['data'].forEach(element => {
           for (const element of res['data']) {
             this.candidateList.push({
@@ -615,17 +617,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
-
-    this.candidate.forEach(element => {
-      console.log('this.candidate=>here', element);
-      console.log(value.target.value);
-
+    for (let index = 0; index < this.candidate.length; index++) {
+      const element = this.candidate[index];
       if (value.target.value === element.user.email) {
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
-      } else {
-        this.form.controls.candidate_name.setValue('');
       }
-    });
+    }
   }
 
   // blur event for salary input

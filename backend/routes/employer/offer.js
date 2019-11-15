@@ -145,33 +145,42 @@ router.post("/", async (req, res) => {
 
         };
 
+        var candidate_user = await common_helper.find(User, { 'email': req.body.email, 'is_del': false });
 
-        var interest_resp = await common_helper.insert(Offer, obj);
-
-        obj.offer_id = interest_resp.data._id
-        var interest = await common_helper.insert(History, obj);
-        if (interest_resp.status == 0) {
-            logger.debug("Error = ", interest_resp.error);
-            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+        if (candidate_user.data.length <= 0) {
+            var interest_candidate = await common_helper.insert(User, { 'email': req.body.email, 'role_id': '5d9d98e13a0c78039c6dd00e' });
+            obj.user_id = interest_candidate.data._id;
         } else {
-            // console.log("123", interest_resp['data']['email']);
+            obj.user_id = candidate_user.data[0]._id;
+        }
+        if (candidate_user.data[0].role_id !== '5d9d98e13a0c78039c6dd00e') {
+            res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
+        } else {
+            var interest_resp = await common_helper.insert(Offer, obj);
 
-            // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
-            var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
-            let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', interest_resp.data.candidate_name);
+            obj.offer_id = interest_resp.data._id
+            var interest = await common_helper.insert(History, obj);
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+                var user = await common_helper.findOne(User, { _id: new ObjectId(interest_resp.data.user_id) })
+                var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
+                let content = status.data.MessageContent;
+                content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', interest_resp.data.candidate_name);
 
-            let mail_resp = await mail_helper.send("offer", {
-                "to": interest_resp['data']['email'],
-                "subject": "Offer"
-            }, {
-                "msg": content,
-                //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
-                "url": "http://localhost:3000/offer/" + obj.offer_id,
+                let mail_resp = await mail_helper.send("offer", {
+                    "to": interest_resp['data']['email'],
+                    "subject": "Offer"
+                }, {
+                    "msg": content,
+                    //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+                    "url": "http://localhost:3000/offer/" + obj.offer_id,
 
-            });
+                });
 
-            res.json({ "message": "Offer is Added successfully", "data": interest_resp })
+                res.json({ "message": "Offer is Added successfully", "data": interest_resp })
+            }
         }
     }
     else {
@@ -548,15 +557,15 @@ router.put('/', async (req, res) => {
     var obj = {};
 
     console.log('Update : body ==> ', req.body);
-    if (req.body.email && req.body.email != "") {
-        obj.email = req.body.email
-    }
+    // if (req.body.email && req.body.email != "") {
+    //     obj.email = req.body.email
+    // }
     if (req.body.groups && req.body.groups != "") {
         obj.groups = req.body.groups
     }
-    if (req.body.candidate_name && req.body.candidate_name != "") {
-        obj.candidate_name = req.body.candidate_name
-    }
+    // if (req.body.candidate_name && req.body.candidate_name != "") {
+    //     obj.candidate_name = req.body.candidate_name
+    // }
     if (req.body.title && req.body.title != "") {
         obj.title = req.body.title
     }
@@ -679,16 +688,17 @@ router.get('/details/:id', async (req, res) => {
     var id = req.params.id;
     try {
         const offer_detail = await Offer.findOne({ _id: id })
-
             .populate([
                 { path: 'employer_id' },
                 { path: 'salarybracket' },
                 { path: 'location' },
+                { path: 'user_id' },
                 { path: 'group' },
             ])
             .lean();
 
-        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
+        var candidate_detail = await common_helper.findOne(CandidateDetail, { 'user_id': offer_detail.user_id._id });
+        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail, 'candidate_data': candidate_detail });
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
