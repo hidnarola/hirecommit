@@ -67,6 +67,14 @@ const routes: Routes = [
         }
       },
       {
+        path: 'approved_employer/edit/:id',
+        component: EmployerViewComponent,
+        data: {
+          title: 'Edit Approved Employer',
+          type: 'approved'
+        }
+      },
+      {
         path: 'new_employer',
         component: EmployerListComponent,
         data: {

@@ -94,7 +94,7 @@ export const employer: NavData[] = [
   //   ]
   // },
   {
-    name: 'Sub accounts',
+    name: 'Sub Accounts',
     // name: 'Manage Sub-accounts',
     url: 'sub_accounts/list',
     icon: 'icon-puzzle',

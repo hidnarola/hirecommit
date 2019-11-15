@@ -30,6 +30,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   candidateList: any = [];
   country: any = [];
   countryList: any = [];
+  candidateData: any;
   salary_bracket: any = [];
   salarybracketList: any = [];
   location: any = [];
@@ -277,6 +278,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
+          this.candidateData = res['candidate_data']['data']
+          console.log('this.resData=>', this.resData);
+
           this.grpId = this.resData.user_id;
           this.socketService.joinGrp(this.resData.user_id);
           // this.commitstatus = res['commitstatus']
@@ -314,8 +318,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.communicationData = _communication_array;
             }
             // set communication
-            this.form.controls['email'].setValue(res[`data`].email);
-            this.form.controls['candidate_name'].setValue(res[`data`].candidate_name);
+            this.form.controls['email'].setValue(res[`data`].user_id.email);
+            this.form.controls['candidate_name'].setValue(res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname);
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
             this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
@@ -611,8 +615,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
+
     this.candidate.forEach(element => {
-      console.log(' : element ==> ', element.user.email);
+      console.log('this.candidate=>here', element);
       console.log(value.target.value);
 
       if (value.target.value === element.user.email) {

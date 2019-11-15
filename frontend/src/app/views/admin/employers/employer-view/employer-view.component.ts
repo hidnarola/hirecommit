@@ -29,6 +29,8 @@ export class EmployerViewComponent implements OnInit {
   country: any;
   website: any;
   companyName: any;
+  is_Edit: Boolean = false;
+  is_View: Boolean = false;
   bussinessType: any;
   constructor(
     private router: Router,
@@ -43,6 +45,12 @@ export class EmployerViewComponent implements OnInit {
 
     if (this.route.snapshot.data.type === 'new') {
       this.employer_type = 'New';
+    }
+    if (this.route.snapshot.url[1].path === 'edit') {
+      this.is_Edit = true;
+    }
+    else if (this.route.snapshot.url[1].path === 'view') {
+      this.is_View = true;
     }
   }
 

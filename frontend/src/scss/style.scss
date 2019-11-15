@@ -262,13 +262,17 @@ body .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #bf7a68; backgroun
 .swal2-styled.swal2-confirm {background-color: #bf7a68 !important; border-left-color:#bf7a68 !important; border-right-color:#bf7a68 !important;}
 .swal2-actions:not(.swal2-loading) .swal2-styled:hover{ background-color:#121f34 !important; border-left-color:#121f34 !important; border-right-color:#121f34 !important;}
 .dstepper-block .input-group-text {max-height: 35px;}
-
 .dataTables_wrapper {overflow-x: auto;}
-
 .contact-number-field input{ width: 60px;}
 .contact-number-field input + input{     width: calc(100% - 75px); margin: 0 0 0 auto;}
 .append-week {display: flex;}
 .append-week .input-group-append {padding: 0px;}
+.btn-primary:focus, .btn-primary.focus {box-shadow: none;}
+.form-control:disabled, .form-control[readonly] {background-color: #ffffff;}
+.form-control:focus {color: #5c6873;background-color: #fff;border-color: #e4e7ea;outline: 0;box-shadow: none;}
+
+
+
 
 /***** Media start it *****/
 @media(min-width:992px){

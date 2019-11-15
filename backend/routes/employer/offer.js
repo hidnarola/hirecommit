@@ -238,7 +238,8 @@ cron.schedule('00 * * * * *', async (req, res) => {
         for (const comm of resp.communication.communication) {
             if (comm.trigger == "afterOffer") {
                 // console.log('====>', comm.trigger);
-                var offer_date = moment(resp.createdAt).add(1, 'day')
+                var days = comm.day
+                var offer_date = moment(resp.createdAt).add(days, 'day')
                 // console.log('offer_date1 ==> ', moment(offer_date).format());
                 offer_date = moment(offer_date).format("YYYY-MM-DD")
                 // console.log('offer_date ==> ', offer_date, current_date);
@@ -263,7 +264,8 @@ cron.schedule('00 * * * * *', async (req, res) => {
             }
 
             if (comm.trigger == "beforeJoining") {
-                var offer_date = moment(resp.joiningdate).subtract(2, 'day')
+                var days = comm.day
+                var offer_date = moment(resp.joiningdate).subtract(days, 'day')
                 offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
@@ -282,7 +284,8 @@ cron.schedule('00 * * * * *', async (req, res) => {
             }
 
             if (comm.trigger == "afterJoining") {
-                var offer_date = moment(resp.joiningdate).add(2, 'day')
+                var days = comm.day
+                var offer_date = moment(resp.joiningdate).add(days, 'day')
                 offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
@@ -299,7 +302,8 @@ cron.schedule('00 * * * * *', async (req, res) => {
 
             }
             if (comm.trigger == "beforeExpiry") {
-                var offer_date = moment(resp.expirydate).subtract(2, 'day')
+                var days = comm.day
+                var offer_date = moment(resp.expirydate).subtract(days, 'day')
                 offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;
@@ -316,7 +320,8 @@ cron.schedule('00 * * * * *', async (req, res) => {
 
             }
             if (comm.trigger == "afterExpiry") {
-                var offer_date = moment(resp.expirydate).add(2, 'day')
+                var days = comm.day
+                var offer_date = moment(resp.expirydate).add(days, 'day')
                 offer_date = moment(offer_date).format("YYYY-MM-DD")
 
                 var message = comm.message;

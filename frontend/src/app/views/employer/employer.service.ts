@@ -16,4 +16,8 @@ export class EmployerService {
         return this.http.put<any[]>(`${this.url}`, data);
     }
 
+    get_profile(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}`, data);
+    }
+
 }

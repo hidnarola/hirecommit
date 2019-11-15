@@ -1,9 +1,10 @@
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-sm-12 col-md-12">
-            <div class="card">
+            <!-- view -->
+            <div class="card" *ngIf="is_View">
                 <div class="card-header">
-                    Employer Detail
+                    <strong style="font-size: 20px;">Employer Details</strong>
                 </div>
                 <div class="card-body">
                     <table class="table">
@@ -67,6 +68,63 @@
                     </div>
                 </div>
             </div>
+            <!-- view -->
+
+            <!-- edit -->
+            <div class="card" *ngIf="is_Edit">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">Edit Details</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input class="form-control" type="text" placeholder="{{name[0]}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Last Name</label>
+                            <input class="form-control" type="text" placeholder="{{name[1] ? name[1] : '-'}}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Email</label>
+                            <input class="form-control" type="text" placeholder="{{email}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Country</label>
+                            <input class="form-control" type="text" placeholder="{{country}}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Contact Number</label>
+                            <input class="form-control" type="text"
+                                placeholder="{{employer_detail.countrycode}} {{employer_detail.contactno}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Company</label>
+                            <input class="form-control" type="text" placeholder="{{companyName}}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Website</label>
+                            <input class="form-control" type="text" placeholder="{{website ? website : '-'}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Bussiness Type</label>
+                            <input class="form-control" type="text" placeholder="{{bussinessType}}">
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-success"
+                            (click)="Update(employer_detail.user_id)">Update</button>
+                        <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-danger"
+                            [routerLink]="cancel_link2">Cancel</button>
+                    </div>
+                </div>
+                <!-- edit -->
+            </div>
         </div>
-    </div>
-    <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+        <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

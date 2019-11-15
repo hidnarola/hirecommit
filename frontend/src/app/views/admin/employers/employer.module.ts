@@ -13,12 +13,14 @@ import { ReportComponent } from './report/report.component';
 import { ReportHistoryComponent } from './report/report-history/report-history.component';
 import { OffersModule } from '../../shared-components/offers/offers.module'
 import { CalendarModule } from 'primeng/calendar';
+
 @NgModule({
   declarations: [
     EmployerListComponent,
     EmployerViewComponent,
     ReportComponent,
     ReportHistoryComponent,
+
     // OfferAddViewComponent
   ],
   imports: [

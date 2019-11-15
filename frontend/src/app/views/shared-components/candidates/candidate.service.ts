@@ -23,6 +23,10 @@ export class CandidateService {
         return this.http.put<any[]>(`${this.url_candidate}`, data);
     }
 
+    get_Profile_Candidate(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url_candidate}`, data);
+    }
+
     // emoployer services
     checkHere() {
         return this.employer.next({});

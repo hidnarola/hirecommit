@@ -5,7 +5,7 @@
                 <div class="card text-black col-sm-12">
                     <div class="card-body">
                         <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
-                        <h2>{{profileData.username}}</h2>
+                        <h2>{{UserName}}</h2>
                         <!-- <label> Email: <a href="/">{{profileData.email}} </a></label> -->
                     </div>
                 </div>
@@ -18,88 +18,124 @@
                         <form role="form">
                             <div class="card-header"><strong>Company Details</strong></div>
                             <div class="card-body">
+                                <form [formGroup]="profileForm" (ngSubmit)="edit(profileForm.valid,emp_data.user_id)">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="align-middle">Company Name</td>
+                                                <td>
+                                                    <input type="text" class="form-control" [(ngModel)]="CompanyName"
+                                                        disabled="true" formControlName="companyname"
+                                                        name="companyname">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="align-middle">Website</td>
+                                                <td>
+                                                    <input type="text" class="form-control" [(ngModel)]="Website"
+                                                        disabled="true" formControlName="website" name="website">
+                                                </td>
+                                            </tr>
 
-                                <table class="table">
-                                    <tbody>
-                                        <tr>
-                                            <td class="align-middle">Company Name</td>
-                                            <td>
-                                                <input type="text" class="form-control"
-                                                    [(ngModel)]="profileData.companyname" disabled="true"
-                                                    [ngModelOptions]="{standalone: true}">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="align-middle">Website</td>
-                                            <td>
-                                                <input type="text" class="form-control"
-                                                    [(ngModel)]="profileData.website" disabled="true"
-                                                    [ngModelOptions]="{standalone: true}">
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td class="align-middle">Email</td>
+                                                <td>
+                                                    <input type="email" class="form-control" [(ngModel)]="Email"
+                                                        formControlName="email" name="email">
 
-                                        <tr>
-                                            <td class="align-middle">Email</td>
-                                            <td>
-                                                <input type="email" class="form-control" [(ngModel)]="profileData.email"
-                                                    [ngModelOptions]="{standalone: true}">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="align-middle">Country</td>
-                                            <td>
-                                                <input type="text" class="form-control" disabled="true"
-                                                    [(ngModel)]="profileData.country"
-                                                    [ngModelOptions]="{standalone: true}">
-                                            </td>
-                                        </tr>
+                                                    <div class="cust_err_msg">
+                                                        <span *ngIf="!profileForm.get('email').valid && submitted"
+                                                            class="text-danger">
+                                                            <span
+                                                                *ngIf="profileForm.get('email').errors['required'] ">This
+                                                                field is required.</span>
+                                                            <span
+                                                                *ngIf="profileForm.get('email').errors['pattern']">Enter
+                                                                Valid data</span>
+                                                        </span>
 
-                                        <tr>
-                                            <td class="align-middle">Business Type</td>
-                                            <td>
-                                                <input type="text" [(ngModel)]="profileData.name" class="form-control"
-                                                    [ngModelOptions]="{standalone: true}" disabled="true">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="align-middle">Country</td>
+                                                <td>
+                                                    <input type="text" class="form-control" disabled="true"
+                                                        [(ngModel)]="Country" formControlName="country" name="country">
+                                                </td>
+                                            </tr>
 
-                                                <!-- <p-dropdown [options]="Business_Type" placeholder="{{profileData.name}}"
+                                            <tr>
+                                                <td class="align-middle">Business Type</td>
+                                                <td>
+                                                    <input type="text" [(ngModel)]="BusinessType" class="form-control"
+                                                        disabled="true" formControlName="bussinesstype"
+                                                        name="bussinesstype">
+
+                                                    <!-- <p-dropdown [options]="Business_Type" placeholder="{{profileData.name}}"
                                                     class="form-control align-middle" [(ngModel)]="profileData.name"
                                                     [ngModelOptions]="{standalone: true}" disabled="true"
                                                     (onChange)="value($event)" [style]="{'width':'50%'}">
                                                 </p-dropdown> -->
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td class="align-middle">Company Person Name</td>
-                                            <td>
-                                                <input type="text" class="form-control"
-                                                    [(ngModel)]="profileData.username"
-                                                    [ngModelOptions]="{standalone: true}">
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td class="align-middle">Company Person Name</td>
+                                                <td>
+                                                    <input type="text" class="form-control" [(ngModel)]="UserName"
+                                                        formControlName="username" name="username">
+                                                    <div class="cust_err_msg">
+                                                        <span *ngIf="!profileForm.get('username').valid && submitted"
+                                                            class="text-danger">
+                                                            <span
+                                                                *ngIf="profileForm.get('username').errors['required'] || profileForm.controls['username'].errors['whitespace']">This
+                                                                field is required.</span>
+                                                        </span>
 
-                                        <tr>
-                                            <td class="align-middle">Contact Number</td>
-                                            <td>
-                                                <div class="d-flex flex-warp">
-                                                    <input type="text" class="form-control countrycode-input"
-                                                        disabled="" value="{{profileData.countrycode}}">
-                                                    <input type="text" class="form-control countryno-input"
-                                                        [(ngModel)]="profileData.contactno"
-                                                        [ngModelOptions]="{standalone: true}">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" class="text-right">
-                                                <button type="submit" class="btn btn-primary"
-                                                    (click)=edit(profileData.user_id) [disabled]="show_spinner">Submit
-                                                    <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                                                <button type="button" class="btn btn-danger"
-                                                    (click)='cancel()'>Close</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="align-middle">Contact Number</td>
+                                                <td>
+                                                    <div class="d-flex flex-warp">
+                                                        <input type="text" class="form-control countrycode-input"
+                                                            disabled="" value="{{CountryCode}}"
+                                                            formControlName="countrycode" name="countrycode">
+                                                        <input type="text" class="form-control countryno-input"
+                                                            [(ngModel)]="ContactNumber" formControlName="contactno"
+                                                            name="contactno">
+                                                        <div class="cust_err_msg">
+                                                            <span
+                                                                *ngIf="!profileForm.get('contactno').valid && submitted"
+                                                                class="text-danger">
+                                                                <span
+                                                                    *ngIf="profileForm.get('contactno').errors['required'] ">This
+                                                                    field is required.</span>
+                                                                <span
+                                                                    *ngIf="(profileForm.controls['contactno'].errors['minlength'] || profileForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
+                                                                    Valid data</span>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" class="text-right">
+                                                    <button type="submit" class="btn btn-primary"
+                                                        [disabled]="show_spinner">Submit
+                                                        <i *ngIf="show_spinner"
+                                                            class="fa fa-spinner fa-spin"></i></button>
+                                                    <button type="button" class="btn btn-danger"
+                                                        (click)='cancel()'>Close</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
                             </div>
                         </form>
                     </div>
@@ -114,7 +150,7 @@
                 <div class="card text-black col-sm-12">
                     <div class="card-body">
                         <img src="assets/img/user.png" alt="Texto Alternativo" class="img-circle img-thumbnail">
-                        <h2>{{profileData.firstname}} {{profileData.lastname}}</h2>
+                        <h2>{{FirstNane}} {{LastName}}</h2>
                         <!-- <label> Email: <a href="/">{{profileData.email}} </a></label> -->
                     </div>
                 </div>
@@ -126,66 +162,120 @@
                     <div class="card">
                         <form role="form">
                             <div class="card-header"><strong>Personal Details</strong></div>
-                            <div class="card-body">
-                                <div class="form-row mb-3">
-                                    <div class="col-md-6">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control" [(ngModel)]="profileData.firstname"
-                                            [ngModelOptions]="{standalone: true}">
+                            <form [formGroup]="CandidateForm"
+                                (ngSubmit)="candidate_profile(valid,candidate_data.user_id)">
+                                <div class="card-body">
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-6">
+                                            <label>First Name</label>
+                                            <input type="text" class="form-control" [(ngModel)]="FirstNane"
+                                                formControlName="firstname" name="firstname">
+
+                                            <div class="cust_err_msg">
+                                                <span *ngIf="!CandidateForm.get('firstname').valid && submitted"
+                                                    class="text-danger">
+                                                    <span
+                                                        *ngIf="CandidateForm.get('firstname').errors['required'] || profileForm.controls['firstname'].errors['whitespace']">This
+                                                        field is required.</span>
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Last Name</label>
+                                            <input type="text" class="form-control" [(ngModel)]="LastName"
+                                                formControlName="lastname" name="lastname">
+                                            <div class="cust_err_msg">
+                                                <span *ngIf="!CandidateForm.get('lastname').valid && submitted"
+                                                    class="text-danger">
+                                                    <span
+                                                        *ngIf="CandidateForm.get('lastname').errors['required'] || profileForm.controls['lastname'].errors['whitespace']">This
+                                                        field is required.</span>
+                                                </span>
+
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control" [(ngModel)]="profileData.lastname"
-                                            [ngModelOptions]="{standalone: true}">
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Country</label>
+                                            <input type="text" class="form-control" disabled="true"
+                                                [(ngModel)]="Candidate_Country" formControlName="candidatecountry"
+                                                name="candidatecountry">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" [(ngModel)]="Candidate_Email"
+                                                formControlName="candidate_email" name="candidate_email">
+                                            <div class="cust_err_msg">
+                                                <span *ngIf="!CandidateForm.get('candidate_email').valid && submitted"
+                                                    class="text-danger">
+                                                    <span
+                                                        *ngIf="CandidateForm.get('candidate_email').errors['required'] ">This
+                                                        field is required.</span>
+                                                    <span
+                                                        *ngIf="CandidateForm.get('candidate_email').errors['pattern']">Enter
+                                                        Valid data</span>
+                                                </span>
+
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-6">
-                                        <label>Country</label>
-                                        <input type="text" class="form-control" disabled=""
-                                            [(ngModel)]="profileData.country" [ngModelOptions]="{standalone: true}">
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-12 contact-number-field">
+                                            <label>Contact Number</label>
+                                            <div class="d-flex">
+                                                <input type="text" class="form-control countrycode-input"
+                                                    disabled="true" value="{{Candidate_CountryCode}}"
+                                                    formControlName="candidate_countrycode"
+                                                    name="candidate_countrycode">
+                                                <input type="text" class="form-control countryno-input"
+                                                    [(ngModel)]="Candidate_ContactNo"
+                                                    formControlName="candidate_contactno" name="candidate_contactno">
+                                                <div class="cust_err_msg">
+                                                    <span
+                                                        *ngIf="!CandidateForm.get('candidate_contactno').valid && submitted"
+                                                        class="text-danger">
+                                                        <span
+                                                            *ngIf="CandidateForm.get('candidate_contactno').errors['required'] ">This
+                                                            field is required.</span>
+                                                        <span
+                                                            *ngIf="(CandidateForm.controls['candidate_contactno'].errors['minlength'] || CandidateForm.controls['candidate_contactno'].errors['maxlength']) && !CandidateForm.controls['candidate_contactno'].errors['pattern']">Enter
+                                                            Valid data</span>
+                                                    </span>
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label>Email</label>
-                                        <input type="email" class="form-control" [(ngModel)]="profileData.email"
-                                            [ngModelOptions]="{standalone: true}">
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-12">
+                                            <label>Document Type</label>
+                                            <input type="text" class="form-control" disabled="true"
+                                                [(ngModel)]="DocumentType" formControlName="documenttype"
+                                                name="documenttype">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-12 contact-number-field">
-                                        <label>Contact Number</label>
-                                        <div class="d-flex">
-                                            <input type="text" class="form-control countrycode-input" disabled=""
-                                                value="{{profileData.countrycode}}">
-                                            <input type="text" class="form-control countryno-input"
-                                                [(ngModel)]="profileData.contactno"
-                                                [ngModelOptions]="{standalone: true}">
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-12">
+                                            <label>Document Image</label>
+                                            <img src="{{image + DocumentImage}}" disabled="true"
+                                                style="height: 100px; width:100px;;" formControlName="documentimage"
+                                                name="documentimage">
+                                        </div>
+                                    </div>
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-12 text-right">
+                                            <button type="submit" class="btn btn-primary"
+                                                [disabled]="show_spinner">Submit <i *ngIf="show_spinner"
+                                                    class="fa fa-spinner fa-spin"></i></button>
+                                            <button type="button" class="btn btn-danger"
+                                                (click)='cancel1()'>Close</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-12">
-                                        <label>Document Type</label>
-                                        <input type="text" class="form-control" disabled=""
-                                            [(ngModel)]="profileData.name" [ngModelOptions]="{standalone: true}">
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-12">
-                                        <label>Document Image</label>
-                                        <img src="{{image + profileData.documentimage}}" disabled=""
-                                            style="height: 100px; width:100px;;">
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-12 text-right">
-                                        <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
-                                            (click)='candidate_profile(profileData.user_id)'>Submit <i
-                                                *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                                        <button type="button" class="btn btn-danger" (click)='cancel1()'>Close</button>
-                                    </div>
-                                </div>
-                            </div>
+                            </form>
                         </form>
                     </div>
                 </div>

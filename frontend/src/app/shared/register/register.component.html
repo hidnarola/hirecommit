@@ -191,9 +191,9 @@
                 </p-checkbox>
 
                 <label for="signing-agree">By signing up you agree to our
-                  <a href="#">privacy policy</a>
+                  <a [routerLink]="['/privacypolicy']">privacy policy</a>
                   and
-                  <a href="#">terms of use</a>
+                  <a [routerLink]="['/termsandcondition']">terms of use</a>
                   <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
                     <span *ngIf="registerForm.controls['isChecked'].errors['required']">
                       Accept terms and conditions.</span>

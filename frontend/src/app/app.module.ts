@@ -12,6 +12,8 @@ import { ForgotPasswordComponent } from './shared/forgot-password/forgot-passwor
 import { SignUpComponent } from './shared/sign-up/sign-up.component';
 import { RegisterComponent } from './shared/register/register.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TermsConditionComponent } from './shared/terms-condition/terms-condition.component';
+import { PrivacyPolicyComponent } from './shared/privacy-policy/privacy-policy.component';
 import { RoleGuardService } from './services/auth/role-guard.service';
 import { AuthGuardService } from './services/auth/auth-guard.service';
 import { AuthService } from './services/auth/auth.service';
@@ -70,13 +72,15 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
   declarations: [
     AppComponent,
     P404Component,
+    TermsConditionComponent,
+    PrivacyPolicyComponent,
     LoginComponent,
     ForgotPasswordComponent,
     SignUpComponent,
     RegisterComponent,
     P500Component,
     EmailconfermationComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
   ],
   providers: [
     AuthService,

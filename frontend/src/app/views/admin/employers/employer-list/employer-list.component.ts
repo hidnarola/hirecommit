@@ -141,6 +141,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
