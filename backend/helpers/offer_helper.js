@@ -111,7 +111,6 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
 };
 
 offer_helper.get_candidate_offer = async (collection, id, search, start, length, recordsTotal, sort) => {
-
   try {
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
@@ -120,7 +119,7 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
         $match: {
           "is_del": false,
           "status": { $ne: 'Inactive' },
-          "user_id": new ObjectId(id)
+          "user_id": new ObjectId(id),
         }
       },
       {

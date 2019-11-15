@@ -22,8 +22,6 @@ var mail_helper = require('../../helpers/mail_helper');
 
 
 router.post('/get', async (req, res) => {
-
-
     var schema = {
 
     };
@@ -37,6 +35,7 @@ router.post('/get', async (req, res) => {
         let sortingObject = {
             [sortOrderColumn]: sortOrder
         }
+
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         if (user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
             var user_id = user.data.emp_id
@@ -64,7 +63,7 @@ router.post('/get', async (req, res) => {
             {
                 $unwind: {
                     path: "$group",
-                    // preserveNullAndEmptyArrays: true
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {

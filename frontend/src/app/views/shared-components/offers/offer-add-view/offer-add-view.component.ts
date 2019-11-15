@@ -314,8 +314,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.communicationData = _communication_array;
             }
             // set communication
-            this.form.controls['email'].setValue(res[`data`].email);
-            this.form.controls['candidate_name'].setValue(res[`data`].candidate_name);
+            this.form.controls['email'].setValue(res[`data`].user_id.email);
+            // tslint:disable-next-line: max-line-length
+            this.form.controls['candidate_name'].setValue(res[`candidate_data`][`data`].firstname + ' ' + res[`candidate_data`][`data`].lastname);
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
             this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
@@ -407,6 +408,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.get_candidate_list().subscribe(
         async res => {
           this.candidate = await res['data'];
+          console.log(res);
+
           // res['data'].forEach(element => {
           for (const element of res['data']) {
             this.candidateList.push({
@@ -611,16 +614,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
-    this.candidate.forEach(element => {
-      console.log(' : element ==> ', element.user.email);
-      console.log(value.target.value);
-
+    for (let index = 0; index < this.candidate.length; index++) {
+      const element = this.candidate[index];
       if (value.target.value === element.user.email) {
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
-      } else {
-        this.form.controls.candidate_name.setValue('');
       }
-    });
+    }
   }
 
   // blur event for salary input
