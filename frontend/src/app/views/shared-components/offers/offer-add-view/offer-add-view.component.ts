@@ -831,7 +831,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 },
                 err => {
                   this.show_spinner = false;
-                  this.toastr.error(err['error']['message'][0].msg, 'Error!', {
+                  this.toastr.error(err['error']['message'], 'Error!', {
                     timeOut: 3000
                   });
                 }
