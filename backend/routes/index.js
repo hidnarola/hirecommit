@@ -35,10 +35,10 @@ var Offer = require('./../models/offer');
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
-var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+// var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
 //
 //local
-// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -178,13 +178,13 @@ router.post("/candidate_register", async (req, res) => {
 
     let user_resp = await common_helper.findOne(User, {
       "email": req.body.email.toLowerCase(),
-
+      // "is_del": false,
+      // "is_register": true
     });
-
-
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
     } else {
+
       let role = await common_helper.findOne(Role, { 'role': 'candidate' }, 1)
       var user_reg_obg = {
         "email": req.body.email.toLowerCase(),
@@ -196,6 +196,16 @@ router.post("/candidate_register", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
       }
       else {
+        // let user_resp = await common_helper.findOne(User, {
+        //   "email": req.body.email.toLowerCase(),
+        //   "is_del": false,
+        //   "is_register": false
+        // });
+        // if () {
+
+        // } else {
+
+        // }
         var interest_user_resp = await common_helper.insert(User, user_reg_obg);
 
         if (interest_user_resp.status === 1) {
@@ -780,6 +790,15 @@ router.post('/email_verify', async (req, res) => {
             var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
           }
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
+
+          logger.trace("sending mail");
+          let mail_resp = await mail_helper.send("welcome_email", {
+            "to": user_resp.data.email,
+            "subject": "HireCommit - Welcome Email"
+          }, {
+            'msg': 'Welcome to the HireCommit',
+            // "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+          });
         }
       }
     }
