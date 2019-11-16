@@ -13,11 +13,11 @@ const CandidateDetailSchema = new Schema({
   },
   countrycode: {
     type: String,
-    require: true
+    // require: true
   },
   contactno: {
     type: String,
-    required: true
+    // required: true
   },
   country: {
     type: mongoose.Schema.Types.ObjectId,

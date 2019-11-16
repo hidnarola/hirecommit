@@ -11,6 +11,9 @@ var user_helper = require('../../helpers/user_helper');
 var offer_helper = require('../../helpers/offer_helper');
 var Candidate = require('../../models/candidate-detail');
 var CustomField = require('../../models/customfield');
+var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+var btoa = require('btoa');
 
 var logger = config.logger;
 var User = require('../../models/user');
@@ -665,5 +668,67 @@ router.put('/', async (req, res) => {
 })
 
 
+router.put('/update', async (req, res) => {
+    // console.log(req.body); return false;
+    var obj = {}
+    if (req.body.username && req.body.username != "") {
+        obj.username = req.body.username
+    }
+    if (req.body.email && req.body.email != "") {
+        obj.email = req.body.email
+    }
+    if (req.body.contactno && req.body.contactno != "") {
+        obj.contactno = req.body.contactno
+    }
+    var user_detail = await common_helper.findOne(User, { '_id': req.body.user_id });
+    console.log(user_detail.data.email);
+    console.log(user_detail.data.email, req.body.email);
+
+
+
+    var employer_detail_upadate = await common_helper.update(Employer, { "user_id": req.body.user_id }, obj)
+    if (user_detail.data.email !== req.body.email) {
+        obj.email_verified = false;
+        logger.trace("sending mail");
+        let mail_resp = await mail_helper.send("welcome_email", {
+            "to": user_detail.data.email,
+            "subject": "Attention Mail"
+        }, {
+            'msg': 'Your email id is changed from ' + user_detail.data.email + ' to ' + req.body.email + '. Email verification link send to your updated email id.'
+        });
+        if (mail_resp.status === 0) {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+        } else {
+            var employer_upadate = await common_helper.update(User, { "_id": req.body.user_id }, obj)
+            var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
+                config.ACCESS_TOKEN_SECRET_KEY, {
+                expiresIn: 60 * 60 * 24 * 3
+            }
+            )).toString('base64');
+
+            var time = new Date();
+            time.setMinutes(time.getMinutes() + 20);
+            time = btoa(time);
+
+            let mail_response = await mail_helper.send("email_confirmation", {
+                "to": employer_upadate.data.email,
+                "subject": "HireCommit - Email Confirmation"
+            }, {
+                // config.website_url + "/email_confirm/" + interest_resp.data._id
+                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+            });
+        }
+    }
+
+    if (employer_detail_upadate.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (employer_detail_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": employer_upadate });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+    }
+})
 
 module.exports = router;
