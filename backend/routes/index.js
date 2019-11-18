@@ -31,14 +31,15 @@ var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
 var Offer = require('./../models/offer');
+var MailType = require('./../models/mail_content');
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
-// var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
 //
 //local
-var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -327,6 +328,7 @@ router.post("/candidate_register", async (req, res) => {
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
                 time = btoa(time);
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
 
                 logger.trace("sending mail");
                 let mail_resp = await mail_helper.send("email_confirmation", {
@@ -334,6 +336,7 @@ router.post("/candidate_register", async (req, res) => {
                   "subject": "HC - Email Confirmation"
                 }, {
                   // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
+                  "msg": message.data.content,
                   "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                 });
 
@@ -356,8 +359,7 @@ router.post("/candidate_register", async (req, res) => {
     logger.error("Validation Error = ", errors);
     res.status(config.BAD_REQUEST).json({ message: errors });
   }
-}
-);
+});
 
 // employer Registration
 router.post("/employer_register", async (req, res) => {
@@ -461,12 +463,14 @@ router.post("/employer_register", async (req, res) => {
               var time = new Date();
               time.setMinutes(time.getMinutes() + 20);
               time = btoa(time);
+              var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
 
               logger.trace("sending mail");
               let mail_resp = await mail_helper.send("email_confirmation", {
                 "to": interest_user_resp.data.email,
                 "subject": "HireCommit - Email Confirmation"
               }, {
+                "msg": message.data.content,
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
               });
@@ -762,6 +766,8 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/email_verify', async (req, res) => {
+  console.log('==>');
+
   logger.trace("Verifying JWT");
   jwt.verify(Buffer.from(req.body.token, 'base64').toString(), config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
     if (err) {
@@ -790,13 +796,14 @@ router.post('/email_verify', async (req, res) => {
             var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
           }
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
-
+          var message = await common_helper.findOne(MailType, { 'mail_type': 'welcome_mail' });
+          console.log("----->", message);
           logger.trace("sending mail");
           let mail_resp = await mail_helper.send("welcome_email", {
             "to": user_resp.data.email,
             "subject": "HireCommit - Welcome Email"
           }, {
-            'msg': 'Welcome to the HireCommit',
+            'msg': message.data.content,
             // "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
           });
         }
@@ -833,10 +840,13 @@ router.post('/forgot_password', async (req, res) => {
           "flag": 0
         }
         var resp_data = await common_helper.update(User, { "_id": user.data._id }, up);
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-mail' });
+
         let mail_resp = await mail_helper.send("reset_password", {
           "to": user.data.email,
           "subject": "HireCommit - Reset Password"
         }, {
+          "msg": message.data.content,
           "reset_link": config.WEBSITE_URL + "reset-password/" + reset_token
         });
         if (mail_resp.status === 0) {
@@ -963,11 +973,23 @@ router.put('/change_password', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "" })
       }
       else {
+
         const user = await common_helper.findOne(User, { "_id": decoded.id }, 1);
+
         if (user.data && user.status === 1) {
           if (bcrypt.compareSync(req.body.oldpassword, user.data.password)) {
             const update_resp = await common_helper.update(User, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
             if (update_resp.status === 1) {
+              if (decoded.role === 'sub-employer') {
+                var user_resp = await common_helper.findOne(User, { "_id": decoded.id });
+                if (user_resp.data.is_login_first === false) {
+                  var obj = {
+                    'is_login_first': true
+                  }
+                  var user_resp = await common_helper.update(User, { "_id": decoded.id }, obj);
+                }
+              }
+
               logger.trace("Password has been changed - ", decoded.id);
               res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
             }

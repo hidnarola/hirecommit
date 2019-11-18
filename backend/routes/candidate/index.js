@@ -6,6 +6,7 @@ var Offer = require('../../models/offer');
 var ObjectId = require('mongoose').Types.ObjectId;
 var common_helper = require('../../helpers/common_helper');
 var cron = require('node-cron');
+var MailType = require('../../models/mail_content');
 
 var offer_helper = require('../../helpers/offer_helper');
 
@@ -17,6 +18,21 @@ var Candidate = require('../../models/candidate-detail');
 
 
 
+router.put('/login_first_status', async (req, res) => {
+    var obj = {
+        'is_login_first': true
+    }
+    var candidate_upadate = await common_helper.update(User, { "_id": req.body.id }, obj)
+    if (candidate_upadate.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (candidate_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Login first status updated successfully", "data": candidate_upadate });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
+    }
+})
 
 router.post("/", async (req, res) => {
     var user_id = req.body.id
@@ -118,15 +134,17 @@ router.put('/', async (req, res) => {
             var time = new Date();
             time.setMinutes(time.getMinutes() + 20);
             time = btoa(time);
+            var message = await common_helper.findOne(MailType, { 'mail_type': 'user-update-email' });
+            let content = message.data.content;
 
             logger.trace("sending mail");
             let mail_resp = await mail_helper.send("email_confirmation", {
                 "to": sub_account_upadate.data.email,
                 "subject": "HireCommit - Email Confirmation"
             }, {
+                "msg": content,
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
             });
-            console.log('=========>', mail_resp);
 
             if (mail_resp.status === 0) {
                 res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
