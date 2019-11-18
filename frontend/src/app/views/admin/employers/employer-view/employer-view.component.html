@@ -75,55 +75,103 @@
                 <div class="card-header">
                     <strong style="font-size: 20px;">Edit Details</strong>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" placeholder="{{name[0]}}">
-                        </div>
-                        <div class="col-md-6">
+                <form [formGroup]="empForm" (ngSubmit)="Update(empForm.valid,employer_detail.user_id._id)">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label> Name</label>
+                                <input class="form-control" type="text" formControlName="username" name="username"
+                                    [(ngModel)]="username">
+                                <div class="cust_err_msg">
+                                    <span *ngIf="!empForm.get('username').valid && submitted" class="text-danger">
+                                        <span
+                                            *ngIf="empForm.get('username').errors['required'] || empForm.controls['username'].errors['whitespace']">This
+                                            field is required.</span>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6">
                             <label>Last Name</label>
                             <input class="form-control" type="text" placeholder="{{name[1] ? name[1] : '-'}}">
+                        </div> -->
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                                <input class="form-control" type="text" placeholder="{{email}}" formControlName="email"
+                                    name="email" [(ngModel)]="email">
+                                <div class="cust_err_msg">
+                                    <span *ngIf="!empForm.get('email').valid && submitted" class="text-danger">
+                                        <span *ngIf="empForm.get('email').errors['required'] ">This
+                                            field is required.</span>
+                                        <span *ngIf="empForm.get('email').errors['pattern']">Enter
+                                            Valid data</span>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Country</label>
+                                <input class="form-control" type="text" placeholder="{{country}}"
+                                    formControlName="country" name="country" [(ngModel)]="country" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Contact Number</label>
+                                <div class="d-flex">
+                                    <input class="form-control col-sm-2" type="text"
+                                        placeholder="{{employer_detail.countrycode}}" formControlName="countrycode"
+                                        name="countrycode" [(ngModel)]="employer_detail.countrycode" disabled>
+
+                                    <input class="form-control col-sm-10" type="text"
+                                        placeholder="{{employer_detail.contactno}}" formControlName="contactno"
+                                        name="contactno" [(ngModel)]="contactno">
+                                </div>
+                                <div class="cust_err_msg">
+                                    <span *ngIf="!empForm.get('contactno').valid && submitted" class="text-danger">
+                                        <span *ngIf="empForm.get('contactno').errors['required'] ">This
+                                            field is required.</span>
+                                        <span
+                                            *ngIf="(empForm.controls['contactno'].errors['minlength'] || empForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
+                                            Valid data</span>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4">
+
+                               
+                            </div> -->
+                            <div class="col-md-6">
+                                <label>Company</label>
+                                <input class="form-control" type="text" placeholder="{{companyName}}"
+                                    formControlName="companyname" name="companyname" [(ngModel)]="companyName" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Website</label>
+                                <input class="form-control" type="text" placeholder="{{website ? website : '-'}}"
+                                    formControlName="website" name="website" [(ngModel)]="website" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Bussiness Type</label>
+                                <input class="form-control" type="text" placeholder="{{bussinessType}}"
+                                    formControlName="bussinesstype" name="bussinesstype" [(ngModel)]="bussinessType"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-success"
+                                [disabled]="show_spinner">Update <i *ngIf="show_spinner"
+                                    class="fa fa-spinner fa-spin"></i></button>
+                            <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-danger"
+                                [routerLink]="cancel_link2">Cancel</button>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label>Email</label>
-                            <input class="form-control" type="text" placeholder="{{email}}">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Country</label>
-                            <input class="form-control" type="text" placeholder="{{country}}">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label>Contact Number</label>
-                            <input class="form-control" type="text"
-                                placeholder="{{employer_detail.countrycode}} {{employer_detail.contactno}}">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Company</label>
-                            <input class="form-control" type="text" placeholder="{{companyName}}">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label>Website</label>
-                            <input class="form-control" type="text" placeholder="{{website ? website : '-'}}">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Bussiness Type</label>
-                            <input class="form-control" type="text" placeholder="{{bussinessType}}">
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-success"
-                            (click)="Update(employer_detail.user_id)">Update</button>
-                        <button type="button" *ngIf="employer_type === 'Approved'" class="btn btn-md btn-danger"
-                            [routerLink]="cancel_link2">Cancel</button>
-                    </div>
-                </div>
+                </form>
                 <!-- edit -->
             </div>
         </div>

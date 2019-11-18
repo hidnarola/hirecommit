@@ -177,7 +177,7 @@
                             <div class="col-md-6">
                                 <input type="number" min="1" class="form-control" placeholder="Enter from Salary"
                                     formControlName="salarybracket_from" id="salarybracket_from"
-                                    (blur)="onSalaryRangeBlur()">
+                                    (keyup)="checkFrom($event,salaryto.value)" #salaryfrom (blur)="onSalaryRangeBlur()">
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salarybracket_from'].valid">
                                     <span *ngIf="form.controls['salarybracket_from'].errors['required']"
@@ -187,8 +187,10 @@
                                     <span
                                         *ngIf="form.controls['salarybracket_from'].errors['pattern'] || !form.controls['salarybracket_from'].errors['required']"
                                         class="text-danger">Enter valid value.</span>
-                                    <!-- <span *ngIf="error" class="text-danger">{{error_msg1}}</span> -->
+
                                 </div>
+                                <span *ngIf="error" class="text-danger">{{err_from}}</span>
+                                <!-- {{error_msg1}} -->
                             </div>
                         </div>
                         <div class="form-group row">
@@ -196,7 +198,7 @@
                             <div class="col-md-6">
                                 <input type="number" min="1" class="form-control" placeholder="Enter to Salary"
                                     formControlName="salarybracket_to" id="salarybracket_to"
-                                    (blur)="onSalaryRangeBlur()">
+                                    (blur)="onSalaryRangeBlur()" #salaryto (keyup)="checkTo($event,salaryfrom.value)">
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['salarybracket_to'].valid">
                                     <span *ngIf="form.controls['salarybracket_to'].errors['required']"
@@ -206,8 +208,10 @@
                                     <span
                                         *ngIf="form.controls['salarybracket_to'].errors['pattern'] || !form.controls['salarybracket_to'].errors['required']"
                                         class="text-danger">Enter valid value.</span>
-                                    <!-- <span *ngIf="error" class="text-danger">{{error_msg}}</span> -->
+
                                 </div>
+                                <span *ngIf="error" class="text-danger">{{err_to}}</span>
+                                <!-- {{error_msg}} -->
                             </div>
                         </div>
 

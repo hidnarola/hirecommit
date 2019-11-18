@@ -35,14 +35,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   salarybracketList: any = [];
   location: any = [];
   locationList: any = [];
+  from: any;
+  to: any;
   customfield: any = [];
   group_optoins: any = [];
   arrayItems: any = [];
   key: any;
   disabled: boolean = false;
   error = false;
-  error_msg = 'can\'t be less then minimum salary!';
-  error_msg1 = 'can\'t be greater then maximum salary!';
+  err_to = '';
+  err_from = '';
   // commitstatus: any = [];
   offerStatus: any = [];
   // gname: any;
@@ -641,6 +643,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // blur event of salary range
   onSalaryRangeBlur() {
+
     if ((this.form.value.salarybracket_from > 0) && this.form.value.salarybracket_to > 0) {
       document.getElementById('salarybracket').setAttribute('disabled', 'true');
       this.form.controls['salarybracket'].setErrors(null);
@@ -648,8 +651,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else {
       document.getElementById('salarybracket').removeAttribute('disabled');
     }
-
-
   }
 
 
@@ -692,6 +693,65 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   //   }
 
   // }
+
+  checkFrom(from, to) {
+    // console.log('from =>', from.target.value, to);
+    this.from = parseInt(from.target.value)
+    this.to = parseInt(to)
+    // console.log('from', this.from, this.to);
+    // if (this.from < this.to) {
+    //   this.error = true;
+    //   this.error_msg = 'Can\'t greater than maximum salary!';
+    // } else if (this.from <= this.to) {
+    //   this.error = true;
+    //   this.error_msg1 = 'Can\'t be same!';
+    // } else {
+    //   this.error = false;
+    // }
+
+    if (this.from > this.to) {
+      this.error = true;
+      this.err_from = 'can\'t be greater then maximum salary!';
+      this.err_to = 'can\'t be less then minimum salary!';
+    }
+    else if (this.from == this.to) {
+      this.error = true;
+      this.err_from = 'Can\'t be same!';
+    }
+    else {
+      this.error = false;
+    }
+  }
+
+  checkTo(from, to) {
+    // console.log(' to=>', from.target.value, to);
+    this.to = parseInt(from.target.value)
+    this.from = parseInt(to)
+    console.log('to', this.from < this.to, this.from, this.to);
+    // if (this.from > this.to) {
+    //   this.error = true;
+    //   this.error_msg = 'Can\'t less than minimum salary!';
+    // } else if (this.from >= this.to) {
+    //   this.error = true;
+    //   this.error_msg = 'Can\'t be same!';
+    // } else {
+    //   this.error = false;
+    // }
+
+    if (this.from > this.to) {
+      this.error = true;
+      this.err_from = 'can\'t be greater then maximum salary!';
+      this.err_to = 'can\'t be less then minimum salary!';
+    }
+    else if (this.from == this.to) {
+      this.error = true;
+      this.err_from = 'Can\'t be same!';
+      this.err_to = 'Can\'t be same!';
+    }
+    else {
+      this.error = false;
+    }
+  }
 
 
   // submit offers
@@ -771,8 +831,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
 
     if (flag) {
-      console.log('this.FormData=>', this.formData);
-
       if (this.route.snapshot.data.title === 'Edit') {
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
@@ -783,7 +841,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.show_spinner = true;
             this.service.update_offer(this.formData).subscribe(
               res => {
-                console.log('<====>', res['data']['data'].employer_id);
                 this.socketService.changeOffer(this.grpId);
                 this.socketService.leaveGrp(this.grpId);
                 this.socketService.joinGrp(res['data']['data'].employer_id);
@@ -815,7 +872,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.show_spinner = true;
               this.service.add_offer(this.formData).subscribe(
                 res => {
-                  console.log('<====>', res);
                   this.socketService.joinGrp(res['data']['data'].user_id);
                   this.socketService.changeOffer(res['data']['data'].user_id);
                   this.socketService.leaveGrp(res['data']['data'].user_id);

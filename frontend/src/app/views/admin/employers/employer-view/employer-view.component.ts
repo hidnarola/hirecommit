@@ -5,6 +5,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
+import { EmployerService as emp } from '../../../employer/employer.service'
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-employer-view',
@@ -12,13 +14,16 @@ import { ConfirmationService } from 'primeng/api';
   styleUrls: ['./employer-view.component.scss']
 })
 export class EmployerViewComponent implements OnInit {
-
+  empForm: FormGroup;
   id: any;
   employer_detail: any = [];
-  name: any = [];
+  name: any;
+  username: any = [];
   buttonValue: any;
   buttonValue1: String;
   approval: boolean = false;
+  obj: any;
+  show_spinner = false;
   // cancel_link = '/admin/employers/list';
   cancel_link1 = '/admin/employers/new_employer';
   cancel_link2 = '/admin/employers/approved_employer';
@@ -28,9 +33,11 @@ export class EmployerViewComponent implements OnInit {
   businesstype: any;
   country: any;
   website: any;
+  contactno: any;
   companyName: any;
   is_Edit: Boolean = false;
   is_View: Boolean = false;
+  submitted = false;
   bussinessType: any;
   constructor(
     private router: Router,
@@ -39,6 +46,7 @@ export class EmployerViewComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private commonService: CommonService,
     private toastr: ToastrService,
+    private employerService: emp,
     private confirmationService: ConfirmationService,
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
@@ -52,22 +60,50 @@ export class EmployerViewComponent implements OnInit {
     else if (this.route.snapshot.url[1].path === 'view') {
       this.is_View = true;
     }
+
+    this.empForm = new FormGroup({
+      companyname: new FormControl(''),
+      website: new FormControl(''),
+      country: new FormControl(''),
+      bussinesstype: new FormControl(''),
+      countrycode: new FormControl(''),
+      username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      contactno: new FormControl('', Validators.compose([Validators.required,
+      Validators.pattern(/^-?(0|[1-9]\d*)?$/),
+      Validators.maxLength(10), Validators.minLength(10)
+      ])),
+    })
+  }
+
+  // Remove white spaces
+  noWhitespaceValidator(control: FormControl) {
+    if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    }
   }
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
+    this.getDetails();
+  }
+
+  getDetails() {
     this.service.getemployerDetail(this.id).subscribe(res => {
       this.employer_detail = res['data'];
       this.email = res['data']['user_id']['email'];
       this.country = res['data']['businesstype']['country'];
       this.businesstype = res['data']['businesstype']['name'];
       this.website = res['data']['website'];
+      this.contactno = res['data']['contactno']
       this.companyName = res['data']['companyname']
       this.bussinessType = res['data']['businesstype']['name']
-      this.name = this.employer_detail.username;
-      this.name = this.name.split(' ');
+      this.username = this.employer_detail.username;
+      this.name = this.username.split(' ');
       // console.log(this.name);
       console.log('employer_detail', this.employer_detail.user_id);
 
@@ -81,7 +117,6 @@ export class EmployerViewComponent implements OnInit {
       }
     });
   }
-
   // aprrove(id) {
   //   console.log('get id?', id);
 
@@ -96,6 +131,33 @@ export class EmployerViewComponent implements OnInit {
   //     this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
   //   });
   // }
+
+  Update(valid, id) {
+    this.submitted = true;
+    if (valid) {
+      this.show_spinner = true;
+      this.obj = {
+        'user_id': id,
+        'username': this.username,
+        'email': this.email,
+        'contactno': this.contactno
+      }
+      this.confirmationService.confirm({
+        message: 'Are you sure that you want to update Employer Profile?',
+        accept: () => {
+          this.show_spinner = false;
+          this.service.update_employer(this.obj).subscribe(res => {
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.getDetails();
+          }, err => {
+            this.show_spinner = false;
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          })
+
+        }
+      })
+    }
+  }
 
   onApprove(id) {
     const obj = {

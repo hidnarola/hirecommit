@@ -107,19 +107,18 @@
                                                         <input type="text" class="form-control countryno-input"
                                                             [(ngModel)]="ContactNumber" formControlName="contactno"
                                                             name="contactno">
-                                                        <div class="cust_err_msg">
+                                                    </div>
+                                                    <div class="cust_err_msg">
+                                                        <span *ngIf="!profileForm.get('contactno').valid && submitted"
+                                                            class="text-danger">
                                                             <span
-                                                                *ngIf="!profileForm.get('contactno').valid && submitted"
-                                                                class="text-danger">
-                                                                <span
-                                                                    *ngIf="profileForm.get('contactno').errors['required'] ">This
-                                                                    field is required.</span>
-                                                                <span
-                                                                    *ngIf="(profileForm.controls['contactno'].errors['minlength'] || profileForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
-                                                                    Valid data</span>
-                                                            </span>
+                                                                *ngIf="profileForm.get('contactno').errors['required'] ">This
+                                                                field is required.</span>
+                                                            <span
+                                                                *ngIf="(profileForm.controls['contactno'].errors['minlength'] || profileForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
+                                                                Valid data</span>
+                                                        </span>
 
-                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -233,19 +232,19 @@
                                                 <input type="text" class="form-control countryno-input"
                                                     [(ngModel)]="Candidate_ContactNo"
                                                     formControlName="candidate_contactno" name="candidate_contactno">
-                                                <div class="cust_err_msg">
+                                            </div>
+                                            <div class="cust_err_msg">
+                                                <span
+                                                    *ngIf="!CandidateForm.get('candidate_contactno').valid && submitted"
+                                                    class="text-danger">
                                                     <span
-                                                        *ngIf="!CandidateForm.get('candidate_contactno').valid && submitted"
-                                                        class="text-danger">
-                                                        <span
-                                                            *ngIf="CandidateForm.get('candidate_contactno').errors['required'] ">This
-                                                            field is required.</span>
-                                                        <span
-                                                            *ngIf="(CandidateForm.controls['candidate_contactno'].errors['minlength'] || CandidateForm.controls['candidate_contactno'].errors['maxlength']) && !CandidateForm.controls['candidate_contactno'].errors['pattern']">Enter
-                                                            Valid data</span>
-                                                    </span>
+                                                        *ngIf="CandidateForm.get('candidate_contactno').errors['required'] ">This
+                                                        field is required.</span>
+                                                    <span
+                                                        *ngIf="(CandidateForm.controls['candidate_contactno'].errors['minlength'] || CandidateForm.controls['candidate_contactno'].errors['maxlength']) && !CandidateForm.controls['candidate_contactno'].errors['pattern']">Enter
+                                                        Valid data</span>
+                                                </span>
 
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

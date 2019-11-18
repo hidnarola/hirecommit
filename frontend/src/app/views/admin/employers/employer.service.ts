@@ -47,6 +47,10 @@ export class EmployerService {
     return this.http.put<any[]>(`${this.url}` + '/employer', data);
   }
 
+  update_employer(data): Observable<any[]> {
+    return this.http.put<any[]>(`${this.url}` + '/employer/update/', data);
+  }
+
   // delemployer(id): Observable<any[]> {
   //   return this.http.delete<any[]>(`${this.url}` + '/employer/' + id);
   // }

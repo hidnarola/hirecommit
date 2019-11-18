@@ -137,6 +137,8 @@ export class SalaryBracketAddViewComponent implements OnInit {
     return this.AddSalaryBracket.controls;
   }
 
+
+
   onSubmit(flag: boolean, id) {
     this.submitted = true;
     if (this.id && flag) {
