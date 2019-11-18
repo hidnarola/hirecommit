@@ -59,6 +59,23 @@
     <!--</ol>-->
     <div class="container-fluid">
       <router-outlet></router-outlet>
+      <ng-template #content let-c="close" let-d="dismiss">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Instructions</h4>
+          <button type="button" id="closeBtn" style="visibility: hidden;" class="close" aria-label="Close"
+            (click)="d('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+          <h5>Please take a few minutes to set up:</h5>
+          <h6>Locations(Required)<p class="ast"> *</p>
+          </h6>
+          <h6>Communication Groups(Optional)</h6>
+          <h6>Sub Accounts(Optional)</h6>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="setup(_profile_data.user_id)">Let's Setup</button>
+        </div>
+      </ng-template>
     </div> <!-- /.container-fluid -->
   </main>
 </div>

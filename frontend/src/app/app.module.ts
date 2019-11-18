@@ -28,6 +28,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { environment } from '../environments/environment';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 export function getToken(): string {
   return localStorage.getItem('token');
 }
@@ -53,6 +54,7 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     CheckboxModule,
     FileUploadModule,
     NgxSpinnerModule,
+    NgbModule,
     ConfirmDialogModule,
     TooltipModule.forRoot({
       'placement': 'bottom',

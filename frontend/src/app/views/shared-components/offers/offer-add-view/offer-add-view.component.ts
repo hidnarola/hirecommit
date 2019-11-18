@@ -698,16 +698,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // console.log('from =>', from.target.value, to);
     this.from = parseInt(from.target.value)
     this.to = parseInt(to)
-    // console.log('from', this.from, this.to);
-    // if (this.from < this.to) {
-    //   this.error = true;
-    //   this.error_msg = 'Can\'t greater than maximum salary!';
-    // } else if (this.from <= this.to) {
-    //   this.error = true;
-    //   this.error_msg1 = 'Can\'t be same!';
-    // } else {
-    //   this.error = false;
-    // }
 
     if (this.from > this.to) {
       this.error = true;
@@ -727,16 +717,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // console.log(' to=>', from.target.value, to);
     this.to = parseInt(from.target.value)
     this.from = parseInt(to)
-    console.log('to', this.from < this.to, this.from, this.to);
-    // if (this.from > this.to) {
-    //   this.error = true;
-    //   this.error_msg = 'Can\'t less than minimum salary!';
-    // } else if (this.from >= this.to) {
-    //   this.error = true;
-    //   this.error_msg = 'Can\'t be same!';
-    // } else {
-    //   this.error = false;
-    // }
 
     if (this.from > this.to) {
       this.error = true;

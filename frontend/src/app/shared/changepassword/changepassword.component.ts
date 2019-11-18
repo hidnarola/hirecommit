@@ -18,6 +18,7 @@ export class ChangepasswordComponent implements OnInit {
   token: any;
   userDetail: any;
   show_spinner = false;
+  _profile_data: any;
   constructor(
     private router: Router,
     public fb: FormBuilder,
@@ -44,10 +45,18 @@ export class ChangepasswordComponent implements OnInit {
     }, { validator: this.checkPasswords });
 
     this.userDetail = this.commonService.getLoggedUserDetail();
+    this.commonService.getDecryptedProfileDetail().then(res => {
+      this._profile_data = res;
+    })
   }
 
   send() {
-    this.router.navigate(['/employer/offers/list']);
+    if (this._profile_data.is_login_first === true) {
+      this.router.navigate(['/employer/offers/list']);
+    }
+    else {
+      // document.getElementById('cancelBtn')
+    }
   }
 
   ngOnInit() {
@@ -87,6 +96,12 @@ export class ChangepasswordComponent implements OnInit {
               } else if (this.userDetail.role === 'admin') {
                 this.router.navigate(['/admin/employers/approved_employer']);
               } else if (this.userDetail.role === 'sub-employer') {
+                this._profile_data.is_login_first = true;
+                this.commonService.firstLogin(this._profile_data.is_login_first);
+
+                this.commonService.setProfileDetail(this._profile_data);
+
+                console.log('=>', this._profile_data);
                 this.router.navigate(['/sub_employer/offers/list']);
               }
             }

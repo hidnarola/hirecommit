@@ -43,42 +43,43 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      order: [[0, 'desc']],
+      // order: [[0, 'desc']],
       pageLength: 10,
       serverSide: true,
       processing: true,
       language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
       destroy: true,
       ajax: (dataTablesParameters: any, callback) => {
-        if (this.router.snapshot.data.type === 'approved' && this.userDetail.role === 'employer') {
-          this.service.get_approved_candidate(dataTablesParameters).subscribe(res => {
-            console.log('res of approved candidates => ', res);
-            if (res['status'] === 1) {
-              this.candidates = res['user'];
-              console.log('this.candidates  => ', this.candidates);
-              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
-            }
-          }, err => {
-            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-          });
-        } else if (this.router.snapshot.data.type === 'new' && this.userDetail.role === 'employer') {
-          this.service.get_new_candidate(dataTablesParameters).subscribe(res => {
-            console.log('res of new candidates => ', res);
-            if (res['status'] === 1) {
-              this.candidates = res['user'];
-              this.doc = res['user']['document'];
-              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
-            }
-          }, err => {
-            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-          });
-        } else if (this.router.snapshot.data.type === 'approved' && this.userDetail.role === 'admin') {
+        // if (this.router.snapshot.data.type === 'approved' && this.userDetail.role === 'employer') {
+        //   this.service.get_approved_candidate(dataTablesParameters).subscribe(res => {
+        //     console.log('res of approved candidates => ', res);
+        //     if (res['status'] === 1) {
+        //       this.candidates = res['user'];
+        //       console.log('this.candidates  => ', this.candidates);
+        //       callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+        //     }
+        //   }, err => {
+        //     callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+        //   });
+        // } else if (this.router.snapshot.data.type === 'new' && this.userDetail.role === 'employer') {
+        //   this.service.get_new_candidate(dataTablesParameters).subscribe(res => {
+        //     console.log('res of new candidates => ', res);
+        //     if (res['status'] === 1) {
+        //       this.candidates = res['user'];
+        //       this.doc = res['user']['document'];
+        //       callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+        //     }
+        //   }, err => {
+        //     callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+        //   });
+        // } else 
+        if (this.router.snapshot.data.type === 'approved' && this.userDetail.role === 'admin') {
           this.service.get_approved_candidate_admin(dataTablesParameters).subscribe(res => {
             console.log('res of approved candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
+              console.log('res=>doc', res['user'][0]['document'].name);
               this.doc = res['user'][0]['document'].name;
-              console.log('res=>', res['user'][0]['document'].name);
               console.log('this.candidates  => ', this.candidates);
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }

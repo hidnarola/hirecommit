@@ -15,7 +15,10 @@ export class CommonService {
   private url = env.environment.API_URL;
   private secretKey = 'myhardpassword';
   private profileDetail = new BehaviorSubject(null);
+  private firstLoginDetail = new BehaviorSubject(null);
+
   getprofileDetail = this.profileDetail.asObservable();
+  getFirstLogin = this.firstLoginDetail.asObservable();
 
   constructor(private http: HttpClient, private route: Router) { }
 
@@ -81,6 +84,17 @@ export class CommonService {
     localStorage.setItem('profile', await this.encrypt(JSON.stringify(profileData)));
     this.profileDetail.next(profileData);
   }
+
+
+
+  public firstLogin(data: boolean) {
+    console.log('in observable');
+
+    this.firstLoginDetail.next(data);
+  }
+
+
+
   async getDecryptedProfileDetail() {
     const profile = await this.decrypt(localStorage.getItem('profile'));
     return JSON.parse(profile);
