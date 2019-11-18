@@ -21,7 +21,23 @@ var Employer = require('../../models/employer-detail');
 var mail_helper = require('../../helpers/mail_helper');
 
 
+router.put('/login_first_status', async (req, res) => {
+    var obj = {
+        'is_login_first': true
+    }
 
+    var employer_upadate = await common_helper.update(User, { "_id": req.body.id }, obj)
+
+    if (employer_upadate.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (employer_upadate.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Profile updated successfully", "data": employer_upadate });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
+    }
+})
 
 router.put('/', async (req, res) => {
     console.log();
@@ -149,5 +165,7 @@ router.post("/", async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
     }
 })
+
+
 
 module.exports = router;
