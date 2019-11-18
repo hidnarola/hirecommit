@@ -20,4 +20,8 @@ export class EmployerService {
         return this.http.post<any[]>(`${this.url}`, data);
     }
 
+    setup(data): Observable<any[]> {
+        return this.http.put<any[]>(`${this.url}` + '/login_first_status', data)
+    }    // employer/login_first_status
+
 }

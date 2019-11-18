@@ -6,7 +6,7 @@ import { DefaultLayoutComponent } from './default-layout.component';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
-
+// import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
 };
@@ -21,6 +21,7 @@ import {
   AppHeaderModule,
   AppFooterModule,
   AppSidebarModule,
+
 } from '@coreui/angular';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -44,7 +45,8 @@ import { SharedModule } from '../../shared.module';
     TabsModule.forRoot(),
     ChartsModule,
     DataTablesModule,
-    SharedModule
+    SharedModule,
+    // NgbModule
   ]
 })
 export class DefaultLayoutModule { }

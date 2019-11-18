@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { SocketService } from '../../../../services/socket.service';
@@ -8,12 +8,14 @@ import { CommonService } from '../../../../services/common.service';
 import { ConfirmationService } from 'primeng/api';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
+
 @Component({
   selector: 'app-offer-list',
   templateUrl: './offer-list.component.html',
   styleUrls: ['./offer-list.component.scss']
 })
 export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
+
   checked1: boolean = true;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
@@ -46,6 +48,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private socketService: SocketService,
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
+
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('this.userDetail=>', this.userDetail);
@@ -100,6 +103,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
           if (profile) {
             this.profileData = JSON.parse(profile);
+
             if (!this.profileData.email_verified) {
               this.hide_list = true;
             }
