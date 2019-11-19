@@ -700,6 +700,7 @@ router.put('/', async (req, res) => {
 
 router.get('/details/:id', async (req, res) => {
     var id = req.params.id;
+    // console.log(req.params.id);
     try {
         const offer_detail = await Offer.findOne({ _id: id })
             .populate([

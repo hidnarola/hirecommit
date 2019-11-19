@@ -1,6 +1,22 @@
 var ObjectId = require('mongodb').ObjectID;
-
+var bcrypt = require('bcryptjs');
+var SALT_WORK_FACTOR = 10;
 var common_helper = {};
+
+common_helper.passwordHash = (data) => {
+    return new Promise((resolve, reject) => {
+        bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+            if (err) return reject(err);
+            // hash the password using our new salt
+            bcrypt.hash(data, salt, function (err, hash) {
+                if (err) return reject(err);
+                // override the cleartext password with the hashed one
+                resolve(hash);
+            });
+        });
+    })
+
+}
 
 common_helper.loginCheck = async (data) => {
     try {

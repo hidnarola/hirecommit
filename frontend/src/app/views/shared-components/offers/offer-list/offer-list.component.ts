@@ -99,7 +99,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         } else {
           const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
-          console.log('profile==>', profile);
+          // console.log('profile==>', profile);
 
           if (profile) {
             this.profileData = JSON.parse(profile);

@@ -9,7 +9,6 @@ module.exports = {
   // App config
   "node_port": process.env.NODE_PORT,
   "logger": log4js.getLogger("development"),
-
   // Database config
   "database": process.env.DATABASE,
 

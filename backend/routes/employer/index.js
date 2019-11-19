@@ -22,6 +22,8 @@ var Employer = require('../../models/employer-detail');
 var mail_helper = require('../../helpers/mail_helper');
 
 
+
+
 router.put('/login_first_status', async (req, res) => {
     // var id = req.body.id;
     var obj = {
@@ -112,7 +114,9 @@ router.put('/', async (req, res) => {
 
 router.post("/", async (req, res) => {
     var user_id = req.body.id
+
     var user_resp = await common_helper.findOne(User, { "_id": new ObjectId(user_id) });
+
     var employer_resp = await Employer.aggregate([
         {
             $match: {
@@ -142,11 +146,25 @@ router.post("/", async (req, res) => {
                 as: "businesstype"
             }
         },
-
         {
             $unwind: "$businesstype"
-        }
+        },
+        {
+            $lookup:
+            {
+                from: "user",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user_id"
+            }
+        },
+        {
+            $unwind: "$user_id",
+            // preserveNullAndEmptyArrays: true
+        },
     ])
+
+    // console.log(' : employer_resp ==> ', employer_resp);
 
     var obj = {
         companyname: employer_resp[0].companyname,
@@ -160,6 +178,8 @@ router.post("/", async (req, res) => {
         user_id: employer_resp[0].user_id
     }
 
+    // console.log(' : obj ==> ', obj);
+
     if (user_resp.status === 1 && employer_resp) {
         return res.status(config.OK_STATUS).json({ 'message': "Profile Data", "status": 1, data: obj });
     }
@@ -168,6 +188,17 @@ router.post("/", async (req, res) => {
     }
 })
 
+router.get("/checkStatus/:id", async (req, res) => {
+    var user_id = req.params.id;
+    var user_resp = await common_helper.findOne(User, { "_id": user_id });
+    // console.log(user_resp.data.isAllow);
+    if (user_resp.status === 1 && user_resp.data.isAllow === false) {
+        return res.status(config.OK_STATUS).json({ 'message': "We are working to get you approved to use the system, please be on the lookout for email requesting additional information.", "status": 1 });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "This Employer is approved.", "status": 0 });
+    }
+})
 
 
 module.exports = router;
