@@ -5,6 +5,7 @@ var config = require('../../config')
 var ObjectId = require('mongoose').Types.ObjectId;
 var common_helper = require('../../helpers/common_helper');
 var user_helper = require('../../helpers/user_helper');
+var MailType = require('../../models/mail_content');
 
 
 var logger = config.logger;
@@ -55,12 +56,18 @@ router.post("/", async (req, res) => {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             } else {
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'sub-employer-created' });
+                let content = message.data.content;
+                content = content.replace("{sub_emp_name}", `${req.body.username}`);
+
                 let mail_resp = await mail_helper.send("sub_emp", {
                     "to": req.body.email,
                     "subject": "Invited to be Sub employee"
                 }, {
+                    "msg": content,
                     "email": req.body.email,
-                    "password": passwords
+                    "password": passwords,
+                    "url": config.WEBSITE_URL + '/login'
                 });
 
                 res.status(config.OK_STATUS).json({ "message": "Sub Account is Added successfully", "data": interest_resps })

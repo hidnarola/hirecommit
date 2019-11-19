@@ -14,6 +14,7 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 var btoa = require('btoa');
 var moment = require('moment');
+var MailType = require('../../models/mail_content');
 
 var common_helper = require('../../helpers/common_helper');
 var User = require('../../models/user');
@@ -21,7 +22,10 @@ var Employer = require('../../models/employer-detail');
 var mail_helper = require('../../helpers/mail_helper');
 
 
+
+
 router.put('/login_first_status', async (req, res) => {
+    // var id = req.body.id;
     var obj = {
         'is_login_first': true
     }
@@ -32,7 +36,7 @@ router.put('/login_first_status', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (employer_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Profile updated successfully", "data": employer_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Login first status updated successfully", "data": employer_upadate });
     }
     else {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
@@ -40,8 +44,6 @@ router.put('/login_first_status', async (req, res) => {
 })
 
 router.put('/', async (req, res) => {
-    console.log();
-
     var obj = {}
     if (req.body.username && req.body.username != "") {
         obj.username = req.body.username
@@ -84,15 +86,17 @@ router.put('/', async (req, res) => {
             var time = new Date();
             time.setMinutes(time.getMinutes() + 20);
             time = btoa(time);
+            var message = await common_helper.findOne(MailType, { 'mail_type': 'user-update-email' });
+            let content = message.data.content;
 
             logger.trace("sending mail");
             let mail_resp = await mail_helper.send("email_confirmation", {
                 "to": employer_upadate.data.email,
                 "subject": "HireCommit - Email Confirmation"
             }, {
+                "msg": content,
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
             });
-            console.log('=========>', mail_resp);
 
             if (mail_resp.status === 0) {
                 res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -110,7 +114,9 @@ router.put('/', async (req, res) => {
 
 router.post("/", async (req, res) => {
     var user_id = req.body.id
+
     var user_resp = await common_helper.findOne(User, { "_id": new ObjectId(user_id) });
+
     var employer_resp = await Employer.aggregate([
         {
             $match: {
@@ -140,11 +146,25 @@ router.post("/", async (req, res) => {
                 as: "businesstype"
             }
         },
-
         {
             $unwind: "$businesstype"
-        }
+        },
+        {
+            $lookup:
+            {
+                from: "user",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user_id"
+            }
+        },
+        {
+            $unwind: "$user_id",
+            // preserveNullAndEmptyArrays: true
+        },
     ])
+
+    // console.log(' : employer_resp ==> ', employer_resp);
 
     var obj = {
         companyname: employer_resp[0].companyname,
@@ -158,6 +178,8 @@ router.post("/", async (req, res) => {
         user_id: employer_resp[0].user_id
     }
 
+    // console.log(' : obj ==> ', obj);
+
     if (user_resp.status === 1 && employer_resp) {
         return res.status(config.OK_STATUS).json({ 'message': "Profile Data", "status": 1, data: obj });
     }
@@ -166,6 +188,17 @@ router.post("/", async (req, res) => {
     }
 })
 
+router.get("/checkStatus/:id", async (req, res) => {
+    var user_id = req.params.id;
+    var user_resp = await common_helper.findOne(User, { "_id": user_id });
+    // console.log(user_resp.data.isAllow);
+    if (user_resp.status === 1 && user_resp.data.isAllow === false) {
+        return res.status(config.OK_STATUS).json({ 'message': "We are working to get you approved to use the system, please be on the lookout for email requesting additional information.", "status": 1 });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "This Employer is approved.", "status": 0 });
+    }
+})
 
 
 module.exports = router;

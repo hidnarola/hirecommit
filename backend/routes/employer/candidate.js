@@ -172,6 +172,8 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 });
 
 
+
+
 // router.put('/edit_approved_candidate/:id', async (req, res) => {
 
 //     var reg_obj = {
@@ -312,6 +314,7 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 // })
 
 router.get('/', async (req, res) => {
+    // console.log("hiiiiiiiiiiii");
 
     var aggregate = [
         {

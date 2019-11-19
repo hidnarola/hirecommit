@@ -5,6 +5,7 @@ var mail_helper = require('../../helpers/mail_helper');
 var common_helper = require('../../helpers/common_helper');
 var candidate_helper = require('../../helpers/candidate_helper');
 var Candidate = require('../../models/candidate-detail');
+var MailType = require('../../models/mail_content');
 var logger = config.logger;
 var User = require('../../models/user');
 
@@ -413,11 +414,15 @@ router.put('/', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'approve-candidate' });
+        let content = message.data.content;
+
         logger.trace("sending mail");
         let mail_resp = await mail_helper.send("candidate_approval_email", {
             "to": sub_account_upadate.data.email,
             "subject": "Approved"
         }, {
+            "msg": content,
             // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
             "confirm_url": config.WEBSITE_URL + '/login'
         });

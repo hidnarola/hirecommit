@@ -11,9 +11,11 @@ var user_helper = require('../../helpers/user_helper');
 var offer_helper = require('../../helpers/offer_helper');
 var Candidate = require('../../models/candidate-detail');
 var CustomField = require('../../models/customfield');
+var MailType = require('../../models/mail_content');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var btoa = require('btoa');
+
 
 var logger = config.logger;
 var User = require('../../models/user');
@@ -653,11 +655,15 @@ router.put('/', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'approve-employer' });
+        let content = message.data.content;
+
         logger.trace("sending mail");
         let mail_resp = await mail_helper.send("employer_approval_email", {
             "to": sub_account_upadate.data.email,
             "subject": "Approved"
         }, {
+            "msg": content,
             "confirm_url": config.WEBSITE_URL + '/login'
         });
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer is Approved successfully", "data": sub_account_upadate });
@@ -681,20 +687,18 @@ router.put('/update', async (req, res) => {
         obj.contactno = req.body.contactno
     }
     var user_detail = await common_helper.findOne(User, { '_id': req.body.user_id });
-    console.log(user_detail.data.email);
-    console.log(user_detail.data.email, req.body.email);
-
-
-
     var employer_detail_upadate = await common_helper.update(Employer, { "user_id": req.body.user_id }, obj)
     if (user_detail.data.email !== req.body.email) {
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
+        let content = message.data.content;
+        content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
         obj.email_verified = false;
         logger.trace("sending mail");
         let mail_resp = await mail_helper.send("welcome_email", {
             "to": user_detail.data.email,
             "subject": "Attention Mail"
         }, {
-            'msg': 'Your email id is changed from ' + user_detail.data.email + ' to ' + req.body.email + '. Email verification link send to your updated email id.'
+            'msg': content
         });
         if (mail_resp.status === 0) {
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });

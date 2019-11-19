@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+// var express = require('express');
+// var router = express.Router();
 
 /* GET home page. */
 var express = require('express');
 var router = express.Router();
+var auth = require("../middlewares/auth");
+var authorization = require("../middlewares/authorization");
 var config = require('../config');
 var fs = require('fs');
 var path = require('path');
@@ -31,14 +33,18 @@ var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
 var Offer = require('./../models/offer');
+var MailType = require('./../models/mail_content');
+var userpProfile = require('./profile');
+
+router.use("/profile", auth, authorization, userpProfile);
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
-// var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
 //
 //local
-var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -178,18 +184,21 @@ router.post("/candidate_register", async (req, res) => {
 
     let user_resp = await common_helper.findOne(User, {
       "email": req.body.email.toLowerCase(),
-      // "is_del": false,
-      // "is_register": true
+      "is_del": false,
+      "is_register": true
     });
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
     } else {
 
       let role = await common_helper.findOne(Role, { 'role': 'candidate' }, 1)
+
+      const [hash] = await Promise.all([common_helper.passwordHash(req.body.password)]);
       var user_reg_obg = {
         "email": req.body.email.toLowerCase(),
-        "password": req.body.password,
-        "role_id": new ObjectId(role.data._id)
+        "password": hash,
+        "role_id": new ObjectId(role.data._id),
+        'is_register': true
       }
 
       if (passwordValidatorSchema.validate(req.body.password) == false) {
@@ -201,14 +210,23 @@ router.post("/candidate_register", async (req, res) => {
         //   "is_del": false,
         //   "is_register": false
         // });
-        // if () {
+        // if (user_resp.status === 1) {
 
         // } else {
 
         // }
-        var interest_user_resp = await common_helper.insert(User, user_reg_obg);
+        // var interest_user_resp = await common_helper.insert(User, user_reg_obg);
 
-        if (interest_user_resp.status === 1) {
+        const condition = {
+          "email": req.body.email.toLowerCase(),
+          "is_del": false,
+          "is_register": false
+        }
+        var interest_user_resp = await User.findOneAndUpdate(condition, user_reg_obg, {
+          new: true, upsert: true
+        })
+
+        if (interest_user_resp) {
           var reg_obj = {
             "firstname": req.body.firstname,
             "lastname": req.body.lastname,
@@ -217,7 +235,7 @@ router.post("/candidate_register", async (req, res) => {
             "contactno": req.body.contactno,
             "documenttype": req.body.documenttype,
             "documentimage": req.body.documentImage,
-            "user_id": new ObjectId(interest_user_resp.data._id)
+            "user_id": interest_user_resp._id
           };
           // var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
           // if (interest_resp.status == 0) {
@@ -312,13 +330,19 @@ router.post("/candidate_register", async (req, res) => {
             async (err, image_path_array) => {
               reg_obj.documentimage = image_path_array;
 
-              var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
+              // var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
 
-              if (interest_resp.status == 0) {
+              var interest_resp = await Candidate_Detail.findOneAndUpdate({ user_id: interest_user_resp._id }, reg_obj, {
+                new: true,
+                upsert: true
+              });
+
+
+              if (!interest_resp) {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
               } else {
-                var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id },
                   config.ACCESS_TOKEN_SECRET_KEY, {
                   expiresIn: 60 * 60 * 24 * 3
                 }
@@ -327,13 +351,15 @@ router.post("/candidate_register", async (req, res) => {
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
                 time = btoa(time);
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
 
                 logger.trace("sending mail");
                 let mail_resp = await mail_helper.send("email_confirmation", {
-                  "to": interest_user_resp.data.email,
+                  "to": interest_user_resp.email,
                   "subject": "HC - Email Confirmation"
                 }, {
                   // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
+                  "msg": message.data.content,
                   "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                 });
 
@@ -356,8 +382,7 @@ router.post("/candidate_register", async (req, res) => {
     logger.error("Validation Error = ", errors);
     res.status(config.BAD_REQUEST).json({ message: errors });
   }
-}
-);
+});
 
 // employer Registration
 router.post("/employer_register", async (req, res) => {
@@ -461,12 +486,14 @@ router.post("/employer_register", async (req, res) => {
               var time = new Date();
               time.setMinutes(time.getMinutes() + 20);
               time = btoa(time);
+              var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
 
               logger.trace("sending mail");
               let mail_resp = await mail_helper.send("email_confirmation", {
                 "to": interest_user_resp.data.email,
                 "subject": "HireCommit - Email Confirmation"
               }, {
+                "msg": message.data.content,
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
               });
@@ -629,6 +656,117 @@ router.post('/login', async (req, res) => {
           } else {
             res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
           }
+        } else if (user_resp.role_id.role === "employer") {
+          if (user_resp.email_verified == true) {
+            var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+            let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+
+            var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
+            var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
+              expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
+            });
+            delete user_resp.status;
+            delete user_resp.password;
+            delete user_resp.refresh_token;
+            delete user_resp.last_login_date;
+            delete user_resp.created_at;
+            logger.info("Token generated");
+
+            var userDetails = await User.aggregate([
+              {
+                $match: {
+                  "email": req.body.email
+                }
+              },
+              {
+                $lookup:
+                {
+                  from: "employerDetail",
+                  localField: "_id",
+                  foreignField: "user_id",
+                  as: "employee"
+                }
+              },
+              {
+                $lookup:
+                {
+                  from: "candidateDetail",
+                  localField: "_id",
+                  foreignField: "user_id",
+                  as: "candidate"
+                }
+              },
+              {
+                $addFields: {
+                  userDetail: {
+                    $concatArrays: ["$candidate", "$employee"]
+                  }
+                }
+              },
+              {
+                $unwind: {
+                  path: "$userDetail"
+                }
+              },
+              {
+                $project: {
+                  "userDetail": "$userDetail"
+                }
+              },
+              {
+                $lookup:
+                {
+                  from: "country_datas",
+                  localField: "userDetail.country",
+                  foreignField: "_id",
+                  as: "country"
+                }
+              },
+
+              {
+                $unwind: {
+                  path: "$country",
+                  preserveNullAndEmptyArrays: true
+                },
+              },
+              {
+                $lookup:
+                {
+                  from: "document_type",
+                  localField: "userDetail.documenttype",
+                  foreignField: "_id",
+                  as: "document"
+                }
+              },
+              {
+                $unwind:
+                {
+                  path: "$document",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                $lookup:
+                {
+                  from: "business_type",
+                  localField: "userDetail.businesstype",
+                  foreignField: "_id",
+                  as: "business"
+                }
+              },
+              {
+                $unwind:
+                {
+                  path: "$business",
+                  preserveNullAndEmptyArrays: true
+                }
+              }
+
+            ])
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
+          } else {
+            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+          }
         } else {
           if (user_resp.isAllow == true) {
             if (user_resp.email_verified == true) {
@@ -762,6 +900,8 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/email_verify', async (req, res) => {
+  console.log('==>');
+
   logger.trace("Verifying JWT");
   jwt.verify(Buffer.from(req.body.token, 'base64').toString(), config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
     if (err) {
@@ -790,13 +930,14 @@ router.post('/email_verify', async (req, res) => {
             var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
           }
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
-
+          var message = await common_helper.findOne(MailType, { 'mail_type': 'welcome_mail' });
+          console.log("----->", message);
           logger.trace("sending mail");
           let mail_resp = await mail_helper.send("welcome_email", {
             "to": user_resp.data.email,
             "subject": "HireCommit - Welcome Email"
           }, {
-            'msg': 'Welcome to the HireCommit',
+            'msg': message.data.content,
             // "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
           });
         }
@@ -833,10 +974,13 @@ router.post('/forgot_password', async (req, res) => {
           "flag": 0
         }
         var resp_data = await common_helper.update(User, { "_id": user.data._id }, up);
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-mail' });
+
         let mail_resp = await mail_helper.send("reset_password", {
           "to": user.data.email,
           "subject": "HireCommit - Reset Password"
         }, {
+          "msg": message.data.content,
           "reset_link": config.WEBSITE_URL + "reset-password/" + reset_token
         });
         if (mail_resp.status === 0) {
@@ -963,11 +1107,23 @@ router.put('/change_password', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "" })
       }
       else {
+
         const user = await common_helper.findOne(User, { "_id": decoded.id }, 1);
+
         if (user.data && user.status === 1) {
           if (bcrypt.compareSync(req.body.oldpassword, user.data.password)) {
             const update_resp = await common_helper.update(User, { "_id": decoded.id }, { "password": bcrypt.hashSync(req.body.newpassword, saltRounds) });
             if (update_resp.status === 1) {
+              if (decoded.role === 'sub-employer') {
+                var user_resp = await common_helper.findOne(User, { "_id": decoded.id });
+                if (user_resp.data.is_login_first === false) {
+                  var obj = {
+                    'is_login_first': true
+                  }
+                  var user_resp = await common_helper.update(User, { "_id": decoded.id }, obj);
+                }
+              }
+
               logger.trace("Password has been changed - ", decoded.id);
               res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
             }
