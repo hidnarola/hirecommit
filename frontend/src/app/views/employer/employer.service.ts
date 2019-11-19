@@ -24,4 +24,7 @@ export class EmployerService {
         return this.http.put<any[]>(`${this.url}` + '/login_first_status', data)
     }    // employer/login_first_status
 
+    check_approved(data): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url}` + '/checkStatus/' + data);
+    }
 }

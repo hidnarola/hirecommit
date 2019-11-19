@@ -6,8 +6,9 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Offers
                     <p class="pull-right"></p>
+                    <!-- {{profileData[0].user_id |json }} -->
                     <button
-                        *ngIf="userDetail.role === 'employer' || (userDetail.role === 'sub-employer' && profileData.admin_rights === 'yes')"
+                        *ngIf="userDetail.role === 'employer' || (userDetail.role === 'sub-employer' && profileData[0].user_id.admin_rights === 'yes')"
                         class="pull-right btn btn-sm btn-primary custom-margin" (click)="add()">
                         <i class="icon-plus"></i>
                         Add Offers

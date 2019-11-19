@@ -19,6 +19,7 @@ export class ChangepasswordComponent implements OnInit {
   userDetail: any;
   show_spinner = false;
   _profile_data: any;
+  isDisabled = false;
   constructor(
     private router: Router,
     public fb: FormBuilder,
@@ -43,24 +44,45 @@ export class ChangepasswordComponent implements OnInit {
           Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
       'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
-
     this.userDetail = this.commonService.getLoggedUserDetail();
-    this.commonService.getDecryptedProfileDetail().then(res => {
-      this._profile_data = res;
+    this.commonService.profileData().then(res => {
+      this._profile_data = res[0];
+      console.log('this._profile_data == check here ==>', this._profile_data);
+      if (this._profile_data.user_id.is_login_first === false) {
+        this.isDisabled = true;
+      }
+      else {
+        this.isDisabled = false;
+      }
     })
+
   }
 
   send() {
-    if (this._profile_data.is_login_first === true) {
+    if (this.userDetail.role === 'employer') {
       this.router.navigate(['/employer/offers/list']);
+    } else if (this.userDetail.role === 'candidate') {
+      this.router.navigate(['/candidate/offers/list']);
+    } else if (this.userDetail.role === 'admin') {
+      this.router.navigate(['/admin/employers/approved_employer']);
+    } else if (this.userDetail.role === 'sub-employer') {
+      if (this._profile_data.user_id.is_login_first === true) {
+        this.router.navigate(['/sub_employer/offers/list']);
+
+      } else {
+        this.isDisabled = true;
+      }
+      this.commonService.firstLogin(this._profile_data.user_id.is_login_first);
     }
-    else {
-      // document.getElementById('cancelBtn')
-    }
+
+
   }
 
   ngOnInit() {
     this.token = localStorage.getItem('token');
+    console.log('this._profile_data === on init =>', this._profile_data);
+
+
   }
 
   // Remove white spaces
@@ -96,11 +118,11 @@ export class ChangepasswordComponent implements OnInit {
               } else if (this.userDetail.role === 'admin') {
                 this.router.navigate(['/admin/employers/approved_employer']);
               } else if (this.userDetail.role === 'sub-employer') {
-                this._profile_data.is_login_first = true;
-                this.commonService.firstLogin(this._profile_data.is_login_first);
+                // this._profile_data[0].user_id.is_login_first = true;
+                this.commonService.firstLogin(this._profile_data.user_id.is_login_first);
+                this._profile_data.user_id.is_login_first = this.isDisabled;
 
-                this.commonService.setProfileDetail(this._profile_data);
-
+                // this.commonService.setProfileDetail(this._profile_data[0].user_id);
                 console.log('=>', this._profile_data);
                 this.router.navigate(['/sub_employer/offers/list']);
               }

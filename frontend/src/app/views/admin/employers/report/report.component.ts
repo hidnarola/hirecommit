@@ -37,11 +37,11 @@ export class ReportComponent implements OnInit, OnDestroy {
   }
 
   joinGroup = (id) => {
-  this.socketService.joinGrp(id);
+    this.socketService.joinGrp(id);
   }
 
   ngOnInit() {
-     this.socketService.getOffer().subscribe(res => {
+    this.socketService.getOffer().subscribe(res => {
       console.log('employer : res ==> ', res);
       this.rrerender();
     });
@@ -178,7 +178,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-     this.socketService.leaveGrp(this.id);
+    this.socketService.leaveGrp(this.id);
   }
 
 

@@ -6,11 +6,16 @@ import * as env from '../../environments/environment';
 import jwt_decode from 'jwt-decode';
 import { AES, enc } from 'crypto-ts';
 import * as  moment from 'moment';
+import { EmployerService } from '../views/employer/employer.service';
+import { CandidateService } from '../views/shared-components/candidates/candidate.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
+  details: any;
+  // profile_data: any = [];
+  candidate_Profile: any = [];
   // private url = 'http://localhost:3000';
   private url = env.environment.API_URL;
   private secretKey = 'myhardpassword';
@@ -20,7 +25,11 @@ export class CommonService {
   getprofileDetail = this.profileDetail.asObservable();
   getFirstLogin = this.firstLoginDetail.asObservable();
 
-  constructor(private http: HttpClient, private route: Router) { }
+  constructor(
+    private http: HttpClient,
+    private route: Router,
+    private empService: EmployerService,
+    private candidateServcie: CandidateService) { }
 
   employer_signup(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + 'employer_register', data);
@@ -59,6 +68,10 @@ export class CommonService {
     }
   }
 
+  profile(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + 'profile', data);
+  }
+
   country_registration(): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}` + 'country');
   }
@@ -70,6 +83,19 @@ export class CommonService {
     // decode the token to get its payload
     userDetails = jwt_decode(token);
     return userDetails;
+  }
+
+  profileData() {
+    return new Promise((resolve, reject) => {
+      this.details = this.getLoggedUserDetail();
+      this.profile({ 'id': this.details.id }).subscribe(res => {
+        console.log('profileData==>', res['data']);
+
+        // this.profileDetail = res['data'];
+        this.profileDetail.next(res[`data`]);
+        resolve(res['data']);
+      })
+    })
   }
 
   async encrypt(message: any) {
@@ -84,17 +110,11 @@ export class CommonService {
     localStorage.setItem('profile', await this.encrypt(JSON.stringify(profileData)));
     this.profileDetail.next(profileData);
   }
-
-
-
   public firstLogin(data: boolean) {
     console.log('in observable');
 
     this.firstLoginDetail.next(data);
   }
-
-
-
   async getDecryptedProfileDetail() {
     const profile = await this.decrypt(localStorage.getItem('profile'));
     return JSON.parse(profile);

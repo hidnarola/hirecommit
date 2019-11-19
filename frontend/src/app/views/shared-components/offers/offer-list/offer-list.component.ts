@@ -76,47 +76,52 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    // let detail;
+    // detail = this.commonService.profileData();
+    // console.log('this.commonService.profileData(); offer list =>', this.commonService.profileData());
+
 
     this.socketService.getOffer().subscribe(res => {
       console.log('Client : res ==> ', res);
       this.rrerender();
     });
-
-
     if (this.userDetail.role !== 'admin') {
       this.commonService.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;
+          console.log('this.profileData=>', this.profileData);
+
           if (this.userDetail.role === 'employer') {
-            this.grpId = this.profileData.user_id;
-            this.joinGroup(this.profileData.user_id);
+            this.grpId = this.profileData[0].user_id._id;
+            this.joinGroup(this.profileData[0].user_id._id);
           } else if (this.userDetail.role === 'candidate') {
-            this.grpId = this.profileData.user_id;
-            this.joinGroup(this.profileData.user_id);
+            this.grpId = this.profileData[0].user_id._id;
+            this.joinGroup(this.profileData[0].user_id._id);
           } else if (this.userDetail.role === 'sub-employer') {
-            this.grpId = this.profileData.emp_id;
-            this.joinGroup(this.profileData.emp_id);
+            this.grpId = this.profileData[0].emp_id;
+            this.joinGroup(this.profileData[0].emp_id);
           }
         } else {
-          const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
-          console.log('profile==>', profile);
+          // const profile = await this.commonService.decrypt(localStorage.getItem('profile'));
+          // const profile = await ;
+          const [profile] = await Promise.all([this.commonService.profileData()]);
 
           if (profile) {
-            this.profileData = JSON.parse(profile);
-
-            if (!this.profileData.email_verified) {
+            this.profileData = profile;
+            console.log('this.profileData=>1', this.profileData);
+            if (!this.profileData[0].user_id.email_verified) {
               this.hide_list = true;
             }
 
             if (this.userDetail.role === 'employer') {
-              this.grpId = this.profileData.user_id;
-              this.joinGroup(this.profileData.user_id);
+              this.grpId = this.profileData[0].user_id._id;
+              this.joinGroup(this.profileData[0].user_id._id);
             } else if (this.userDetail.role === 'candidate') {
-              this.grpId = this.profileData.user_id;
-              this.joinGroup(this.profileData.user_id);
+              this.grpId = this.profileData[0].user_id._id;
+              this.joinGroup(this.profileData[0].user_id._id);
             } else if (this.userDetail.role === 'sub-employer') {
-              this.grpId = this.profileData.emp_id;
-              this.joinGroup(this.profileData.emp_id);
+              this.grpId = this.profileData[0].emp_id;
+              this.joinGroup(this.profileData[0].emp_id);
             }
 
           } else {
@@ -347,9 +352,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         );
       }
     });
-
   }
-
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

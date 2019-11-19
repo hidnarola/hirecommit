@@ -45,10 +45,14 @@ const routes: Routes = [
         path: 'custom_fields',
         loadChildren: () => import('./custom-fields/custom-fields.module').then(m => m.CustomFieldsModule)
       },
+
       // { path: 'history/:id', component: TimelineComponent },
       { path: 'change-password', component: ChangepasswordComponent },
       { path: 'profile', component: ProfileComponent },
-
+      {
+        path: 'account_verification',
+        loadChildren: () => import('../../shared/check-verification/check-verification.module').then(m => m.CheckVerificationModule)
+      }
     ]
   }
 ];
