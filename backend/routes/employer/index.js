@@ -14,12 +14,14 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 var btoa = require('btoa');
 var moment = require('moment');
-var MailType = require('../../models/mail_content');
-
 var common_helper = require('../../helpers/common_helper');
+var MailType = require('../../models/mail_content');
+var DisplayMessage = require('../../models/display_messages');
+
 var User = require('../../models/user');
 var Employer = require('../../models/employer-detail');
 var mail_helper = require('../../helpers/mail_helper');
+
 
 
 
@@ -188,17 +190,30 @@ router.post("/", async (req, res) => {
     }
 })
 
+router.post("/display_message", async (req, res) => {
+    var message = await common_helper.findOne(DisplayMessage, { "msg_type": req.body.msg_type });
+    if (message.status === 1) {
+        return res.status(config.OK_STATUS).json({ 'message': message.data.content, "status": 1 });
+    } else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Somthing went wrong..!", "status": 0 });
+    }
+})
+
 router.get("/checkStatus/:id", async (req, res) => {
     var user_id = req.params.id;
     var user_resp = await common_helper.findOne(User, { "_id": user_id });
     // console.log(user_resp.data.isAllow);
+    var message = await common_helper.findOne(DisplayMessage, { "msg_type": "employer_not_approve" })
+    // console.log(message);
     if (user_resp.status === 1 && user_resp.data.isAllow === false) {
-        return res.status(config.OK_STATUS).json({ 'message': "We are working to get you approved to use the system, please be on the lookout for email requesting additional information.", "status": 1 });
+        return res.status(config.OK_STATUS).json({ 'message': message.data.content, "status": 1 });
     }
     else {
         return res.status(config.BAD_REQUEST).json({ 'message': "This Employer is approved.", "status": 0 });
     }
 })
+
+
 
 
 module.exports = router;
