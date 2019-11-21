@@ -202,8 +202,11 @@ router.put("/delete/:id", async (req, res) => {
         "is_del": true
     };
 
+    // console.log("hiiii", req.userInfo.id);
+
+
     var resp_data = await common_helper.findOne(CustomField, { "_id": req.params.id });
-    var resp_data1 = await Offer.find({ 'customfeild.key': resp_data.data.key });
+    var resp_data1 = await Offer.find({ "employer_id": req.userInfo.id, 'customfeild.key': resp_data.data.key });
 
     if (resp_data1 && resp_data1.length > 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Custom Field can't be deleted because it is used in offer." });

@@ -7,6 +7,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var common_helper = require('../../helpers/common_helper');
 var cron = require('node-cron');
 var MailType = require('../../models/mail_content');
+var DisplayMessage = require('../../models/display_messages');
 
 var offer_helper = require('../../helpers/offer_helper');
 
@@ -157,6 +158,20 @@ router.put('/', async (req, res) => {
     }
     else {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
+    }
+})
+
+router.get("/checkStatus/:id", async (req, res) => {
+    var user_id = req.params.id;
+    var user_resp = await common_helper.findOne(User, { "_id": user_id });
+    // console.log(user_resp.data.isAllow);
+    var message = await common_helper.findOne(DisplayMessage, { "msg_type": "email_not_verify" })
+    // console.log(message);
+    if (user_resp.status === 1 && user_resp.data.email_verified === false) {
+        return res.status(config.OK_STATUS).json({ 'message': message.data.content, "status": 1 });
+    }
+    else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Email verified.", "status": 0 });
     }
 })
 

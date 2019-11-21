@@ -208,8 +208,10 @@ router.get("/checkStatus/:id", async (req, res) => {
     if (user_resp.status === 1 && user_resp.data.isAllow === false) {
         return res.status(config.OK_STATUS).json({ 'message': message.data.content, "status": 1 });
     }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "This Employer is approved.", "status": 0 });
+    else if (user_resp.status === 1 && user_resp.data.isAllow === true) {
+        return res.status(config.OK_STATUS).json({ 'message': "This Employer is approved.", "status": 2 });
+    } else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Somthing went wrong..!", "status": 0 });
     }
 })
 

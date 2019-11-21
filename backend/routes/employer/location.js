@@ -247,6 +247,7 @@ router.put("/deactivate_location/:id", async (req, res) => {
         is_del: true
     }
 
+
     var id = req.params.id;
 
     var resp_data = await Offer.find({ 'location': new ObjectId(id) });
