@@ -14,7 +14,7 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   documentImage: FormGroup;
   public registerData: any;
-  fileFormData;
+  fileFormData = new FormData();
   file: File = null;
   public isFormSubmitted;
   formData;
@@ -61,7 +61,7 @@ export class RegisterComponent implements OnInit {
     }, { validator: this.checkPasswords });
 
     this.documentImage = this.fb.group({
-      documentimage: new FormControl('', [Validators.required]),
+      documentimage: new FormControl(''),
     });
   }
 

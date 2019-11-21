@@ -1,10 +1,12 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { SubAccountService } from '../sub-accounts.service';
 import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmployerService } from '../../employer.service';
 
 @Component({
   selector: 'app-sub-accounts-list',
@@ -12,7 +14,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./sub-accounts-list.component.scss']
 })
 export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  // @ViewChild('content', { static: false }) content: ElementRef;
+  msg: any;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -27,7 +30,9 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     private router: Router,
     private service: SubAccountService,
     private confirmationService: ConfirmationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: NgbModal,
+    private EmpService: EmployerService
   ) { }
 
   ngOnInit(): void {
@@ -99,6 +104,12 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     } else if (e.target.checked === false) {
       this.admin_rights = 'no';
     }
+  }
+  open(content) {
+    this.modalService.open(content);
+    this.EmpService.information({ 'msg_type': 'sub_accounts' }).subscribe(res => {
+      this.msg = res['message']
+    })
   }
 
   delete(user_id) {

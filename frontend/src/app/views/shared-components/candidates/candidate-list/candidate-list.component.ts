@@ -78,9 +78,8 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of approved candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
-              console.log('res=>doc', res['user'][0]['document'].name);
-              this.doc = res['user'][0]['document'].name;
-              console.log('this.candidates  => ', this.candidates);
+              // this.doc = res['user'][0]['document'].name;
+
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -91,8 +90,8 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of new candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
-              this.doc = res['user']['document'];
-
+              // this.doc = res['user']['document'];
+              // console.log('this.candidates new => ', this.doc);
 
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }

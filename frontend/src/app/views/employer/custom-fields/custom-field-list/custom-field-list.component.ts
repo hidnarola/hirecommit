@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CustomFieldService } from '../custom-field.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmployerService } from '../../employer.service';
 
 @Component({
   selector: 'app-custom-field-list',
@@ -13,7 +15,7 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./custom-field-list.component.scss']
 })
 export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  msg: any;
   data: any[];
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
@@ -24,7 +26,10 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     private toastr: ToastrService,
     private service: CustomFieldService,
     private router: Router,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+    private modalService: NgbModal,
+    private EmpService: EmployerService
+  ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
 
@@ -118,6 +123,13 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         });
       }
     });
+  }
+  open(content) {
+    this.modalService.open(content);
+    this.EmpService.information({ 'msg_type': 'custom_field' }).subscribe(res => {
+      console.log('res=>', res);
+      this.msg = res['message']
+    })
   }
 
   rrerender(): void {
