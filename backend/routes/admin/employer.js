@@ -566,11 +566,13 @@ router.get('/details/:id', async (req, res) => {
                 { path: 'employer_id' },
                 { path: 'salarybracket' },
                 { path: 'location' },
+                { path: 'user_id' },
                 { path: 'group' },
             ])
             .lean();
+        var candidate_detail = await common_helper.findOne(Candidate, { 'user_id': offer_detail.user_id._id });
 
-        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
+        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail, 'candidate_data': candidate_detail });
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
