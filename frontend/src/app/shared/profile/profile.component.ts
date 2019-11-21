@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
   UserName: any;
   CountryCode: any;
   ContactNumber: any;
-  FirstNane: any;
+  FirstName: any;
   LastName: any;
   Candidate_ContactNo: any;
   Candidate_Email: any;
@@ -146,7 +146,7 @@ export class ProfileComponent implements OnInit {
     this.candidateService.get_Profile_Candidate(this.id).subscribe(res => {
       console.log('res=> ', res['data']['documentimage'][0]);
       this.candidate_data = res['data']
-      this.FirstNane = res['data']['firstname'];
+      this.FirstName = res['data']['firstname'];
       this.LastName = res['data']['lastname'];
       this.Candidate_Email = res['data']['email'];
       this.Candidate_Country = res['data']['country'];
@@ -210,7 +210,7 @@ export class ProfileComponent implements OnInit {
       this.show_spinner = true;
       this.obj1 = {
         'id': id,
-        'firstname': this.FirstNane,
+        'firstname': this.FirstName,
         'lastname': this.LastName,
         'email': this.Candidate_Email,
         'contactno': this.Candidate_ContactNo,

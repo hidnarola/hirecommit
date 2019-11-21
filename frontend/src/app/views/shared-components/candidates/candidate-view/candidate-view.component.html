@@ -13,30 +13,30 @@
                     <table class="table">
                         <tbody>
                             <tr>
-                                <td>Candidate Name</td>
+                                <td class="lbl">Candidate Name</td>
                                 <td>{{candidate_detail.firstname}} {{candidate_detail.lastname}}</td>
                             </tr>
                             <tr>
-                                <td>Candidate Email</td>
+                                <td class="lbl">Candidate Email</td>
                                 <td>{{email}}</td>
                             </tr>
                             <tr>
-                                <td>Phone</td>
+                                <td class="lbl">Phone</td>
                                 <td>{{candidate_detail.contactno}}</td>
                             </tr>
                             <tr>
-                                <td>Document Type</td>
+                                <td class="lbl">Document Type</td>
                                 <td>{{documenttype}}</td>
                             </tr>
                             <tr>
-                                <td>Document Image</td>
+                                <td class="lbl">Document Image</td>
                                 <td>
                                     <img src="{{image + candidate_detail.documentimage}}"
                                         style="width:70px; height: 50px;" />
                                 </td>
                             </tr>
                             <tr>
-                                <td>Date Of Register</td>
+                                <td class="lbl">Date Of Register</td>
                                 <td>{{candidate_detail.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                             </tr>
                         </tbody>

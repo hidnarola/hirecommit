@@ -79,7 +79,10 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             if (res['status'] === 1) {
               this.candidates = res['user'];
               // this.doc = res['user'][0]['document'].name;
-
+              // if (this.candidates.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {

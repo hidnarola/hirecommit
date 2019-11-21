@@ -100,10 +100,17 @@
                 </div>
             </div>
 
-            <div class="card" *ngIf="hide_list">
+            <div class="card" *ngIf="hide_list && userDetail.role === 'candidate'">
                 <div class="card-body not_verified_block">
                     <i class="fa fa-times-circle-o" aria-hidden="true"></i>
-                    <h1>Your Email is not Verified yet!!</h1>
+                    <h1>{{Canididate_message}}</h1>
+                </div>
+            </div>
+
+            <div class="card" *ngIf="hide_list && userDetail.role === 'employer'">
+                <div class="card-body not_verified_block">
+                    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                    <h1>{{message}}</h1>
                 </div>
             </div>
 

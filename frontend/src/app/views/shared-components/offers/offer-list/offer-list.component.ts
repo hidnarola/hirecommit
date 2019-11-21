@@ -8,6 +8,9 @@ import { CommonService } from '../../../../services/common.service';
 import { ConfirmationService } from 'primeng/api';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { EmployerService } from '../../../employer/employer.service';
+
+import { CandidateService } from '../../candidates/candidate.service';
 
 @Component({
   selector: 'app-offer-list',
@@ -29,7 +32,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   form = false;
   accept_btn: boolean = false;
   profileData: any = [];
-
+  message: any;
+  Canididate_message: any;
   // offer type options
   offer_type_optoins = [
     { label: 'Select Offer Type', value: '' },
@@ -48,10 +52,40 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private socketService: SocketService,
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
+    private empService: EmployerService,
+    private candidateService: CandidateService
+
 
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     console.log('this.userDetail=>', this.userDetail);
+    if (this.userDetail.role === 'employer') {
+      this.empService.check_approved(this.userDetail.id).subscribe(res => {
+        console.log('res===============>', res);
+
+        if (res['status'] === 0 || res['status'] === 2) {
+          console.log('condition=>');
+
+          this.hide_list = false;
+        } else {
+          this.message = res['message']
+        }
+      }, (err) => {
+        console.log('err=>', err);
+        // this.hide_list = true;
+      })
+    }
+    else if (this.userDetail.role === 'candidate') {
+      this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
+        if (res['status'] === 0) {
+
+          this.hide_list = false;
+        }
+        else {
+          this.Canididate_message = res['message']
+        }
+      })
+    }
 
     if (this.userDetail.role === 'employer') {
       this.getCustomField();
@@ -109,7 +143,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           if (profile) {
             this.profileData = profile;
             console.log('this.profileData=>1', this.profileData);
-            if (!this.profileData[0].user_id.email_verified) {
+            console.log('this.profileData[0].user_id.email_verified=>', this.profileData[0].user_id.email_verified);
+            console.log('this.profileData[0].user_id.isAllow=>', this.profileData[0].user_id.isAllow);
+
+            if ((!this.profileData[0].user_id.email_verified) || (!this.profileData[0].user_id.isAllow)) {
+              console.log('true value =======================>');
+
               this.hide_list = true;
             }
 
@@ -153,6 +192,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
                 offer.offertype = (this.offer_type_optoins
                   .find(o => o.value === offer.offertype).label);
               });
+              // if (this.offerData.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({
                 recordsTotal: res[`recordsTotal`],
                 recordsFiltered: res[`recordsTotal`],
@@ -226,6 +269,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
               });
+              // if (this.offerData.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({
                 recordsTotal: res[`recordsTotal`],
                 recordsFiltered: res[`recordsTotal`],

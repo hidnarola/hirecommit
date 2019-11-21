@@ -31,6 +31,9 @@ export class CandidateService {
     checkHere() {
         return this.employer.next({});
     }
+    check_verified(data): Observable<any[]> {
+        return this.http.get<any[]>(`${this.url_candidate}` + '/checkStatus/' + data);
+    }
 
     get_candidate(): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/manage_candidate/approved_candidate');

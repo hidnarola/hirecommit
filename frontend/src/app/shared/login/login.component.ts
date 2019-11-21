@@ -94,9 +94,13 @@ export class LoginComponent implements OnInit {
         }
 
         this.service.profileData().then(res => {
+          console.log('res for profile data=>', res);
+
           this.profile = res[0];
           console.log('login>>', this.profile);
           if (this.role === 'employer') {
+            console.log('employer=======>');
+
             if (this.profile.user_id.isAllow === false) {
               this.router.navigate(['employer/account_verification']);
             }

@@ -14,6 +14,7 @@ import { EmployerService } from '../../../views/employer/employer.service';
 export class DefaultLayoutComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
   public navItems = [];
+  name: any;
   public sidebarMinimized = true;
   private changes: MutationObserver;
   public element: HTMLElement;
@@ -97,6 +98,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
     if (userType === 'admin') {
       this.navItems = admin;
+      this.name = this.userDetail.email;
     } else {
       // this.commonService.getDecryptedProfileDetail().then(res => {
       //   console.log('res=>', res);
@@ -110,31 +112,33 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         if (userType === 'employer') {
           if (this._profile_data[0].user_id.isAllow === true) {
             this.navItems = employer;
+            this.name = this._profile_data[0].username;
           } else {
             this.navItems = [];
+            this.name = this._profile_data[0].username;
           }
 
-        }
-
-        else if (userType === 'sub-employer') {
+        } else if (userType === 'sub-employer') {
 
           this.commonService.getFirstLogin.subscribe(res => {
             if (res) {
               this._profile_data[0].user_id.is_login_first = res;
             }
             if (this._profile_data[0].user_id.is_login_first === false) {
-              this.router.navigate(['sub_employer/change-password'])
+              this.router.navigate(['sub_employer/change-password']);
+              this.name = this._profile_data[0].username;
             } else if (this._profile_data[0].user_id.is_login_first === true) {
               this.navItems = sub_employer;
+              this.name = this._profile_data[0].username;
             }
           });
-        }
-
-        else if (userType === 'candidate') {
+        } else if (userType === 'candidate') {
           if (this._profile_data[0].user_id.email_verified) {
             this.navItems = candidate;
+            this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
           } else {
             this.navItems = [];
+            this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
           }
         }
         if (userType === 'employer') {
@@ -150,7 +154,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     console.log('id=>', id);
     this.obj = {
       'id': id
-    }
+    };
     this.empServise.setup(this.obj).subscribe(res => {
       console.log('res=>is_login_first', this._profile_data);
       this._profile_data[0].user_id.is_login_first = true;
@@ -158,7 +162,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.router.navigate(['/employer/locations/add']);
       document.getElementById('closeBtn').click();
       // this.activeModal.close();
-    })
+    });
   }
 
 

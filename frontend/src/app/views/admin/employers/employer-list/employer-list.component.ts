@@ -58,6 +58,10 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.service.get_new_employer(dataTablesParameters).subscribe(res => {
             if (res['status'] === 1) {
               this.employer_data = res['user'];
+              // if (this.employer_data.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {

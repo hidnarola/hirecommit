@@ -60,6 +60,10 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
 
             if (res['status'] === 1) {
               this.locations = res['location'];
+              // if (this.locations.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -92,6 +96,10 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
           this.service.view_location(dataTablesParameters).subscribe(res => {
             if (res['status'] === 1) {
               this.locations = res['location'];
+              // if (this.locations.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {

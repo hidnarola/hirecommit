@@ -70,7 +70,10 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
                   user_id: element.user_id
                 };
                 this.subAccountList.push(this.obj);
-
+                // if (this.subAccountList.length == 0) {
+                //   var el = document.getElementById('DataTables_Table_0_paginate');
+                //   el.style.display = 'none';
+                // }
               }
 
             });

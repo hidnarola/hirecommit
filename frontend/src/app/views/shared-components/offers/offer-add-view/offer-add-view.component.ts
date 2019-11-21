@@ -269,7 +269,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
         });
     } else if (this.userDetail.role === 'candidate' || this.userDetail.role === 'admin') {
-      // this.spinner.hide();
+      this.spinner.hide();
       this.getDetail();
     }
 
@@ -280,8 +280,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.resData = res[`data`];
-          this.candidateData = res['candidate_data']['data']
-          console.log('this.resData=>', this.resData);
+          this.candidateData = res['candidate_data']['data'];
+          console.log('this.resData=>', this.candidateData);
 
           this.grpId = this.resData.user_id;
           this.socketService.joinGrp(this.resData.user_id);
@@ -321,6 +321,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             }
             // set communication
             this.form.controls['email'].setValue(res[`data`].user_id.email);
+            // tslint:disable-next-line: max-line-length
             this.form.controls['candidate_name'].setValue(res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname);
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
@@ -399,6 +400,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
           this.resData = res[`data`];
+          this.candidateData = res['candidate_data']['data'];
+          console.log('this.resData=>', this.resData);
+
           this.spinner.hide();
           this.is_View = true;
           this.resData = res[`data`];

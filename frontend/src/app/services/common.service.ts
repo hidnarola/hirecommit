@@ -94,8 +94,8 @@ export class CommonService {
         // this.profileDetail = res['data'];
         this.profileDetail.next(res[`data`]);
         resolve(res['data']);
-      })
-    })
+      });
+    });
   }
 
   async encrypt(message: any) {

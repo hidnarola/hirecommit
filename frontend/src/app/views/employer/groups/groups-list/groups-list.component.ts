@@ -95,6 +95,10 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.service.lists(dataTablesParameters).subscribe(res => {
             if (res['status']) {
               this.groups = res['groups'];
+              // if (this.groups.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -140,7 +144,12 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
         ajax: (dataTablesParameters: any, callback) => {
           this.service.lists(dataTablesParameters).subscribe(res => {
             if (res['status']) {
+
               this.groups = res['groups'];
+              if (this.groups.length == 0) {
+                var el = document.getElementById('DataTables_Table_0_paginate');
+                el.style.display = 'none';
+              }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -188,6 +197,10 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.dtTrigger.next();
+    // if (this.groups.length == 0) {
+    //   var el = document.getElementById('DataTables_Table_0_paginate');
+    //   el.style.display = 'none';
+    // }
   }
 
   ngOnDestroy() {

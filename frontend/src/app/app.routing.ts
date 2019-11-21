@@ -10,7 +10,7 @@ import { LoginGuard } from './shared/guard/login.guard';
 import { EmailconfermationComponent } from './shared/emailconfermation/emailconfermation.component';
 import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
 import { PrivacyPolicyComponent } from './shared/privacy-policy/privacy-policy.component';
-import { TermsConditionComponent } from './shared/terms-condition/terms-condition.component'
+import { TermsConditionComponent } from './shared/terms-condition/terms-condition.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'privacypolicy', component: PrivacyPolicyComponent },

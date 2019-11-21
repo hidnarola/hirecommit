@@ -53,6 +53,10 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
 
             if (res['status'] === 1) {
               this.data = res['salary'];
+              // if (this.data.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
             }
           }, err => {
@@ -86,6 +90,10 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
 
             if (res['status'] === 1) {
               this.data = res['salary'];
+              // if (this.data.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
             }
           }, err => {

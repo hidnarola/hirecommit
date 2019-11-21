@@ -157,17 +157,10 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
         margin: 0 20px 0 0;
     }
 }
-.navbar-brand-full
-{
-    cursor: default;
-}
-
-.navbar-brand{
-    cursor: default;;
-}
 
 
 
+.lbl{font-weight: bold;}
 .timeline_inner {position: relative;}
 .timeline_inner:After {position: absolute;content: "";background: #d8e1ea;width: 1px;height: 100%;top: 0;left: 0;}
 .dot {display: inline-block;width: 14px;height: 14px;border: 2px solid #fff;border-radius: 50%;position: absolute;left: -6px;top: 18px;z-index: 1;box-shadow: 0px 0px 10px 0px #dee8f4;background: #fff;}

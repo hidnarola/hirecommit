@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../../services/common.service';
 import { EmployerService } from '../../views/employer/employer.service';
+import { CandidateService } from '../../views/shared-components/candidates/candidate.service';
+import { routes } from '../../app.routing';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-check-verification',
@@ -10,17 +13,37 @@ import { EmployerService } from '../../views/employer/employer.service';
 export class CheckVerificationComponent implements OnInit {
   userDetail: any = [];
   message: any;
+  Canididate_message: any;
   constructor(
     private commonService: CommonService,
-    private empService: EmployerService) {
+    private empService: EmployerService,
+    private candidateService: CandidateService,
+    private router: Router) {
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
 
   ngOnInit() {
     console.log('this.userDetail=>', this.userDetail);
-    this.empService.check_approved(this.userDetail.id).subscribe(res => {
-      this.message = res['message']
-    })
+    if (this.userDetail.role === 'employer') {
+
+      this.empService.check_approved(this.userDetail.id).subscribe(res => {
+        this.message = res['message'];
+        if (!(res['status'] === 1)) {
+          this.router.navigate(['/employer/offers/list']);
+          // this.router.navigate(['/'])
+        }
+      });
+
+    } else if (this.userDetail.role === 'candidate') {
+      this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
+        this.Canididate_message = res['message'];
+        if (res['status'] === 1) {
+          this.router.navigate(['/candidate/offer/list']);
+        }
+      });
+    }
+
+
   }
 
 }

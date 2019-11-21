@@ -527,7 +527,7 @@
                 <div class="card-body detail-box" *ngIf="resData">
                     <div class="row detail-panel"
                         *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Candidate Email
                         </div>
                         <div class="col-md-6 detail-input">
@@ -536,7 +536,7 @@
                     </div>
                     <div class="row detail-panel"
                         *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Candidate Name
                         </div>
                         <div class="col-md-6 detail-input">
@@ -545,7 +545,7 @@
                     </div>
 
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Title
                         </div>
                         <div class="col-md-6 detail-input">
@@ -553,7 +553,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Location
                         </div>
                         <div class="col-md-6 detail-input">
@@ -561,7 +561,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Salary Type
                         </div>
                         <div class="col-md-6 detail-input">
@@ -571,7 +571,7 @@
 
 
                     <div class="row detail-panel" *ngIf="resData.salary">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Salary
                         </div>
                         <div class="col-md-6 detail-input">
@@ -579,7 +579,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel" *ngIf="resData.salary_from">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Salary From
                         </div>
                         <div class="col-md-6 detail-input">
@@ -587,7 +587,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel" *ngIf="resData.salary_to">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Salary To
                         </div>
                         <div class="col-md-6 detail-input">
@@ -595,7 +595,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Hourly Salary Duration
                         </div>
                         <div class="col-md-6 detail-input">
@@ -603,7 +603,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Joining Date
                         </div>
                         <div class="col-md-6 detail-input">
@@ -611,7 +611,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Expiry Date
                         </div>
                         <div class="col-md-6 detail-input">
@@ -619,7 +619,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Current Status
                         </div>
                         <div class="col-md-6 detail-input">
@@ -627,7 +627,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Offer Type
                         </div>
                         <div class="col-md-6 detail-input">
@@ -643,7 +643,7 @@
                         </div>
                     </div> -->
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Notes
                         </div>
                         <div class="col-md-6 detail-input">
@@ -651,7 +651,7 @@
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             Group
                         </div>
                         <div class="col-md-6 detail-input">
@@ -706,7 +706,7 @@
 
                     <!-- custom fields -->
                     <div class="row detail-panel" *ngFor="let field of resData.customfeild">
-                        <div class="col-md-3 detail-label">
+                        <div class="col-md-3 detail-label lbl">
                             {{field.key|titlecase}}
                         </div>
                         <div class="col-md-6 detail-input">

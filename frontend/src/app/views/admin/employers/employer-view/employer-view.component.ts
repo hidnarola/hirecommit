@@ -99,9 +99,9 @@ export class EmployerViewComponent implements OnInit {
       this.country = res['data']['businesstype']['country'];
       this.businesstype = res['data']['businesstype']['name'];
       this.website = res['data']['website'];
-      this.contactno = res['data']['contactno']
-      this.companyName = res['data']['companyname']
-      this.bussinessType = res['data']['businesstype']['name']
+      this.contactno = res['data']['contactno'];
+      this.companyName = res['data']['companyname'];
+      this.bussinessType = res['data']['businesstype']['name'];
       this.username = this.employer_detail.username;
       this.name = this.username.split(' ');
       // console.log(this.name);
@@ -152,10 +152,10 @@ export class EmployerViewComponent implements OnInit {
           }, err => {
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-          })
+          });
 
         }
-      })
+      });
     }
   }
 
