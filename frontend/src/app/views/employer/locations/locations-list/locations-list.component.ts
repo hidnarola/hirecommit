@@ -7,6 +7,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { countries } from '../../../../shared/countries';
 import { CommonService } from '../../../../services/common.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmployerService } from '../../employer.service';
 
 @Component({
   selector: 'app-locations-list',
@@ -14,7 +16,7 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./locations-list.component.scss']
 })
 export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  msg: any;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -36,7 +38,9 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
     private service: LocationService,
     private confirmationService: ConfirmationService,
     private toastr: ToastrService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private modalService: NgbModal,
+    private EmpService: EmployerService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
@@ -131,6 +135,13 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
+  }
+
+  open(content) {
+    this.modalService.open(content);
+    this.EmpService.information({ 'msg_type': 'locations' }).subscribe(res => {
+      this.msg = res['message']
+    })
   }
 
   rrerender(): void {

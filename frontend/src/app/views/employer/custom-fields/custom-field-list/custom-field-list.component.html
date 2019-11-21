@@ -3,7 +3,8 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header group-title-221">
-                    <i class="fa fa-info-circle icon-size"></i> <strong>Custom Fields</strong>
+                    <!--  -->
+                    <i class="fa fa-info-circle icon-size" (click)="open(content)"></i> <strong>Custom Fields</strong>
                     <p class="pull-right"></p>
 
 
@@ -11,10 +12,31 @@
                         class="pull-right btn btn-sm btn-primary custom-margin"
                         [routerLink]="['/employer/custom_fields/add']">
                         <i class="icon-plus"></i>
-                        Add Custom fields
+                        Add Custom Fields
                     </button>
-
                 </div>
+
+                <!-- popup -->
+                <ng-template #content let-c="close" let-d="dismiss">
+                    <div class="modal-header instructions-popup-head">
+                        <h4 class="modal-title" id="modal-basic-title"><i class="icon-info"></i>
+                            Information</h4>
+                        <button type="button" id="closeBtn" class="close" aria-label="Close"
+                            (click)="d('Cross click')"><i class="fa fa-times"> </i></button>
+                    </div>
+                    <div class="modal-body instructions-popup-body">
+                        <h5>Custom Field:</h5>
+                        <h6>{{msg}}
+                        </h6>
+
+                    </div>
+                    <!-- <div class="modal-footer instructions-popup-footer">
+                                        <button type="button" class="btn btn-primary"
+                                            (click)="setup(_profile_data[0].user_id._id)">Let's
+                                            Setup</button>
+                                    </div> -->
+                </ng-template>
+                <!-- popup -->
                 <div class="card-body">
                     <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table"

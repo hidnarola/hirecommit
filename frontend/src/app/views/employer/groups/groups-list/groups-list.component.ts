@@ -7,6 +7,8 @@ import { GroupService } from '../manage-groups.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmployerService } from '../../employer.service';
 
 @Component({
   selector: 'app-groups-list',
@@ -14,7 +16,7 @@ import { CommonService } from '../../../../services/common.service';
   styleUrls: ['./groups-list.component.scss']
 })
 export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  msg: any;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   viewInfo: FormGroup;
@@ -27,7 +29,9 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     private service: GroupService,
     private toastr: ToastrService,
     private confirmationService: ConfirmationService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private modalService: NgbModal,
+    private EmpService: EmployerService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
@@ -42,6 +46,13 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   edit(id) {
     this.router.navigate(['employer/groups/edit/' + id]);
+  }
+
+  open(content) {
+    this.modalService.open(content);
+    this.EmpService.information({ 'msg_type': 'groups' }).subscribe(res => {
+      this.msg = res['message']
+    })
   }
 
   delete(id) {

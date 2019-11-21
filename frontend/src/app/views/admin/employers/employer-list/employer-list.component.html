@@ -68,7 +68,11 @@
                             </tr>
                         </tbody>
                         <tbody *ngIf="employer_data?.length == 0">
-                            <tr>
+                            <tr *ngIf="employer_type === 'Approved'">
+                                <td colspan="6" class="no-data-available">No Approved Employer!</td>
+                            </tr>
+
+                            <tr *ngIf="employer_type === 'New'">
                                 <td colspan="6" class="no-data-available">No New Employer!</td>
                             </tr>
                         </tbody>

@@ -80,7 +80,7 @@
                         <div class="input-group-prepend">
 
                           <input type="text" class="form-control" placeholder="Code" formControlName="countrycode"
-                            name="countrycode" [(ngModel)]="registerData.countrycode" required="required">
+                            name="countrycode" [(ngModel)]="registerData.countrycode" required="required" disabled>
 
 
                           <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmitted">
@@ -133,9 +133,9 @@
                     </div>
                     <input type="file" class="form-control" placeholder="Select any image file"
                       (change)="onFileChange($event)">
-                    <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
+                    <!-- <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
                       <span>This field is required.</span>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>

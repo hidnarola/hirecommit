@@ -48,11 +48,17 @@
                                 </td>
                             </tr>
                         </tbody>
+
                         <tbody *ngIf="candidates?.length == 0">
-                            <tr>
+                            <tr *ngIf="candidate_type === 'Approved'">
+                                <td colspan="7" class="no-data-available">No Approved Candidate!</td>
+                            </tr>
+
+                            <tr *ngIf="candidate_type === 'New'">
                                 <td colspan="7" class="no-data-available">No New Candidate!</td>
                             </tr>
                         </tbody>
+
                     </table>
                 </div>
             </div>

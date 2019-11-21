@@ -27,4 +27,8 @@ export class EmployerService {
     check_approved(data): Observable<any[]> {
         return this.http.get<any[]>(`${this.url}` + '/checkStatus/' + data);
     }
+
+    information(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.url}` + '/display_message', data)
+    }
 }
