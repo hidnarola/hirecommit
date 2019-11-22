@@ -28,7 +28,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   first_custom_field = 'Custom Field';
   employer: any;
   empId;
-  offerData: any[];
+  offerData: any = [];
   form = false;
   accept_btn: boolean = false;
   profileData: any = [];
@@ -188,6 +188,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+              console.log(this.offerData[0]);
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins
                   .find(o => o.value === offer.offertype).label);

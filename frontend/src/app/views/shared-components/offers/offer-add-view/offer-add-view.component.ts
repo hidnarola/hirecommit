@@ -815,7 +815,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       customfeild: JSON.stringify(_coustomisedFieldsArray),
       data: JSON.stringify(communication_array),
       // tslint:disable-next-line: max-line-length
-      group: this.formData.append('groups', this.form.value.group !== undefined && this.form.value.group !== null && this.form.value.group !== '' ? this.form.value.group : '')
+
     };
     Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {
@@ -829,8 +829,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.formData.append(key, value);
       }
     }
-    // if (this.form.value.group) {
-    // }
+    if (this.form.value.group) {
+      this.formData.append('groups', this.form.value.group);
+    }
 
 
 
