@@ -50,8 +50,8 @@ export class LoginComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
-    this.show_spinner = true;
     if (valid) {
+      this.show_spinner = true;
       this.service.login(this.loginForm.value).subscribe(res => {
         this.isFormSubmitted = false;
         this.formData = {};
