@@ -12,13 +12,10 @@
                     </span> -->
                 </div>
                 <form class="form-horizontal" [formGroup]="form">
-
                     <div class="card-body">
-
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="email">Email</label>
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="email">Email</label>
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
                                     formControlName="email" id="email" (keyup)="findEmail($event)" [disabled]="is_Edit">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
@@ -30,34 +27,14 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="candidate">Candidate Name </label>
-                            <div class="col-md-6">
-                                <!-- <p-dropdown [options]="candidateList" placeholder="Select Candidate"
-                                    formControlName="candidate" [style]="{'width':'100%'}" id="candidate" #candidate
-                                    (onChange)="findEmail($event)" [disabled]="is_Edit">
-                                </p-dropdown> -->
-
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="candidate">Candidate Name </label>
                                 <input type="text" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name"
                                     [disabled]="is_Edit">
-                                <!-- <p-dropdown *ngIf="!is_Edit" [options]="candidateList" placeholder="Select Candidate"
-                                                            formControlName="candidate" [style]="{'width':'100%'}" id="candidate" #candidate
-                                                            (onChange)="findEmail($event)">
-                                                        </p-dropdown> -->
-                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['candidate'].valid">
-                                    <span *ngIf="form.controls['candidate'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div> -->
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="title">Title</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="title">Title</label>
                                 <input type="title" class="form-control" placeholder="Enter Title" autocomplete="title"
                                     formControlName="title" id="title">
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['title'].valid">
@@ -68,26 +45,18 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="location">Location</label>
-                            <div class="col-md-6">
-                                <p-dropdown [options]="location" [style]="{'width':'100%'}" optionLabel="city"
-                                    optionValue="_id" formControlName="location" id="location"
-                                    placeholder="Select location"></p-dropdown>
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="location">Location</label>
+                                <p-dropdown [options]="locationList" [style]="{'width':'100%'}"
+                                    formControlName="location" id="location" placeholder="Select Location"></p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['location'].valid">
                                     <span *ngIf="form.controls['location'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
                                 </div>
                             </div>
-                        </div>
-
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salarytype">Salary Type</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="salarytype">Salary Type</label>
                                 <div class="custom-radio-wrap d-flex flex-warp">
                                     <div class="custom-control custom-radio mr-5">
                                         <input type="radio" id="annual" class="custom-control-input" value="annual"
@@ -106,26 +75,21 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-
-
-
-                        <!-- <div class="form-group row">
+                            <!-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="country">Country</label>
                             <div class="col-md-6">
-                                <p-dropdown [options]="countryList" placeholder="Select Country"
-                                    formControlName="country" id="country" #country (onChange)="findData($event)">
-                                </p-dropdown>
-                                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
-                                    <span *ngIf="form.controls['country'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
+                                    <p-dropdown [options]="countryList" placeholder="Select Country"
+                                        formControlName="country" id="country" #country (onChange)="findData($event)">
+                                    </p-dropdown>
+                                    <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
+                                        <span *ngIf="form.controls['country'].errors['required']" class="text-danger">
+                                            This field is required.
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        </div> -->
+                            </div> -->
 
-
-                        <!-- <div class="form-group row">
+                            <!-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="currency_type">Currency Type</label>
                             <div class="col-md-6">
                                 <input type="text" id="currency_type" name="currency_type"
@@ -140,8 +104,8 @@
                             </div>
                         </div> -->
 
-                        <!--  salary bracket dropdown -->
-                        <!-- <div class="form-group row">
+                            <!--  salary bracket dropdown -->
+                            <!-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="salarybracket">Salary Bracket</label>
                             <div class="col-md-6">
                                 <p-dropdown [options]="salarybracketList" formControlName="salarybracket"
@@ -155,12 +119,11 @@
                                 </div>
                             </div>
                         </div> -->
-                        <!--  salary bracket dropdown -->
+                            <!--  salary bracket dropdown -->
 
-                        <!--  input salary bracket -->
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salarybracket">Salary</label>
-                            <div class="col-md-6">
+                            <!--  input salary bracket -->
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="salarybracket">Salary</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary"
                                     formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()">
                                 <div class="cust_err_msg"
@@ -173,10 +136,8 @@
                                         class="text-danger">Enter valid value.</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salarybracket_from">Salary From</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="salarybracket_from">Salary From</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter from Salary"
                                     formControlName="salarybracket_from" id="salarybracket_from"
                                     (keyup)="checkFrom($event,salaryto.value)" #salaryfrom (blur)="onSalaryRangeBlur()">
@@ -194,10 +155,8 @@
                                 <span *ngIf="error" class="text-danger">{{err_from}}</span>
                                 <!-- {{error_msg1}} -->
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salarybracket_to">Salary To</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="salarybracket_to">Salary To</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter to Salary"
                                     formControlName="salarybracket_to" id="salarybracket_to"
                                     (blur)="onSalaryRangeBlur()" #salaryto (keyup)="checkTo($event,salaryfrom.value)">
@@ -215,37 +174,36 @@
                                 <span *ngIf="error" class="text-danger">{{err_to}}</span>
                                 <!-- {{error_msg}} -->
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salaryduration">Hourly Salary Duration</label>
-                            <div class="col-md-4 append-week">
-                                <!-- <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration"
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="salaryduration">Hourly Salary
+                                    Duration</label>
+                                <div class="append-week">
+                                    <!-- <p-dropdown [options]="salary_duration_optoins" formControlName="salaryduration"
                                     id="salaryduration" [style]="{'width':'100%'}"
                                     [disabled]="!(form.controls['salarytype'].value === 'hourly')">
                                 </p-dropdown> -->
-                                <input type="number" class="form-control" placeholder="Enter to Salary Duration"
-                                    formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled>
+                                    <input type="number" class="form-control" placeholder="Enter to Salary Duration"
+                                        formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled>
 
-                                <input type="number" class="form-control" placeholder="Enter to Salary Duration"
-                                    formControlName="salaryduration" id="salaryduration" *ngIf="!disabled">
-                                <div class="input-group-append col-md-2">
-                                    <span class="input-group-text">Week</span>
-                                </div>
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salaryduration'].valid">
-                                    <span *ngIf="form.controls['salaryduration'].errors['required']"
-                                        class="text-danger">
-                                        This field is required.
-                                    </span>
+                                    <input type="number" class="form-control" placeholder="Enter to Salary Duration"
+                                        formControlName="salaryduration" id="salaryduration" *ngIf="!disabled">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Week</span>
+                                    </div>
+                                    <div class="cust_err_msg"
+                                        *ngIf="form_validation && !form.controls['salaryduration'].valid">
+                                        <span *ngIf="form.controls['salaryduration'].errors['required']"
+                                            class="text-danger">
+                                            This field is required.
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!--  input salary bracket -->
+                            <!--  input salary bracket -->
 
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="joiningdate">Joining Date</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="joiningdate">Joining Date</label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
@@ -258,11 +216,9 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="expirydate">Expiry Date</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="expirydate">Expiry Date</label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
@@ -274,19 +230,8 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group row" *ngIf="is_Edit">
-                            <label class="col-md-3 col-form-label">Current Status</label>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" autocomplete="status" formControlName="status"
-                                    disabled id="status">
-
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="offertype">Offer Type</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="offertype">Offer Type</label>
                                 <p-dropdown [options]="offer_type_optoins" [style]="{'width':'100%'}"
                                     formControlName="offertype" id="offertype">
                                 </p-dropdown>
@@ -296,10 +241,7 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
-
-
-                        <!-- <div class="form-group row">
+                            <!-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
                             </label>
                             <div class="col-md-6">
@@ -317,22 +259,19 @@
                             </div>
                         </div> -->
 
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="notes">Notes</label>
-                            <div class="col-md-6">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="notes">Notes</label>
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
                                     autocomplete="notes" formControlName="notes" id="notes" maxlength="300" rows="4"
                                     style=" overflow-y: scroll;"></textarea>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['notes'].valid">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="group">Group</label>
-                            <div class="col-md-6">
-                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" optionLabel="name"
-                                    optionValue="_id" formControlName="group" placeholder="Select Group" id="group">
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="group">Group</label>
+                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
+                                    placeholder="Select Group" id="group">
                                 </p-dropdown>
                                 <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
                                     <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
@@ -340,11 +279,25 @@
                                     </span>
                                 </div> -->
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-12 form-group">
                                 <button class="btn btn-sm btn-primary" style="float: right;"
                                     (click)="addMoreCommunication()" [disabled]="is_disabled_btn">
                                     Add More Communication
                                 </button>
+                            </div>
+                            <div class="col-md-6 form-group" *ngIf="is_Edit">
+                                <label class="col-form-label">Current Status</label>
+                                <input type="text" class="form-control" autocomplete="status" formControlName="status"
+                                    disabled id="status">
+                            </div>
+                            <div class="col-md-6 form-group" *ngIf="is_Edit">
+                                <label class="col-form-label" for="offerStatus">Offer Status</label>
+                                <!-- <p-inputSwitch [(ngModel)]="offerStatus" formControlName="is_active" name="is_active">
+                                                        </p-inputSwitch> -->
+                                <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
+                                    optionValue="value" formControlName="offerStatus" id="offerStatus"
+                                    placeholder="Please Select Status">
+                                </p-dropdown>
                             </div>
                         </div>
 
@@ -386,7 +339,8 @@
                                                     <div class="col-md-7 no-gutters">
                                                         <select id="trigger" name="select1" class="form-control"
                                                             formControlName="trigger" [(ngModel)]="customfield.trigger">
-                                                            <option value="" selected="selected">Please select trigger
+                                                            <option value="" selected="selected">Please select
+                                                                trigger
                                                             </option>
                                                             <option value="beforeJoining">Before Joining</option>
                                                             <option value="afterJoining">After Joining</option>
@@ -469,12 +423,12 @@
 
                         <!-- Custom Field -->
                         <ng-container formArrayName="customfieldItem">
-                            <div class="form-group row" formGroupName="{{i}}"
-                                *ngFor="let customfield of offer_data.customfieldItem; let i=index">
-                                <label class="col-md-3 col-form-label" for="customfield.key">
-                                    {{customfield.key |titlecase}}
-                                </label>
-                                <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 form-group" formGroupName="{{i}}"
+                                    *ngFor="let customfield of offer_data.customfieldItem; let i=index">
+                                    <label class="col-form-label" for="customfield.key">
+                                        {{customfield.key |titlecase}}
+                                    </label>
                                     <input type="text" formControlName="value" class="form-control"
                                         placeholder="Enter value" id="value">
 
@@ -486,27 +440,13 @@
                                             Enter valid data.
                                         </span>
                                     </div>
-
-
                                 </div>
                             </div>
+
                         </ng-container>
                         <!-- Custom Field -->
 
-                        <div class="form-group row" *ngIf="is_Edit">
-                            <label class="col-md-3 col-form-label" for="offerStatus">Offer Status</label>
-                            <div class=" col-md-6">
-                                <!-- <p-inputSwitch [(ngModel)]="offerStatus" formControlName="is_active" name="is_active">
-                                </p-inputSwitch> -->
-
-                                <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
-                                    optionValue="value" formControlName="offerStatus" id="offerStatus"
-                                    placeholder="Please Select Status">
-                                </p-dropdown>
-                            </div>
-                        </div>
                     </div>
-
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-md btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
@@ -530,7 +470,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Candidate Email
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6">
                             {{resData.user_id.email}}
                         </div>
                     </div>
@@ -539,7 +479,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Candidate Name
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{candidateData.firstname}} {{candidateData.lastname}}
                         </div>
                     </div>
@@ -548,7 +488,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Title
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.title}}
                         </div>
                     </div>
@@ -556,7 +496,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Location
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.location.city | titlecase}}
                         </div>
                     </div>
@@ -564,7 +504,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Salary Type
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.salarytype| titlecase}}
                         </div>
                     </div>
@@ -574,7 +514,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Salary
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.salary}}
                         </div>
                     </div>
@@ -582,7 +522,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Salary From
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.salary_from}}
                         </div>
                     </div>
@@ -590,7 +530,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Salary To
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.salary_to}}
                         </div>
                     </div>
@@ -598,7 +538,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Hourly Salary Duration
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.salaryduration}}
                         </div>
                     </div>
@@ -606,7 +546,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Joining Date
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}
                         </div>
                     </div>
@@ -614,7 +554,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Expiry Date
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}
                         </div>
                     </div>
@@ -622,7 +562,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Current Status
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.status}}
                         </div>
                     </div>
@@ -630,7 +570,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Offer Type
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.offertype}}
                         </div>
                     </div>
@@ -638,7 +578,7 @@
                         <div class="col-md-3 detail-label">
                             Commit Status
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.commitstatus}}
                         </div>
                     </div> -->
@@ -646,7 +586,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Notes
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.notes}}
                         </div>
                     </div>
@@ -654,7 +594,7 @@
                         <div class="col-md-3 detail-label lbl">
                             Group
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6 ">
                             {{resData.groupName}}
                         </div>
                     </div>
@@ -709,7 +649,7 @@
                         <div class="col-md-3 detail-label lbl">
                             {{field.key|titlecase}}
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6">
                             {{field.value ? field.value : '-'}}
                         </div>
                     </div>

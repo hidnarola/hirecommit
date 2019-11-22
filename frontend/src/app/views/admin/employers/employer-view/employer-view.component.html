@@ -120,25 +120,27 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label>Contact Number</label>
-                                <div class="d-flex">
-                                    <input class="form-control col-sm-2" type="text"
+                                <div class="number-countrycode">
+                                    <input class="form-control countrycode-input" type="text"
                                         placeholder="{{employer_detail.countrycode}}" formControlName="countrycode"
                                         name="countrycode" [(ngModel)]="employer_detail.countrycode" disabled>
-
-                                    <input class="form-control col-sm-10" type="text"
-                                        placeholder="{{employer_detail.contactno}}" formControlName="contactno"
-                                        name="contactno" [(ngModel)]="contactno">
+                                    <div class="countryno-input">
+                                        <input class="form-control" type="text"
+                                            placeholder="{{employer_detail.contactno}}" formControlName="contactno"
+                                            name="contactno" [(ngModel)]="contactno">
+                                        <div class="cust_err_msg">
+                                            <span *ngIf="!empForm.get('contactno').valid && submitted"
+                                                class="text-danger">
+                                                <span *ngIf="empForm.get('contactno').errors['required'] ">This
+                                                    field is required.</span>
+                                                <span
+                                                    *ngIf="(empForm.controls['contactno'].errors['minlength'] || empForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
+                                                    Valid data</span>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="cust_err_msg">
-                                    <span *ngIf="!empForm.get('contactno').valid && submitted" class="text-danger">
-                                        <span *ngIf="empForm.get('contactno').errors['required'] ">This
-                                            field is required.</span>
-                                        <span
-                                            *ngIf="(empForm.controls['contactno'].errors['minlength'] || empForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
-                                            Valid data</span>
-                                    </span>
 
-                                </div>
                             </div>
                             <!-- <div class="col-md-4">
 

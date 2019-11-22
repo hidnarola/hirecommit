@@ -92,33 +92,31 @@ export class LoginComponent implements OnInit {
           console.log('login>>', this.profile);
           this.router.navigate(['admin']);
         }
+        if (res['role'] !== 'admin') {
+          this.service.profileData().then(res => {
+            console.log('res for profile data=>', res);
 
-        this.service.profileData().then(res => {
-          console.log('res for profile data=>', res);
+            this.profile = res[0];
+            console.log('login>>', this.profile);
+            if (this.role === 'employer') {
+              console.log('employer=======>');
 
-          this.profile = res[0];
-          console.log('login>>', this.profile);
-          if (this.role === 'employer') {
-            console.log('employer=======>');
-
-            if (this.profile.user_id.isAllow === false) {
-              this.router.navigate(['employer/account_verification']);
+              if (this.profile.user_id.isAllow === false) {
+                this.router.navigate(['employer/account_verification']);
+              } else {
+                this.router.navigate(['employer']);
+              }
+            } else if (this.role === 'sub-employer') {
+              this.router.navigate(['sub_employer']);
+            } else if (this.role === 'candidate') {
+              if (this.profile.user_id.email_verified) {
+                this.router.navigate(['candidate']);
+              } else {
+                this.router.navigate(['candidate/account_verification']);
+              }
             }
-            else {
-              this.router.navigate(['employer']);
-            }
-          }
-          else if (this.role === 'sub-employer') {
-            this.router.navigate(['sub_employer']);
-          }
-          else if (this.role === 'candidate') {
-            if (this.profile.user_id.email_verified) {
-              this.router.navigate(['candidate']);
-            } else {
-              this.router.navigate(['candidate/account_verification']);
-            }
-          }
-        })
+          });
+        }
 
       }, (err) => {
         this.show_spinner = false;

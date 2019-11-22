@@ -99,9 +99,7 @@ body .custome-checkbox .ui-chkbox { vertical-align:top;}
 
 .profiledata-info img.img-circle.img-thumbnail{ max-width:100px; margin:0 auto 10px; display:block;}
 .profiledata-info h2{ display:block; margin: 0 0 5px; padding: 0; text-align: center; text-transform: uppercase; font-size: 1.4em;}
-.profiledata-info label{ display:block; 
-    // text-align:center; 
-    margin:0;}
+.profiledata-info label{ display:block;  margin:0 0 5px;}
 .profiledata-info .card-header{ font-size:1.2em;} 
 .profiledata-info .table{ margin-bottom:0;}
 .profiledata-info .table td,
@@ -148,9 +146,9 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 
 .table {
 
-    .form-control:disabled {
-        background: #fff;
-    }
+    // .form-control:disabled {
+    //     background: #fff;
+    // }
 
     .countrycode-input {
         width: 15%;
@@ -262,7 +260,7 @@ body .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #bf7a68; backgroun
 .append-week {display: flex;}
 .append-week .input-group-append {padding: 0px;}
 .btn-primary:focus, .btn-primary.focus {box-shadow: none;}
-.form-control:disabled, .form-control[readonly] {background-color: #ffffff;}
+// .form-control:disabled, .form-control[readonly] {background-color: #ffffff;}
 .form-control:focus {color: #5c6873;background-color: #fff;border-color: #e4e7ea;outline: 0;box-shadow: none;}
 .ast{color: red; display: inline;}
 .icon-size{ font-size: 20px;}
@@ -275,7 +273,9 @@ body .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #bf7a68; backgroun
 .group-title-221>i{ line-height: 27px;}
 .group-title-221>strong{ line-height: 24px; vertical-align: top; font-weight: 400;}
 button:focus { outline: none;}
-
+.number-countrycode { padding-left:70px; position:relative;}
+.number-countrycode .countrycode-input{ width:60px; position:absolute; top:0; left:0;}
+.number-countrycode .countryno-input{ width:100%;}
 
 /***** Media start it *****/
 @media(min-width:992px){

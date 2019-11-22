@@ -28,7 +28,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   first_custom_field = 'Custom Field';
   employer: any;
   empId;
-  offerData: any[];
+  offerData: any = [];
   form = false;
   accept_btn: boolean = false;
   profileData: any = [];
@@ -188,6 +188,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+              console.log(this.offerData[0]);
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins
                   .find(o => o.value === offer.offertype).label);
@@ -208,7 +209,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 10 }],
+        columnDefs: [{ orderable: false, targets: 10 },
+        { targets: 1, width: '50%' },
+        { targets: 3, width: '40%' },
+          // { targets: 6, width: '40%' },
+          // { targets: 7, width: '40%' }
+        ],
         columns: [
           {
             data: 'createdAt'
@@ -285,7 +291,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 6 }],
+        columnDefs: [{ orderable: false, targets: 6 },
+        { targets: 1, width: '50%' },
+        { targets: 3, width: '30%' }],
         columns: [
           {
             data: 'createdAt'

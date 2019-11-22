@@ -104,7 +104,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
           }, err => {
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
-        }, columnDefs: [{ orderable: false, targets: 7 }],
+        }, columnDefs: [{ orderable: false, targets: 7 }, { targets: 0, width: '25%' }],
         columns: [
           {
             data: 'name'
@@ -146,17 +146,17 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
             if (res['status']) {
 
               this.groups = res['groups'];
-              if (this.groups.length == 0) {
-                var el = document.getElementById('DataTables_Table_0_paginate');
-                el.style.display = 'none';
-              }
+              // if (this.groups.length == 0) {
+              //   var el = document.getElementById('DataTables_Table_0_paginate');
+              //   el.style.display = 'none';
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         }
-        // , columnDefs: [{ orderable: false, targets: 7 }]
+        , columnDefs: [{ targets: 0, width: '25%' }]
         ,
         columns: [
           {
