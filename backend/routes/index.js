@@ -1184,12 +1184,6 @@ router.get('/business_type/:country', async (req, res) => {
   }
 })
 
-
-
-
-
-
-
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 

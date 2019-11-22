@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 const CandidateDetailSchema = new Schema({
   firstname: {
     type: String,
-    required: true
+    // required: true
   },
   lastname: {
     type: String,
-    required: true
+    // required: true
   },
   countrycode: {
     type: String,

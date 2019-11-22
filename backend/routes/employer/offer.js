@@ -20,8 +20,6 @@ var Role = require('../../models/role');
 var Status = require("../../models/status");
 var History = require('../../models/offer_history');
 
-
-
 //Offer
 router.post("/", async (req, res) => {
 
@@ -98,14 +96,14 @@ router.post("/", async (req, res) => {
                 "salaryduration": req.body.salaryduration,
                 // "country": req.body.country,
                 "location": req.body.location,
-                "currency_type": req.body.currency_type,
-                "salarybracket": req.body.salarybracket,
+                // "currency_type": req.body.currency_type,
+                // "salarybracket": req.body.salarybracket,
                 "expirydate": req.body.expirydate,
                 "joiningdate": req.body.joiningdate,
                 //  "status": true,
                 "offertype": req.body.offertype,
                 "groups": req.body.groups,
-                "commitstatus": req.body.commitstatus,
+                // "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
                 "salary_from": req.body.salary_from,
@@ -127,19 +125,19 @@ router.post("/", async (req, res) => {
                 "salaryduration": req.body.salaryduration,
                 // "country": req.body.country,
                 "location": req.body.location,
-                "currency_type": req.body.currency_type,
+                // "currency_type": req.body.currency_type,
                 "salarybracket": req.body.salarybracket,
                 "expirydate": req.body.expirydate,
                 "joiningdate": req.body.joiningdate,
                 //  "status": true,
                 "offertype": req.body.offertype,
                 "groups": req.body.groups,
-                "commitstatus": req.body.commitstatus,
+                // "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
                 "communication": JSON.parse(req.body.data),
                 "salary_from": req.body.salary_from,
-                "salary_to": req.body.salary_to,
+                // "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "message": `<span>${employer.data.username}</span> has Created this offer for <span>${req.body.candidate_name}</span>`
             }
@@ -147,17 +145,36 @@ router.post("/", async (req, res) => {
         };
 
         var candidate_user = await common_helper.find(User, { 'email': req.body.email, 'is_del': false });
-
         if (candidate_user.data.length <= 0) {
             var interest_candidate = await common_helper.insert(User, { 'email': req.body.email, 'role_id': '5d9d98e13a0c78039c6dd00e' });
-            let candidate_name = req.body.candidate_name.split(' ');
-            let newcandidate = {
-                'firstname': candidate_name[0],
-                'lastname': candidate_name[1],
-                'user_id': interest_candidate.data._id
+
+            if (req.body.candidate_name != '') {
+                let candidate_name = req.body.candidate_name.split(' ');
+                if (candidate_name.length <= 1) {
+                    var newcandidate = {
+                        'firstname': candidate_name[0],
+                        'lastname': '',
+                        'user_id': interest_candidate.data._id
+                    }
+                } else if (candidate_name.length >= 1) {
+                    var newcandidate = {
+                        'firstname': candidate_name[0],
+                        'lastname': candidate_name[1],
+                        'user_id': interest_candidate.data._id
+                    }
+                }
+                console.log("newcandidate", newcandidate); return false;
+            } else if (req.body.candidate_name == '') {
+                var newcandidate = {
+                    'firstname': '',
+                    'lastname': '',
+                    'user_id': interest_candidate.data._id
+                }
             }
+            console.log(' : newcandidate ==> ', newcandidate);
+
             var interest_candidate_detail = await common_helper.insert(CandidateDetail, newcandidate);
-            console.log(' : interest_candidate_detail ==> ', interest_candidate_detail); return false;
+            console.log(' : interest_candidate_detail ==> ', interest_candidate_detail);
             obj.user_id = interest_candidate.data._id;
             var role = await common_helper.findOne(Role, { '_id': interest_candidate.data.role_id });
         } else {
@@ -168,8 +185,11 @@ router.post("/", async (req, res) => {
         if (role.data.role !== 'candidate') {
             res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
         } else {
-            var interest_resp = await common_helper.insert(Offer, obj);
+            // console.log(obj); return false;
 
+            var interest_resp = await common_helper.insert(Offer, obj);
+            console.log(interest_resp);
+            // return false;
             obj.offer_id = interest_resp.data._id
             var interest = await common_helper.insert(History, obj);
             if (interest_resp.status == 0) {
@@ -202,7 +222,6 @@ router.post("/", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
-
 
 cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
@@ -481,7 +500,6 @@ router.post('/get', async (req, res) => {
     }
 });
 
-
 router.put("/status_change", async (req, res) => {
     var id = req.body.id
     var obj = {
@@ -546,8 +564,6 @@ router.put("/status_change", async (req, res) => {
 
 });
 
-
-
 router.put("/deactive_offer/:id", async (req, res) => {
     var obj = {
         is_del: true
@@ -566,11 +582,11 @@ router.put("/deactive_offer/:id", async (req, res) => {
     }
 });
 
-
 router.put('/', async (req, res) => {
     var obj = {};
 
-    console.log('Update : body ==> ', req.body);
+    // console.log('Update : body ==> ', req.body); return false;
+    // return false;
     // if (req.body.email && req.body.email != "") {
     //     obj.email = req.body.email
     // }
@@ -658,9 +674,20 @@ router.put('/', async (req, res) => {
     }
 
     var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
-    var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj)
+    console.log("====>", req.body.groups == "");
+    // return false;
+    if (req.body.salary == "") {
+        var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary: "" } })
+    } else if (req.body.salary_from == "" && req.body.salary_to == "") {
+        var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary_from: "", salary_to: "" } })
+    }
+    else if (req.body.groups === "") {
+        var unset_groups = await Offer.findOneAndUpdate({ _id: id }, { $unset: { groups: "" } }, { new: true })
+        console.log(' : unset_groups+ ==> ', unset_groups);
+    }
+
+    var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
     console.log('Update : offer_upadate ==> ', offer_upadate);
-    obj.offer_id = offer_upadate.data._id;
     obj.status = offer_upadate.data.status;
 
     if (offer.data.status !== req.body.status) {
@@ -718,7 +745,6 @@ router.get('/details/:id', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
-
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;

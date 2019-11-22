@@ -84,7 +84,6 @@ router.post("/", async (req, res) => {
     }
 });
 
-
 router.post('/get', async (req, res) => {
 
     var schema = {};
@@ -130,7 +129,6 @@ router.post('/get', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
-
 
 router.put("/deactive_sub_account", async (req, res) => {
     var obj = {
