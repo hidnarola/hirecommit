@@ -802,7 +802,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     const form_data = {
       ...this.form.value,
-      user_id: this.form.value.candidate,
+      // user_id: this.resData.user_id._id,
       location: this.form.value.location,
 
       // groups: this.form.value.group._id,
@@ -829,8 +829,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.formData.append(key, value);
       }
     }
-    if (this.form.value.group) {
+    if (this.form.value.group && this.route.snapshot.data.title === 'Add') {
       this.formData.append('groups', this.form.value.group);
+    } else if (this.route.snapshot.data.title === 'Edit') {
+      // tslint:disable-next-line: max-line-length
+      this.formData.append('groups', this.form.value.group !== undefined && this.form.value.group !== null && this.form.value.group !== '' ? this.form.value.group : '');
     }
 
 
