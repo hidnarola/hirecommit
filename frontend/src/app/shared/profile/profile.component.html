@@ -19,95 +19,70 @@
                             <div class="card-header"><strong>Company Details</strong></div>
                             <div class="card-body">
                                 <form [formGroup]="profileForm" (ngSubmit)="edit(profileForm.valid,emp_data.user_id)">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td class="align-middle lbl">Company Name</td>
-                                                <td>
-                                                    <input type="text" class="form-control" [(ngModel)]="CompanyName"
-                                                        disabled="true" formControlName="companyname"
-                                                        name="companyname">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="align-middle lbl">Website</td>
-                                                <td>
-                                                    <input type="text" class="form-control" [(ngModel)]="Website"
-                                                        disabled="true" formControlName="website" name="website">
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="align-middle lbl">Email</td>
-                                                <td>
-                                                    <input type="email" class="form-control" [(ngModel)]="Email"
-                                                        formControlName="email" name="email">
-
-                                                    <div class="cust_err_msg">
-                                                        <span *ngIf="!profileForm.get('email').valid && submitted"
-                                                            class="text-danger">
-                                                            <span
-                                                                *ngIf="profileForm.get('email').errors['required'] ">This
-                                                                field is required.</span>
-                                                            <span
-                                                                *ngIf="profileForm.get('email').errors['pattern']">Enter
-                                                                Valid data</span>
-                                                        </span>
-
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="align-middle lbl">Country</td>
-                                                <td>
-                                                    <input type="text" class="form-control" disabled="true"
-                                                        [(ngModel)]="Country" formControlName="country" name="country">
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="align-middle lbl">Business Type</td>
-                                                <td>
-                                                    <input type="text" [(ngModel)]="BusinessType" class="form-control"
-                                                        disabled="true" formControlName="bussinesstype"
-                                                        name="bussinesstype">
-
-                                                    <!-- <p-dropdown [options]="Business_Type" placeholder="{{profileData.name}}"
-                                                    class="form-control align-middle" [(ngModel)]="profileData.name"
-                                                    [ngModelOptions]="{standalone: true}" disabled="true"
-                                                    (onChange)="value($event)" [style]="{'width':'50%'}">
-                                                </p-dropdown> -->
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="align-middle lbl">Company Person Name</td>
-                                                <td>
-                                                    <input type="text" class="form-control" [(ngModel)]="UserName"
-                                                        formControlName="username" name="username">
-                                                    <div class="cust_err_msg">
-                                                        <span *ngIf="!profileForm.get('username').valid && submitted"
-                                                            class="text-danger">
-                                                            <span
-                                                                *ngIf="profileForm.get('username').errors['required'] || profileForm.controls['username'].errors['whitespace']">This
-                                                                field is required.</span>
-                                                        </span>
-
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="align-middle lbl">Contact Number</td>
-                                                <td>
-                                                    <div class="d-flex flex-warp">
-                                                        <input type="text" class="form-control countrycode-input"
-                                                            disabled="" value="{{CountryCode}}"
-                                                            formControlName="countrycode" name="countrycode">
-                                                        <input type="number" class="form-control countryno-input"
-                                                            [(ngModel)]="ContactNumber" formControlName="contactno"
-                                                            name="contactno">
-                                                    </div>
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Company Name</label>
+                                            <input type="text" class="form-control" [(ngModel)]="CompanyName"
+                                                disabled="true" formControlName="companyname" name="companyname">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Website</label>
+                                            <input type="text" class="form-control" [(ngModel)]="Website"
+                                                disabled="true" formControlName="website" name="website">
+                                        </div>
+                                    </div>
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" [(ngModel)]="Email"
+                                                formControlName="email" name="email">
+                                            <div class="cust_err_msg">
+                                                <span *ngIf="!profileForm.get('email').valid && submitted"
+                                                    class="text-danger">
+                                                    <span *ngIf="profileForm.get('email').errors['required'] ">This
+                                                        field is required.</span>
+                                                    <span *ngIf="profileForm.get('email').errors['pattern']">Enter
+                                                        Valid data</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Country</label>
+                                            <input type="text" class="form-control" disabled="true"
+                                                [(ngModel)]="Country" formControlName="country" name="country">
+                                        </div>
+                                    </div>
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Business Type</label>
+                                            <input type="text" [(ngModel)]="BusinessType" class="form-control"
+                                                disabled="true" formControlName="bussinesstype" name="bussinesstype">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Company Person Name</label>
+                                            <input type="text" class="form-control" [(ngModel)]="UserName"
+                                                formControlName="username" name="username">
+                                            <div class="cust_err_msg">
+                                                <span *ngIf="!profileForm.get('username').valid && submitted"
+                                                    class="text-danger">
+                                                    <span
+                                                        *ngIf="profileForm.get('username').errors['required'] || profileForm.controls['username'].errors['whitespace']">This
+                                                        field is required.</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Contact Number</label>
+                                            <div class="number-countrycode">
+                                                <input type="text" class="form-control countrycode-input" disabled=""
+                                                    value="{{CountryCode}}" formControlName="countrycode"
+                                                    name="countrycode">
+                                                <div class="countryno-input">
+                                                    <input type="number" class="form-control"
+                                                        [(ngModel)]="ContactNumber" formControlName="contactno"
+                                                        name="contactno">
                                                     <div class="cust_err_msg">
                                                         <span *ngIf="!profileForm.get('contactno').valid && submitted"
                                                             class="text-danger">
@@ -118,22 +93,19 @@
                                                                 *ngIf="(profileForm.controls['contactno'].errors['minlength'] || profileForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
                                                                 Valid data</span>
                                                         </span>
-
                                                     </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" class="text-right">
-                                                    <button type="submit" class="btn btn-primary"
-                                                        [disabled]="show_spinner">Submit
-                                                        <i *ngIf="show_spinner"
-                                                            class="fa fa-spinner fa-spin"></i></button>
-                                                    <button type="button" class="btn btn-danger"
-                                                        (click)='cancel()'>Close</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-12 text-right">
+                                            <button type="submit" class="btn btn-primary"
+                                                [disabled]="show_spinner">Submit
+                                                <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+                                            <button type="button" class="btn btn-danger"
+                                                (click)='cancel()'>Close</button>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </form>

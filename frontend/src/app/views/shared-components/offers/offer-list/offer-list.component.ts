@@ -208,7 +208,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 10 }],
+        columnDefs: [{ orderable: false, targets: 10 },
+        { targets: 1, width: '50%' },
+        { targets: 3, width: '40%' },
+          // { targets: 6, width: '40%' },
+          // { targets: 7, width: '40%' }
+        ],
         columns: [
           {
             data: 'createdAt'
@@ -285,7 +290,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 6 }],
+        columnDefs: [{ orderable: false, targets: 6 },
+        { targets: 1, width: '50%' },
+        { targets: 3, width: '30%' }],
         columns: [
           {
             data: 'createdAt'

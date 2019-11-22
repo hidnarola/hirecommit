@@ -70,7 +70,7 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         },
-        columnDefs: [{ orderable: false, targets: 1 }],
+        columnDefs: [{ orderable: false, targets: 1 }, { targets: 0, width: '100%' }],
         columns: [
           {
             data: 'city'

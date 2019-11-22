@@ -62,7 +62,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
           }, err => {
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
-        }, columnDefs: [{ orderable: false, targets: 2 }],
+        }, columnDefs: [{ orderable: false, targets: 2 }, { targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
         columns: [
           {
             data: 'index'
@@ -100,7 +100,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         },
-        //  columnDefs: [{ orderable: false, targets: 2 }],
+        columnDefs: [{ targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
         columns: [
           {
             data: 'index'

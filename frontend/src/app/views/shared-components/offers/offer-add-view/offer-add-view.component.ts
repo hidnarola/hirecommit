@@ -34,11 +34,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   salary_bracket: any = [];
   salarybracketList: any = [];
   location: any = [];
-  locationList: any = [];
+  locationList: any = [
+    { label: 'Select Location', value: '' }
+  ];
   from: any;
   to: any;
   customfield: any = [];
-  group_optoins: any = [];
+  group_optoins: any = [{ label: 'Select Group', value: '' }];
   arrayItems: any = [];
   key: any;
   disabled: boolean = false;
@@ -136,7 +138,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.getLocation();
     }
     if (this.userDetail.role === 'employer') {
-      this.commonService.getDecryptedProfileDetail().then(res => {
+      this.commonService.profileData().then(res => {
+        console.log('res=>', res);
+
+        // this.commonService.getDecryptedProfileDetail().then(res => {
         this.profileData = res;
       });
     }
@@ -206,7 +211,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     const promise = new Promise((resolve, reject) => {
       this.service.get_locations().subscribe(
         async res => {
-          this.location = await res[`data`].data;
+          // this.location = await res[`data`].data;
+          // this.locationList.push(res[`data`].data)
+          if (res[`data`].data) {
+            res[`data`].data.forEach(element => {
+              this.locationList.push({ label: element.city, value: element._id });
+            });
+          }
         },
         err => {
           console.log(err);
@@ -326,7 +337,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
             this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
-            this.form.controls['location'].setValue(res[`data`]['location']);
+            this.form.controls['location'].setValue(res[`data`]['location'][`_id`]);
             // this.getCountryDetail(res[`data`].country);
             // this.findData({ 'value': res[`data`].country });
             this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
@@ -499,10 +510,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // get group list
   async groupList() {
-    this.service.get_groups().subscribe(
-      res => {
-        this.group_optoins = res['data'].data;
-      },
+    this.service.get_groups().subscribe(res => {
+      console.log('res=>', res);
+
+      if (res[`data`].data) {
+        res[`data`].data.forEach(element => {
+          this.group_optoins.push({ label: element.name, value: element._id });
+        });
+      };
+    },
       err => {
         console.log(err);
       }
@@ -510,10 +526,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   async groupDetail(id) {
-    const groupById = this.group_optoins.find(x => x._id === id);
-    this.form.controls.group.setValue(groupById);
+    console.log('id=>', id);
+    console.log('group_optoins=>', this.group_optoins);
+
+
+    const groupById = this.group_optoins.find(x => x.value === id);
+    console.log('groupById=>', groupById);
+
+    this.form.controls.group.setValue(groupById.value);
     if (this.is_View) {
-      this.resData.groupName = groupById.name;
+      this.resData.groupName = groupById.label;
     }
   }
 
@@ -707,32 +729,28 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.error = true;
       this.err_from = 'can\'t be greater then maximum salary!';
       this.err_to = 'can\'t be less then minimum salary!';
-    }
-    else if (this.from == this.to) {
+    } else if (this.from == this.to) {
       this.error = true;
       this.err_from = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
 
   checkTo(from, to) {
     // console.log(' to=>', from.target.value, to);
-    this.to = parseInt(from.target.value)
-    this.from = parseInt(to)
+    this.to = parseInt(from.target.value);
+    this.from = parseInt(to);
 
     if (this.from > this.to) {
       this.error = true;
       this.err_from = 'can\'t be greater then maximum salary!';
       this.err_to = 'can\'t be less then minimum salary!';
-    }
-    else if (this.from == this.to) {
+    } else if (this.from == this.to) {
       this.error = true;
       this.err_from = 'Can\'t be same!';
       this.err_to = 'Can\'t be same!';
-    }
-    else {
+    } else {
       this.error = false;
     }
   }
@@ -785,7 +803,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     const form_data = {
       ...this.form.value,
       user_id: this.form.value.candidate,
-      location: this.form.value.location._id,
+      location: this.form.value.location,
 
       // groups: this.form.value.group._id,
       // commitstatus: this.form.value.commitstatus.value,
@@ -795,7 +813,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salary_from: this.form.value.salarybracket_from ? this.form.value.salarybracket_from : '',
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
-      data: JSON.stringify(communication_array)
+      data: JSON.stringify(communication_array),
+      // tslint:disable-next-line: max-line-length
+      group: this.formData.append('groups', this.form.value.group !== undefined && this.form.value.group !== null && this.form.value.group !== '' ? this.form.value.group : '')
     };
     Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {
@@ -809,9 +829,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.formData.append(key, value);
       }
     }
-    if (this.form.value.group) {
-      this.formData.append('groups', this.form.value.group._id);
-    }
+    // if (this.form.value.group) {
+    // }
+
 
 
     if (flag) {
