@@ -16,8 +16,11 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="email">Email</label>
-                                <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    formControlName="email" id="email" (keyup)="findEmail($event)" [disabled]="is_Edit">
+                                <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
+                                    autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)">
+                                <input *ngIf="is_Edit" type="email" class="form-control" placeholder="Enter Email"
+                                    autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)"
+                                    disabled>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
@@ -29,9 +32,12 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="candidate">Candidate Name </label>
-                                <input type="text" class="form-control" placeholder="Enter Name"
+
+                                <input type="text" *ngIf="!is_Edit" class="form-control" placeholder="Enter Name"
+                                    autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name">
+                                <input type="text" *ngIf="is_Edit" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name"
-                                    [disabled]="is_Edit">
+                                    disabled>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="title">Title</label>
