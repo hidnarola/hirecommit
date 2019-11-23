@@ -199,7 +199,11 @@ router.post("/", async (req, res) => {
                 var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
                 let content = status.data.MessageContent;
 
-                content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                if (candidate.data.firstname != "" && candidate.data.lastname != "") {
+                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                } else {
+                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', ' you.');
+                }
 
                 let mail_resp = await mail_helper.send("offer", {
                     "to": user.data.email,
@@ -801,23 +805,42 @@ router.get('/history/:id', async (req, res) => {
                 var sub_employer = await common_helper.findOne(SubEmployerDetail, { "user_id": element.employer_id });
 
                 var candidate = await common_helper.findOne(CandidateDetail, { "user_id": element.offer.user_id });
-
-                if (employer.status === 1 && candidate.status === 1) {
+                var user = await common_helper.findOne(User, { "_id": element.offer.user_id });
+                if (employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
-                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
+                        content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // message.push(content);
+                    } else {
+                        content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        // message.push(content);
+                    }
                     message.push(content);
-                } else if (sub_employer.status === 1 && candidate.status === 1) {
+                } else if (sub_employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
-                    content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
+                        content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // message.push(content);
+                    } else {
+                        content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        // message.push(content);
+                    }
                     message.push(content);
                 }
             } else if (element.employer_id == undefined) {
                 var candidate = await common_helper.findOne(CandidateDetail, { "user_id": element.offer.user_id });
-                if (candidate.status === 1) {
+                var user = await common_helper.findOne(User, { "_id": element.offer.user_id });
+                if (candidate.status === 1 && user.status === 1) {
                     let content = element.message;
-                    content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
-                    message.push(content);
+                    if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
+                        content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // message.push(content);
+                    } else {
+                        content = content.replace('{candidate}', user.data.email);
+                        // message.push(content);
+                    }
                 }
+                message.push(content);
             }
         }
 

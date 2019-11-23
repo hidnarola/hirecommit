@@ -242,7 +242,7 @@ offer_helper.get_all_created_offer = async (collection, id, search, start, lengt
       {
         $unwind: {
           path: "$group",
-          // preserveNullAndEmptyArrays: true
+          preserveNullAndEmptyArrays: true
         }
       },
       {
