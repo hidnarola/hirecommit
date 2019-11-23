@@ -22,7 +22,6 @@ var History = require('../../models/offer_history');
 
 //Offer
 router.post("/", async (req, res) => {
-
     var schema = {
         "email": {
             notEmpty: true,
@@ -110,7 +109,7 @@ router.post("/", async (req, res) => {
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data),
-                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${req.body.candidate_name}</span>`
+                "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
             }
         }
         else {
@@ -139,7 +138,7 @@ router.post("/", async (req, res) => {
                 "salary_from": req.body.salary_from,
                 // "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
-                "message": `<span>${employer.data.username}</span> has Created this offer for <span>${req.body.candidate_name}</span>`
+                "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
             }
 
         };
@@ -163,7 +162,6 @@ router.post("/", async (req, res) => {
                         'user_id': interest_candidate.data._id
                     }
                 }
-                console.log("newcandidate", newcandidate); return false;
             } else if (req.body.candidate_name == '') {
                 var newcandidate = {
                     'firstname': '',
@@ -171,10 +169,8 @@ router.post("/", async (req, res) => {
                     'user_id': interest_candidate.data._id
                 }
             }
-            console.log(' : newcandidate ==> ', newcandidate);
 
             var interest_candidate_detail = await common_helper.insert(CandidateDetail, newcandidate);
-            console.log(' : interest_candidate_detail ==> ', interest_candidate_detail);
             obj.user_id = interest_candidate.data._id;
             var role = await common_helper.findOne(Role, { '_id': interest_candidate.data.role_id });
         } else {
@@ -191,6 +187,7 @@ router.post("/", async (req, res) => {
             console.log(interest_resp);
             // return false;
             obj.offer_id = interest_resp.data._id
+            obj.employer_id = req.userInfo.id;
             var interest = await common_helper.insert(History, obj);
             if (interest_resp.status == 0) {
                 logger.debug("Error = ", interest_resp.error);
@@ -585,17 +582,10 @@ router.put("/deactive_offer/:id", async (req, res) => {
 router.put('/', async (req, res) => {
     var obj = {};
 
-    // console.log('Update : body ==> ', req.body); return false;
-    // return false;
-    // if (req.body.email && req.body.email != "") {
-    //     obj.email = req.body.email
-    // }
     if (req.body.groups && req.body.groups != "") {
         obj.groups = req.body.groups
     }
-    // if (req.body.candidate_name && req.body.candidate_name != "") {
-    //     obj.candidate_name = req.body.candidate_name
-    // }
+
     if (req.body.title && req.body.title != "") {
         obj.title = req.body.title
     }
@@ -636,9 +626,7 @@ router.put('/', async (req, res) => {
     if (req.body.notes && req.body.notes != "") {
         obj.notes = req.body.notes
     }
-    // if (req.body.commitstatus && req.body.commitstatus != "") {
-    //     obj.commitstatus = req.body.commitstatus
-    // }
+
     if (req.body.salary && req.body.salary != "") {
         obj.salary = req.body.salary
     }
@@ -663,9 +651,6 @@ router.put('/', async (req, res) => {
     var id = req.body.id;
 
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-    //candidate
-    // var candidate = await common_helper.findOne(CandidateDetail,
-    //     { user_id: new ObjectId(req.body.user_id) });
 
     if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
         employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
@@ -674,24 +659,25 @@ router.put('/', async (req, res) => {
     }
 
     var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
-    console.log("====>", req.body.groups == "");
-    // return false;
     if (req.body.salary == "") {
         var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary: "" } })
     } else if (req.body.salary_from == "" && req.body.salary_to == "") {
         var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary_from: "", salary_to: "" } })
     }
-    else if (req.body.groups === "") {
-        var unset_groups = await Offer.findOneAndUpdate({ _id: id }, { $unset: { groups: "" } }, { new: true })
-        console.log(' : unset_groups+ ==> ', unset_groups);
+
+    if (req.body.groups === "") {
+        var unset_groups = await Offer.updateOne({ "_id": ObjectId(id) }, { $unset: { groups: "" } })
     }
 
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
-    console.log('Update : offer_upadate ==> ', offer_upadate);
     obj.status = offer_upadate.data.status;
 
+    console.log("========>", obj);
+
     if (offer.data.status !== req.body.status) {
-        obj.message = `<span>${employer.data.username}</span> has ${req.body.status} this offer for <span>${offer_upadate.data.candidate_name}</span>`
+        obj.offer_id = offer_upadate.data._id;
+        obj.employer_id = req.userInfo.id;
+        obj.message = `<span>{employer}</span> has ${req.body.status} this offer for <span>{candidate}</span>`
         var interest = await common_helper.insert(History, obj);
     }
 
@@ -700,15 +686,13 @@ router.put('/', async (req, res) => {
     }
     else if (offer_upadate.status == 1) {
         if (offer.data.status !== offer_upadate.data.status) {
-
-
             // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
 
             let content = status.data.MessageContent;
             content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
 
-            console.log(offer_upadate.data.email);
+            console.log("@@@", offer_upadate.data.email);
 
             let mail_resp = await mail_helper.send("offer", {
                 "to": offer_upadate.data.email,
@@ -748,6 +732,7 @@ router.get('/details/:id', async (req, res) => {
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
+    var message = [];
     try {
         // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
@@ -806,11 +791,38 @@ router.get('/history/:id', async (req, res) => {
             //     },
             // },
         ])
-        console.log("==========>", history_data);
 
+
+        for (let index = 0; index < history_data.length; index++) {
+            const element = history_data[index];
+            if (element.employer_id && element.employer_id != undefined) {
+                var employer = await common_helper.findOne(EmployerDetail, { "user_id": element.employer_id });
+
+                var sub_employer = await common_helper.findOne(SubEmployerDetail, { "user_id": element.employer_id });
+
+                var candidate = await common_helper.findOne(CandidateDetail, { "user_id": element.offer.user_id });
+
+                if (employer.status === 1 && candidate.status === 1) {
+                    var content = element.message;
+                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    message.push(content);
+                } else if (sub_employer.status === 1 && candidate.status === 1) {
+                    var content = element.message;
+                    content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    message.push(content);
+                }
+            } else if (element.employer_id == undefined) {
+                var candidate = await common_helper.findOne(CandidateDetail, { "user_id": element.offer.user_id });
+                if (candidate.status === 1) {
+                    let content = element.message;
+                    content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    message.push(content);
+                }
+            }
+        }
 
         if (history_data) {
-            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history_data });
+            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: message });
         }
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })

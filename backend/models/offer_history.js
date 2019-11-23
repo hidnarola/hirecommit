@@ -16,6 +16,10 @@ const OfferHistorySchema = new Schema({
   message: {
     type: String
   },
+  employer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  },
   is_del: {
     type: Boolean,
     default: false
