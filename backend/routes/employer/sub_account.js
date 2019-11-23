@@ -39,6 +39,7 @@ router.post("/", async (req, res) => {
             "is_del": false,
             "emp_id": req.userInfo.id,
             "email_verified": true,
+            "is_register": true,
             "isAllow": true,
             "role_id": "5d9d99003a0c78039c6dd00f"
 

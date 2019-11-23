@@ -164,7 +164,7 @@ router.put('/', async (req, res) => {
     reg_obj.offer_id = req.body.id;
 
     var candidate = await common_helper.findOne(Candidate, { "user_id": req.userInfo.id });
-    reg_obj.message = `<span>${candidate.data.firstname}</span> <span>${candidate.data.lastname}</span> has accepted your offer.`;
+    reg_obj.message = `<span>{candidate}</span> has accepted your offer.`;
 
     var interest = await common_helper.insert(History, reg_obj);
     if (sub_account_upadate.status == 0) {

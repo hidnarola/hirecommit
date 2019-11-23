@@ -20,6 +20,8 @@ var btoa = require('btoa');
 var logger = config.logger;
 var User = require('../../models/user');
 var Employer = require('../../models/employer-detail');
+var Sub_Employer = require('../../models/sub-employer-detail');
+
 var Offer = require('../../models/offer');
 var History = require('../../models/offer_history');
 
@@ -393,7 +395,7 @@ router.post('/get_report/:id', async (req, res) => {
             {
                 $unwind: {
                     path: "$group",
-                    // preserveNullAndEmptyArrays: true
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
@@ -499,28 +501,29 @@ router.get('/customfield/first/:id', async (req, res) => {
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
+    var message = [];
     try {
         // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        console.log(req.params.id);
+        // console.log(req.params.id);
         var history_data = await History.aggregate([
             {
                 $match: {
                     "offer_id": new ObjectId(id)
                 }
             },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "offer",
-            //         localField: "offer_id",
-            //         foreignField: "_id",
-            //         as: "offer"
-            //     }
-            // },
+            {
+                $lookup:
+                {
+                    from: "offer",
+                    localField: "offer_id",
+                    foreignField: "_id",
+                    as: "offer"
+                }
+            },
 
-            // {
-            //     $unwind: "$offer"
-            // },
+            {
+                $unwind: "$offer"
+            },
             // {
             //     $lookup:
             //     {
@@ -549,8 +552,36 @@ router.get('/history/:id', async (req, res) => {
             //     },
             // }
         ])
+        // console.log(history_data);
+
+
+        for (let index = 0; index < history_data.length; index++) {
+            const element = history_data[index];
+            if (element.employer_id && element.employer_id != undefined) {
+                var employer = await common_helper.findOne(Employer, { "user_id": element.employer_id });
+                var sub_employer = await common_helper.findOne(Sub_Employer, { "user_id": element.employer_id });
+                var candidate = await common_helper.findOne(Candidate, { "user_id": element.offer.user_id });
+                if (employer.status === 1 && candidate.status === 1) {
+                    var content = element.message;
+                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    message.push(content);
+                } else if (sub_employer.status === 1 && candidate.status === 1) {
+                    var content = element.message;
+                    content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    message.push(content);
+                }
+            } else if (element.employer_id == undefined) {
+                var candidate = await common_helper.findOne(Candidate, { "user_id": element.offer.user_id });
+                if (candidate.status === 1) {
+                    let content = element.message;
+                    content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    message.push(content);
+                }
+            }
+        }
+
         if (history_data) {
-            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history_data });
+            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: message });
         }
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })

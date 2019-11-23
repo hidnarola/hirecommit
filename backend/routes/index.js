@@ -114,6 +114,7 @@ router.post("/admin_register", async (req, res) => {
       "email_verified": true,
       "isAllow": true,
       "is_del": false,
+      "is_register": true,
       "flag": 0
     };
     var interest_resp = await common_helper.insert(User, reg_obj);
@@ -384,6 +385,16 @@ router.post("/candidate_register", async (req, res) => {
   }
 });
 
+router.post("/check_candidate_email", async (req, res) => {
+
+  let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false, "is_register": true })
+  if (user_resp.status === 1) {
+    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
+  } else {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Email address not Register" });
+  }
+})
+
 // employer Registration
 router.post("/employer_register", async (req, res) => {
   var schema = {
@@ -447,7 +458,7 @@ router.post("/employer_register", async (req, res) => {
         res.json({ "status": 0, "responseError": "Failed captcha verification" });
       }
       else {
-        let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase() })
+        let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false })
         if (user_resp.status === 1) {
           res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
         } else {
@@ -455,6 +466,7 @@ router.post("/employer_register", async (req, res) => {
           var user_reg_obj = {
             "email": req.body.email.toLowerCase(),
             "password": req.body.password,
+            "is_register": true,
             "role_id": new ObjectId(role.data._id)
           }
 
@@ -516,6 +528,16 @@ router.post("/employer_register", async (req, res) => {
     res.status(config.BAD_REQUEST).json({ message: errors });
   }
 });
+
+router.post("/check_employer_email", async (req, res) => {
+
+  let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false })
+  if (user_resp.status === 1) {
+    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
+  } else {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Email address not Register" });
+  }
+})
 
 router.post('/login', async (req, res) => {
   var schema = {
@@ -1146,6 +1168,18 @@ router.put('/change_password', async (req, res) => {
   }
   else {
     res.status(config.BAD_REQUEST).json({ message: errors });
+  }
+})
+
+router.post('/match_old_password', async (req, res) => {
+  // var password_dcrypt = await common_helper.passwordHash(req.body.oldpassword);
+  var password = await common_helper.findOne(User, { "_id": req.body.id });
+  const match = await bcrypt.compare(req.body.oldpassword, password.data.password);
+
+  if (match) {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Password is matched." });
+  } else {
+    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Password is not matched." });
   }
 })
 
