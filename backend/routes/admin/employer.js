@@ -559,24 +559,46 @@ router.get('/history/:id', async (req, res) => {
             const element = history_data[index];
             if (element.employer_id && element.employer_id != undefined) {
                 var employer = await common_helper.findOne(Employer, { "user_id": element.employer_id });
+
                 var sub_employer = await common_helper.findOne(Sub_Employer, { "user_id": element.employer_id });
+
                 var candidate = await common_helper.findOne(Candidate, { "user_id": element.offer.user_id });
-                if (employer.status === 1 && candidate.status === 1) {
+                var user = await common_helper.findOne(User, { "_id": element.offer.user_id });
+                if (employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
-                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
+                        content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // message.push(content);
+                    } else {
+                        content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        // message.push(content);
+                    }
                     message.push(content);
-                } else if (sub_employer.status === 1 && candidate.status === 1) {
+                } else if (sub_employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
-                    content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                    if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
+                        content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // message.push(content);
+                    } else {
+                        content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        // message.push(content);
+                    }
                     message.push(content);
                 }
             } else if (element.employer_id == undefined) {
-                var candidate = await common_helper.findOne(Candidate, { "user_id": element.offer.user_id });
-                if (candidate.status === 1) {
+                var candidate = await common_helper.findOne(candidate, { "user_id": element.offer.user_id });
+                var user = await common_helper.findOne(User, { "_id": element.offer.user_id });
+                if (candidate.status === 1 && user.status === 1) {
                     let content = element.message;
-                    content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
-                    message.push(content);
+                    if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
+                        content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // message.push(content);
+                    } else {
+                        content = content.replace('{candidate}', user.data.email);
+                        // message.push(content);
+                    }
                 }
+                message.push(content);
             }
         }
 
