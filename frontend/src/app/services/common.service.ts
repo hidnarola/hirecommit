@@ -76,6 +76,16 @@ export class CommonService {
     return this.http.get<any[]>(`${this.url}` + 'country');
   }
 
+  check_employer_email(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + 'check_employer_email', data);
+  }
+  check_candidate_email(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + 'check_candidate_email', data);
+  }
+  match_old_password(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + 'match_old_password', data);
+  }
+
   // get user detail
   getLoggedUserDetail() {
     let userDetails;

@@ -65,7 +65,9 @@
                                 <td>
                                     {{offer.offertype}}</td>
                                 <td>
-                                    {{offer.group.name|titlecase}}</td>
+                                    <!-- {{ offer.group!=undefined && offer.group!='null'  ? offer.group.name : '-' }} -->
+                                    {{offer.group!=undefined && offer.group!='null' ? offer.group.name : '-'}}
+                                </td>
                                 <td>
                                     {{offer.status|titlecase}}</td>
                                 <td>

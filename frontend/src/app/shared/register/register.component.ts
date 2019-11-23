@@ -68,12 +68,20 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.service.country_registration().subscribe(res => {
       this.alldata = res['data'];
-      console.log('candidate registration country>', res['data']);
       res['data'].forEach(element => {
         this.countryList.push({ 'label': element.country, 'value': element._id });
       });
     });
     this.formData = new FormData();
+
+  }
+
+  checkEmail() {
+    this.service.check_candidate_email({ 'email': this.registerForm.value.email }).subscribe(res => {
+    }, (err) => {
+      this.registerForm.controls['email'].setErrors({ 'isExist': true });
+      this.registerForm.updateValueAndValidity();
+    });
 
   }
 
@@ -119,10 +127,8 @@ export class RegisterComponent implements OnInit {
 
       if (this.countryID.country === 'India') {
         this.registerForm.controls['countrycode'].setValue('+91');
-        // this.registerForm.controls['contactno'].setValidators([Validators.maxLength(10), Validators.minLength(10)])
       } else {
         this.registerForm.controls['countrycode'].setValue('+1');
-        // this.registerForm.controls['contactno'].setValidators([Validators.maxLength(7), Validators.minLength(7)])
       }
 
       this.registerForm.updateValueAndValidity();

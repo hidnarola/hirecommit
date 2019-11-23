@@ -23,7 +23,7 @@ export class CandidateViewComponent implements OnInit {
   cancel_link1 = '/admin/candidates/new_candidate';
   cancel_link2 = '/admin/candidates/approved_candidate';
   image = environment.imageUrl;
-
+  country: any;
   buttonValue: any;
   buttonValue1: any;
   documenttype: any;
@@ -39,8 +39,6 @@ export class CandidateViewComponent implements OnInit {
 
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('===>', this.activatedRoute.snapshot.data.type);
-
     if (this.activatedRoute.snapshot.data.type === 'new') {
       this.candidate_type = 'New';
     }
@@ -48,7 +46,6 @@ export class CandidateViewComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
-    console.log('admin- candidate: newcandidate - detail component => ');
   }
 
   ngOnInit() {
@@ -57,6 +54,7 @@ export class CandidateViewComponent implements OnInit {
       console.log('res detail', this.candidate_detail);
       this.email = this.candidate_detail['user_id']['email'];
       this.documenttype = this.candidate_detail['documenttype']['name'];
+      this.country = this.candidate_detail['country'].country;
       // if (this.candidate_detail.user_id.isAllow === false) {
       //   this.buttonValue = 'Approve';
 

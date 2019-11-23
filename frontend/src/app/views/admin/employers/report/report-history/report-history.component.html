@@ -1,6 +1,6 @@
 <div class="timeline_wrapper">
-    <!-- <div class="timeline_inner"> -->
-    <!-- <div class="timeline_search">
+  <!-- <div class="timeline_inner"> -->
+  <!-- <div class="timeline_search">
       <span class="dot"></span>
       <span class="search_wrapper">
         <input type="text" placeholder="Hi alan whatr are you doing right now?">
@@ -12,20 +12,20 @@
         </svg>
       </span>
     </div> -->
-    <div class="year_show">
-        <span><b>Offer History</b></span>
-    </div>
+  <div class="year_show">
+    <span><b>Offer History</b></span>
+  </div>
 
-    <div class="timeline_inner">
-        <div class="post_wrap" *ngFor="let data of history">
-            <!-- <span
+  <div class="timeline_inner">
+    <div class="post_wrap" *ngFor="let data of history">
+      <!-- <span
         [ngClass]="{'green_dot': data.status === 'On Hold' || data.status === 'Accepted' || data.status === 'Released' , 'red_dot' : data.status === 'Not Joined', 'full_black': data.status === 'Inactive'}"
         class="dot"></span> -->
-            <span class="dot blue_dot"></span>
-            <ul class="ul_post">
-                <li>
-                    <span class="text_span">
-                        <!-- <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+      <span class="dot blue_dot"></span>
+      <ul class="ul_post">
+        <li>
+          <span class="text_span">
+            <!-- <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="511.62px" height="511.619px"
               viewBox="0 0 511.62 511.619" style="enable-background:new 0 0 511.62 511.619;" xml:space="preserve">
               <path
@@ -33,42 +33,42 @@
               <path
                 d="M491.347,338.156c13.518-19.896,20.272-41.255,20.272-64.098c0-23.411-7.139-45.303-21.409-65.666 c-14.277-20.362-33.694-37.305-58.245-50.819c4.374,14.274,6.563,28.739,6.563,43.398c0,25.503-6.368,49.676-19.129,72.519 c-12.752,22.836-31.025,43.01-54.816,60.524c-22.08,15.988-47.205,28.261-75.377,36.829 c-28.164,8.562-57.573,12.848-88.218,12.848c-5.708,0-14.084-0.377-25.122-1.137c38.256,25.119,83.177,37.685,134.756,37.685 c16.371,0,33.119-1.526,50.251-4.571c23.6,16.755,50.06,28.931,79.37,36.549c6.852,1.718,15.037,3.237,24.554,4.568 c2.283,0.195,4.381-0.476,6.283-1.995c1.903-1.526,3.142-3.614,3.71-6.276c-0.089-1.143,0-1.77,0.287-1.861 c0.281-0.09,0.233-0.712-0.144-1.852c-0.376-1.144-0.568-1.715-0.568-1.715l-0.712-1.424c-0.198-0.376-0.52-0.903-0.999-1.567 c-0.476-0.66-0.855-1.14-1.143-1.427c-0.28-0.284-0.705-0.763-1.28-1.424c-0.568-0.66-0.951-1.092-1.143-1.283 c-0.951-1.143-3.139-3.521-6.564-7.139c-3.429-3.613-5.899-6.42-7.422-8.418c-1.523-1.999-3.665-4.757-6.424-8.282 c-2.758-3.518-5.14-7.183-7.139-10.991c-1.998-3.806-3.949-7.995-5.852-12.56C459.281,374.855,477.843,358.059,491.347,338.156z" />
             </svg> -->
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 496.158 496.158"
-                            style="enable-background:new 0 0 496.158 496.158;" xml:space="preserve" width="512px"
-                            height="512px" class="">
-                            <g>
-                                <path style="fill:#DDE1ED"
-                                    d="M496.158,248.085c0-137.022-111.069-248.082-248.075-248.082C111.07,0.003,0,111.063,0,248.085  c0,137.001,111.07,248.07,248.083,248.07C385.089,496.155,496.158,385.086,496.158,248.085z"
-                                    data-original="#25B7D3" class="active-path" data-old_color="#25B7D3" />
-                                <g>
-                                    <path style="fill:#FFFFFF"
-                                        d="M315.249,359.555c-1.387-2.032-4.048-2.755-6.27-1.702c-24.582,11.637-52.482,23.94-57.958,25.015   c-0.138-0.123-0.357-0.348-0.644-0.737c-0.742-1.005-1.103-2.318-1.103-4.015c0-13.905,10.495-56.205,31.192-125.719   c17.451-58.406,19.469-70.499,19.469-74.514c0-6.198-2.373-11.435-6.865-15.146c-4.267-3.519-10.229-5.302-17.719-5.302   c-12.459,0-26.899,4.73-44.146,14.461c-16.713,9.433-35.352,25.41-55.396,47.487c-1.569,1.729-1.733,4.314-0.395,6.228   c1.34,1.915,3.825,2.644,5.986,1.764c7.037-2.872,42.402-17.359,47.557-20.597c4.221-2.646,7.875-3.989,10.861-3.989   c0.107,0,0.199,0.004,0.276,0.01c0.036,0.198,0.07,0.5,0.07,0.933c0,3.047-0.627,6.654-1.856,10.703   c-30.136,97.641-44.785,157.498-44.785,182.994c0,8.998,2.501,16.242,7.432,21.528c5.025,5.393,11.803,8.127,20.146,8.127   c8.891,0,19.712-3.714,33.08-11.354c12.936-7.392,32.68-23.653,60.363-49.717C316.337,364.326,316.636,361.587,315.249,359.555z"
-                                        data-original="#FFFFFF" class="" data-old_color="#FFFFFF" />
-                                    <path style="fill:#FFFFFF"
-                                        d="M314.282,76.672c-4.925-5.041-11.227-7.597-18.729-7.597c-9.34,0-17.475,3.691-24.176,10.971   c-6.594,7.16-9.938,15.946-9.938,26.113c0,8.033,2.463,14.69,7.32,19.785c4.922,5.172,11.139,7.794,18.476,7.794   c8.958,0,17.049-3.898,24.047-11.586c6.876-7.553,10.363-16.433,10.363-26.393C321.646,88.105,319.169,81.684,314.282,76.672z"
-                                        data-original="#FFFFFF" class="" data-old_color="#FFFFFF" />
-                                </g>
-                            </g>
-                        </svg>
-                        <span class="username_a">
-                            <div [innerHtml]="data.message" class="message"></div>
-                            <!-- {{data.message}} -->
-                        </span>
-                        <!-- has {{ data.status }} this offer for &nbsp; <bclass="username_a">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 496.158 496.158"
+              style="enable-background:new 0 0 496.158 496.158;" xml:space="preserve" width="512px" height="512px"
+              class="">
+              <g>
+                <path style="fill:#DDE1ED"
+                  d="M496.158,248.085c0-137.022-111.069-248.082-248.075-248.082C111.07,0.003,0,111.063,0,248.085  c0,137.001,111.07,248.07,248.083,248.07C385.089,496.155,496.158,385.086,496.158,248.085z"
+                  data-original="#25B7D3" class="active-path" data-old_color="#25B7D3" />
+                <g>
+                  <path style="fill:#FFFFFF"
+                    d="M315.249,359.555c-1.387-2.032-4.048-2.755-6.27-1.702c-24.582,11.637-52.482,23.94-57.958,25.015   c-0.138-0.123-0.357-0.348-0.644-0.737c-0.742-1.005-1.103-2.318-1.103-4.015c0-13.905,10.495-56.205,31.192-125.719   c17.451-58.406,19.469-70.499,19.469-74.514c0-6.198-2.373-11.435-6.865-15.146c-4.267-3.519-10.229-5.302-17.719-5.302   c-12.459,0-26.899,4.73-44.146,14.461c-16.713,9.433-35.352,25.41-55.396,47.487c-1.569,1.729-1.733,4.314-0.395,6.228   c1.34,1.915,3.825,2.644,5.986,1.764c7.037-2.872,42.402-17.359,47.557-20.597c4.221-2.646,7.875-3.989,10.861-3.989   c0.107,0,0.199,0.004,0.276,0.01c0.036,0.198,0.07,0.5,0.07,0.933c0,3.047-0.627,6.654-1.856,10.703   c-30.136,97.641-44.785,157.498-44.785,182.994c0,8.998,2.501,16.242,7.432,21.528c5.025,5.393,11.803,8.127,20.146,8.127   c8.891,0,19.712-3.714,33.08-11.354c12.936-7.392,32.68-23.653,60.363-49.717C316.337,364.326,316.636,361.587,315.249,359.555z"
+                    data-original="#FFFFFF" class="" data-old_color="#FFFFFF" />
+                  <path style="fill:#FFFFFF"
+                    d="M314.282,76.672c-4.925-5.041-11.227-7.597-18.729-7.597c-9.34,0-17.475,3.691-24.176,10.971   c-6.594,7.16-9.938,15.946-9.938,26.113c0,8.033,2.463,14.69,7.32,19.785c4.922,5.172,11.139,7.794,18.476,7.794   c8.958,0,17.049-3.898,24.047-11.586c6.876-7.553,10.363-16.433,10.363-26.393C321.646,88.105,319.169,81.684,314.282,76.672z"
+                    data-original="#FFFFFF" class="" data-old_color="#FFFFFF" />
+                </g>
+              </g>
+            </svg>
+            <span class="username_a">
+              <div [innerHtml]="data" class="message"></div>
+              <!-- {{data.message}} -->
+            </span>
+            <!-- has {{ data.status }} this offer for &nbsp; <bclass="username_a">
               {{ data.candidate.firstname }} {{ data.candidate.lastname }}</b> &nbsp; -->
-                        {{moment(data.createdAt).calendar()}}
-                        <span class="span_right">{{moment(data.createdAt).fromNow()}}<small class="ar_down">
-                                <!-- <svg version="1.1"
+            {{moment(data.createdAt).calendar()}}
+            <span class="span_right">{{moment(data.createdAt).fromNow()}}<small class="ar_down">
+                <!-- <svg version="1.1"
                   id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                   y="0px" viewBox="0 0 309.156 309.156" style="enable-background:new 0 0 309.156 309.156;"
                   xml:space="preserve">
                   <polygon
                     points="288.461,64.929 154.589,202.766 20.723,64.94 0,85.07 154.589,244.228 309.156,85.07 		" />
                 </svg> -->
-                            </small></span>
-                    </span>
-                    <!-- <div class="span_dropdown"><span class="text_span"><svg version="1.1" id="Capa_1"
+              </small></span>
+          </span>
+          <!-- <div class="span_dropdown"><span class="text_span"><svg version="1.1" id="Capa_1"
                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 width="511.62px" height="511.619px" viewBox="0 0 511.62 511.619"
                 style="enable-background:new 0 0 511.62 511.619;" xml:space="preserve">
@@ -81,12 +81,12 @@
               gallery 
               This Offer was created at : {{data.createdAt| date: 'dd - MMMM - yyyy'}}
               <span class="span_right">{{moment(data.createdAt).calendar()}}</span></span></div> -->
-                </li>
-            </ul>
-        </div>
+        </li>
+      </ul>
+    </div>
 
 
-        <!-- 
+    <!-- 
     <div class="post_wrap">
       <span class="dot full_black"></span>
       <ul class="ul_post">
@@ -189,5 +189,5 @@
         </li>
       </ul>
     </div> -->
-    </div>
+  </div>
 </div>

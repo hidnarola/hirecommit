@@ -52,7 +52,8 @@ export class SignUpComponent implements OnInit {
       country: new FormControl('', [Validators.required]),
       businesstype: new FormControl('', [Validators.required]),
       companyname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      website: new FormControl('', [Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/)]),
+      // website: new FormControl('', [Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/)]),
+      website: new FormControl(''),
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
@@ -113,6 +114,36 @@ export class SignUpComponent implements OnInit {
       this.step3 = true;
       this.stepper.next();
     }
+  }
+
+  checkPattern(e) {
+    console.log('e=>', e['target'].value);
+    console.log('this.registerForm.value.website=>', this.registerForm.value.website);
+
+    if (this.registerForm.value.website.length > 0) {
+      this.registerForm.controls['website'].setValidators([Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/)]);
+    } else {
+      this.registerForm.controls['website'].setValidators(null);
+    }
+    this.registerForm.controls['website'].updateValueAndValidity();
+    console.log('this.registerForm=>', this.registerForm);
+  }
+
+  checkEmail() {
+    this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
+    }, (err) => {
+      this.registerForm.controls['email'].setErrors({ 'isExist': true });
+      this.registerForm.updateValueAndValidity();
+    });
+
+  }
+
+
+  // }
+
+  // Update form validation
+  updateValidation() {
+    this.registerForm.updateValueAndValidity();
   }
 
   onSubmit(valid) {

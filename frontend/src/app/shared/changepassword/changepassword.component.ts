@@ -45,17 +45,27 @@ export class ChangepasswordComponent implements OnInit {
       'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
     this.userDetail = this.commonService.getLoggedUserDetail();
+    console.log('this.userDetail=>', this.userDetail);
+
     this.commonService.profileData().then(res => {
       this._profile_data = res[0];
       console.log('this._profile_data == check here ==>', this._profile_data);
       if (this._profile_data.user_id.is_login_first === false) {
         this.isDisabled = true;
-      }
-      else {
+      } else {
         this.isDisabled = false;
       }
-    })
+    });
 
+  }
+
+  checkPassword() {
+    console.log('this.form.value.oldpassword=>', this.form.value.oldpassword);
+    this.commonService.match_old_password({ 'oldpassword': this.form.value.oldpassword, 'id': this.userDetail.id }).subscribe(res => {
+    }, (err) => {
+      this.form.controls['oldpassword'].setErrors({ 'isExist': true });
+      this.form.updateValueAndValidity();
+    });
   }
 
   send() {

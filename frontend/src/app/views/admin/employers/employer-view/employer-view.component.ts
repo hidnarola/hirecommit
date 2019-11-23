@@ -73,7 +73,7 @@ export class EmployerViewComponent implements OnInit {
       Validators.pattern(/^-?(0|[1-9]\d*)?$/),
       Validators.maxLength(10), Validators.minLength(10)
       ])),
-    })
+    });
   }
 
   // Remove white spaces
@@ -103,7 +103,7 @@ export class EmployerViewComponent implements OnInit {
       this.companyName = res['data']['companyname'];
       this.bussinessType = res['data']['businesstype']['name'];
       this.username = this.employer_detail.username;
-      this.name = this.username.split(' ');
+      // this.name = this.username.split(' ');
       // console.log(this.name);
       console.log('employer_detail', this.employer_detail.user_id);
 
