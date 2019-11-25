@@ -73,18 +73,16 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       }, (err) => {
         console.log('err=>', err);
         // this.hide_list = true;
-      })
-    }
-    else if (this.userDetail.role === 'candidate') {
+      });
+    } else if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         if (res['status'] === 0) {
 
           this.hide_list = false;
-        }
-        else {
+        } else {
           this.Canididate_message = res['message']
         }
-      })
+      });
     }
 
     if (this.userDetail.role === 'employer') {
@@ -97,11 +95,13 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   // get first custom field
   getCustomField() {
     this.service.get_first_custom_field().subscribe(res => {
-      if (res['data']) {
+      if (res['data'] && res['data'].length > 0) {
         this.first_custom_field = res['data'][0]['key'];
       } else {
         this.first_custom_field = 'Custom Field';
       }
+      console.log('first_custom_field=>', this.first_custom_field);
+
     });
   }
 
@@ -210,10 +210,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         },
         columnDefs: [{ orderable: false, targets: 10 },
-        { targets: 1, width: '50%' },
-        { targets: 3, width: '40%' },
-          // { targets: 6, width: '40%' },
-          // { targets: 7, width: '40%' }
+        { targets: 1, width: '100%' },
+          // { targets: 3, width: '40%' },
+          // { targets: 6, width: '100%' },
+          // { targets: 7, width: '100%' }
         ],
         columns: [
           {
