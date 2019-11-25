@@ -36,7 +36,7 @@ var Offer = require('./../models/offer');
 var MailType = require('./../models/mail_content');
 var userpProfile = require('./profile');
 
-router.use("/profile", auth, authorization, userpProfile);
+router.use("/profile", auth, userpProfile);
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')

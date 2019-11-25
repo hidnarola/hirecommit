@@ -21,6 +21,7 @@ var logger = config.logger;
 var User = require('../../models/user');
 var Employer = require('../../models/employer-detail');
 var Sub_Employer = require('../../models/sub-employer-detail');
+var Sub_Employer_Detail = require('../../models/sub-employer-detail');
 
 var Offer = require('../../models/offer');
 var History = require('../../models/offer_history');
@@ -480,6 +481,52 @@ router.post('/get_report/:id', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
+
+router.post('/sub_account/get', async (req, res) => {
+    var schema = {};
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        var aggregate = [
+            {
+                $match: {
+                    "is_del": false,
+                    "emp_id": new ObjectId(req.body.id)
+                }
+            }
+        ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        if (req.body.search && req.body.search != "") {
+            aggregate.push({
+                "$match":
+                    { $or: [{ "username": RE }, { "user.email": RE }] }
+            });
+        }
+
+
+        let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
+
+        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.body.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        if (resp_data.status == 1) {
+            res.status(config.OK_STATUS).json(resp_data);
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+    } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
 
 router.get('/customfield/first/:id', async (req, res) => {
     try {

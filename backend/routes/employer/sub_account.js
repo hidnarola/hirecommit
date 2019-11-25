@@ -71,6 +71,8 @@ router.post("/", async (req, res) => {
                     "url": config.WEBSITE_URL + '/login'
                 });
 
+                console.log("HIII", mail_resp);
+
                 res.status(config.OK_STATUS).json({ "message": "Sub Account is Added successfully", "data": interest_resps })
             }
         }
