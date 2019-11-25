@@ -78,11 +78,6 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of approved candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
-              // this.doc = res['user'][0]['document'].name;
-              // if (this.candidates.length == 0) {
-              //   var el = document.getElementById('DataTables_Table_0_paginate');
-              //   el.style.display = 'none';
-              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -93,9 +88,6 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
             console.log('res of new candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
-              // this.doc = res['user']['document'];
-              // console.log('this.candidates new => ', this.doc);
-
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -103,7 +95,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           });
         }
       },
-      columnDefs: [{ orderable: false, targets: 6 }],
+      columnDefs: [{ orderable: false, targets: 5 }],
       columns: [
         {
           data: 'firstname'
@@ -115,9 +107,11 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           data: 'documenttype'
         }, {
           data: 'createdAt'
-        }, {
-          data: 'status'
-        }, {
+        },
+        // {
+        //   data: 'status'
+        // },
+        {
           data: 'action'
         }
       ]

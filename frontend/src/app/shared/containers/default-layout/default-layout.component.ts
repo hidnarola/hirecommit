@@ -110,14 +110,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this._profile_data = profile;
 
         if (userType === 'employer') {
-          if (this._profile_data[0].user_id.isAllow === true) {
-            this.navItems = employer;
-            this.name = this._profile_data[0].username;
-          } else {
-            this.navItems = [];
-            this.name = this._profile_data[0].username;
-          }
-
+          this.navItems = employer;
+          this.name = this._profile_data[0].username;
         } else if (userType === 'sub-employer') {
 
           this.commonService.getFirstLogin.subscribe(res => {

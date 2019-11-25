@@ -12,16 +12,19 @@
                 <span class="input-group-text"><i class="icon-envelope-letter"></i></span>
               </div>
               <input type="text" class="form-control" placeholder="Email" [(ngModel)]="formData.email" name="email"
-                formControlName="email" id="email" required email>
+                formControlName="email" id="email" required (blur)="checkMail()">
               <div class="error" *ngIf="!loginForm.controls['email'].valid && isFormSubmitted">
                 <span
                   *ngIf="this.loginForm.controls['email'].errors.required || loginForm.controls['email'].errors['whitespace']">Email
                   is required.</span>
-                <span
+                <!-- <span
                   *ngIf="loginForm.controls['email'].errors.email && !loginForm.controls['email'].errors['whitespace']">Email
+                  must be in valid format.</span> -->
+              </div>
+              <div class="error" *ngIf="!loginForm.controls['email'].valid">
+                <span *ngIf="loginForm.controls['email'].errors['pattern'] ">Email
                   must be in valid format.</span>
               </div>
-
             </div>
             <div class="input-group mb-4">
               <div class="input-group-prepend">

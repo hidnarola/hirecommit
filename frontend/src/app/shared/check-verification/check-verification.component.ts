@@ -38,7 +38,7 @@ export class CheckVerificationComponent implements OnInit {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         this.Canididate_message = res['message'];
         if (res['status'] === 1) {
-          this.router.navigate(['/candidate/offer/list']);
+          this.router.navigate(['/candidate/offers/list']);
         }
       });
     }

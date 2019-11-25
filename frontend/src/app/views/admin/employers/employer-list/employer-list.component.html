@@ -54,11 +54,16 @@
                                         <i class="icon-eye"></i>
                                     </button>
                                     <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-danger"
-                                        (click)="delete(emp.user_id)">
+                                        (click)="delete(emp.user_id)" tooltip="Delete">
                                         <i class="icon-trash"></i>
                                     </button>
 
-
+                                    <button *ngIf="employer_type === 'Approved'" type="button"
+                                        class="btn btn-sm btn-secondary"
+                                        [routerLink]="['/admin/employers/approved_employer/' + emp.user_id + '/sub_accounts/list']"
+                                        tooltip="Sub - Accounts">
+                                        <i class="fa fa-users"></i>
+                                    </button>
 
                                     <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-primary"
                                         tooltip='Approve' (click)="aprrove(emp.user_id)">

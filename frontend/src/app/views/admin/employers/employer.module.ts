@@ -13,6 +13,7 @@ import { ReportComponent } from './report/report.component';
 import { ReportHistoryComponent } from './report/report-history/report-history.component';
 import { OffersModule } from '../../shared-components/offers/offers.module'
 import { CalendarModule } from 'primeng/calendar';
+import { SubAccountsModule } from '../../employer/sub-accounts/sub-accounts.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { CalendarModule } from 'primeng/calendar';
     EmployerViewComponent,
     ReportComponent,
     ReportHistoryComponent,
+
 
     // OfferAddViewComponent
   ],
@@ -32,7 +34,8 @@ import { CalendarModule } from 'primeng/calendar';
     ConfirmDialogModule,
     TooltipModule,
     OffersModule,
-    CalendarModule
+    CalendarModule,
+    SubAccountsModule
   ], providers: [ConfirmationService]
 
 })

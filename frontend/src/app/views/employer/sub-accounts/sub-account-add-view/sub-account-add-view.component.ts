@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ThemeService } from 'ng2-charts';
 import { ConfirmationService } from 'primeng/components/common/confirmationservice';
+import { CommonService } from '../../../../services/common.service';
+import { EmployerService } from '../../../admin/employers/employer.service';
 
 @Component({
   selector: 'app-sub-account-add-view',
@@ -24,9 +26,10 @@ export class SubAccountAddViewComponent implements OnInit {
   detail: any = [];
   update_data_id: any;
   obj: any;
+  userDetail: any;
   show_spinner = false;
   cancel_link = '/employer/sub_accounts/list';
-
+  cancel_link1 = '/admin/employers/approved_employer/5dc177fc1b81361795365fa1/sub_accounts/list';
   constructor(
     private router: Router,
     private service: SubAccountService,
@@ -34,7 +37,11 @@ export class SubAccountAddViewComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-  ) { }
+    private commonService: CommonService,
+    private employerService: EmployerService
+  ) {
+    this.userDetail = this.commonService.getLoggedUserDetail();
+  }
 
   ngOnInit() {
     this.addAccount = new FormGroup({
@@ -51,10 +58,18 @@ export class SubAccountAddViewComponent implements OnInit {
         this.id = params['id'];
       });
       this.getDetail(this.id);
-      if (this.route.snapshot.data.title === 'Edit') {
-        this.is_Edit = true;
-      } else {
-        this.is_View = true;
+      if (this.userDetail.role === 'employer') {
+        if (this.route.snapshot.data.title === 'Edit') {
+          this.is_Edit = true;
+        } else {
+          this.is_View = true;
+        }
+      } else if (this.userDetail.role === 'admin') {
+        if (this.route.snapshot.data.title === 'Sub - Account Edit') {
+          this.is_Edit = true;
+        } else {
+          this.is_View = true;
+        }
       }
     } else {
       this.spinner.hide();
@@ -71,12 +86,10 @@ export class SubAccountAddViewComponent implements OnInit {
   }
 
   getDetail(id) {
-    if (this.id) {
+    if (this.id && this.userDetail.role === 'employer') {
       this.panelTitle = 'Edit';
 
       this.service.view_sub_acc_detail(id).subscribe(res => {
-        console.log('/', res['data']['user_id']['admin_rights']);
-
         if (res['data']['user_id']['admin_rights'] === 'no') {
           this.detail = {
             username: res['data']['username'],
@@ -97,7 +110,32 @@ export class SubAccountAddViewComponent implements OnInit {
         // };
         this.update_data_id = res['data']['user_id']['_id'];
       });
-    } else {
+    } else if (this.id && this.userDetail.role === 'admin') {
+      this.panelTitle = 'Edit';
+
+      this.employerService.get_details_sub_employer(id).subscribe(res => {
+        if (res['data']['user_id']['admin_rights'] === 'no') {
+          this.detail = {
+            username: res['data']['username'],
+            email: res['data']['user_id']['email'],
+            admin_rights: false
+          };
+        } else if (res['data']['user_id']['admin_rights'] === 'yes') {
+          this.detail = {
+            username: res['data']['username'],
+            email: res['data']['user_id']['email'],
+            admin_rights: true
+          };
+        }
+        // this.detail = {
+        //   name: res['data']['username'],
+        //   email: res['data']['user_id']['email'],
+        //   admin_rights: res['data']['user_id']['admin_rights']
+        // };
+        this.update_data_id = res['data']['user_id']['_id'];
+      });
+    }
+    else {
       this.detail = {
         _id: null,
         username: null,
@@ -116,14 +154,13 @@ export class SubAccountAddViewComponent implements OnInit {
 
   onSubmit(flag: boolean) {
     this.submitted = true;
-    if (this.id && flag) {
+    if (this.id && flag && this.userDetail.role === 'employer') {
       if (this.detail['admin_rights'] === false) {
         this.obj = {
           username: this.detail['username'],
           email: this.detail['email'],
           admin_rights: 'no'
         };
-        console.log('?', this.obj);
       } else if (this.detail['admin_rights'] === true) {
         this.obj = {
           username: this.detail['username'],
@@ -136,16 +173,53 @@ export class SubAccountAddViewComponent implements OnInit {
         accept: () => {
           this.show_spinner = true;
           this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
-            console.log('>?', this.obj);
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            this.router.navigate([this.cancel_link]);
+            if (this.userDetail.role === 'employer') {
+              this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'admin') {
+              this.router.navigate([this.cancel_link1]);
+            }
           }, (err) => {
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         }
       });
+    }
+    else if (this.id && flag && this.userDetail.role === 'admin') {
+      alert(this.userDetail.role);
+      if (this.detail['admin_rights'] === false) {
+        this.obj = {
+          username: this.detail['username'],
+          email: this.detail['email'],
+          admin_rights: 'no'
+        };
+      } else if (this.detail['admin_rights'] === true) {
+        this.obj = {
+          username: this.detail['username'],
+          email: this.detail['email'],
+          admin_rights: 'yes'
+        };
+      }
+      this.confirmationService.confirm({
+        message: 'Are you sure that you want to Update this record?',
+        accept: () => {
+          this.show_spinner = true;
+          this.employerService.edit_sub_employer(this.update_data_id, this.obj).subscribe(res => {
+            this.submitted = false;
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            if (this.userDetail.role === 'employer') {
+              this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'admin') {
+              this.router.navigate([this.cancel_link1]);
+            }
+          }, (err) => {
+            this.show_spinner = false;
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          });
+        }
+      })
     } else {
       if (flag) {
         this.show_spinner = true;

@@ -1,13 +1,14 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SubAccountService } from '../sub-accounts.service';
 import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployerService } from '../../employer.service';
-
+import { CommonService } from '../../../../services/common.service';
+import { EmployerService as emp } from '../../../admin/employers/employer.service';
 @Component({
   selector: 'app-sub-accounts-list',
   templateUrl: './sub-accounts-list.component.html',
@@ -24,82 +25,158 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   data: any = [];
   admin_rights;
   obj: any;
+  userDetail: any = [];
   subAccountList: any = [];
-
+  id: any;
   constructor(
     private router: Router,
     private service: SubAccountService,
     private confirmationService: ConfirmationService,
     private toastr: ToastrService,
     private modalService: NgbModal,
-    private EmpService: EmployerService
-  ) { }
+    private EmpService: EmployerService,
+    private commonService: CommonService,
+    private employer_admin_Service: emp,
+    private route: ActivatedRoute,
+  ) {
+
+    this.route.params.subscribe((params: Params) => {
+      this.id = params['id'];
+    });
+    this.userDetail = this.commonService.getLoggedUserDetail();
+  }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      serverSide: true,
-      searching: true,
-      processing: true,
-      order: [[0, 'desc']],
-      language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
-      destroy: true,
-      ajax: (dataTablesParameters: any, callback) => {
-        this.service.view_sub_account(dataTablesParameters).subscribe(res => {
+    if (this.userDetail.role === 'employer') {
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        serverSide: true,
+        searching: true,
+        processing: true,
+        order: [[0, 'desc']],
+        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+          this.service.view_sub_account(dataTablesParameters).subscribe(res => {
 
-          if (res['status']) {
-            this.data = res['user'];
-            this.subAccountList = [];
-            this.data.forEach(element => {
-              if (element.user.admin_rights === 'no') {
-                this.obj = {
-                  username: element.username,
-                  email: element.user.email,
-                  admin_rights: false,
-                  user_id: element.user_id
-                };
-                this.subAccountList.push(this.obj);
+            if (res['status']) {
+              this.data = res['user'];
+              this.subAccountList = [];
+              this.data.forEach(element => {
+                if (element.user.admin_rights === 'no') {
+                  this.obj = {
+                    username: element.username,
+                    email: element.user.email,
+                    admin_rights: false,
+                    user_id: element.user_id
+                  };
+                  this.subAccountList.push(this.obj);
 
 
-              } else if (element.user.admin_rights === 'yes') {
-                this.obj = {
-                  username: element.username,
-                  email: element.user.email,
-                  admin_rights: true,
-                  user_id: element.user_id
-                };
-                this.subAccountList.push(this.obj);
-                // if (this.subAccountList.length == 0) {
-                //   var el = document.getElementById('DataTables_Table_0_paginate');
-                //   el.style.display = 'none';
-                // }
-              }
+                } else if (element.user.admin_rights === 'yes') {
+                  this.obj = {
+                    username: element.username,
+                    email: element.user.email,
+                    admin_rights: true,
+                    user_id: element.user_id
+                  };
+                  this.subAccountList.push(this.obj);
+                  // if (this.subAccountList.length == 0) {
+                  //   var el = document.getElementById('DataTables_Table_0_paginate');
+                  //   el.style.display = 'none';
+                  // }
+                }
 
-            });
-            callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+              });
+              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+            }
+          }, err => {
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+          });
+        },
+        columnDefs: [{ orderable: false, targets: 3 },
+        { targets: 0, width: '35%' },
+        { targets: 1, width: '30%' },
+        { targets: 2, width: '15%' }],
+        columns: [
+          {
+            data: 'username'
+          }, {
+            data: 'user.email'
+          }, {
+            data: 'user.admin_rights'
+          }, {
+            data: 'actions'
           }
-        }, err => {
-          callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-        });
-      },
-      columnDefs: [{ orderable: false, targets: 3 },
-      { targets: 0, width: '35%' },
-      { targets: 1, width: '30%' },
-      { targets: 2, width: '15%' }],
-      columns: [
-        {
-          data: 'username'
-        }, {
-          data: 'user.email'
-        }, {
-          data: 'user.admin_rights'
-        }, {
-          data: 'actions'
-        }
-      ]
-    };
+        ]
+      };
+    } else if (this.userDetail.role === 'admin') {
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        serverSide: true,
+        searching: true,
+        processing: true,
+        order: [[0, 'desc']],
+        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+        destroy: true,
+        ajax: (dataTablesParameters: any, callback) => {
+          dataTablesParameters['id'] = this.id;
+          this.employer_admin_Service.get_sub_employers(dataTablesParameters).subscribe(res => {
 
+            if (res['status']) {
+              this.data = res['user'];
+              this.subAccountList = [];
+              this.data.forEach(element => {
+                if (element.user.admin_rights === 'no') {
+                  this.obj = {
+                    username: element.username,
+                    email: element.user.email,
+                    admin_rights: false,
+                    user_id: element.user_id
+                  };
+                  this.subAccountList.push(this.obj);
+
+
+                } else if (element.user.admin_rights === 'yes') {
+                  this.obj = {
+                    username: element.username,
+                    email: element.user.email,
+                    admin_rights: true,
+                    user_id: element.user_id
+                  };
+                  this.subAccountList.push(this.obj);
+                  // if (this.subAccountList.length == 0) {
+                  //   var el = document.getElementById('DataTables_Table_0_paginate');
+                  //   el.style.display = 'none';
+                  // }
+                }
+
+              });
+              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+            }
+          }, err => {
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+          });
+        },
+        columnDefs: [{ orderable: false, targets: 3 },
+        { targets: 0, width: '35%' },
+        { targets: 1, width: '30%' },
+        { targets: 2, width: '15%' }],
+        columns: [
+          {
+            data: 'username'
+          }, {
+            data: 'user.email'
+          }, {
+            data: 'user.admin_rights'
+          }, {
+            data: 'actions'
+          }
+        ]
+      };
+    }
   }
 
   get_SubEmployer() { }
@@ -114,8 +191,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   open(content) {
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'sub_accounts' }).subscribe(res => {
-      this.msg = res['message']
-    })
+      this.msg = res['message'];
+    });
   }
 
   delete(user_id) {

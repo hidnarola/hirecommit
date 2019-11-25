@@ -29,10 +29,25 @@ export class EmployerService {
     return this.http.get<any[]>(`${this.url}` + '/employer/' + id);
   }
 
+  //sub - employer
+  get_sub_employers(params): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + '/employer/sub_account/get', { ...params });
+  }
+
+  get_details_sub_employer(id): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + '/employer/sub_account/' + id);
+  }
+  edit_sub_employer(id, data): Observable<any[]> {
+    return this.http.put<any[]>(`${this.url}` + '/employer/sub_account/details', { id, data });
+  }
+
   // get new employer
   get_new_employer(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/employer/get_new', data);
   }
+
+
+
 
   // get approved employer
   get_approved_employer(data): Observable<any[]> {

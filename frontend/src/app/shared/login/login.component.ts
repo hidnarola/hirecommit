@@ -26,11 +26,21 @@ export class LoginComponent implements OnInit {
   ) {
     this.formData = {};
     this.loginForm = this.fb.group({
-      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
+      email: new FormControl('', [Validators.required,
+      Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
     });
 
 
+  }
+  checkMail() {
+    if (this.loginForm.value.email.length > 0) {
+      // tslint:disable-next-line: max-line-length
+      this.loginForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
+    } else {
+      this.loginForm.controls['email'].setValidators(null);
+    }
+    this.loginForm.controls['email'].updateValueAndValidity();
   }
 
   ngOnInit() {
@@ -99,7 +109,6 @@ export class LoginComponent implements OnInit {
             this.profile = res[0];
             console.log('login>>', this.profile);
             if (this.role === 'employer') {
-              console.log('employer=======>');
 
               if (this.profile.user_id.isAllow === false) {
                 this.router.navigate(['employer/account_verification']);

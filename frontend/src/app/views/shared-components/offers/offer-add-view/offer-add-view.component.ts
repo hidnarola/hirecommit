@@ -34,6 +34,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   salary_bracket: any = [];
   salarybracketList: any = [];
   location: any = [];
+  display_msg = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -86,6 +87,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   profileData: any;
   min_date = new Date();
   min_expiry_date = new Date();
+  max_date = new Date();
   userDetail: any = [];
   offerList: any;
   grpId: string;
@@ -292,12 +294,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         res => {
           this.resData = res[`data`];
           this.candidateData = res['candidate_data']['data'];
-          console.log('this.resData=>', this.candidateData);
 
           this.grpId = this.resData.user_id;
           this.socketService.joinGrp(this.resData.user_id);
           // this.commitstatus = res['commitstatus']
           this.service.status(this.resData.status).subscribe(resp => {
+            console.log('res=>', res);
+
+
             this.offerStatus = resp['status'];
           });
 
@@ -583,6 +587,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.min_expiry_date = this.form.value.joiningdate;
   }
 
+  getExpiryDate() {
+    this.max_date = this.form.value.expirydate;
+  }
+
   // add more communication
   addMoreCommunication() {
     this.is_disabled_btn = true;
@@ -648,7 +656,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value === element.user.email) {
+        this.display_msg = true;
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
+        document.getElementById('candidate_name').setAttribute('disabled', 'true');
+      } else if (value.target.value === '') {
+        this.display_msg = false;
+        this.form.controls.candidate_name.setValue('');
+        document.getElementById('candidate_name').removeAttribute('disabled');
       }
     }
   }
