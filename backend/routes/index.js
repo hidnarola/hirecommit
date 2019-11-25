@@ -560,7 +560,7 @@ router.post('/login', async (req, res) => {
 
     if (!user_resp) {
       logger.trace("Login checked resp = ", user_resp);
-      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Something went wrong while finding user", "error": "We are not aware of this user" });
+      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "This email is not registered with us, please check.", "error": "We are not aware of this user" });
     }
     else if (user_resp) {
       // if (user_resp.data.email_verified == true) {

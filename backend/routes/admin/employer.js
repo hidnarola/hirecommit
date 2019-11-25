@@ -679,6 +679,20 @@ router.get('/details/:id', async (req, res) => {
 });
 
 
+router.get('/sub_account/:id', async (req, res) => {
+    var id = req.params.id;
+    var sub_account_detail = await Sub_Employer_Detail.findOne({ "user_id": new ObjectId(id) }).populate('user_id')
+    if (sub_account_detail) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+    }
+    // if (sub_account_detail.status == 0) {
+    //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    // }
+    // else
+    // else {
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
+    // }
+});
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
@@ -747,6 +761,33 @@ router.get('/', async (req, res) => {
 
 });
 
+router.put('/sub_account/details', async (req, res) => {
+    var obj = {}
+    if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
+        obj.admin_rights = req.body.data.admin_rights
+    }
+    if (req.body.data.email && req.body.data.email !== "") {
+        obj.email = req.body.data.email
+    }
+    var id = req.body.id;
+    // var sub_account_upadate = await common_helper.update(Sub_Employer_Detail, { "_id": req.body.id }, obj)
+    var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
+
+    if (req.body.data.username && req.body.data.username !== "") {
+        obj.username = req.body.data.username;
+    }
+
+    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
+    if (resp_user_data.status == 0 && resp_Detail_data.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (resp_user_data.status == 1 && resp_Detail_data.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer is Updated successfully", "data": { resp_user_data, resp_Detail_data } });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+    }
+})
 
 router.put('/', async (req, res) => {
     var reg_obj = {
@@ -836,5 +877,7 @@ router.put('/update', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
     }
 })
+
+
 
 module.exports = router;
