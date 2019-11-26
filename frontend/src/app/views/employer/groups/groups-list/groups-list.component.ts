@@ -52,7 +52,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'groups' }).subscribe(res => {
       this.msg = res['message']
-    })
+    });
   }
 
   delete(id) {

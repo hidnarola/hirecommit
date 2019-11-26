@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { EmployerService } from '../../../employer/employer.service';
 
 import { CandidateService } from '../../candidates/candidate.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-offer-list',
@@ -53,25 +54,25 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
     private empService: EmployerService,
-    private candidateService: CandidateService
-
-
+    private candidateService: CandidateService,
+    private modalService: NgbModal
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     if (this.userDetail.role === 'employer') {
-      this.empService.check_approved(this.userDetail.id).subscribe(res => {
+      //   this.empService.check_approved(this.userDetail.id).subscribe(res => {
 
-        if (res['status'] === 0 || res['status'] === 2) {
-          this.hide_list = false;
-        } else {
-          this.hide_list = true;
-          this.message = res['message'];
-        }
-      }, (err) => {
-        console.log('err=>', err);
-        // this.hide_list = true;
-      });
-    } else if (this.userDetail.role === 'candidate') {
+      //     if (res['status'] === 0 || res['status'] === 2) {
+      this.hide_list = false;
+      //     } else {
+      //       this.hide_list = true;
+      //       this.message = res['message'];
+      //     }
+      //   }, (err) => {
+      //     console.log('err=>', err);
+      //     // this.hide_list = true;
+      //   });
+    };
+    if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         if (res['status'] === 0) {
           this.hide_list = false;
@@ -136,7 +137,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
           if (profile) {
             this.profileData = profile;
-            if ((!this.profileData[0].user_id.email_verified) || (!this.profileData[0].user_id.isAllow)) {
+            if (!this.profileData[0].user_id.email_verified) {
               console.log('true=======>');
 
               this.hide_list = true;
@@ -345,8 +346,21 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  add() {
-    if (this.userDetail.role === 'employer') {
+  add(content) {
+    if (this.profileData[0].user_id.isAllow === false) {
+      this.modalService.open(content);
+      this.empService.check_approved(this.userDetail.id).subscribe(res => {
+        if (res['status'] === 0 || res['status'] === 2) {
+          // this.hide_list = false;
+        } else {
+          // this.hide_list = true;
+          this.message = res['message'];
+        }
+      }, (err) => {
+        console.log('err=>', err);
+        // this.hide_list = true;
+      });
+    } else if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/add']);
     } else if (this.userDetail.role === 'sub-employer') {
       this.route.navigate(['/sub_employer/offers/add']);

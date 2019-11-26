@@ -104,17 +104,13 @@ export class LoginComponent implements OnInit {
         }
         if (res['role'] !== 'admin') {
           this.service.profileData().then(res => {
-            console.log('res for profile data=>', res);
-
             this.profile = res[0];
-            console.log('login>>', this.profile);
             if (this.role === 'employer') {
-
-              if (this.profile.user_id.isAllow === false) {
-                this.router.navigate(['employer/account_verification']);
-              } else {
-                this.router.navigate(['employer']);
-              }
+              //   if (this.profile.user_id.isAllow === false) {
+              //     this.router.navigate(['employer/account_verification']);
+              //   } else {
+              this.router.navigate(['employer']);
+              // }
             } else if (this.role === 'sub-employer') {
               this.router.navigate(['sub_employer']);
             } else if (this.role === 'candidate') {

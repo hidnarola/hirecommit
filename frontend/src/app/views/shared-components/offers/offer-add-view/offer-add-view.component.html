@@ -13,11 +13,15 @@
                 </div>
                 <form class="form-horizontal" [formGroup]="form">
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Candidate Detail</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="email">Email</label>
                                 <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
-                                    autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)">
+                                    autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)"
+                                    (blur)="checkEmail()">
                                 <input *ngIf="is_Edit" type="email" class="form-control" placeholder="Enter Email"
                                     autocomplete="email" formControlName="email" id="email" disabled>
 
@@ -26,9 +30,11 @@
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
-                                    <span *ngIf="form.controls['email'].errors['pattern']" class="text-danger">
-                                        Email must be in valid format.
-                                    </span>
+
+                                </div>
+                                <div class="cust_err_msg" *ngIf="!form.controls['email'].valid">
+                                    <span *ngIf="form.controls['email'].errors['pattern'] " class="text-danger">Email
+                                        must be in valid format.</span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -39,10 +45,13 @@
                                 <input type="text" *ngIf="is_Edit" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name"
                                     disabled>
-                                <div *ngIf="display_msg" style="color: grey;"><span>Candidate Name as per our records,
+                                <div *ngIf="display_msg" style="color: grey;"><span>Candidate Name as per our
+                                        records,
                                         matching email</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row add-offer-form-part">
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="title">Title</label>
                                 <input type="title" class="form-control" placeholder="Enter Title" autocomplete="title"
@@ -65,6 +74,11 @@
                                     </span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Salary Detail</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="salarytype">Salary Type</label>
                                 <div class="custom-radio-wrap d-flex flex-warp">
@@ -85,53 +99,6 @@
                                     </span>
                                 </div>
                             </div>
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="country">Country</label>
-                            <div class="col-md-6">
-                                    <p-dropdown [options]="countryList" placeholder="Select Country"
-                                        formControlName="country" id="country" #country (onChange)="findData($event)">
-                                    </p-dropdown>
-                                    <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
-                                        <span *ngIf="form.controls['country'].errors['required']" class="text-danger">
-                                            This field is required.
-                                        </span>
-                                    </div>
-                                </div>
-                            </div> -->
-
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="currency_type">Currency Type</label>
-                            <div class="col-md-6">
-                                <input type="text" id="currency_type" name="currency_type"
-                                    formControlName="currency_type" class="form-control"
-                                    placeholder="Select CurrencyType" disabled>
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['currency_type'].valid">
-                                    <span *ngIf="form.controls['currency_type'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-                            </div>
-                        </div> -->
-
-                            <!--  salary bracket dropdown -->
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salarybracket">Salary Bracket</label>
-                            <div class="col-md-6">
-                                <p-dropdown [options]="salarybracketList" formControlName="salarybracket"
-                                    id="salarybracket" placeholder="Select Salary Bracket">
-                                </p-dropdown>
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket'].valid">
-                                    <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-                            </div>
-                        </div> -->
-                            <!--  salary bracket dropdown -->
-
-                            <!--  input salary bracket -->
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="salarybracket">Salary</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
@@ -211,7 +178,11 @@
                                 </div>
                             </div>
                             <!--  input salary bracket -->
-
+                        </div>
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Offer Generation Details</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="joiningdate">Joining Date</label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
@@ -242,6 +213,24 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="expirydate">Expiry Date</label>
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
+                                    [disabled]="is_View" [minDate]="min_date" (onClose)="getExpiryDate()">
+                                </p-calendar>
+                                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
+                                    <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>General Details</h3>
+                            </div>
+                            <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="offertype">Offer Type</label>
                                 <p-dropdown [options]="offer_type_optoins" [style]="{'width':'100%'}"
                                     formControlName="offertype" id="offertype">
@@ -252,24 +241,6 @@
                                     </span>
                                 </div>
                             </div>
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
-                            </label>
-                            <div class="col-md-6">
-                                <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
-                                    optionValue="value" optionLabel="lable" formControlName="commitstatus"
-                                    id="commitstatus" placeholder="Please Select Commit Status">
-                                </p-dropdown>
-
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['commitstatus'].valid">
-                                    <span *ngIf="form.controls['commitstatus'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-                            </div>
-                        </div> -->
-
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="notes">Notes</label>
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
@@ -279,23 +250,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="group">Group</label>
-                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
-                                    placeholder="Select Group" id="group">
-                                </p-dropdown>
-                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
-                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div> -->
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <button class="btn btn-sm btn-primary" style="float: right;"
-                                    (click)="addMoreCommunication()" [disabled]="is_disabled_btn">
-                                    Add More Communication
-                                </button>
-                            </div>
                             <div class="col-md-6 form-group" *ngIf="is_Edit">
                                 <label class="col-form-label">Current Status</label>
                                 <input type="text" class="form-control" autocomplete="status" formControlName="status"
@@ -312,6 +266,61 @@
                             </div>
                         </div>
 
+
+
+
+
+                        <!-- Custom Field -->
+                        <ng-container formArrayName="customfieldItem">
+                            <div class="row add-offer-form-part">
+                                <div class="col-md-12">
+                                    <h3>Custom Field Details</h3>
+                                </div>
+                                <!-- <div class="row"> -->
+                                <div class="col-md-6 form-group" formGroupName="{{i}}"
+                                    *ngFor="let customfield of offer_data.customfieldItem; let i=index">
+                                    <label class="col-form-label" for="customfield.key">
+                                        {{customfield.key |titlecase}}
+                                    </label>
+                                    <input type="text" formControlName="value" class="form-control"
+                                        placeholder="Enter value" id="value">
+
+                                    <div class="cust_err_msg"
+                                        *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
+                                        <span
+                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['_whitespace']"
+                                            class="text-danger">
+                                            Enter valid data.
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                        </ng-container>
+                        <!-- Custom Field -->
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Communication Details</h3>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="group">Group</label>
+                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
+                                    placeholder="Select Group" id="group">
+                                </p-dropdown>
+                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
+                                                                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
+                                                                                        This field is required.
+                                                                                    </span>
+                                                                                </div> -->
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label> &nbsp; </label>
+                                <button class="btn btn-sm btn-primary" style="float: right;"
+                                    (click)="addMoreCommunication()" [disabled]="is_disabled_btn">
+                                    Add More Communication
+                                </button>
+                            </div>
+                        </div>
                         <!-- communication -->
                         <ng-container formArrayName="communicationFieldItems">
                             <div class="form-group row" formGroupName="{{i}}"
@@ -338,7 +347,7 @@
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
                                                                 *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] ||
-                                                                                                                                        form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
+                                                                                                                                                                form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
                                                                 class="text-danger">
                                                                 This field is required.
                                                             </span>
@@ -418,7 +427,7 @@
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['message'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] ||
-                                                                                form.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']"
+                                                                                                        form.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']"
                                                             class="text-danger">
                                                             This field is required.
                                                         </span>
@@ -431,31 +440,6 @@
                             </div>
                         </ng-container>
                         <!-- communication -->
-
-                        <!-- Custom Field -->
-                        <ng-container formArrayName="customfieldItem">
-                            <div class="row">
-                                <div class="col-md-6 form-group" formGroupName="{{i}}"
-                                    *ngFor="let customfield of offer_data.customfieldItem; let i=index">
-                                    <label class="col-form-label" for="customfield.key">
-                                        {{customfield.key |titlecase}}
-                                    </label>
-                                    <input type="text" formControlName="value" class="form-control"
-                                        placeholder="Enter value" id="value">
-
-                                    <div class="cust_err_msg"
-                                        *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
-                                        <span
-                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['_whitespace']"
-                                            class="text-danger">
-                                            Enter valid data.
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </ng-container>
-                        <!-- Custom Field -->
 
                     </div>
                     <div class="card-footer text-right">
