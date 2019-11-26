@@ -29,6 +29,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   first_custom_field = '';
   employer: any;
   empId;
+  userName: any;
   offerData: any = [];
   form = false;
   accept_btn: boolean = false;
@@ -180,7 +181,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
-              console.log(this.offerData[0]);
+              console.log('offerData=>', this.offerData);
+
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins
                   .find(o => o.value === offer.offertype).label);
@@ -212,28 +214,43 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             data: 'createdAt'
           },
           {
+            data: 'candidate.user.email'
+          },
+          {
+            data: 'candidate.firstname'
+          },
+          {
             data: 'title'
           },
           {
-            data: 'salarytype'
+            data: 'location.city'
           },
-          {
-            data: 'salarybracket.from'
-          },
+          // {
+          //   data: 'salarytype'
+          // },
+          // {
+          //   data: 'salarybracket.from'
+          // },
           {
             data: 'expirydate'
           },
           {
             data: 'joiningdate'
           },
+          {
+            data: 'title'
+          },
           // {
           //   data: 'status'
           // },
+          // {
+          //   data: 'offertype'
+          // },
+          // {
+          //   data: 'group.name'
+          // },
           {
-            data: 'offertype'
-          },
-          {
-            data: 'group.name'
+            data: 'status'
           },
           {
             data: 'status'
@@ -241,9 +258,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           // {
           //   data: 'commitstatus'
           // },
-          {
-            data: 'customfeild[0].key'
-          },
+          // {
+          //   data: 'customfeild[0].key'
+          // },
           {
             data: 'actions'
           }
@@ -264,8 +281,18 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+              console.log('this.offerData=>', this.offerData);
+
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+
+                // if (offer['created_by'].length > 0) {
+                //   console.log('res sub emp=======>', offer['created_by'].username);
+                //   this.userName = offer['created_by'].username;
+                // } else {
+                //   console.log('res emp=>', offer[`employer_id`][`employer`].username);
+                //   this.userName = offer['employer_id']['employer'].username;
+                // }
               });
               // if (this.offerData.length == 0) {
               //   var el = document.getElementById('DataTables_Table_0_paginate');
@@ -283,12 +310,15 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 6 },
+        columnDefs: [{ orderable: false, targets: 9 },
         { targets: 1, width: '50%' },
-        { targets: 3, width: '30%' }],
+        { targets: 4, width: '30%' }],
         columns: [
           {
             data: 'createdAt'
+          },
+          {
+            data: 'username'
           },
           {
             data: 'title'
@@ -303,11 +333,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             data: 'expirydate'
           },
           {
+            data: 'acceptedAt'
+          },
+          {
             data: 'joiningdate'
           },
-          // {
-          //   data: 'status'
-          // },
+          {
+            data: 'status'
+          },
           // {
           //   data: 'offertype'
           // },

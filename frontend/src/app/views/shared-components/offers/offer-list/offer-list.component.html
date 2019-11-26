@@ -1,5 +1,6 @@
 <div class="animated fadeIn">
     <div class="row">
+        <!-- //employer -->
         <div class="col-lg-12">
             <div class="card" *ngIf="!hide_list">
 
@@ -28,11 +29,6 @@
                         </h6>
 
                     </div>
-                    <!-- <div class="modal-footer instructions-popup-footer">
-                                                        <button type="button" class="btn btn-primary"
-                                                            (click)="setup(_profile_data[0].user_id._id)">Let's
-                                                            Setup</button>
-                                                    </div> -->
                 </ng-template>
                 <!-- popup -->
 
@@ -42,22 +38,34 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    Candidate Email</th>
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    Candidate Name</th>
+                                <th *ngIf="userDetail.role === 'candidate'">Employer Name</th>
                                 <th>Title</th>
-                                <th>Salary Type</th>
-                                <th>Salary Bracket</th>
+                                <th *ngIf="userDetail.role === 'candidate'">Salary Type</th>
+                                <th *ngIf="userDetail.role === 'candidate'">Salary</th>
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    Location</th>
                                 <th>Expiry Date</th>
+                                <th *ngIf="userDetail.role === 'candidate'">Acceptance Date</th>
                                 <th>Joining Date</th>
-                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Offer
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    Acceptance Date</th>
+                                <!-- <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Offer
                                     Type</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Group
-                                </th>
-                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Current
+                                </th> -->
+                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
+                                    Status</th>
+                                <th>Offer
                                     Status</th>
                                 <!-- <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
                                     Status</th> -->
-                                <th [ngClass]="first_custom_field === ''? 'd-0' : ''"
+                                <!-- <th [ngClass]="first_custom_field === ''? 'd-0' : ''"
                                     *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
-                                    {{first_custom_field |titlecase}}</th>
+                                    {{first_custom_field |titlecase}}</th> -->
                                 <th style="width: 15%;">Action</th>
                             </tr>
                         </thead>
@@ -65,29 +73,50 @@
                         <tbody>
                             <tr *ngFor="let offer of offerData; let i = index;">
                                 <td>{{offer.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.candidate.user.email}}</td>
+                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.candidate.firstname}} {{offer.candidate.lastname}}</td>
+                                <td *ngIf="userDetail.role === 'candidate'">
+                                    {{offer.created_by.username ? offer.created_by.username : offer.employer_id.employer.username}}
+                                </td>
+
                                 <td>{{offer.title}}</td>
-                                <td>{{offer.salarytype|titlecase}}</td>
-                                <td *ngIf="offer.salary">{{offer.salary}}</td>
-                                <td *ngIf="offer.salary_from && offer.salary_to">
+                                <td *ngIf="userDetail.role === 'candidate'">{{offer.salarytype}}</td>
+                                <td *ngIf="offer.salary && userDetail.role === 'candidate'">{{offer.salary}}</td>
+                                <td *ngIf="offer.salary_from && offer.salary_to && userDetail.role === 'candidate'">
                                     {{offer.salary_from}} to {{offer.salary_to}}
                                 </td>
+                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.location.city}}</td>
+                                <!-- <td *ngIf="offer.salary">{{offer.salary}}</td>
+                                <td *ngIf="offer.salary_from && offer.salary_to">
+                                    {{offer.salary_from}} to {{offer.salary_to}}
+                                </td> -->
                                 <td>{{offer.expirydate | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <td *ngIf="userDetail.role === 'candidate'">
+                                    {{offer.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.joiningdate | date: 'dd/MM/yyyy' : 'utc'}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    {{offer.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <!-- <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
-                                    {{ offer.group!=undefined && offer.group!='null'  ? offer.group.name : '-' }}</td>
+                                    {{ offer.group!=undefined && offer.group!='null'  ? offer.group.name : '-' }}</td> -->
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                    -
+                                </td>
+                                <td>
                                     {{offer.status|titlecase}}</td>
                                 <!-- <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.commitstatus|titlecase}}</td> -->
-                                <td [ngClass]="first_custom_field === ''? 'd-0' : ''"
-                                    *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
+                                <!-- <td [ngClass]="first_custom_field === ''? 'd-0' : ''"
+                                    *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')"> -->
 
-                                    <!-- {{ offer.customfeild[0].key === first_custom_field || offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}} -->
+                                <!-- {{ offer.customfeild[0].key === first_custom_field || offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}} -->
 
-                                    {{ offer.customfeild && offer.customfeild.length > 0 ? offer.customfeild[0].value : '-'}}
-                                </td>
+                                <!-- {{ offer.customfeild && offer.customfeild.length > 0 ? offer.customfeild[0].value : '-'}} -->
+                                <!-- </td> -->
                                 <td>
 
                                     <!-- <button *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'"
@@ -140,6 +169,11 @@
             </div> -->
 
         </div>
+        <!-- employer -->
+
+        <!-- candidate -->
+
+        <!-- candidate -->
     </div>
 </div>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

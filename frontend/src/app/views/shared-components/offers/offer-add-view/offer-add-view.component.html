@@ -25,15 +25,13 @@
                                 <input *ngIf="is_Edit" type="email" class="form-control" placeholder="Enter Email"
                                     autocomplete="email" formControlName="email" id="email" disabled>
 
-
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
-
                                 </div>
                                 <div class="cust_err_msg" *ngIf="!form.controls['email'].valid">
-                                    <span *ngIf="form.controls['email'].errors['pattern'] " class="text-danger">Email
+                                    <span *ngIf="form.controls['email'].errors['pattern']" class="text-danger">Email
                                         must be in valid format.</span>
                                 </div>
                             </div>
@@ -45,6 +43,13 @@
                                 <input type="text" *ngIf="is_Edit" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name"
                                     disabled>
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['candidate_name'].valid">
+                                    <span *ngIf="form.controls['candidate_name'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                                 <div *ngIf="display_msg" style="color: grey;"><span>Candidate Name as per our
                                         records,
                                         matching email</span>
@@ -212,18 +217,17 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="expirydate">Expiry Date</label>
+                            <div *ngIf="is_Edit" class="col-md-6 form-group">
+                                <label class="col-form-label" for="expirydate">Acceptance Date</label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_date" (onClose)="getExpiryDate()">
+                                    formControlName="acceptanceDate" id="acceptanceDate">
                                 </p-calendar>
-                                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
+                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="row add-offer-form-part">
@@ -367,6 +371,7 @@
                                                             <option value="afterOffer">After Offer</option>
                                                             <option value="beforeExpiry">Before Expiry</option>
                                                             <option value="afterExpiry">After Expiry</option>
+                                                            <option value="afterAcceptance">After Acceptance</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -455,13 +460,14 @@
             <!-- add-edit -->
 
             <!-- view -->
-            <div class="card" *ngIf="is_View">
+            <div class="card"
+                *ngIf="is_View && userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
                 <div class="card-header">
                     <strong style="font-size: 20px;">View Offer</strong>
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
-                    <div class="row detail-panel"
-                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
+                    <div class="row detail-panel">
+
                         <div class="col-md-3 detail-label lbl">
                             Candidate Email
                         </div>
@@ -469,8 +475,8 @@
                             {{resData.user_id.email}}
                         </div>
                     </div>
-                    <div class="row detail-panel"
-                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
+                    <div class="row detail-panel">
+
                         <div class="col-md-3 detail-label lbl">
                             Candidate Name
                         </div>
@@ -555,7 +561,7 @@
                     </div>
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
-                            Current Status
+                            Acceptance Date
                         </div>
                         <div class="col-md-6 ">
                             {{resData.status}}
@@ -569,14 +575,7 @@
                             {{resData.offertype}}
                         </div>
                     </div>
-                    <!-- <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
-                            Commit Status
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.commitstatus}}
-                        </div>
-                    </div> -->
+
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
                             Notes
@@ -585,6 +584,32 @@
                             {{resData.notes}}
                         </div>
                     </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Commit Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.commitstatus}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Offer Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.status}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+                    <div class="row detail-panel" *ngFor="let field of resData.customfeild">
+                        <div class="col-md-3 detail-label lbl">
+                            {{field.key|titlecase}}
+                        </div>
+                        <div class="col-md-6">
+                            {{field.value ? field.value : '-'}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
                             Group
@@ -639,16 +664,7 @@
                     </div>
                     <!-- communication -->
 
-                    <!-- custom fields -->
-                    <div class="row detail-panel" *ngFor="let field of resData.customfeild">
-                        <div class="col-md-3 detail-label lbl">
-                            {{field.key|titlecase}}
-                        </div>
-                        <div class="col-md-6">
-                            {{field.value ? field.value : '-'}}
-                        </div>
-                    </div>
-                    <!-- custom fields -->
+
                 </div>
                 <div class="card-footer text-right">
 
@@ -661,6 +677,186 @@
             </div>
             <!-- view -->
 
+            <!-- candidate view -->
+            <div class="card" *ngIf="is_View && userDetail.role === 'candidate'">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">View Offer</strong>
+                </div>
+                <div class="card-body detail-box" *ngIf="resData">
+                    <div class="row detail-panel">
+
+                        <div class="col-md-3 detail-label lbl">
+                            Offer date
+                        </div>
+                        <div class="col-md-6">
+                            {{resData.createdAt | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+
+                        <div class="col-md-3 detail-label lbl">
+                            Employer Name
+                        </div>
+                        <div class="col-md-6 ">
+                            {{userName}}
+                        </div>
+                    </div>
+
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Title
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.title}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Location
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.location.city | titlecase}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary Type
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salarytype| titlecase}}
+                        </div>
+                    </div>
+
+
+                    <div class="row detail-panel" *ngIf="resData.salary">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salary}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary_from">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary From
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salary_from}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary_to">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary To
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salary_to}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
+                        <div class="col-md-3 detail-label lbl">
+                            Hourly Salary Duration
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salaryduration}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Expiry Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Joining Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Acceptance Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Offer Type
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.offertype}}
+                        </div>
+                    </div>
+
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Notes
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.notes}}
+                        </div>
+                    </div> -->
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Commit Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.commitstatus}}
+                        </div>
+                    </div> -->
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Offer Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.status}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+
+                    <div *ngFor="let field of resData.customfeild">
+                        <div class="row" [ngClass]="{'detail-panel':field.value}">
+                            <div class="col-md-3 detail-label lbl" *ngIf="field.value">
+                                {{field.key|titlecase}}
+                            </div>
+                            <div class="col-md-6" *ngIf="field.value">
+                                {{field.value ? field.value : '-'}}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Group
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.groupName}}
+                        </div>
+                    </div> -->
+
+
+                    <!-- communication -->
+
+                    <!-- communication -->
+
+
+                </div>
+                <div class="card-footer text-right">
+
+                    <button *ngIf="userDetail.role === 'candidate'" type="button" class="btn btn-md btn-success"
+                        (click)="Accept(resData._id)" [disabled]="resData.status === 'Accepted'">
+                        Accept</button>
+                    <button type="button" class="btn btn-md btn-primary" (click)='cancel()'>
+                        Back</button>
+                </div>
+            </div>
+            <!-- candidate view -->
         </div>
     </div>
 </div>

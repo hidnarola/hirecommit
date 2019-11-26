@@ -19,6 +19,7 @@ import { SocketService } from '../../../../services/socket.service';
   styleUrls: ['./offer-add-view.component.scss']
 })
 export class OfferAddViewComponent implements OnInit, OnDestroy {
+  userName: any;
   public Editor = ClassicEditor;
   resData: any;
   form: FormGroup;
@@ -111,7 +112,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // }
     // Form Controls
     this.form = this.fb.group({
-      candidate_name: new FormControl(''),
+      candidate_name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required,
       Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       title: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
@@ -132,7 +133,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
-      offerStatus: new FormControl('')
+      offerStatus: new FormControl(''),
+      acceptanceDate: new FormControl('')
     });
 
 
@@ -215,7 +217,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line: max-line-length
       this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
     } else {
-      this.form.controls['email'].setValidators(null);
+      this.form.controls['email'].setValidators([Validators.required]);
     }
     this.form.controls['email'].updateValueAndValidity();
   }
@@ -360,6 +362,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
+            this.form.controls['acceptanceDate'].setValue(new Date(res['data'].acceptedAt));
             // this.form.controls['commitstatus']
             //   .setValue({ lable: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
             this.form.controls['notes'].setValue(res[`data`].notes);
@@ -416,11 +419,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
-          this.resData = res[`data`];
+          this.resData = res[`data`][0];
+          if (this.resData.created_by.username) {
+            this.userName = this.resData.created_by.username;
+          } else {
+            this.userName = this.resData.employer_id.employer.username;
+          }
           this.spinner.hide();
           this.is_View = true;
-          this.resData = res[`data`];
-          this.resData.groupName = res[`data`]['groups']['name'];
+          this.resData = res[`data`][0];
+          // this.resData.groupName = res[`data`]['groups']['name'];
         });
     } else if (this.userDetail.role === 'admin') {
       //  do code here for admin side - offer detail
@@ -665,13 +673,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
+    // console.log(value);
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value === element.user.email) {
         this.display_msg = true;
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
         document.getElementById('candidate_name').setAttribute('disabled', 'true');
-      } else if (value.target.value === '') {
+        // } else if (value.target.value === '') {
+      } else {
         this.display_msg = false;
         this.form.controls.candidate_name.setValue('');
         document.getElementById('candidate_name').removeAttribute('disabled');
