@@ -278,6 +278,9 @@ button:focus { outline: none;}
 .number-countrycode .countrycode-input{ width:60px; position:absolute; top:0; left:0;}
 .number-countrycode .countryno-input{ width:100%;}
 
+.add-offer-form-part{ margin-bottom:15px; border-bottom:1px solid #eee; padding:0 0 15px;}
+.add-offer-form-part h3{ margin:0; padding:0; display:block; font-size:16px; line-height:normal;}
+
 /***** Media start it *****/
 @media(min-width:992px){
     .app-header .navbar-toggler{ display:none !important;}

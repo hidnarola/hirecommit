@@ -112,7 +112,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // Form Controls
     this.form = this.fb.group({
       candidate_name: new FormControl(''),
-      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      email: new FormControl('', [Validators.required,
+      Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       title: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
@@ -206,6 +207,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         });
     });
     return promise;
+  }
+
+  //
+  checkEmail() {
+    if (this.form.value.email.length > 0) {
+      // tslint:disable-next-line: max-line-length
+      this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
+    } else {
+      this.form.controls['email'].setValidators(null);
+    }
+    this.form.controls['email'].updateValueAndValidity();
   }
 
   // get location
