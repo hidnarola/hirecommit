@@ -88,7 +88,7 @@ router.post("/", async (req, res) => {
             employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
             var obj = {
                 "employer_id": user.data.emp_id,
-                // "user_id": req.body.user_id,
+                "created_by": req.userInfo.id,
                 "email": req.body.email,
                 "candidate_name": req.body.candidate_name,
                 "title": req.body.title,
@@ -117,7 +117,7 @@ router.post("/", async (req, res) => {
             employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
             var obj = {
                 "employer_id": req.userInfo.id,
-                // "user_id": req.body.user_id,
+                "created_by": req.userInfo.id,
                 "email": req.body.email,
                 "candidate_name": req.body.candidate_name,
                 "title": req.body.title,
@@ -478,6 +478,34 @@ router.post('/get', async (req, res) => {
                     path: "$salarybracket",
                     preserveNullAndEmptyArrays: true
                 }
+            }, {
+                $lookup:
+                {
+                    from: "candidateDetail",
+                    localField: "user_id",
+                    foreignField: "user_id",
+                    as: "candidate"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$candidate",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: "user",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "candidate.user",
+                }
+            },
+            {
+                $unwind: {
+                    path: "$candidate.user",
+                    preserveNullAndEmptyArrays: true
+                }
             },
         ]
 
@@ -749,7 +777,8 @@ router.get('/details/:id', async (req, res) => {
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
-    var message = [];
+    var history = [];
+    var message = {};
     try {
         // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
@@ -810,6 +839,8 @@ router.get('/history/:id', async (req, res) => {
         ])
 
 
+
+
         for (let index = 0; index < history_data.length; index++) {
             const element = history_data[index];
             if (element.employer_id && element.employer_id != undefined) {
@@ -823,22 +854,39 @@ router.get('/history/:id', async (req, res) => {
                     var content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // console.log(element.createdAt);
                         // message.push(content);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                     } else {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
                         // message.push(content);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                     }
-                    message.push(content);
+                    history.push(message);
                 } else if (sub_employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     } else {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     }
-                    message.push(content);
+                    history.push(message);
                 }
             } else if (element.employer_id == undefined) {
                 var candidate = await common_helper.findOne(CandidateDetail, { "user_id": element.offer.user_id });
@@ -847,18 +895,26 @@ router.get('/history/:id', async (req, res) => {
                     let content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     } else {
                         content = content.replace('{candidate}', user.data.email);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     }
                 }
-                message.push(content);
+                history.push(message);
             }
         }
 
         if (history_data) {
-            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: message });
+            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history });
         }
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })

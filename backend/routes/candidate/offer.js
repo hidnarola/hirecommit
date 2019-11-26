@@ -48,7 +48,7 @@ router.post('/get', async (req, res) => {
                 $match: {
                     "user_id": new ObjectId(req.userInfo.id),
                     "is_del": false,
-                    "status": { $ne: 'Inactive' }
+                    "status": { $ne: 'On Hold' }
                 }
             },
             {
@@ -84,6 +84,21 @@ router.post('/get', async (req, res) => {
             {
                 $lookup:
                 {
+                    from: "employerDetail",
+                    localField: "employer_id._id",
+                    foreignField: "user_id",
+                    as: "employer_id.employer"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employer_id.employer",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
                     from: "location",
                     localField: "location",
                     foreignField: "_id",
@@ -111,6 +126,35 @@ router.post('/get', async (req, res) => {
                     preserveNullAndEmptyArrays: true
                 }
             },
+            {
+                $lookup:
+                {
+                    from: "subemployerDetail",
+                    localField: "created_by",
+                    foreignField: "user_id",
+                    as: "created_by"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$created_by",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: "user",
+                    localField: "created_by.user_id",
+                    foreignField: "_id",
+                    as: "created_by.user",
+                }
+            },
+            {
+                $unwind: {
+                    path: "$created_by.user",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
@@ -137,29 +181,157 @@ router.post('/get', async (req, res) => {
 
 
 
-router.get('/details/:id', async (req, res) => {
-    var id = req.params.id;
-    try {
-        const offer_detail = await Offer.findOne({ _id: id })
-            .populate([
-                { path: 'employer_id' },
-                { path: 'salarybracket' },
-                { path: 'location' },
-                { path: 'groups' },
-            ])
-            .lean();
+// router.get('/details/:id', async (req, res) => {
+//     var id = req.params.id;
+//     try {
+//         const offer_detail = await Offer.findOne({ _id: id })
+//             .populate([
+//                 { path: 'employer_id' },
+//                 { path: 'salarybracket' },
+//                 { path: 'location' },
+//                 { path: 'groups' },
+//                 { path: 'created_by' },
+//                 { path: 'created_by._id' }
+//             ])
+//             .lean();
 
-        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
+//         return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
+//     } catch (error) {
+//         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+//     }
+// });
+
+
+router.get('/details/:id', async (req, res) => {
+    try {
+        var id = req.params.id;
+        var aggregate = [
+            {
+                $match: {
+                    "_id": ObjectId(id)
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "group",
+                    localField: "groups",
+                    foreignField: "_id",
+                    as: "group"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$group",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "employer_id",
+                    foreignField: "_id",
+                    as: "employer_id"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employer_id",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "employerDetail",
+                    localField: "employer_id._id",
+                    foreignField: "user_id",
+                    as: "employer_id.employer"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$employer_id.employer",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "location",
+                    localField: "location",
+                    foreignField: "_id",
+                    as: "location"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$location",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "salary_bracket",
+                    localField: "salarybracket",
+                    foreignField: "_id",
+                    as: "salarybracket"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$salarybracket",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "subemployerDetail",
+                    localField: "created_by",
+                    foreignField: "user_id",
+                    as: "created_by"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$created_by",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: "user",
+                    localField: "created_by.user_id",
+                    foreignField: "_id",
+                    as: "created_by.user",
+                }
+            },
+            {
+                $unwind: {
+                    path: "$created_by.user",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ]
+
+        var offre_resp = await Offer.aggregate(aggregate);
+
+        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offre_resp });
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
-
 router.put('/', async (req, res) => {
     var reg_obj = {
-        "status": "Accepted"
+        "status": "Accepted",
+        "acceptedAt": new Date()
     }
+    // console.log(reg_obj);
+
     sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
     reg_obj.offer_id = req.body.id;
 

@@ -99,7 +99,7 @@ export class CommonService {
     return new Promise((resolve, reject) => {
       this.details = this.getLoggedUserDetail();
       this.profile({ 'id': this.details.id }).subscribe(res => {
-        console.log('profileData==>', res['data']);
+        // console.log('profileData==>', res['data']);
 
         // this.profileDetail = res['data'];
         this.profileDetail.next(res[`data`]);
@@ -121,7 +121,7 @@ export class CommonService {
     this.profileDetail.next(profileData);
   }
   public firstLogin(data: boolean) {
-    console.log('in observable');
+    // console.log('in observable');
 
     this.firstLoginDetail.next(data);
   }

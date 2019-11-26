@@ -13,7 +13,7 @@ export class RoleGuardService implements CanActivate {
     const token = localStorage.getItem('token');
     // decode the token to get its payload
     const tokenPayload = jwt_decode(token);
-    console.log('decoded value of token', tokenPayload);
+    // console.log('decoded value of token', tokenPayload);
     if (
       !this.auth.isAuthenticated() ||
       tokenPayload.role !== expectedRole

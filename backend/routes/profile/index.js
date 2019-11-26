@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
         },
     ])
     if (user_resp[0].role.role === 'employer') {
-        console.log(' : emaployer ==> ');
+        // console.log(' : emaployer ==> ');
         var employer_resp = await Employer.aggregate([
             {
                 $match: {

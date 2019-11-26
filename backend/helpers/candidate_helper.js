@@ -3,7 +3,7 @@ var ObjectId = require('mongodb').ObjectID;
 var candidate_helper = {};
 candidate_helper.get_all_approved_candidate = async (collection, search, start, length, recordsTotal, sort) => {
   try {
-    console.log(sort);
+    // console.log(sort);
 
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [

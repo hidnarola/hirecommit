@@ -164,7 +164,7 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
       });
     }
     let user = await collection.aggregate(aggregate);
-    console.log(user);
+    // console.log(user);
 
     if (user) {
       return { "status": 1, "message": "user details found", "user": user, "recordsTotal": recordsTotal };
