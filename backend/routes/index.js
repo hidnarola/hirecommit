@@ -34,6 +34,7 @@ var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
 var Offer = require('./../models/offer');
 var MailType = require('./../models/mail_content');
+var DisplayMessage = require('./../models/display_messages');
 var userpProfile = require('./profile');
 
 router.use("/profile", auth, userpProfile);
@@ -559,8 +560,9 @@ router.post('/login', async (req, res) => {
     // console.log(req.body, user_resp);
 
     if (!user_resp) {
+      var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'email_not_exist' });
       logger.trace("Login checked resp = ", user_resp);
-      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "This email is not registered with us, please check.", "error": "We are not aware of this user" });
+      res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": message.data.content, "error": "We are not aware of this user" });
     }
     else if (user_resp) {
       // if (user_resp.data.email_verified == true) {
@@ -922,7 +924,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/email_verify', async (req, res) => {
-  console.log('==>');
+  // console.log('==>');
 
   logger.trace("Verifying JWT");
   jwt.verify(Buffer.from(req.body.token, 'base64').toString(), config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
@@ -953,7 +955,7 @@ router.post('/email_verify', async (req, res) => {
           }
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
           var message = await common_helper.findOne(MailType, { 'mail_type': 'welcome_mail' });
-          console.log("----->", message);
+          // console.log("----->", message);
           logger.trace("sending mail");
           let mail_resp = await mail_helper.send("welcome_email", {
             "to": user_resp.data.email,

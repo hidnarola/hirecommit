@@ -160,7 +160,7 @@ router.post('/get_approved', async (req, res) => {
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        console.log(RE);
+        // console.log(RE);
 
         if (req.body.search && req.body.search != "") {
             aggregate.push({

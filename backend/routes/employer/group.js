@@ -225,7 +225,7 @@ router.put('/', async (req, res) => {
             flag: "undraft"
         }
         var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
-        console.log('responses======>', responses);
+        // console.log('responses======>', responses);
     }
     else {
         var response = await common_helper.insert(GroupDetail, grp_data);
@@ -233,7 +233,7 @@ router.put('/', async (req, res) => {
             flag: "undraft"
         }
         var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
-        console.log('responses======>', responses);
+        // console.log('responses======>', responses);
     }
 
 

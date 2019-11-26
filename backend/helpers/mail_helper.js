@@ -8,6 +8,16 @@ var mail_helper = {};
 var config = require("./../config");
 var mail_api_key = config.SENDGRID_API_KEY;
 
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     tls: { rejectUnauthorized: false },
+//     auth: {
+//         user: config.GMAIL_USER,
+//         pass: config.GMAIL_PASSWORD,
+//     },
+// });
+
+
 const transporter = nodemailer.createTransport(
     sendgridTransport({
         auth: {

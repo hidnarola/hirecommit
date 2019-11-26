@@ -117,7 +117,7 @@ export class ProfileComponent implements OnInit {
     //   console.log('it is admin!');
     // }
 
-    //employer get details 
+    //employer get details
     if (this.userDetail.role === 'employer') {
       this.getEmploterData();
     }

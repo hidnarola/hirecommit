@@ -204,7 +204,7 @@ router.put("/deactive_employer/:id", async (req, res) => {
     var obj = {
         is_del: true
     }
-    console.log(' : req.params.id ==> ', req.params.id);
+    // console.log(' : req.params.id ==> ', req.params.id);
     var resp_data = await common_helper.update(Employer, { "user_id": req.params.id }, obj);
     var resp_data = await common_helper.update(User, { "_id": req.params.id }, obj);
     if (resp_data.status == 0) {
@@ -444,6 +444,35 @@ router.post('/get_report/:id', async (req, res) => {
                     preserveNullAndEmptyArrays: true
                 }
             },
+            {
+                $lookup:
+                {
+                    from: "candidateDetail",
+                    localField: "user_id",
+                    foreignField: "user_id",
+                    as: "candidate"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$candidate",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: "user",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "candidate.user",
+                }
+            },
+            {
+                $unwind: {
+                    path: "$candidate.user",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
         ]
 
         const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
@@ -458,7 +487,7 @@ router.post('/get_report/:id', async (req, res) => {
             // let end_date = moment(req.body.enddate).utc().endOf('day').add(1, 'days');
             let start_date = moment(req.body.startdate).utc().startOf('day');
             let end_date = moment(req.body.enddate).utc().endOf('day');
-            console.log(' : I m here ==> ', 1, moment(start_date).toDate(), moment(end_date).toDate());
+            // console.log(' : I m here ==> ', 1, moment(start_date).toDate(), moment(end_date).toDate());
             aggregate.push({
                 $match: {
                     "createdAt": { $gte: moment(start_date).toDate(), $lte: moment(end_date).toDate() }
@@ -548,7 +577,8 @@ router.get('/customfield/first/:id', async (req, res) => {
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
-    var message = [];
+    var message = {};
+    history = [];
     try {
         // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         // console.log(req.params.id);
@@ -615,22 +645,40 @@ router.get('/history/:id', async (req, res) => {
                     var content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     } else {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     }
-                    message.push(content);
+
+                    history.push(message);
                 } else if (sub_employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace("{employer}", `${sub_employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     } else {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     }
-                    message.push(content);
+
+                    history.push(message);
                 }
             } else if (element.employer_id == undefined) {
                 var candidate = await common_helper.findOne(candidate, { "user_id": element.offer.user_id });
@@ -639,18 +687,27 @@ router.get('/history/:id', async (req, res) => {
                     let content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     } else {
                         content = content.replace('{candidate}', user.data.email);
+                        message = {
+                            "content": content,
+                            "createdAt": element.createdAt
+                        }
                         // message.push(content);
                     }
                 }
-                message.push(content);
+
+                history.push(message);
             }
         }
 
         if (history_data) {
-            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: message });
+            return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history });
         }
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
@@ -779,7 +836,7 @@ router.put('/sub_account/details', async (req, res) => {
     if (user_detail.data.email !== req.body.email) {
         var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
         let content = message.data.content;
-        content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
+        content = content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email}`);
         obj.email_verified = false;
         logger.trace("sending mail");
         let mail_resp = await mail_helper.send("welcome_email", {
@@ -792,6 +849,9 @@ router.put('/sub_account/details', async (req, res) => {
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
         } else {
             var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
+            var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
+            // console.log("==>", resp_user_data.data.email);
+
             var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
                 config.ACCESS_TOKEN_SECRET_KEY, {
                 expiresIn: 60 * 60 * 24 * 3
@@ -806,9 +866,12 @@ router.put('/sub_account/details', async (req, res) => {
                 "to": resp_user_data.data.email,
                 "subject": "HireCommit - Email Confirmation"
             }, {
+                "msg": message.data.content,
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
             });
+            // console.log("====>", mail_response);
+
         }
     }
 

@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var config = require('../config');
 
-console.log("DB = ", config.database);
+// console.log("DB = ", config.database);
 //Set up default mongoose connection
 var mongoDB = config.database;
 // mongoose.connect(mongoDB, { auth: { authdb: "admin" }, useMongoClient: true });
