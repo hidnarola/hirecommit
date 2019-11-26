@@ -7,14 +7,13 @@ var mail_api_key = 'SG.nhHaL7wbTK6TMg-pp8kFFw.kJSnE8YDCTzKzzJnYIWYc_BLUSZ1eh6qka
 var request = require("request");
 var new_mail_helper = {};
 var config = require("./../config");
+var mail_api_key = config.SENDGRID_API_KEY;
 
 const transporter = nodemailer.createTransport(
     sendgridTransport({
         auth: {
-            api_user: 'paragbhasin',
-            api_key: 'Mumbai78!'
-            // api_user: 'vik@narola',
-            // api_key: 'password123#'
+            api_user: config.SENDGRID_USER,
+            api_key: config.SENDGRID_PASSWORD
         }
     })
 );
