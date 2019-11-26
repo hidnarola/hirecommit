@@ -16,6 +16,10 @@ module.exports = {
   "STRIPE_KEY": process.env.STRIPE_KEY,
   "STRIPE_SECRET_KEY": process.env.STRIPE_SECRET_KEY,
 
+  // Sendgrid
+  "SENDGRID_API_KEY": process.env.SENDGRID_API_KEY,
+  "SENDGRID_USER": process.env.SENDGRID_USER,
+  "SENDGRID_PASSWORD": process.env.SENDGRID_PASSWORD,
   // JWT
   "ACCESS_TOKEN_SECRET_KEY": "access_token_for_lamtech",
   "REFRESH_TOKEN_SECRET_KEY": "access_token_for_lamtech",

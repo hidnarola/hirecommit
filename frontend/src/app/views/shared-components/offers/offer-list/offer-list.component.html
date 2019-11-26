@@ -55,7 +55,8 @@
                                     Status</th>
                                 <!-- <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
                                     Status</th> -->
-                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                <th [ngClass]="first_custom_field === ''? 'd-0' : ''"
+                                    *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
                                     {{first_custom_field |titlecase}}</th>
                                 <th style="width: 15%;">Action</th>
                             </tr>
@@ -80,7 +81,8 @@
                                     {{offer.status|titlecase}}</td>
                                 <!-- <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.commitstatus|titlecase}}</td> -->
-                                <td *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
+                                <td [ngClass]="first_custom_field === ''? 'd-0' : ''"
+                                    *ngIf="(userDetail.role === 'employer' || userDetail.role === 'sub-employer')">
 
                                     <!-- {{ offer.customfeild[0].key === first_custom_field || offer.customfeild[0].value  ? offer.customfeild[0].value : '-'}} -->
 

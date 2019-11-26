@@ -26,7 +26,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   // first_custom_field: any;
-  first_custom_field = 'Custom Field';
+  first_custom_field = '';
   employer: any;
   empId;
   offerData: any = [];
@@ -95,8 +95,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.service.get_first_custom_field().subscribe(res => {
       if (res['data'] && res['data'].length > 0) {
         this.first_custom_field = res['data'][0]['key'];
+        // this.first_custom_field = '';
       } else {
-        this.first_custom_field = 'Custom Field';
+        this.first_custom_field = '';
       }
       console.log('first_custom_field=>', this.first_custom_field);
 
