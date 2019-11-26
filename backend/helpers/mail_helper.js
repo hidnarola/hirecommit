@@ -1,19 +1,21 @@
 var nodemailer = require('nodemailer');
 var EmailTemplate = require('email-templates').EmailTemplate;
+const bcrypt = require('bcryptjs');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+const sgMail = require('@sendgrid/mail');
+var request = require("request");
 var mail_helper = {};
 var config = require("./../config");
+var mail_api_key = config.SENDGRID_API_KEY;
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    disableUrlAccess: false,
-    tls: { rejectUnauthorized: false },
-    auth: {
-        //  user: 'demo.narola@gmail.com',
-        //  pass: 'narola@2019',
-        user: 'demo.narola@gmail.com',
-        pass: 'narola@2019',
-    },
-});
+const transporter = nodemailer.createTransport(
+    sendgridTransport({
+        auth: {
+            api_user: config.SENDGRID_USER,
+            api_key: config.SENDGRID_PASSWORD
+        }
+    })
+);
 
 mail_helper.send = async (template_name, options, data) => {
     var template_sender = transporter.templateSender(new EmailTemplate('emails/' + template_name), {

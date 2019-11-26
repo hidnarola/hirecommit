@@ -58,17 +58,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('this.userDetail=>', this.userDetail);
     if (this.userDetail.role === 'employer') {
       this.empService.check_approved(this.userDetail.id).subscribe(res => {
-        console.log('res===============>', res);
 
         if (res['status'] === 0 || res['status'] === 2) {
-          console.log('condition=>');
-
           this.hide_list = false;
         } else {
-          this.message = res['message']
+          this.hide_list = true;
+          this.message = res['message'];
         }
       }, (err) => {
         console.log('err=>', err);
@@ -77,10 +74,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         if (res['status'] === 0) {
-
           this.hide_list = false;
         } else {
-          this.Canididate_message = res['message']
+          // this.hide_list = true;
+          this.Canididate_message = res['message'];
         }
       });
     }
@@ -117,15 +114,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     this.socketService.getOffer().subscribe(res => {
-      console.log('Client : res ==> ', res);
       this.rrerender();
     });
     if (this.userDetail.role !== 'admin') {
       this.commonService.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;
-          console.log('this.profileData=>', this.profileData);
-
           if (this.userDetail.role === 'employer') {
             this.grpId = this.profileData[0].user_id._id;
             this.joinGroup(this.profileData[0].user_id._id);
@@ -143,12 +137,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
           if (profile) {
             this.profileData = profile;
-            console.log('this.profileData=>1', this.profileData);
-            console.log('this.profileData[0].user_id.email_verified=>', this.profileData[0].user_id.email_verified);
-            console.log('this.profileData[0].user_id.isAllow=>', this.profileData[0].user_id.isAllow);
-
             if ((!this.profileData[0].user_id.email_verified) || (!this.profileData[0].user_id.isAllow)) {
-              console.log('true value =======================>');
+              console.log('true=======>');
 
               this.hide_list = true;
             }

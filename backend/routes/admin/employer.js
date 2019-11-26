@@ -21,6 +21,7 @@ var logger = config.logger;
 var User = require('../../models/user');
 var Employer = require('../../models/employer-detail');
 var Sub_Employer = require('../../models/sub-employer-detail');
+var Sub_Employer_Detail = require('../../models/sub-employer-detail');
 
 var Offer = require('../../models/offer');
 var History = require('../../models/offer_history');
@@ -481,6 +482,52 @@ router.post('/get_report/:id', async (req, res) => {
     }
 });
 
+router.post('/sub_account/get', async (req, res) => {
+    var schema = {};
+    req.checkBody(schema);
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        var sortOrderColumnIndex = req.body.order[0].column;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+        let sortingObject = {
+            [sortOrderColumn]: sortOrder
+        }
+        var aggregate = [
+            {
+                $match: {
+                    "is_del": false,
+                    "emp_id": new ObjectId(req.body.id)
+                }
+            }
+        ]
+
+        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+        if (req.body.search && req.body.search != "") {
+            aggregate.push({
+                "$match":
+                    { $or: [{ "username": RE }, { "user.email": RE }] }
+            });
+        }
+
+
+        let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
+        totalMatchingCountRecords = totalMatchingCountRecords.length;
+
+        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.body.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        if (resp_data.status == 1) {
+            res.status(config.OK_STATUS).json(resp_data);
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        }
+    } else {
+        logger.error("Validation Error = ", errors);
+        res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
+
 router.get('/customfield/first/:id', async (req, res) => {
     try {
         var id = req.params.id;
@@ -632,6 +679,20 @@ router.get('/details/:id', async (req, res) => {
 });
 
 
+router.get('/sub_account/:id', async (req, res) => {
+    var id = req.params.id;
+    var sub_account_detail = await Sub_Employer_Detail.findOne({ "user_id": new ObjectId(id) }).populate('user_id')
+    if (sub_account_detail) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+    }
+    // if (sub_account_detail.status == 0) {
+    //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    // }
+    // else
+    // else {
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
+    // }
+});
 
 router.get('/:id', async (req, res) => {
     var id = req.params.id;
@@ -700,6 +761,67 @@ router.get('/', async (req, res) => {
 
 });
 
+router.put('/sub_account/details', async (req, res) => {
+    var obj = {}
+    if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
+        obj.admin_rights = req.body.data.admin_rights
+    }
+    if (req.body.data.email && req.body.data.email !== "") {
+        obj.email = req.body.data.email
+    }
+    if (req.body.data.username && req.body.data.username !== "") {
+        obj.username = req.body.data.username;
+    }
+    var id = req.body.id;
+
+    var user_detail = await common_helper.findOne(User, { '_id': id });
+    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
+    if (user_detail.data.email !== req.body.email) {
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
+        let content = message.data.content;
+        content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
+        obj.email_verified = false;
+        logger.trace("sending mail");
+        let mail_resp = await mail_helper.send("welcome_email", {
+            "to": user_detail.data.email,
+            "subject": "Attention Mail"
+        }, {
+            'msg': content
+        });
+        if (mail_resp.status === 0) {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+        } else {
+            var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
+            var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
+                config.ACCESS_TOKEN_SECRET_KEY, {
+                expiresIn: 60 * 60 * 24 * 3
+            }
+            )).toString('base64');
+
+            var time = new Date();
+            time.setMinutes(time.getMinutes() + 20);
+            time = btoa(time);
+
+            let mail_response = await mail_helper.send("email_confirmation", {
+                "to": resp_user_data.data.email,
+                "subject": "HireCommit - Email Confirmation"
+            }, {
+                // config.website_url + "/email_confirm/" + interest_resp.data._id
+                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+            });
+        }
+    }
+
+    if (resp_Detail_data.status == 0) {
+        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+    }
+    else if (resp_Detail_data.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": resp_Detail_data, "user": resp_user_data });
+    }
+    else {
+        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+    }
+})
 
 router.put('/', async (req, res) => {
     var reg_obj = {
@@ -789,5 +911,7 @@ router.put('/update', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
     }
 })
+
+
 
 module.exports = router;

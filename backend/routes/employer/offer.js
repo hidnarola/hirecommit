@@ -9,6 +9,7 @@ var cron = require('node-cron');
 
 var offer_helper = require('../../helpers/offer_helper');
 var mail_helper = require('../../helpers/mail_helper');
+var new_mail_helper = require('../../helpers/new_mail_helper');
 
 var logger = config.logger;
 var moment = require("moment")
@@ -205,14 +206,18 @@ router.post("/", async (req, res) => {
                     content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', ' you.');
                 }
 
-                let mail_resp = await mail_helper.send("offer", {
+
+                let mail_resp = await new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
                     "to": user.data.email,
-                    "subject": "Offer"
-                }, {
-                    "msg": content,
-                    //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
-                    "url": "http://localhost:3000/offer/" + obj.offer_id,
-                });
+                    "subject": "Offer",
+                    "trackid": '112'
+                }, content);
+
+                // {
+                //     "msg": content,
+                //     //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+                //     // "url": "http://localhost:3000/offer/" + obj.offer_id,
+                // }
 
                 res.json({ "message": "Offer is Added successfully", "data": interest_resp })
             }
@@ -676,7 +681,7 @@ router.put('/', async (req, res) => {
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
     obj.status = offer_upadate.data.status;
 
-    console.log("========>", obj);
+    // console.log("========>", obj);
 
     if (offer.data.status !== req.body.status) {
         obj.offer_id = offer_upadate.data._id;
@@ -696,7 +701,13 @@ router.put('/', async (req, res) => {
             let content = status.data.MessageContent;
             content = content.replace("{employer}", `${employer.data.username}`).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
 
-            console.log("@@@", offer_upadate.data.email);
+            // console.log("@@@", offer_upadate.data.email);
+
+            // let mail_resp = await mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
+            //     "to": offer_upadate.data.email,
+            //     "subject": "Change Status of offer.",
+            //     // "trackid": ''
+            // }, content);
 
             let mail_resp = await mail_helper.send("offer", {
                 "to": offer_upadate.data.email,
@@ -715,17 +726,19 @@ router.put('/', async (req, res) => {
 
 router.get('/details/:id', async (req, res) => {
     var id = req.params.id;
-    // console.log(req.params.id);
+    console.log(req.params.id);
     try {
-        const offer_detail = await Offer.findOne({ _id: id })
+        const offer_detail = await Offer.findOne({ '_id': id })
             .populate([
                 { path: 'employer_id' },
-                { path: 'salarybracket' },
+                // { path: 'salarybracket' },
                 { path: 'location' },
-                { path: 'user_id' },
                 { path: 'group' },
+                { path: 'user_id' }
             ])
             .lean();
+
+        console.log(offer_detail);
 
         var candidate_detail = await common_helper.findOne(CandidateDetail, { 'user_id': offer_detail.user_id._id });
         return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail, 'candidate_data': candidate_detail });
@@ -857,25 +870,25 @@ router.get("/status_list/:status", async (req, res) => {
     var obj = {};
     if (status === 'On Hold') {
         obj.status = [
-            { label: 'On Hold', value: 'On Hold' },
+            // { label: 'On Hold', value: 'On Hold' },
             { label: 'Released', value: 'Released' },
-            { label: 'Inactive', value: 'Inactive' }
+            // { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Released') {
         obj.status = [
-            { label: 'Released', value: 'Released' },
+            // { label: 'Released', value: 'Released' },
             { label: 'Inactive', value: 'Inactive' }
         ];
     }
     else if (status === 'Accepted') {
         obj.status = [
-            { label: 'Accepted', value: 'Accepted' },
+            // { label: 'Accepted', value: 'Accepted' },
             { label: 'Not Joined', value: 'Not Joined' },
-            { label: 'Inactive', value: 'Inactive' }
+            // { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Not Joined') {
         obj.status = [
-            { label: 'Not Joined', value: 'Not Joined' },
+            // { label: 'Not Joined', value: 'Not Joined' },
             { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Inactive') {

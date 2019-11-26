@@ -15,7 +15,7 @@
                                 <th>Contact No </th>
                                 <th>ID Proof</th>
                                 <th style="width: 15%;">Date of Registration</th>
-                                <th>Status</th>
+                                <!-- <th>Status</th> -->
                                 <th style="width: 12%;">Action</th>
                             </tr>
                         </thead>
@@ -26,7 +26,7 @@
                                 <td>{{data.countrycode}} {{data.contactno}}</td>
                                 <td>{{data['document'].name}}</td>
                                 <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
-                                <td>{{data.status}}</td>
+                                <!-- <td>{{data.status}}</td> -->
                                 <td>
                                     <button tooltip='View' type="button" *ngIf="candidate_type === 'Approved'"
                                         class="btn btn-sm btn-success"
@@ -51,11 +51,11 @@
 
                         <tbody *ngIf="candidates?.length == 0">
                             <tr *ngIf="candidate_type === 'Approved'">
-                                <td colspan="7" class="no-data-available">No Approved Candidate!</td>
+                                <td colspan="6" class="no-data-available">No Approved Candidate!</td>
                             </tr>
 
                             <tr *ngIf="candidate_type === 'New'">
-                                <td colspan="7" class="no-data-available">No New Candidate!</td>
+                                <td colspan="6" class="no-data-available">No New Candidate!</td>
                             </tr>
                         </tbody>
 

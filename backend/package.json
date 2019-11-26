@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
     "authenticator": "^1.1.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -34,6 +35,7 @@
     "node-cron": "^2.0.3",
     "node-mongo-seeds": "^3.1.0",
     "nodemailer": "^2.7.2",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^1.18.9",
     "otpauth": "^3.2.8",
     "password-validator": "^4.1.1",

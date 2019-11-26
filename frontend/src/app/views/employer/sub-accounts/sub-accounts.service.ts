@@ -33,7 +33,6 @@ export class SubAccountService {
   }
 
   edit_sub_account(id, data): Observable<any[]> {
-
     return this.http.put<any[]>(`${this.url}` + '/sub_account/details', { id, data });
   }
 

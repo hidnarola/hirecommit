@@ -59,7 +59,7 @@
                       <span *ngIf="registerForm.controls['email'].errors.pattern">Email
                         must be in valid format.</span>
                       <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
-                        Email is already existed.
+                        This Email address is already registered.
                       </span>
                     </div>
                   </div>
@@ -197,9 +197,9 @@
                 </p-checkbox>
 
                 <label for="signing-agree">By signing up you agree to our
-                  <a [routerLink]="['/privacypolicy']">privacy policy</a>
+                  <a href="privacypolicy" target="_blank">privacy policy</a>
                   and
-                  <a [routerLink]="['/termsandcondition']">terms of use</a>
+                  <a href="termsandcondition" target="_blank">terms of use</a>
                   <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
                     <span *ngIf="registerForm.controls['isChecked'].errors['required']">
                       Accept terms and conditions.</span>

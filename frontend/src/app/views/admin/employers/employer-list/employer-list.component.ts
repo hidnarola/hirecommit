@@ -46,9 +46,11 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
       ajax: (dataTablesParameters: any, callback) => {
         if (this.router.snapshot.data.type === 'approved') {
           this.service.get_approved_employer(dataTablesParameters).subscribe(res => {
-            console.log('res of approved employer => ', res);
             if (res['status'] === 1) {
               this.employer_data = res['user'];
+              // if ($(`DataTables_Table_0_paginate`).length === 0) {
+              //   $('#DataTables_Table_0_paginate').hide();
+              // }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -58,11 +60,11 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.service.get_new_employer(dataTablesParameters).subscribe(res => {
             if (res['status'] === 1) {
               this.employer_data = res['user'];
-              // if (this.employer_data.length == 0) {
-              //   var el = document.getElementById('DataTables_Table_0_paginate');
-              //   el.style.display = 'none';
-              // }
+              if ($(`DataTables_Table_0_paginate`).length === 0) {
+                $('#DataTables_Table_0_paginate').hide();
+              }
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+
             }
           }, err => {
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });

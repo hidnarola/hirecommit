@@ -59,8 +59,13 @@
                         <button type="submit" class="btn btn-md btn-primary" [disabled]="show_spinner">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button type="reset" class="btn btn-md btn-danger" [routerLink]="cancel_link">
-                            <!-- <i class="fa fa-ban"></i> -->
+                        <!-- <button type="reset" class="btn btn-md btn-danger" [routerLink]="cancel_link">
+                            Cancel</button> -->
+                        <button *ngIf="userDetail.role === 'employer'" type="button" class="btn btn-md btn-danger"
+                            [routerLink]="cancel_link">
+                            Cancel</button>
+                        <button *ngIf="userDetail.role === 'admin'" type="button" class="btn btn-md btn-danger"
+                            [routerLink]="cancel_link1">
                             Cancel</button>
                     </div>
                 </form>
@@ -74,23 +79,23 @@
                 </div>
                 <div class="card-body detail-box" *ngIf="detail">
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
+                        <div class="col-md-3 detail-label lbl lbl_width">
                             Name
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6">
                             {{detail.username}}
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
+                        <div class="col-md-3 detail-label lbl lbl_width">
                             Email
                         </div>
-                        <div class="col-md-6 detail-input">
+                        <div class="col-md-6">
                             {{detail.email}}
                         </div>
                     </div>
                     <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
+                        <div class="col-md-3 detail-label lbl lbl_width">
                             Admin Rights?
                         </div>
                         <div class="col-md-6 ">
@@ -100,7 +105,11 @@
                     </div>
                 </div>
                 <div class="w-100 card-footer text-right">
-                    <button type="button" class="btn btn-md btn-primary" [routerLink]="cancel_link">
+                    <button *ngIf="userDetail.role === 'employer'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="cancel_link">
+                        Back</button>
+                    <button *ngIf="userDetail.role === 'admin'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="cancel_link1">
                         Back</button>
                 </div>
             </div>
