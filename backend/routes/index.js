@@ -200,6 +200,13 @@ router.post("/candidate_register", async (req, res) => {
         "email": req.body.email.toLowerCase(),
         "password": hash,
         "role_id": new ObjectId(role.data._id),
+        "admin_rights": "no",
+        "email_verified": false,
+        "isAllow": false,
+        "flag": 1,
+        "createdate": new Date(),
+        "is_email_change": false,
+        "is_login_first": false,
         'is_register': true
       }
 
@@ -237,7 +244,10 @@ router.post("/candidate_register", async (req, res) => {
             "contactno": req.body.contactno,
             "documenttype": req.body.documenttype,
             "documentimage": req.body.documentImage,
-            "user_id": interest_user_resp._id
+            "user_id": interest_user_resp._id,
+            "createdAt": new Date(),
+            "is_del": false,
+            "document_verified": false
           };
           // var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
           // if (interest_resp.status == 0) {

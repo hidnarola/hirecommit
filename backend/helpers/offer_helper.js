@@ -132,6 +132,7 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
           "is_del": false,
           "status": { $ne: 'On Hold' },
           "user_id": new ObjectId(id),
+          // "expirydate": { $gte: new Date() }
         }
       },
       {
