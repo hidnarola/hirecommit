@@ -185,7 +185,7 @@ router.post("/", async (req, res) => {
             // console.log(obj); return false;
 
             var interest_resp = await common_helper.insert(Offer, obj);
-            console.log(interest_resp);
+            // console.log(interest_resp);
             // return false;
             obj.offer_id = interest_resp.data._id
             obj.employer_id = req.userInfo.id;
@@ -210,7 +210,7 @@ router.post("/", async (req, res) => {
                 let mail_resp = await new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
                     "to": user.data.email,
                     "subject": "Offer",
-                    "trackid": '112'
+                    "trackid": interest_resp.data._id
                 }, content);
 
                 // {
@@ -392,6 +392,36 @@ cron.schedule('00 00 * * *', async (req, res) => {
     }
 
     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
+});
+
+cron.schedule('*/1 * * * *', async (req, res) => {
+    var offer_resp = await Offer.find({ "is_del": false });
+    console.log("=======>", offer_resp.length);
+
+    for (let index = 0; index < offer_resp.length; index++) {
+        const element = offer_resp[index];
+        console.log(element._id);
+        var options = {
+            method: 'GET',
+            url: 'https://api.sendgrid.com/v3/messages',
+            qs: { limit: '1', query: (unique_args['trackid'] = element._id) },
+            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+            //body: '{}'
+        };
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            var body = JSON.parse(body);
+            var resp = body.messages;
+            // console.log(...resp);
+            res.send(body)
+        });
+
+    }
+
+
+    if (offer_resp.status === 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
+    }
 });
 
 router.post('/get', async (req, res) => {

@@ -8,24 +8,25 @@ var config = require('../config');
 var mongoDB = config.database;
 // mongoose.connect(mongoDB, { auth: { authdb: "admin" }, useMongoClient: true });
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.set('useCreateIndex', true);
-mongoose.set('useFindAndModify', false);
+// mongoose.set('useCreateIndex', true);
+// mongoose.set('useFindAndModify', false);
 //Get the default connection
 var db = mongoose.connection;
 
 // CONNECTION EVENTS
 // When successfully connected
 db.on('connected', function () {
+    console.log('mongoose db connected ==> ');
 });
 
 // If the connection throws an error
 db.on('error', function (err) {
-    // console.log('Mongoose default connection error: ' + err);
+    console.log('Mongoose default connection error: ' + err);
 });
 
 // When the connection is disconnected
 db.on('disconnected', function () {
-    // console.log('Mongoose default connection disconnected');
+    console.log('Mongoose default connection disconnected');
 });
 
 // If the Node process ends, close the Mongoose connection
