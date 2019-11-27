@@ -20,6 +20,9 @@ var EmployerDetail = require("../../models/employer-detail");
 var Role = require('../../models/role');
 var Status = require("../../models/status");
 var History = require('../../models/offer_history');
+var ApiLog = require('../../models/api_log');
+var request = require('request');
+var http = require("https");
 
 //Offer
 router.post("/", async (req, res) => {
@@ -396,32 +399,96 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
 cron.schedule('*/1 * * * *', async (req, res) => {
     var offer_resp = await Offer.find({ "is_del": false });
-    console.log("=======>", offer_resp.length);
+    var index = 0;
 
-    for (let index = 0; index < offer_resp.length; index++) {
-        const element = offer_resp[index];
-        console.log(element._id);
+    // var id = "5dde07907a7337194c34d904";
+
+    var interval = setInterval(async function () {
+        //console.log(i);
+        let element = offer_resp[index];
         var options = {
             method: 'GET',
-            url: 'https://api.sendgrid.com/v3/messages',
-            qs: { limit: '1', query: (unique_args['trackid'] = element._id) },
+            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+            // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
             //body: '{}'
         };
+
         request(options, function (error, response, body) {
             if (error) throw new Error(error);
-            var body = JSON.parse(body);
-            var resp = body.messages;
-            // console.log(...resp);
-            res.send(body)
+            var body = JSON.stringify(body);
+            console.log(body);
+
+            var obj = {
+                "api_response": body
+            }
+            var data = common_helper.insert(ApiLog, { 'api_response': body });
+            console.log(data);
+
+            // console.log(body);
+            // resp = body.messages;
+            // console.log("email", body.messages[0].to_email);
+            // console.log("email", body.messages[0].opens_count);
+
+            // if (body.messages[0].opens_count == 0) {
+            //     console.log("hiii");
+
+            // } else {
+            //     console.log("by");
+            // }
         });
+        // console.log(index);
+        index++;
+        // offer_resp.length
+        if (index == offer_resp.length) {
+            clearInterval(interval);
+        }
+    }, 6000000);
+    // console.log("=======>", offer_resp.length);
 
-    }
+    // for (let index = 0; index < offer_resp.length; index++) {
+
+    //     // resp = [];
+    //     // console.log(element._id);
+    //     setTimeout(async function timer() {
+    //         let element = offer_resp[index];
+    //         var options = {
+    //             method: 'GET',
+    //             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+    //             // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
+    //             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+    //             //body: '{}'
+    //         };
+    //         // var options = {
+    //         //     "method": "GET",
+    //         //     "hostname": "api.sendgrid.com",
+    //         //     "port": null,
+    //         //     "path": "/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+    //         //     "headers": {
+    //         //         "authorization": "Bearer " + config.SENDGRID_API_KEY
+    //         //     }
+    //         // };
+
+    //         request(options, function (error, response, body) {
+    //             if (error) throw new Error(error);
+    //             var body = JSON.parse(body);
+    //             console.log(body);
+    //             resp = body.messages;
+    //             console.log("hii", typeof resp);
+    //             // console.log(' :  ==> ', );
+    //             // if (resp[0].opens_count === 0) {
+    //             //     console.log(resp);
+    //             // }
+    //             // res.send(body)
+    //         });
+    //     }, index * 10000);
+
+    // }
 
 
-    if (offer_resp.status === 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
-    }
+    // if (offer_resp.status === 1) {
+    //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
+    // }
 });
 
 router.post('/get', async (req, res) => {
@@ -544,7 +611,7 @@ router.post('/get', async (req, res) => {
         if (req.body.search && req.body.search.value != '') {
             aggregate.push({
                 "$match":
-                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
+                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }, { "candidate.user.email": RE }, { "candidate.firstname": RE }] }
             });
         }
 
@@ -772,7 +839,7 @@ router.put('/', async (req, res) => {
                 "subject": "Change Status of offer."
             }, {
                 "msg": content,
-                "url": ""
+                // "url": ""
             });
         }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });

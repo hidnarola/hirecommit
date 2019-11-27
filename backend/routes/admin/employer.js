@@ -926,6 +926,7 @@ router.put('/update', async (req, res) => {
     if (req.body.contactno && req.body.contactno != "") {
         obj.contactno = req.body.contactno
     }
+
     var user_detail = await common_helper.findOne(User, { '_id': req.body.user_id });
     var employer_detail_upadate = await common_helper.update(Employer, { "user_id": req.body.user_id }, obj)
     if (user_detail.data.email !== req.body.email) {
@@ -968,7 +969,7 @@ router.put('/update', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (employer_detail_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": employer_upadate });
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": employer_detail_upadate, "user": employer_upadate });
     }
     else {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });

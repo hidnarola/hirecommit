@@ -162,7 +162,7 @@ router.post('/get', async (req, res) => {
         if (req.body.search && req.body.search.value != '') {
             aggregate.push({
                 "$match":
-                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
+                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }, { "candidate.user.email": RE }, { "employer_id.employer.username": RE }, { "created_by.username": RE }] }
             });
         }
         let totalMatchingCountRecords = await Offer.aggregate(aggregate);
