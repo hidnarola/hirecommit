@@ -72,7 +72,8 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="location">Location</label>
                                 <p-dropdown [options]="locationList" [style]="{'width':'100%'}"
-                                    formControlName="location" id="location" placeholder="Select Location"></p-dropdown>
+                                    formControlName="location" id="location" placeholder="Select Location"
+                                    [disabled]="isAccepted"></p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['location'].valid">
                                     <span *ngIf="form.controls['location'].errors['required']" class="text-danger">
                                         This field is required.
@@ -193,8 +194,8 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_date" [maxDate]="max_date"
-                                    (onClose)="getJoiningDate()">
+                                    [disabled]="is_View || isAccepted" [minDate]="min_date" [maxDate]="max_date"
+                                    (onSelect)="getJoiningDate($event)">
                                 </p-calendar>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">
@@ -209,7 +210,8 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_date" (onClose)="getExpiryDate()">
+                                    [disabled]="is_View || isAccepted" [minDate]="min_expiry_date"
+                                    (onSelect)="getExpiryDate($event)">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
@@ -221,7 +223,8 @@
                                 <label class="col-form-label" for="expirydate">Acceptance Date</label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="acceptanceDate" id="acceptanceDate">
+                                    formControlName="acceptanceDate" id="acceptanceDate"
+                                    [disabled]="is_View || is_Edit">
                                 </p-calendar>
                                 <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
@@ -237,7 +240,7 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="offertype">Offer Type</label>
                                 <p-dropdown [options]="offer_type_optoins" [style]="{'width':'100%'}"
-                                    formControlName="offertype" id="offertype">
+                                    formControlName="offertype" id="offertype" [disabled]="isAccepted">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['offertype'].valid">
                                     <span *ngIf="form.controls['offertype'].errors['required']" class="text-danger">
@@ -248,14 +251,14 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="notes">Notes</label>
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
-                                    autocomplete="notes" formControlName="notes" id="notes" maxlength="300" rows="4"
-                                    style=" overflow-y: scroll;"></textarea>
+                                    autocomplete="notes" formControlName="notes" id="notes" maxlength="500" rows="4"
+                                    style=" overflow-y: scroll;" [disabled]="isAccepted"></textarea>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['notes'].valid">
                                 </div>
                             </div>
 
                             <div class="col-md-6 form-group" *ngIf="is_Edit">
-                                <label class="col-form-label">Current Status</label>
+                                <label class="col-form-label">Commit Status</label>
                                 <input type="text" class="form-control" autocomplete="status" formControlName="status"
                                     disabled id="status">
                             </div>
@@ -265,7 +268,7 @@
                                                         </p-inputSwitch> -->
                                 <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
                                     optionValue="value" formControlName="offerStatus" id="offerStatus"
-                                    placeholder="Please Select Status">
+                                    placeholder="Please Select Status" [disabled]="isAccepted">
                                 </p-dropdown>
                             </div>
                         </div>
@@ -287,8 +290,9 @@
                                         {{customfield.key |titlecase}}
                                     </label>
                                     <input type="text" formControlName="value" class="form-control"
-                                        placeholder="Enter value" id="value">
-
+                                        placeholder="Enter value" id="value{{i}}" *ngIf="!isAccepted">
+                                    <input type="text" formControlName="value" class="form-control"
+                                        placeholder="Enter value" id="value{{i}}" *ngIf="isAccepted" disabled>
                                     <div class="cust_err_msg"
                                         *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
                                         <span
@@ -309,7 +313,7 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="group">Group</label>
                                 <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
-                                    placeholder="Select Group" id="group">
+                                    placeholder="Select Group" id="group" [disabled]="isAccepted">
                                 </p-dropdown>
                                 <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
                                                                                     <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
@@ -350,8 +354,7 @@
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] ||
-                                                                                                                                                                form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
                                                                 class="text-danger">
                                                                 This field is required.
                                                             </span>
@@ -770,6 +773,14 @@
                     </div>
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
+                            Acceptance Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
                             Joining Date
                         </div>
                         <div class="col-md-6 ">
@@ -777,14 +788,7 @@
                         </div>
                     </div>
 
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Acceptance Date
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}
-                        </div>
-                    </div>
+
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
                             Offer Type

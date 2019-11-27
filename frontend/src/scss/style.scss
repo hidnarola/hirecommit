@@ -157,7 +157,6 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 }
 
 
-
 .lbl{font-weight: bold;}
 .lbl_width{width: 25%};
 .timeline_inner {position: relative;}
@@ -220,6 +219,14 @@ html .main .card.signup-box .card-body .bs-stepper .content .form-inner{ min-hei
 .communication-fills .no-gutters.row .col-md-6 + .col-md-6 label{ padding-left:15px;}
 table.dataTable td:last-child{ white-space:nowrap;}
 
+// center aligned bootstrap modal
+// .modal-dialog {
+    // position: absolute;
+    // top: 50%;
+    // width: 100%;
+    // left: 50%;
+    // transform: translate(-50%, -50%) !important;
+// }
 
 /***** color combination changes *****/
 .sidebar {background: #162741;}

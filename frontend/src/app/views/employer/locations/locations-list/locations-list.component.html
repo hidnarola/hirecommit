@@ -51,10 +51,9 @@
 
                         <tbody *ngIf="locations?.length != 0">
                             <tr *ngFor="let data of locations|| sal of sal">
-                                <td>{{data.city|titlecase}}</td>
+                                <td>{{data.city}}</td>
                                 <!-- <td>{{data.country.country}}</td> -->
                                 <td *ngIf="userDetail.role === 'employer'">
-
                                     <button tooltip='View' type="button" class="btn btn-sm btn-success"
                                         [routerLink]="['/employer/locations/view/',data._id]"><i
                                             class="icon-eye"></i></button>

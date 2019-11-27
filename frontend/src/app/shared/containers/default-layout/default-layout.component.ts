@@ -42,6 +42,18 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     });
 
 
+    // for expanded sidebar
+    // let c = document.getElementsByTagName('app-sidebar-nav');
+    // let c = document.getElementsByClassName('nav-dropdown');
+    // console.log('c => ', c);
+    // console.log('0 index => ', c.item(0));
+    // console.log('0 index => ', c.item(0));
+    // console.log(' document.getElementsByClassName(`nav-dropdown`).length => ', document.getElementsByClassName(`nav-dropdown`).length);
+    // console.log(' queryselector => ', document.querySelectorAll('.nav-dropdown')
+    // );
+
+    // var arr = Array.prototype.slice.call(c);
+    // console.log('arr => ', arr);
   }
 
   changepassword() {

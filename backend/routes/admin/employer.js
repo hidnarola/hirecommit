@@ -843,8 +843,10 @@ router.put('/sub_account/details', async (req, res) => {
             "to": user_detail.data.email,
             "subject": "Attention Mail"
         }, {
-            'msg': content
+            'msg': content,
+
         });
+
         if (mail_resp.status === 0) {
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
         } else {
@@ -870,7 +872,7 @@ router.put('/sub_account/details', async (req, res) => {
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
             });
-            // console.log("====>", mail_response);
+            console.log("====>", mail_response);
 
         }
     }
@@ -941,6 +943,8 @@ router.put('/update', async (req, res) => {
         }, {
             'msg': content
         });
+        console.log('mail_resp', mail_resp);
+
         if (mail_resp.status === 0) {
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
         } else {
@@ -960,8 +964,11 @@ router.put('/update', async (req, res) => {
                 "subject": "HireCommit - Email Confirmation"
             }, {
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
+                "msg": "",
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
             });
+            console.log('mail_response', mail_response);
+
         }
     }
 

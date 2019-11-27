@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
@@ -7,7 +7,7 @@ import { Router, NavigationEnd } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(private router: Router) { }
 
@@ -18,6 +18,10 @@ export class AppComponent implements OnInit {
       }
       window.scrollTo(0, 0);
     });
+
+  }
+
+  ngAfterViewInit() {
   }
 
 }
