@@ -36,6 +36,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   salarybracketList: any = [];
   location: any = [];
   display_msg = false;
+  expirydate: any;
+  joiningdate: any;
+  isAccepted = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -88,7 +91,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   profileData: any;
   min_date = new Date();
   min_expiry_date = new Date();
-  max_date = new Date();
+  max_date = new Date(new Date().setFullYear(new Date().getFullYear() + 20));
   userDetail: any = [];
   offerList: any;
   grpId: string;
@@ -306,6 +309,27 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
+          if (res['data'].status === 'Accepted') {
+            this.isAccepted = true;
+            document.getElementById('title').setAttribute('disabled', 'true');
+            // document.getElementById('location').setAttribute('disabled', 'true');
+            // document.getElementById('salarytype').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+            document.getElementById('salaryduration').setAttribute('disabled', 'true');
+            // document.getElementById('joiningdate').setAttribute('disabled', 'true');
+            // document.getElementById('expirydate').setAttribute('disabled', 'true');
+            // document.getElementById('acceptanceDate').setAttribute('disabled', 'true');
+            document.getElementById('offertype').setAttribute('disabled', 'true');
+            document.getElementById('notes').setAttribute('disabled', 'true');
+            document.getElementById('status').setAttribute('disabled', 'true');
+            // document.getElementById('offerStatus').setAttribute('disabled', 'true');
+            // document.getElementById('value').setAttribute('disabled', 'true');
+            // document.getElementById('group').setAttribute('disabled', 'true');
+          } else {
+
+          }
           this.resData = res[`data`];
           this.candidateData = res['candidate_data']['data'];
 
@@ -603,11 +627,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   // get joining date
-  getJoiningDate() {
+  getJoiningDate(e) {
+    const date = new Date(e);
+    const month = date.getMonth() + 1;
+    this.joiningdate = date.getFullYear() + '-' + month + '-' + date.getDate();
     this.min_expiry_date = this.form.value.joiningdate;
   }
 
-  getExpiryDate() {
+  getExpiryDate(e) {
+    const date = new Date(e);
+    const month = date.getMonth() + 1;
+    this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
     this.max_date = this.form.value.expirydate;
   }
 
@@ -673,13 +703,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
-    // console.log(value);
+
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value === element.user.email) {
         this.display_msg = true;
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
         document.getElementById('candidate_name').setAttribute('disabled', 'true');
+        break;
         // } else if (value.target.value === '') {
       } else {
         this.display_msg = false;
