@@ -254,7 +254,7 @@
                                 <label class="col-form-label" for="notes">Notes</label>
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
                                     autocomplete="notes" formControlName="notes" id="notes" maxlength="300" rows="4"
-                                    style=" overflow-y: scroll;" [disabled]="isAccepted"></textarea>
+                                    style=" overflow-y: scroll;" [disabled]="isAccepted" maxlength="500"></textarea>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['notes'].valid">
                                 </div>
                             </div>

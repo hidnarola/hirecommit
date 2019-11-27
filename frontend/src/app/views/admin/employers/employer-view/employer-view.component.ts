@@ -135,7 +135,6 @@ export class EmployerViewComponent implements OnInit {
   Update(valid, id) {
     this.submitted = true;
     if (valid) {
-      this.show_spinner = true;
       this.obj = {
         'user_id': id,
         'username': this.username,
@@ -145,9 +144,10 @@ export class EmployerViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to update Employer Profile?',
         accept: () => {
-          this.show_spinner = false;
+          this.show_spinner = true;
           this.service.update_employer(this.obj).subscribe(res => {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.show_spinner = false;
             this.getDetails();
           }, err => {
             this.show_spinner = false;
