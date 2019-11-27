@@ -140,8 +140,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           if (profile) {
             this.profileData = profile;
             if (!this.profileData[0].user_id.email_verified) {
-              console.log('true=======>');
-
               this.hide_list = true;
             }
 
@@ -283,7 +281,35 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.offerData = res['offer'];
               console.log('this.offerData=>', this.offerData);
 
-              this.offerData.forEach(offer => {
+
+
+              // if (this.offerData.status === 'Released' && this.offerData.expirydate > new Date()) {
+              //   document.getElementById('accept').classList.add('d-0');
+              // }
+              this.offerData.forEach((offer, index) => {
+
+
+                // console.log('offer=>', offer);
+                // // var today = new Date();
+                // // var tomorrow = new Date();
+                // // tomorrow.setDate(today.getDate() + 1);
+                // var d = new Date();
+                // d.setDate(d.getDate() - 1);
+
+                // console.log('offer.expirydate==========>', new Date(offer.expirydate));
+                // // console.log('tomorrow date=====>', tomorrow);
+
+                // // console.log(' check for condition=>', tomorrow > new Date(offer.expirydate));
+                // console.log('index=>', index);
+
+                // console.log(' check for condition=>', d > new Date(offer.expirydate));
+                // if (offer.status && d > new Date(offer.expirydate)) {
+                //   // document.getElementById('accept' + index).classList.add('d-0');
+                //   console.log(' document.getElementById(`accept` + index)=>', document.getElementById('accept' + index));
+
+                // }
+
+
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
 
                 // if (offer['created_by'].length > 0) {

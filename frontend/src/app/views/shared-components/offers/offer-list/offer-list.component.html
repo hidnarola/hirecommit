@@ -137,7 +137,7 @@
                                             class="fa fa-history"></i></button>
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
-                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id)"
+                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id)" id="accept{{i}}"
                                         [disabled]="offer.status === 'Accepted' || accept_btn">
                                         <i class="icon-check"></i></button>
                                 </td>
