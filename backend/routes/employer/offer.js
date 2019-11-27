@@ -183,7 +183,13 @@ router.post("/", async (req, res) => {
             res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
         } else {
             // console.log(obj); return false;
+            var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined" })
+            console.log('======pastOffer', pastOffer);
 
+            if (pastOffer.data.length > 0) {
+                obj.status = "On Hold"
+                // obj.data = pastOffer.data
+            }
             var interest_resp = await common_helper.insert(Offer, obj);
             // console.log(interest_resp);
             // return false;
@@ -394,35 +400,35 @@ cron.schedule('00 00 * * *', async (req, res) => {
     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
 });
 
-cron.schedule('*/1 * * * *', async (req, res) => {
-    var offer_resp = await Offer.find({ "is_del": false });
-    console.log("=======>", offer_resp.length);
+// cron.schedule('*/1 * * * *', async (req, res) => {
+//     var offer_resp = await Offer.find({ "is_del": false });
+//     console.log("=======>", offer_resp.length);
 
-    for (let index = 0; index < offer_resp.length; index++) {
-        const element = offer_resp[index];
-        console.log(element._id);
-        var options = {
-            method: 'GET',
-            url: 'https://api.sendgrid.com/v3/messages',
-            qs: { limit: '1', query: (unique_args['trackid'] = element._id) },
-            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-            //body: '{}'
-        };
-        request(options, function (error, response, body) {
-            if (error) throw new Error(error);
-            var body = JSON.parse(body);
-            var resp = body.messages;
-            // console.log(...resp);
-            res.send(body)
-        });
+//     for (let index = 0; index < offer_resp.length; index++) {
+//         const element = offer_resp[index];
+//         console.log(element._id);
+//         var options = {
+//             method: 'GET',
+//             url: 'https://api.sendgrid.com/v3/messages',
+//             qs: { limit: '1', query: (unique_args['trackid'] = element._id) },
+//             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//             //body: '{}'
+//         };
+//         request(options, function (error, response, body) {
+//             if (error) throw new Error(error);
+//             var body = JSON.parse(body);
+//             var resp = body.messages;
+//             // console.log(...resp);
+//             res.send(body)
+//         });
 
-    }
+//     }
 
 
-    if (offer_resp.status === 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
-    }
-});
+//     if (offer_resp.status === 1) {
+//         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
+//     }
+// });
 
 router.post('/get', async (req, res) => {
     var schema = {
@@ -624,6 +630,17 @@ router.put("/status_change", async (req, res) => {
     var interest = await common_helper.insert(History, obj);
 
     var update_status = await common_helper.update(Offer, { "_id": req.body.id }, obj)
+
+    content = update_status.data.title + "'s status has been changed to " + obj.status
+
+    let mail_resp = await mail_helper.send("status_change", {
+        "to": offer_upadate.data.email,
+        "subject": "Change Status of offer to." + " " + obj.status
+    }, {
+        "msg": content,
+    });
+    console.log('<<<<mail_resp', mail_resp);
+
     res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
 
 });
@@ -737,6 +754,7 @@ router.put('/', async (req, res) => {
     }
 
     var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
+    var user_email = await common_helper.findOne(User, { "_id": offer_upadate.data.user_id })
     obj.status = offer_upadate.data.status;
 
     // console.log("========>", obj);
@@ -752,6 +770,7 @@ router.put('/', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
     }
     else if (offer_upadate.status == 1) {
+
         if (offer.data.status !== offer_upadate.data.status) {
             // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
@@ -766,14 +785,16 @@ router.put('/', async (req, res) => {
             //     "subject": "Change Status of offer.",
             //     // "trackid": ''
             // }, content);
+            console.log('offer_upadate.data.email', user_email.data.email);
 
-            let mail_resp = await mail_helper.send("offer", {
-                "to": offer_upadate.data.email,
+            let mail_resp = await mail_helper.send("status_change", {
+                "to": user_email.data.email,
                 "subject": "Change Status of offer."
             }, {
                 "msg": content,
-                "url": ""
             });
+            console.log('mailmmmm _resp', mail_resp);
+
         }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
     }

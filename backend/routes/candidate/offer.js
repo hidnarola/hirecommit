@@ -332,36 +332,77 @@ router.put('/', async (req, res) => {
         "acceptedAt": new Date()
     }
     // console.log(reg_obj);
+    var current_date = moment();
+    var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id), "expirydate": { $gte: current_date } })
+    if (offer.status == 1) {
+        sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
+        reg_obj.offer_id = req.body.id;
 
-    sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
-    reg_obj.offer_id = req.body.id;
+        var candidate = await common_helper.findOne(Candidate, { "user_id": req.userInfo.id });
+        var candidates = await common_helper.findOne(User, { "_id": req.userInfo.id });
+        reg_obj.message = `<span>{candidate}</span> has accepted your offer.`;
 
-    var candidate = await common_helper.findOne(Candidate, { "user_id": req.userInfo.id });
-    reg_obj.message = `<span>{candidate}</span> has accepted your offer.`;
+        var interest = await common_helper.insert(History, reg_obj);
+        if (sub_account_upadate.status == 0) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        }
+        else if (sub_account_upadate.status == 1) {
+            var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
+            var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
+            var status = await common_helper.findOne(Status, { 'status': 'Accepted' });
 
-    var interest = await common_helper.insert(History, reg_obj);
-    if (sub_account_upadate.status == 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-    }
-    else if (sub_account_upadate.status == 1) {
-        var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
-        var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
-        var status = await common_helper.findOne(Status, { 'status': 'Accepted' });
+            let content = status.data.MessageContent;
+            content = content.replace('{title}', offer.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
+            let mail_resp = await mail_helper.send("offer", {
+                "to": candidates.data.email,
+                "subject": "Offer Accepted"
+            }, {
+                "msg": "You have accepted offer."
+            });
 
-        let content = status.data.MessageContent;
-        content = content.replace('{title}', offer.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
 
-        let mail_resp = await mail_helper.send("offer", {
-            "to": employee.data.email,
-            "subject": "Offer Accepted"
-        }, {
-            "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
-        });
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Accepted", "data": sub_account_upadate });
+            if (employee.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                let mail_resp = await mail_helper.send("offer", {
+                    "to": employee.data.email,
+                    "subject": "Offer Accepted"
+                }, {
+                    "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
+                });
+            }
+            else if (employee.data.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+
+                let mail_resp = await mail_helper.send("offer", {
+                    "to": employee.data.email,
+                    "subject": "Offer Accepted"
+                }, {
+                    "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
+                });
+
+                var sub_emp_email = await User.find({ "emp_id": new ObjectId(employee.data._id) })
+                if (sub_emp_email.length > 0) {
+                    for (const data of sub_emp_email) {
+
+                        let mail_resp = await mail_helper.send("offer", {
+                            "to": data.email,
+                            "subject": "Offer Accepted"
+                        }, {
+                            "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
+                        });
+
+                    }
+                }
+            }
+
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Accepted", "data": sub_account_upadate });
+        }
+        else {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+        }
     }
     else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+        res.status(config.BAD_REQUEST).json({ "message": "Offer is out of date" })
     }
+
 })
 
 module.exports = router;
