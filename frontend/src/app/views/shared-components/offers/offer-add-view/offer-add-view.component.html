@@ -90,14 +90,12 @@
                                 <div class="custom-radio-wrap d-flex flex-warp">
                                     <div class="custom-control custom-radio mr-5">
                                         <input type="radio" id="annual" class="custom-control-input" value="annual"
-                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()"
-                                            [disabled]="isAccepted">
+                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
                                         <label class="custom-control-label" for="annual">Annual</label>
                                     </div>
                                     <div class="custom-control custom-radio">
                                         <input type="radio" id="hourly" class="custom-control-input" value="hourly"
-                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()"
-                                            [disabled]="isAccepted">
+                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
                                         <label class="custom-control-label" for="hourly">Hourly</label>
                                     </div>
                                 </div>
@@ -253,8 +251,8 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="notes">Notes</label>
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
-                                    autocomplete="notes" formControlName="notes" id="notes" maxlength="300" rows="4"
-                                    style=" overflow-y: scroll;" [disabled]="isAccepted" maxlength="500"></textarea>
+                                    autocomplete="notes" formControlName="notes" id="notes" maxlength="500" rows="4"
+                                    style=" overflow-y: scroll;" [disabled]="isAccepted"></textarea>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['notes'].valid">
                                 </div>
                             </div>
@@ -292,8 +290,9 @@
                                         {{customfield.key |titlecase}}
                                     </label>
                                     <input type="text" formControlName="value" class="form-control"
-                                        placeholder="Enter value" id="value" [disabled]="isAccepted">
-
+                                        placeholder="Enter value" id="value{{i}}" *ngIf="!isAccepted">
+                                    <input type="text" formControlName="value" class="form-control"
+                                        placeholder="Enter value" id="value{{i}}" *ngIf="isAccepted" disabled>
                                     <div class="cust_err_msg"
                                         *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
                                         <span
@@ -355,8 +354,7 @@
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] ||
-                                                                                                                                                                form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
                                                                 class="text-danger">
                                                                 This field is required.
                                                             </span>
