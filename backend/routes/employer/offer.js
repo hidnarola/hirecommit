@@ -403,7 +403,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
 });
 
-cron.schedule('*/1 * * * *', async (req, res) => {
+cron.schedule('00 00 * * *', async (req, res) => {
     var offer_resp = await Offer.find({ "is_del": false });
     var index = 0;
 
@@ -449,7 +449,7 @@ cron.schedule('*/1 * * * *', async (req, res) => {
         if (index == offer_resp.length) {
             clearInterval(interval);
         }
-    }, 6000000);
+    }, 600000);
     // console.log("=======>", offer_resp.length);
 
     // for (let index = 0; index < offer_resp.length; index++) {
