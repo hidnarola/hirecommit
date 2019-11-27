@@ -41,12 +41,13 @@ router.post("/", async (req, res) => {
         else {
             var reg_obj = {
                 "country": req.body.country,
-                "city": req.body.city.toLowerCase(),
+                "city": req.body.city,
                 "emp_id": req.userInfo.id
             };
         }
-
-        var location_resp = await common_helper.findOne(location, { "is_del": false, "emp_id": req.userInfo.id, "city": req.body.city.toLowerCase() });
+        var string = req.body.city;
+        var regex = new RegExp(["^", string, "$"].join(""), "i");
+        var location_resp = await common_helper.findOne(location, { "is_del": false, "emp_id": req.userInfo.id, "city": regex });
         if (location_resp.status == 2) {
             var interest_resp = await common_helper.insert(location, reg_obj);
 
