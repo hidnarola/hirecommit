@@ -81,7 +81,7 @@ const OfferSchema = new Schema({
   },
   status: {
     type: String,
-    default: "On Hold"
+    default: "Released"
   },
   offertype: {
     type: String,
