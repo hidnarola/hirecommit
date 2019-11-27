@@ -149,12 +149,15 @@ export class SignUpComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
+    console.log('valid => ', valid);
     if (valid) {
       this.show_spinner = true;
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
         this.isFormSubmitted = false;
         this.formData = {};
         if (res['status'] === 0) {
+          console.log('error 1 => ');
+          this.show_spinner = false;
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['data'].status === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -163,12 +166,15 @@ export class SignUpComponent implements OnInit {
             text: res['message']
           });
           this.router.navigate(['/login']);
+        } else {
+          console.log('else => ');
         }
       }, (err) => {
-        console.log(this.show_spinner);
+        console.log('error => ', err);
+        console.log('spinner', this.show_spinner);
 
         this.show_spinner = false;
-        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 9000 });
       });
     }
   }
