@@ -35,6 +35,7 @@ export const admin: NavData[] = [
     // name: 'Manage Employer',
     url: 'employers/view',
     icon: 'icon-user',
+
     children: [
       {
         name: 'Approved Employer',
@@ -53,6 +54,7 @@ export const admin: NavData[] = [
     // name: 'Manage Candidate',
     url: 'candidates',
     icon: 'icon-people',
+
     children: [
       {
         name: 'Approved Candidate',

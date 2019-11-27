@@ -13,22 +13,26 @@
                 </div>
                 <form class="form-horizontal" [formGroup]="form">
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Candidate Detail</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="email">Email</label>
                                 <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
-                                    autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)">
+                                    autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)"
+                                    (blur)="checkEmail()">
                                 <input *ngIf="is_Edit" type="email" class="form-control" placeholder="Enter Email"
                                     autocomplete="email" formControlName="email" id="email" disabled>
-
 
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
-                                    <span *ngIf="form.controls['email'].errors['pattern']" class="text-danger">
-                                        Email must be in valid format.
-                                    </span>
+                                </div>
+                                <div class="cust_err_msg" *ngIf="!form.controls['email'].valid">
+                                    <span *ngIf="form.controls['email'].errors['pattern']" class="text-danger">Email
+                                        must be in valid format.</span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -39,10 +43,20 @@
                                 <input type="text" *ngIf="is_Edit" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name"
                                     disabled>
-                                <div *ngIf="display_msg" style="color: grey;"><span>Candidate Name as per our records,
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['candidate_name'].valid">
+                                    <span *ngIf="form.controls['candidate_name'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                                <div *ngIf="display_msg" style="color: grey;"><span>Candidate Name as per our
+                                        records,
                                         matching email</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row add-offer-form-part">
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="title">Title</label>
                                 <input type="title" class="form-control" placeholder="Enter Title" autocomplete="title"
@@ -58,24 +72,32 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="location">Location</label>
                                 <p-dropdown [options]="locationList" [style]="{'width':'100%'}"
-                                    formControlName="location" id="location" placeholder="Select Location"></p-dropdown>
+                                    formControlName="location" id="location" placeholder="Select Location"
+                                    [disabled]="isAccepted"></p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['location'].valid">
                                     <span *ngIf="form.controls['location'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Salary Detail</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="salarytype">Salary Type</label>
                                 <div class="custom-radio-wrap d-flex flex-warp">
                                     <div class="custom-control custom-radio mr-5">
                                         <input type="radio" id="annual" class="custom-control-input" value="annual"
-                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
+                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()"
+                                            [disabled]="isAccepted">
                                         <label class="custom-control-label" for="annual">Annual</label>
                                     </div>
                                     <div class="custom-control custom-radio">
                                         <input type="radio" id="hourly" class="custom-control-input" value="hourly"
-                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()">
+                                            name="salarytype" formControlName="salarytype" (change)="getSalaryType()"
+                                            [disabled]="isAccepted">
                                         <label class="custom-control-label" for="hourly">Hourly</label>
                                     </div>
                                 </div>
@@ -85,53 +107,6 @@
                                     </span>
                                 </div>
                             </div>
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="country">Country</label>
-                            <div class="col-md-6">
-                                    <p-dropdown [options]="countryList" placeholder="Select Country"
-                                        formControlName="country" id="country" #country (onChange)="findData($event)">
-                                    </p-dropdown>
-                                    <div class="cust_err_msg" *ngIf="form_validation && !form.controls['country'].valid">
-                                        <span *ngIf="form.controls['country'].errors['required']" class="text-danger">
-                                            This field is required.
-                                        </span>
-                                    </div>
-                                </div>
-                            </div> -->
-
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="currency_type">Currency Type</label>
-                            <div class="col-md-6">
-                                <input type="text" id="currency_type" name="currency_type"
-                                    formControlName="currency_type" class="form-control"
-                                    placeholder="Select CurrencyType" disabled>
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['currency_type'].valid">
-                                    <span *ngIf="form.controls['currency_type'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-                            </div>
-                        </div> -->
-
-                            <!--  salary bracket dropdown -->
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="salarybracket">Salary Bracket</label>
-                            <div class="col-md-6">
-                                <p-dropdown [options]="salarybracketList" formControlName="salarybracket"
-                                    id="salarybracket" placeholder="Select Salary Bracket">
-                                </p-dropdown>
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket'].valid">
-                                    <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-                            </div>
-                        </div> -->
-                            <!--  salary bracket dropdown -->
-
-                            <!--  input salary bracket -->
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="salarybracket">Salary</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
@@ -211,14 +186,18 @@
                                 </div>
                             </div>
                             <!--  input salary bracket -->
-
+                        </div>
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Offer Generation Details</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="joiningdate">Joining Date</label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_date" [maxDate]="max_date"
-                                    (onClose)="getJoiningDate()">
+                                    [disabled]="is_View || isAccepted" [minDate]="min_date" [maxDate]="max_date"
+                                    (onSelect)="getJoiningDate($event)">
                                 </p-calendar>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">
@@ -233,7 +212,8 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View" [minDate]="min_date" (onClose)="getExpiryDate()">
+                                    [disabled]="is_View || isAccepted" [minDate]="min_expiry_date"
+                                    (onSelect)="getExpiryDate($event)">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
                                     <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
@@ -241,10 +221,28 @@
                                     </span>
                                 </div>
                             </div>
+                            <div *ngIf="is_Edit" class="col-md-6 form-group">
+                                <label class="col-form-label" for="expirydate">Acceptance Date</label>
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="acceptanceDate" id="acceptanceDate"
+                                    [disabled]="is_View || is_Edit">
+                                </p-calendar>
+                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
+                                    <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>General Details</h3>
+                            </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="offertype">Offer Type</label>
                                 <p-dropdown [options]="offer_type_optoins" [style]="{'width':'100%'}"
-                                    formControlName="offertype" id="offertype">
+                                    formControlName="offertype" id="offertype" [disabled]="isAccepted">
                                 </p-dropdown>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['offertype'].valid">
                                     <span *ngIf="form.controls['offertype'].errors['required']" class="text-danger">
@@ -252,52 +250,17 @@
                                     </span>
                                 </div>
                             </div>
-                            <!-- <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="commitstatus">Commit Status
-                            </label>
-                            <div class="col-md-6">
-                                <p-dropdown [options]="commitstatus_optoins" [style]="{'width':'100%'}"
-                                    optionValue="value" optionLabel="lable" formControlName="commitstatus"
-                                    id="commitstatus" placeholder="Please Select Commit Status">
-                                </p-dropdown>
-
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['commitstatus'].valid">
-                                    <span *ngIf="form.controls['commitstatus'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-                            </div>
-                        </div> -->
-
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="notes">Notes</label>
                                 <textarea type="notes" class="form-control" placeholder="Enter notes"
                                     autocomplete="notes" formControlName="notes" id="notes" maxlength="300" rows="4"
-                                    style=" overflow-y: scroll;"></textarea>
+                                    style=" overflow-y: scroll;" [disabled]="isAccepted"></textarea>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['notes'].valid">
                                 </div>
                             </div>
 
-                            <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="group">Group</label>
-                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
-                                    placeholder="Select Group" id="group">
-                                </p-dropdown>
-                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
-                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div> -->
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <button class="btn btn-sm btn-primary" style="float: right;"
-                                    (click)="addMoreCommunication()" [disabled]="is_disabled_btn">
-                                    Add More Communication
-                                </button>
-                            </div>
                             <div class="col-md-6 form-group" *ngIf="is_Edit">
-                                <label class="col-form-label">Current Status</label>
+                                <label class="col-form-label">Commit Status</label>
                                 <input type="text" class="form-control" autocomplete="status" formControlName="status"
                                     disabled id="status">
                             </div>
@@ -307,11 +270,66 @@
                                                         </p-inputSwitch> -->
                                 <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
                                     optionValue="value" formControlName="offerStatus" id="offerStatus"
-                                    placeholder="Please Select Status">
+                                    placeholder="Please Select Status" [disabled]="isAccepted">
                                 </p-dropdown>
                             </div>
                         </div>
 
+
+
+
+
+                        <!-- Custom Field -->
+                        <ng-container formArrayName="customfieldItem">
+                            <div class="row add-offer-form-part">
+                                <div class="col-md-12">
+                                    <h3>Custom Field Details</h3>
+                                </div>
+                                <!-- <div class="row"> -->
+                                <div class="col-md-6 form-group" formGroupName="{{i}}"
+                                    *ngFor="let customfield of offer_data.customfieldItem; let i=index">
+                                    <label class="col-form-label" for="customfield.key">
+                                        {{customfield.key |titlecase}}
+                                    </label>
+                                    <input type="text" formControlName="value" class="form-control"
+                                        placeholder="Enter value" id="value" [disabled]="isAccepted">
+
+                                    <div class="cust_err_msg"
+                                        *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
+                                        <span
+                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['_whitespace']"
+                                            class="text-danger">
+                                            Enter valid data.
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                        </ng-container>
+                        <!-- Custom Field -->
+                        <div class="row add-offer-form-part">
+                            <div class="col-md-12">
+                                <h3>Communication Details</h3>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="group">Group</label>
+                                <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
+                                    placeholder="Select Group" id="group" [disabled]="isAccepted">
+                                </p-dropdown>
+                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
+                                                                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
+                                                                                        This field is required.
+                                                                                    </span>
+                                                                                </div> -->
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label> &nbsp; </label>
+                                <button class="btn btn-sm btn-primary" style="float: right;"
+                                    (click)="addMoreCommunication()" [disabled]="is_disabled_btn">
+                                    Add More Communication
+                                </button>
+                            </div>
+                        </div>
                         <!-- communication -->
                         <ng-container formArrayName="communicationFieldItems">
                             <div class="form-group row" formGroupName="{{i}}"
@@ -338,7 +356,7 @@
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
                                                                 *ngIf="form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] ||
-                                                                                                                                        form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
+                                                                                                                                                                form.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']"
                                                                 class="text-danger">
                                                                 This field is required.
                                                             </span>
@@ -358,6 +376,7 @@
                                                             <option value="afterOffer">After Offer</option>
                                                             <option value="beforeExpiry">Before Expiry</option>
                                                             <option value="afterExpiry">After Expiry</option>
+                                                            <option value="afterAcceptance">After Acceptance</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -418,7 +437,7 @@
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['message'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] ||
-                                                                                form.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']"
+                                                                                                        form.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']"
                                                             class="text-danger">
                                                             This field is required.
                                                         </span>
@@ -431,31 +450,6 @@
                             </div>
                         </ng-container>
                         <!-- communication -->
-
-                        <!-- Custom Field -->
-                        <ng-container formArrayName="customfieldItem">
-                            <div class="row">
-                                <div class="col-md-6 form-group" formGroupName="{{i}}"
-                                    *ngFor="let customfield of offer_data.customfieldItem; let i=index">
-                                    <label class="col-form-label" for="customfield.key">
-                                        {{customfield.key |titlecase}}
-                                    </label>
-                                    <input type="text" formControlName="value" class="form-control"
-                                        placeholder="Enter value" id="value">
-
-                                    <div class="cust_err_msg"
-                                        *ngIf="form_validation && !form.controls['customfieldItem'].controls[i].controls['value'].valid">
-                                        <span
-                                            *ngIf="form.controls['customfieldItem'].controls[i].controls['value'].errors['_whitespace']"
-                                            class="text-danger">
-                                            Enter valid data.
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </ng-container>
-                        <!-- Custom Field -->
 
                     </div>
                     <div class="card-footer text-right">
@@ -471,13 +465,14 @@
             <!-- add-edit -->
 
             <!-- view -->
-            <div class="card" *ngIf="is_View">
+            <div class="card"
+                *ngIf="is_View && userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
                 <div class="card-header">
                     <strong style="font-size: 20px;">View Offer</strong>
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
-                    <div class="row detail-panel"
-                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
+                    <div class="row detail-panel">
+
                         <div class="col-md-3 detail-label lbl">
                             Candidate Email
                         </div>
@@ -485,8 +480,8 @@
                             {{resData.user_id.email}}
                         </div>
                     </div>
-                    <div class="row detail-panel"
-                        *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
+                    <div class="row detail-panel">
+
                         <div class="col-md-3 detail-label lbl">
                             Candidate Name
                         </div>
@@ -571,7 +566,7 @@
                     </div>
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
-                            Current Status
+                            Acceptance Date
                         </div>
                         <div class="col-md-6 ">
                             {{resData.status}}
@@ -585,14 +580,7 @@
                             {{resData.offertype}}
                         </div>
                     </div>
-                    <!-- <div class="row detail-panel">
-                        <div class="col-md-3 detail-label">
-                            Commit Status
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.commitstatus}}
-                        </div>
-                    </div> -->
+
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
                             Notes
@@ -601,6 +589,32 @@
                             {{resData.notes}}
                         </div>
                     </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Commit Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.commitstatus}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Offer Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.status}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+                    <div class="row detail-panel" *ngFor="let field of resData.customfeild">
+                        <div class="col-md-3 detail-label lbl">
+                            {{field.key|titlecase}}
+                        </div>
+                        <div class="col-md-6">
+                            {{field.value ? field.value : '-'}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
                     <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
                             Group
@@ -655,16 +669,7 @@
                     </div>
                     <!-- communication -->
 
-                    <!-- custom fields -->
-                    <div class="row detail-panel" *ngFor="let field of resData.customfeild">
-                        <div class="col-md-3 detail-label lbl">
-                            {{field.key|titlecase}}
-                        </div>
-                        <div class="col-md-6">
-                            {{field.value ? field.value : '-'}}
-                        </div>
-                    </div>
-                    <!-- custom fields -->
+
                 </div>
                 <div class="card-footer text-right">
 
@@ -677,6 +682,187 @@
             </div>
             <!-- view -->
 
+            <!-- candidate view -->
+            <div class="card" *ngIf="is_View && userDetail.role === 'candidate'">
+                <div class="card-header">
+                    <strong style="font-size: 20px;">View Offer</strong>
+                </div>
+                <div class="card-body detail-box" *ngIf="resData">
+                    <div class="row detail-panel">
+
+                        <div class="col-md-3 detail-label lbl">
+                            Offer date
+                        </div>
+                        <div class="col-md-6">
+                            {{resData.createdAt | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+
+                        <div class="col-md-3 detail-label lbl">
+                            Employer Name
+                        </div>
+                        <div class="col-md-6 ">
+                            {{userName}}
+                        </div>
+                    </div>
+
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Title
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.title}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Location
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.location.city | titlecase}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary Type
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salarytype| titlecase}}
+                        </div>
+                    </div>
+
+
+                    <div class="row detail-panel" *ngIf="resData.salary">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salary}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary_from">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary From
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salary_from}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salary_to">
+                        <div class="col-md-3 detail-label lbl">
+                            Salary To
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salary_to}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
+                        <div class="col-md-3 detail-label lbl">
+                            Hourly Salary Duration
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.salaryduration}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Expiry Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Acceptance Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Joining Date
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                    </div>
+
+
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Offer Type
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.offertype}}
+                        </div>
+                    </div>
+
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Notes
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.notes}}
+                        </div>
+                    </div> -->
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Commit Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.commitstatus}}
+                        </div>
+                    </div> -->
+                    <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Offer Status
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.status}}
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+
+                    <div *ngFor="let field of resData.customfeild">
+                        <div class="row" [ngClass]="{'detail-panel':field.value}">
+                            <div class="col-md-3 detail-label lbl" *ngIf="field.value">
+                                {{field.key|titlecase}}
+                            </div>
+                            <div class="col-md-6" *ngIf="field.value">
+                                {{field.value ? field.value : '-'}}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- custom fields -->
+                    <!-- <div class="row detail-panel">
+                        <div class="col-md-3 detail-label lbl">
+                            Group
+                        </div>
+                        <div class="col-md-6 ">
+                            {{resData.groupName}}
+                        </div>
+                    </div> -->
+
+
+                    <!-- communication -->
+
+                    <!-- communication -->
+
+
+                </div>
+                <div class="card-footer text-right">
+
+                    <button *ngIf="userDetail.role === 'candidate'" type="button" class="btn btn-md btn-success"
+                        (click)="Accept(resData._id)" [disabled]="resData.status === 'Accepted'">
+                        Accept</button>
+                    <button type="button" class="btn btn-md btn-primary" (click)='cancel()'>
+                        Back</button>
+                </div>
+            </div>
+            <!-- candidate view -->
         </div>
     </div>
 </div>

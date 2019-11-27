@@ -50,6 +50,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false
   },
+  is_email_change: {
+    type: Boolean,
+    default: false
+  },
   createdate: {
     type: Date,
     default: Date.now

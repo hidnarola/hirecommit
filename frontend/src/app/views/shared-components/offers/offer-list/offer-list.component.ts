@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { EmployerService } from '../../../employer/employer.service';
 
 import { CandidateService } from '../../candidates/candidate.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-offer-list',
@@ -28,6 +29,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   first_custom_field = '';
   employer: any;
   empId;
+  userName: any;
   offerData: any = [];
   form = false;
   accept_btn: boolean = false;
@@ -53,25 +55,25 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private router: ActivatedRoute,
     private empService: EmployerService,
-    private candidateService: CandidateService
-
-
+    private candidateService: CandidateService,
+    private modalService: NgbModal
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     if (this.userDetail.role === 'employer') {
-      this.empService.check_approved(this.userDetail.id).subscribe(res => {
+      //   this.empService.check_approved(this.userDetail.id).subscribe(res => {
 
-        if (res['status'] === 0 || res['status'] === 2) {
-          this.hide_list = false;
-        } else {
-          this.hide_list = true;
-          this.message = res['message'];
-        }
-      }, (err) => {
-        console.log('err=>', err);
-        // this.hide_list = true;
-      });
-    } else if (this.userDetail.role === 'candidate') {
+      //     if (res['status'] === 0 || res['status'] === 2) {
+      this.hide_list = false;
+      //     } else {
+      //       this.hide_list = true;
+      //       this.message = res['message'];
+      //     }
+      //   }, (err) => {
+      //     console.log('err=>', err);
+      //     // this.hide_list = true;
+      //   });
+    };
+    if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         if (res['status'] === 0) {
           this.hide_list = false;
@@ -137,7 +139,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
           if (profile) {
             this.profileData = profile;
-            if ((!this.profileData[0].user_id.email_verified) || (!this.profileData[0].user_id.isAllow)) {
+            if (!this.profileData[0].user_id.email_verified) {
               console.log('true=======>');
 
               this.hide_list = true;
@@ -179,7 +181,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
-              console.log(this.offerData[0]);
+              console.log('offerData=>', this.offerData);
+
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins
                   .find(o => o.value === offer.offertype).label);
@@ -211,28 +214,43 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             data: 'createdAt'
           },
           {
+            data: 'candidate.user.email'
+          },
+          {
+            data: 'candidate.firstname'
+          },
+          {
             data: 'title'
           },
           {
-            data: 'salarytype'
+            data: 'location.city'
           },
-          {
-            data: 'salarybracket.from'
-          },
+          // {
+          //   data: 'salarytype'
+          // },
+          // {
+          //   data: 'salarybracket.from'
+          // },
           {
             data: 'expirydate'
           },
           {
             data: 'joiningdate'
           },
+          {
+            data: 'title'
+          },
           // {
           //   data: 'status'
           // },
+          // {
+          //   data: 'offertype'
+          // },
+          // {
+          //   data: 'group.name'
+          // },
           {
-            data: 'offertype'
-          },
-          {
-            data: 'group.name'
+            data: 'status'
           },
           {
             data: 'status'
@@ -240,9 +258,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           // {
           //   data: 'commitstatus'
           // },
-          {
-            data: 'customfeild[0].key'
-          },
+          // {
+          //   data: 'customfeild[0].key'
+          // },
           {
             data: 'actions'
           }
@@ -263,8 +281,18 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+              console.log('this.offerData=>', this.offerData);
+
               this.offerData.forEach(offer => {
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+
+                // if (offer['created_by'].length > 0) {
+                //   console.log('res sub emp=======>', offer['created_by'].username);
+                //   this.userName = offer['created_by'].username;
+                // } else {
+                //   console.log('res emp=>', offer[`employer_id`][`employer`].username);
+                //   this.userName = offer['employer_id']['employer'].username;
+                // }
               });
               // if (this.offerData.length == 0) {
               //   var el = document.getElementById('DataTables_Table_0_paginate');
@@ -282,12 +310,15 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 6 },
+        columnDefs: [{ orderable: false, targets: 9 },
         { targets: 1, width: '50%' },
-        { targets: 3, width: '30%' }],
+        { targets: 4, width: '30%' }],
         columns: [
           {
             data: 'createdAt'
+          },
+          {
+            data: 'username'
           },
           {
             data: 'title'
@@ -302,11 +333,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             data: 'expirydate'
           },
           {
+            data: 'acceptedAt'
+          },
+          {
             data: 'joiningdate'
           },
-          // {
-          //   data: 'status'
-          // },
+          {
+            data: 'status'
+          },
           // {
           //   data: 'offertype'
           // },
@@ -346,8 +380,21 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  add() {
-    if (this.userDetail.role === 'employer') {
+  add(content) {
+    if (this.profileData[0].user_id.isAllow === false) {
+      this.modalService.open(content);
+      this.empService.check_approved(this.userDetail.id).subscribe(res => {
+        if (res['status'] === 0 || res['status'] === 2) {
+          // this.hide_list = false;
+        } else {
+          // this.hide_list = true;
+          this.message = res['message'];
+        }
+      }, (err) => {
+        console.log('err=>', err);
+        // this.hide_list = true;
+      });
+    } else if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/add']);
     } else if (this.userDetail.role === 'sub-employer') {
       this.route.navigate(['/sub_employer/offers/add']);

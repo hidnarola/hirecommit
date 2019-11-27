@@ -19,6 +19,7 @@ import { SocketService } from '../../../../services/socket.service';
   styleUrls: ['./offer-add-view.component.scss']
 })
 export class OfferAddViewComponent implements OnInit, OnDestroy {
+  userName: any;
   public Editor = ClassicEditor;
   resData: any;
   form: FormGroup;
@@ -35,6 +36,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   salarybracketList: any = [];
   location: any = [];
   display_msg = false;
+  expirydate: any;
+  joiningdate: any;
+  isAccepted = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -87,7 +91,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   profileData: any;
   min_date = new Date();
   min_expiry_date = new Date();
-  max_date = new Date();
+  max_date = new Date(new Date().setFullYear(new Date().getFullYear() + 20));
   userDetail: any = [];
   offerList: any;
   grpId: string;
@@ -111,8 +115,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // }
     // Form Controls
     this.form = this.fb.group({
-      candidate_name: new FormControl(''),
-      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      candidate_name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required,
+      Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       title: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
@@ -131,7 +136,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
-      offerStatus: new FormControl('')
+      offerStatus: new FormControl(''),
+      acceptanceDate: new FormControl('')
     });
 
 
@@ -206,6 +212,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         });
     });
     return promise;
+  }
+
+  //
+  checkEmail() {
+    if (this.form.value.email.length > 0) {
+      // tslint:disable-next-line: max-line-length
+      this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
+    } else {
+      this.form.controls['email'].setValidators([Validators.required]);
+    }
+    this.form.controls['email'].updateValueAndValidity();
   }
 
   // get location
@@ -292,6 +309,27 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
+          if (res['data'].status === 'Accepted') {
+            this.isAccepted = true;
+            document.getElementById('title').setAttribute('disabled', 'true');
+            // document.getElementById('location').setAttribute('disabled', 'true');
+            // document.getElementById('salarytype').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+            document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+            document.getElementById('salaryduration').setAttribute('disabled', 'true');
+            // document.getElementById('joiningdate').setAttribute('disabled', 'true');
+            // document.getElementById('expirydate').setAttribute('disabled', 'true');
+            // document.getElementById('acceptanceDate').setAttribute('disabled', 'true');
+            document.getElementById('offertype').setAttribute('disabled', 'true');
+            document.getElementById('notes').setAttribute('disabled', 'true');
+            document.getElementById('status').setAttribute('disabled', 'true');
+            // document.getElementById('offerStatus').setAttribute('disabled', 'true');
+            // document.getElementById('value').setAttribute('disabled', 'true');
+            // document.getElementById('group').setAttribute('disabled', 'true');
+          } else {
+
+          }
           this.resData = res[`data`];
           this.candidateData = res['candidate_data']['data'];
 
@@ -348,6 +386,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
+            this.form.controls['acceptanceDate'].setValue(new Date(res['data'].acceptedAt));
             // this.form.controls['commitstatus']
             //   .setValue({ lable: `${res[`data`][`commitstatus`]}`, value: `${res[`data`][`commitstatus`]}` });
             this.form.controls['notes'].setValue(res[`data`].notes);
@@ -404,11 +443,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
-          this.resData = res[`data`];
+          this.resData = res[`data`][0];
+          if (this.resData.created_by.username) {
+            this.userName = this.resData.created_by.username;
+          } else {
+            this.userName = this.resData.employer_id.employer.username;
+          }
           this.spinner.hide();
           this.is_View = true;
-          this.resData = res[`data`];
-          this.resData.groupName = res[`data`]['groups']['name'];
+          this.resData = res[`data`][0];
+          // this.resData.groupName = res[`data`]['groups']['name'];
         });
     } else if (this.userDetail.role === 'admin') {
       //  do code here for admin side - offer detail
@@ -583,11 +627,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   // get joining date
-  getJoiningDate() {
+  getJoiningDate(e) {
+    const date = new Date(e);
+    const month = date.getMonth() + 1;
+    this.joiningdate = date.getFullYear() + '-' + month + '-' + date.getDate();
     this.min_expiry_date = this.form.value.joiningdate;
   }
 
-  getExpiryDate() {
+  getExpiryDate(e) {
+    const date = new Date(e);
+    const month = date.getMonth() + 1;
+    this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
     this.max_date = this.form.value.expirydate;
   }
 
@@ -653,13 +703,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
+
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value === element.user.email) {
         this.display_msg = true;
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
         document.getElementById('candidate_name').setAttribute('disabled', 'true');
-      } else if (value.target.value === '') {
+        break;
+        // } else if (value.target.value === '') {
+      } else {
         this.display_msg = false;
         this.form.controls.candidate_name.setValue('');
         document.getElementById('candidate_name').removeAttribute('disabled');

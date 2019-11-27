@@ -24,17 +24,18 @@ export class CheckVerificationComponent implements OnInit {
 
   ngOnInit() {
     console.log('this.userDetail=>', this.userDetail);
-    if (this.userDetail.role === 'employer') {
+    // if (this.userDetail.role === 'employer') {
 
-      this.empService.check_approved(this.userDetail.id).subscribe(res => {
-        this.message = res['message'];
-        if (!(res['status'] === 1)) {
-          this.router.navigate(['/employer/offers/list']);
-          // this.router.navigate(['/'])
-        }
-      });
+    //   this.empService.check_approved(this.userDetail.id).subscribe(res => {
+    //     this.message = res['message'];
+    //     if (!(res['status'] === 1)) {
+    //       this.router.navigate(['/employer/offers/list']);
+    //       // this.router.navigate(['/'])
+    //     }
+    //   });
 
-    } else if (this.userDetail.role === 'candidate') {
+    // } else 
+    if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         this.Canididate_message = res['message'];
         if (res['status'] === 1) {

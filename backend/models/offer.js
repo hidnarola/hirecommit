@@ -39,6 +39,10 @@ const OfferSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
+  created_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  },
   title: {
     type: String,
     required: true
@@ -120,6 +124,10 @@ const OfferSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  acceptedAt: {
+    type: Date,
+    default: ""
   }
 });
 

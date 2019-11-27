@@ -20,6 +20,11 @@ module.exports = {
   "SENDGRID_API_KEY": process.env.SENDGRID_API_KEY,
   "SENDGRID_USER": process.env.SENDGRID_USER,
   "SENDGRID_PASSWORD": process.env.SENDGRID_PASSWORD,
+
+  // GMAIL
+  "GMAIL_USER": process.env.GMAIL_USER,
+  "GMAIL_PASSWORD": process.env.GMAIL_PASSWORD,
+
   // JWT
   "ACCESS_TOKEN_SECRET_KEY": "access_token_for_lamtech",
   "REFRESH_TOKEN_SECRET_KEY": "access_token_for_lamtech",

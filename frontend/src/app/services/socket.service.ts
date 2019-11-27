@@ -20,10 +20,10 @@ export class SocketService {
     this.socket.emit('changeOffer', id);
   }
   getOffer() {
-    console.log('getOffer :  ==> ', );
+    // console.log('getOffer :  ==> ', );
     return new Observable((observer) => {
       this.socket.on('Offer', (msg) => {
-        console.log('Client : Offer ==> ');
+        // console.log('Client : Offer ==> ');
         observer.next(msg);
       });
     });

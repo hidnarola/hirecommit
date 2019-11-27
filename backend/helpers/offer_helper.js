@@ -58,22 +58,34 @@ offer_helper.get_all_offer = async (collection, id, search, start, length, recor
           path: "$location",
           preserveNullAndEmptyArrays: true
         }
+      }, {
+        $lookup:
+        {
+          from: "candidateDetail",
+          localField: "user_id",
+          foreignField: "user_id",
+          as: "candidate"
+        }
       },
-      // {
-      //   $lookup:
-      //   {
-      //     from: "salary_bracket",
-      //     localField: "salarybracket",
-      //     foreignField: "_id",
-      //     as: "salarybracket"
-      //   }
-      // },
-      // {
-      //   $unwind: {
-      //     path: "$salarybracket",
-      //     preserveNullAndEmptyArrays: true
-      //   }
-      // },
+      {
+        $unwind: {
+          path: "$candidate",
+          preserveNullAndEmptyArrays: true
+        }
+      }, {
+        $lookup: {
+          from: "user",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "candidate.user",
+        }
+      },
+      {
+        $unwind: {
+          path: "$candidate.user",
+          preserveNullAndEmptyArrays: true
+        }
+      },
     ]
 
     if (search && search.value != '') {
@@ -118,8 +130,9 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
       {
         $match: {
           "is_del": false,
-          "status": { $ne: 'Inactive' },
+          "status": { $ne: 'On Hold' },
           "user_id": new ObjectId(id),
+          // "expirydate": { $gte: new Date() }
         }
       },
       {
@@ -155,6 +168,21 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
       {
         $lookup:
         {
+          from: "employerDetail",
+          localField: "employer_id._id",
+          foreignField: "user_id",
+          as: "employer_id.employer"
+        }
+      },
+      {
+        $unwind: {
+          path: "$employer_id.employer",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup:
+        {
           from: "location",
           localField: "location",
           foreignField: "_id",
@@ -170,18 +198,55 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
       // {
       //   $lookup:
       //   {
-      //     from: "salary_bracket",
-      //     localField: "salarybracket",
-      //     foreignField: "_id",
-      //     as: "salarybracket"
+      //     from: "candidateDetail",
+      //     localField: "user_id",
+      //     foreignField: "user_id",
+      //     as: "candidate"
       //   }
       // },
       // {
       //   $unwind: {
-      //     path: "$salarybracket",
+      //     path: "$candidate",
       //     preserveNullAndEmptyArrays: true
       //   }
       // },
+      // {
+      //   $lookup: {
+      //     from: "user",
+      //     localField: "user_id",
+      //     foreignField: "_id",
+      //     as: "candidate.user",
+      //   }
+      // },
+      {
+        $lookup:
+        {
+          from: "subemployerDetail",
+          localField: "created_by",
+          foreignField: "user_id",
+          as: "created_by"
+        }
+      },
+      {
+        $unwind: {
+          path: "$created_by",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: "user",
+          localField: "created_by.user_id",
+          foreignField: "_id",
+          as: "created_by.user",
+        }
+      },
+      {
+        $unwind: {
+          path: "$created_by.user",
+          preserveNullAndEmptyArrays: true
+        }
+      }
     ]
 
     if (search && search.value != '') {
@@ -272,6 +337,35 @@ offer_helper.get_all_created_offer = async (collection, id, search, start, lengt
       {
         $unwind: {
           path: "$location",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup:
+        {
+          from: "candidateDetail",
+          localField: "user_id",
+          foreignField: "user_id",
+          as: "candidate"
+        }
+      },
+      {
+        $unwind: {
+          path: "$candidate",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: "user",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "candidate.user",
+        }
+      },
+      {
+        $unwind: {
+          path: "$candidate.user",
           preserveNullAndEmptyArrays: true
         }
       }
