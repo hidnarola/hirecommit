@@ -138,7 +138,8 @@
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
                                         class="btn btn-sm btn-primary" (click)="onAccept(offer._id)" id="accept{{i}}"
-                                        [disabled]="offer.status === 'Accepted' || accept_btn">
+                                        [disabled]="offer.status === 'Accepted' || accept_btn"
+                                        [ngClass]="offer.isExpired ? 'd-0' : ''">
                                         <!-- [ngClass]="offer.hideAccept ? 'd-0' : ''" -->
                                         <i class="icon-check"></i></button>
                                 </td>

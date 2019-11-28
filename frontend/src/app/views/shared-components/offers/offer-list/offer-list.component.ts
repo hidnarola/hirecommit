@@ -180,6 +180,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+
               console.log('offerData=>', this.offerData);
 
               this.offerData.forEach(offer => {
@@ -280,39 +281,18 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
-              console.log('this.offerData=>', this.offerData);
-
-
-
               // if (this.offerData.status === 'Released' && this.offerData.expirydate > new Date()) {
               //   document.getElementById('accept').classList.add('d-0');
               // }
-              this.offerData.forEach((offer, index) => {
-
-
-                // console.log('offer=>', offer);
-                // // var today = new Date();
-                // // var tomorrow = new Date();
-                // // tomorrow.setDate(today.getDate() + 1);
-                var d = new Date();
+              this.offerData.forEach((offer) => {
+                offer.isExpired = false;
+                const d = new Date();
                 d.setDate(d.getDate() - 1);
-
-                // // console.log('tomorrow date=====>', tomorrow);
-
-                // console.log(' check for condition=>', tomorrow > new Date(offer.expirydate));
-                console.log('index=>', index);
-                console.log('expiry date => ', new Date(offer.expirydate));
-                console.log(' check for condition=>', d > new Date(offer.expirydate));
                 if (offer.status && d > new Date(offer.expirydate)) {
-                  // document.getElementById('accept' + index).classList.add('d-0');
-                  // console.log(' document.getElementById(`accept` + index)=>', document.getElementById('accept' + index));
-                  // this.hideAccept = true;
-                  // this.offerData.index['hideAccept'] = true;
+                  offer['isExpired'] = true;
                 } else {
-                  // this.offerData.index['hideAccept'] = false;
+                  offer['isExpired'] = false;
                 }
-
-                console.log('this.offreadta after adding boolean value => ', this.offerData);
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
 
                 // if (offer['created_by'].length > 0) {
