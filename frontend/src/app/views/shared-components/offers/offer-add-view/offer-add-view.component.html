@@ -858,9 +858,9 @@
 
                 </div>
                 <div class="card-footer text-right">
-
-                    <button *ngIf="userDetail.role === 'candidate'" type="button" class="btn btn-md btn-success"
-                        (click)="Accept(resData._id)" [disabled]="resData.status === 'Accepted'">
+                    <button *ngIf="userDetail.role === 'candidate' && !isExpired" type="button"
+                        class="btn btn-md btn-success" (click)="Accept(resData._id)"
+                        [disabled]="resData.status === 'Accepted'">
                         Accept</button>
                     <button type="button" class="btn btn-md btn-primary" (click)='cancel()'>
                         Back</button>
