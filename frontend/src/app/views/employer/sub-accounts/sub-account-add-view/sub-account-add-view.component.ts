@@ -213,6 +213,8 @@ export class SubAccountAddViewComponent implements OnInit {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             if (this.userDetail.role === 'employer') {
               this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
               this.router.navigate([this.cancel_link1]);
             }
@@ -248,7 +250,13 @@ export class SubAccountAddViewComponent implements OnInit {
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.addAccount.reset();
-            this.router.navigate([this.cancel_link]);
+            if (this.userDetail.role === 'employer') {
+              this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.router.navigate(['/sub_employer/sub_accounts/list']);
+            } else if (this.userDetail.role === 'admin') {
+              this.router.navigate([this.cancel_link1]);
+            }
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
           }
         }, (err) => {

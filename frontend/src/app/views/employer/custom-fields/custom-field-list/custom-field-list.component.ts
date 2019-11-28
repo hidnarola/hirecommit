@@ -22,6 +22,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   userDetail: any;
+  _profile_data: any;
   constructor(private confirmationService: ConfirmationService,
     private toastr: ToastrService,
     private service: CustomFieldService,
@@ -31,6 +32,9 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     private EmpService: EmployerService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
+    this.commonService.profileData().then(res => {
+      this._profile_data = res[0];
+    });
   }
 
   ngOnInit() {

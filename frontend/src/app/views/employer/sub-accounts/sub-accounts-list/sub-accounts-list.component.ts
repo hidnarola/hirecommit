@@ -27,6 +27,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   obj: any;
   userDetail: any = [];
   subAccountList: any = [];
+  _profile_data: any;
   id: any;
   constructor(
     private router: Router,
@@ -44,6 +45,15 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       this.id = params['id'];
     });
     this.userDetail = this.commonService.getLoggedUserDetail();
+    console.log('userDetail === check here ==>', this.userDetail);
+
+    this.commonService.profileData().then(res => {
+      console.log('res=>', res);
+
+      this._profile_data = res[0];
+      console.log('_profile_data=========>', this._profile_data);
+
+    });
   }
 
   ngOnInit(): void {

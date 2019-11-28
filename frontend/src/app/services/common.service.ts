@@ -98,8 +98,10 @@ export class CommonService {
   profileData() {
     return new Promise((resolve, reject) => {
       this.details = this.getLoggedUserDetail();
+      console.log('this.details == service ==>', this.details);
+
       this.profile({ 'id': this.details.id }).subscribe(res => {
-        // console.log('profileData==>', res['data']);
+        console.log('profileData == res[`data`] ==>', res['data']);
 
         // this.profileDetail = res['data'];
         this.profileDetail.next(res[`data`]);
