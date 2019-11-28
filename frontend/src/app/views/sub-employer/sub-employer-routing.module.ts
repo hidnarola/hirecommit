@@ -22,7 +22,10 @@ const routes: Routes = [
         path: 'offers',
         loadChildren: () => import('../shared-components/offers/offers.module').then(m => m.OffersModule)
       },
-
+      {
+        path: 'sub_accounts',
+        loadChildren: () => import('../employer/sub-accounts/sub-accounts.module').then(m => m.SubAccountsModule)
+      },
       {
         path: 'groups',
         loadChildren: () => import('../employer/groups/groups.module').then(m => m.GroupsModule)

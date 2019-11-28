@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-group-add',
@@ -25,13 +26,16 @@ export class GroupAddComponent implements OnInit {
   group_id: any;
   formData: FormData;
   show_spinner = false;
+  userDetail: any;
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
     private toastr: ToastrService,
     private router: Router,
     private spinner: NgxSpinnerService,
+    private commonService: CommonService
   ) {
+    this.userDetail = this.commonService.getLoggedUserDetail();
 
     // form controls
     this.addGroup = this.fb.group({
@@ -191,7 +195,12 @@ export class GroupAddComponent implements OnInit {
             this.isFormSubmitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
-          this.router.navigate(['/employer/groups/list']);
+          if (this.userDetail.role === 'employer') {
+            this.router.navigate(['/employer/groups/list']);
+          } else if (this.userDetail.role === 'sub-employer') {
+            this.router.navigate(['/sub_employer/groups/list']);
+          }
+
         }, (err) => {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });

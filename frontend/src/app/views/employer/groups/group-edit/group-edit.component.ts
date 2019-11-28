@@ -6,6 +6,7 @@ import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService } from 'primeng/api';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-group-edit',
@@ -28,8 +29,9 @@ export class GroupEditComponent implements OnInit {
   arr: FormArray;
   is_communication_added: boolean = false;
   formData: FormData;
-  Comm_Flag: boolean = true
+  Comm_Flag: boolean = true;
   show_spinner = false;
+  userDetail: any;
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -38,7 +40,10 @@ export class GroupEditComponent implements OnInit {
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
+    private commonService: CommonService
   ) {
+
+    this.userDetail = this.commonService.getLoggedUserDetail();
     // show spinner
     this.spinner.show();
     // form controls

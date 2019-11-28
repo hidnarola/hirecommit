@@ -140,7 +140,7 @@ router.post("/", async (req, res) => {
                 "notes": req.body.notes,
                 "communication": JSON.parse(req.body.data),
                 "salary_from": req.body.salary_from,
-                // "salary_to": req.body.salary_to,
+                "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
             }
@@ -187,7 +187,6 @@ router.post("/", async (req, res) => {
         } else {
             // console.log(obj); return false;
             var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined" })
-            console.log('======pastOffer', pastOffer);
 
             if (pastOffer.data.length > 0) {
                 obj.status = "On Hold"
@@ -237,6 +236,24 @@ router.post("/", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
+
+router.post('/pastOffer', async (req, res) => {
+    try {
+        var user = await common_helper.findOne(User, { "email": req.body.email })
+        if (user.status == 1) {
+            var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(user.data._id), status: "Not Joined" });
+        }
+        else {
+            var pastOffer = [];
+        }
+        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: pastOffer });
+
+    }
+    catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
+    }
+})
+
 
 cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
@@ -403,15 +420,16 @@ cron.schedule('00 00 * * *', async (req, res) => {
     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
 });
 
-cron.schedule('00 00 * * *', async (req, res) => {
+cron.schedule('*/1 * * * *', async (req, res) => {
     var offer_resp = await Offer.find({ "is_del": false });
+    console.log(' : offer_resp ==> ', offer_resp.length);
     var index = 0;
-
-    // var id = "5dde07907a7337194c34d904";
 
     var interval = setInterval(async function () {
         //console.log(i);
         let element = offer_resp[index];
+        // console.log(element);
+
         var options = {
             method: 'GET',
             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
@@ -422,26 +440,48 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
         request(options, function (error, response, body) {
             if (error) throw new Error(error);
-            var body = JSON.stringify(body);
-            console.log(body);
+            // console.log(response);
+            var resp = JSON.parse(response.body);
 
-            var obj = {
-                "api_response": body
+            if (resp && resp.error) {
+                console.log(resp.error);
+            } else if (resp && resp.messages) {
+                if (body.messages[0].opens_count == 0) {
+                    // let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
+                    //     "to": body.messages[0].to_email,
+                    //     "subject": "Offer",
+                    //     "trackid": "new123"
+                    // }, content);
+                } else {
+                    console.log("end");
+                }
             }
-            var data = common_helper.insert(ApiLog, { 'api_response': body });
-            console.log(data);
-
-            // console.log(body);
-            // resp = body.messages;
-            // console.log("email", body.messages[0].to_email);
-            // console.log("email", body.messages[0].opens_count);
-
-            // if (body.messages[0].opens_count == 0) {
-            //     console.log("hiii");
-
-            // } else {
-            //     console.log("by");
+            // if (!error) {
+            //     var body = JSON.parse(body);
+            //     // console.log("====>", body);
+            //     if (!body.error) {
+            //         var content = "RESEND OFFER MSG";
+            //         if (body.messages[0].opens_count == 0) {
+            //             let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
+            //                 "to": body.messages[0].to_email,
+            //                 "subject": "Offer",
+            //                 "trackid": "new123"
+            //             }, content);
+            //         } else {
+            //             console.log("end");
+            //         }
+            //     }
             // }
+
+            //------------ log in db-------------//
+
+            // var obj = {
+            //     "api_response": body
+            // }
+            // var data = common_helper.insert(ApiLog, { 'api_response': body });
+            // console.log(data);
+            //------------------//
+            // resp = body.messages;
         });
         // console.log(index);
         index++;
@@ -449,7 +489,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
         if (index == offer_resp.length) {
             clearInterval(interval);
         }
-    }, 600000);
+    }, 1000);
     // console.log("=======>", offer_resp.length);
 
     // for (let index = 0; index < offer_resp.length; index++) {

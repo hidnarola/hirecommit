@@ -47,7 +47,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {
-    if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.dtOptions = {
         pagingType: 'full_numbers',
         pageLength: 10,

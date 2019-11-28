@@ -29,6 +29,7 @@ export class LocationAddViewComponent implements OnInit {
   is_Edit: boolean = false;
   is_View: boolean = false;
   show_spinner = false;
+  userDetail: any;
   constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
@@ -36,7 +37,10 @@ export class LocationAddViewComponent implements OnInit {
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-  ) { }
+  ) {
+
+    this.userDetail = this.commonService.getLoggedUserDetail();
+  }
 
   ngOnInit() {
     this.spinner.show();
@@ -134,7 +138,11 @@ export class LocationAddViewComponent implements OnInit {
               this.submitted = false;
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
               this.addLocation.reset();
-              this.router.navigate([this.cancel_link]);
+              if (this.userDetail.role === 'employer') {
+                this.router.navigate([this.cancel_link]);
+              } else if (this.userDetail.role === 'sub-employer') {
+                this.router.navigate(['/sub_employer/locations/list']);
+              }
             }
             this.submitted = false;
           }, (err) => {
@@ -152,7 +160,11 @@ export class LocationAddViewComponent implements OnInit {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.addLocation.reset();
-            this.router.navigate([this.cancel_link]);
+            if (this.userDetail.role === 'employer') {
+              this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.router.navigate(['/sub_employer/locations/list']);
+            }
           }
           this.submitted = false;
         }, (err) => {

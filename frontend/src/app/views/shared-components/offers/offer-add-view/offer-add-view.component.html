@@ -170,17 +170,23 @@
                                         formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled>
 
                                     <input type="number" class="form-control" placeholder="Enter Hourly Salary Duration"
-                                        formControlName="salaryduration" id="salaryduration" *ngIf="!disabled">
+                                        formControlName="salaryduration" id="salaryduration" *ngIf="!disabled" min="1"
+                                        (blur)="checkPositive()">
                                     <div class="input-group-append">
                                         <span class="input-group-text">Week(s)</span>
                                     </div>
-                                    <div class="cust_err_msg"
-                                        *ngIf="form_validation && !form.controls['salaryduration'].valid">
-                                        <span *ngIf="form.controls['salaryduration'].errors['required']"
-                                            class="text-danger">
-                                            This field is required.
-                                        </span>
-                                    </div>
+                                </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salaryduration'].valid">
+                                    <span *ngIf="form.controls['salaryduration'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                                <div class="cust_err_msg" *ngIf="!form.controls['salaryduration'].valid">
+                                    <span *ngIf="form.controls['salaryduration'].errors['pattern']" class="text-danger">
+                                        Enter valid data.
+                                    </span>
                                 </div>
                             </div>
                             <!--  input salary bracket -->

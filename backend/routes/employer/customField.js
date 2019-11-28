@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
         if (country && country.serial_number) {
             var serial_number = country.serial_number + 1
         }
-        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var obj = {
                 "emp_id": user.data.emp_id,
                 "key": req.body.key,
@@ -44,7 +44,9 @@ router.post("/", async (req, res) => {
             };
 
         }
-        var CustomeField_resp = await common_helper.findOne(CustomField, { "is_del": false, "emp_id": new ObjectId(req.userInfo.id), "key": req.body.key.toLowerCase() });
+        var string = req.body.key;
+        var regex = new RegExp(["^", string, "$"].join(""), "i");
+        var CustomeField_resp = await common_helper.findOne(CustomField, { "is_del": false, "emp_id": new ObjectId(obj.emp_id), "key": regex });
         if (CustomeField_resp.status == 2) {
             var interest_resp = await common_helper.insert(CustomField, obj);
             if (interest_resp.status == 0) {
@@ -90,8 +92,14 @@ router.post("/get", async (req, res) => {
     user_id = req.userInfo.id;
     //var totalMatchingCountRecords = await common_helper.count(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false });
     var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+    console.log(' user.data.role_id', user.data.role_id);
+
     if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+        console.log('1', 1);
+
         var user_id = user.data.emp_id
+        console.log('user_id', user_id);
+
     }
     else {
         var user_id = req.userInfo.id
@@ -181,7 +189,7 @@ router.get("/:id", async (req, res) => {
         if (req.params.id.length != 24) {
             res.status(config.BAD_REQUEST).json({ "message": "Your id must be 24 characters" });
         } else {
-            var resp_data = await common_helper.findOne(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "_id": new ObjectId(req.params.id), "is_del": false }, 1);
+            var resp_data = await common_helper.findOne(CustomField, { "_id": new ObjectId(req.params.id), "is_del": false }, 1);
             if (resp_data.status == 0) {
                 logger.error("Error occurred while fetching User = ", resp_data);
                 res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);

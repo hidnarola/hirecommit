@@ -32,8 +32,12 @@
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
 
 
-                        <button type="reset" class="btn btn-md btn-danger"
-                            [routerLink]="['/employer/custom_fields/list']">
+                        <button *ngIf="userDetail.role === 'employer'" type="reset" class="btn btn-md btn-danger"
+                            [routerLink]="cancel_link">
+                            <!-- <i class="fa fa-ban"></i> -->
+                            Cancel</button>
+                        <button *ngIf="userDetail.role === 'sub-employer'" type="reset" class="btn btn-md btn-danger"
+                            [routerLink]="['/sub_employer/custom_fields/list']">
                             <!-- <i class="fa fa-ban"></i> -->
                             Cancel</button>
                     </div>
@@ -57,7 +61,11 @@
                     </div>
                 </div>
                 <div class="w-100 card-footer text-right">
-                    <button type="button" class="btn btn-md btn-primary" [routerLink]="cancel_link">
+                    <button *ngIf="userDetail.role === 'employer'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="cancel_link">
+                        Back</button>
+                    <button *ngIf="userDetail.role === 'sub-employer'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="['/sub_employer/custom_fields/list']">
                         Back</button>
                 </div>
             </div>
