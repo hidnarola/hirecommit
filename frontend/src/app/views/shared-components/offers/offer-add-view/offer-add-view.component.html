@@ -17,11 +17,53 @@
                             <div class="col-md-12">
                                 <h3>Candidate Detail</h3>
                             </div>
+                            <!-- popup -->
+                            <ng-template #content let-c="close" let-d="dismiss">
+                                <div class="modal-header instructions-popup-head">
+                                    <h4 class="modal-title" id="modal-basic-title">Instructions</h4>
+                                    <button type="button" id="closeBtn" class="close" aria-label="Close"
+                                        (click)="d('Cross click')"><i class="fa fa-times">
+                                        </i></button>
+                                </div>
+                                <div class="modal-body offer-popup-body">
+                                    <h5>Below are List of offer(s) which the candidate accepted and Not Joined in the
+                                        past. Offer will be created in Hold
+                                        status, please manually change it to Released status if desired.</h5>
+                                    <div class="row offer-popup-content">
+                                        <div class="col-md-4">
+                                            <h6>Date</h6>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h6>Offers</h6>
+                                        </div>
+                                    </div>
+
+                                    <div *ngFor="let data of pastDetails" class="row">
+                                        <div class="col-md-4">
+                                            <!-- <h6> -->
+                                            {{data.joiningdate | date: 'dd/MM/yyyy' : 'utc'}}
+                                            <!-- </h6> -->
+                                        </div>
+                                        <div class="col-md-8">
+                                            <!-- <h6> -->
+                                            {{data.title}}
+                                            <!-- </h6> -->
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- <div class="modal-footer instructions-popup-footer">
+                                    <button type="button" class="btn btn-primary"
+                                        (click)="setup(_profile_data[0].user_id._id)">Let's
+                                        Setup</button>
+                                </div> -->
+                            </ng-template>
+                            <!-- popup -->
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="email">Email</label>
                                 <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
                                     autocomplete="email" formControlName="email" id="email" (keyup)="findEmail($event)"
-                                    (blur)="checkEmail()">
+                                    (blur)="checkEmail($event)">
                                 <input *ngIf="is_Edit" type="email" class="form-control" placeholder="Enter Email"
                                     autocomplete="email" formControlName="email" id="email" disabled>
 

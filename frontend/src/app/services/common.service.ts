@@ -96,7 +96,7 @@ export class CommonService {
     return userDetails;
   }
 
-  profileData() {
+  async profileData() {
     return new Promise((resolve, reject) => {
       this.details = this.getLoggedUserDetail();
       console.log('this.details == service ==>', this.details);

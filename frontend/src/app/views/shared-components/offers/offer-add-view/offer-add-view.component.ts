@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Params, ActivatedRouteSnapshot } from '@angular/router';
 import { OfferService } from '../offer.service';
@@ -11,12 +11,16 @@ import { ConfirmationService } from 'primeng/api';
 import { EmployerService } from '../../../admin/employers/employer.service';
 import Swal from 'sweetalert2';
 import { SocketService } from '../../../../services/socket.service';
+import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalOptions } from '../../../../shared/modal_options';
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
   styleUrls: ['./offer-add-view.component.scss']
 })
 export class OfferAddViewComponent implements OnInit, OnDestroy {
+  @ViewChild('content', { static: false }) content: ElementRef;
   userName: any;
   public Editor = ClassicEditor;
   resData: any;
@@ -37,6 +41,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   expirydate: any;
   joiningdate: any;
   isAccepted = false;
+  pastDetails: any;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -95,7 +100,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
     private adminService: EmployerService,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private modalService: NgbModal,
   ) {
     this.spinner.show();
     // Form Controls
@@ -204,7 +210,18 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   // emial blur pattern check
-  checkEmail() {
+  checkEmail(value) {
+    let email = value.target.value;
+    console.log('value=>', value.target.value);
+
+    this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
+      this.pastDetails = res[`data`][`data`];
+      console.log('pastDetails=>', this.pastDetails);
+
+      if (this.pastDetails.length > 0) {
+        this.modalService.open(this.content, ModalOptions);
+      }
+    });
     if (this.form.value.email.length > 0) {
       this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
     } else {
@@ -620,6 +637,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   findEmail(value) {
+
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value === element.user.email) {

@@ -19,6 +19,10 @@ export class OfferService {
         return this.http.post(`${this.employer_url}` + '/offer', data);
     }
 
+    add_offer_pastOffer(data) {
+        return this.http.post(`${this.employer_url}` + '/offer/pastOffer', data);
+    }
+
     view_offer(params): Observable<any[]> {
         return this.http.post<any[]>(`${this.employer_url}` + '/offer/get', { ...params });
     }

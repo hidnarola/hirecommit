@@ -33,9 +33,6 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     // public activeModal: NgbActiveModal,
     @Inject(DOCUMENT) _document?: any,
   ) {
-
-    console.log('default layout=======>');
-
     this.userDetail = this.commonService.getLoggedUserDetail();
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
