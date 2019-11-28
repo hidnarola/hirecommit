@@ -184,7 +184,6 @@ router.post("/", async (req, res) => {
         } else {
             // console.log(obj); return false;
             var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined" })
-            console.log('======pastOffer', pastOffer);
 
             if (pastOffer.data.length > 0) {
                 obj.status = "On Hold"
@@ -234,6 +233,24 @@ router.post("/", async (req, res) => {
         res.status(config.BAD_REQUEST).json({ message: errors });
     }
 });
+
+router.post('/pastOffer', async (req, res) => {
+    try {
+        var user = await common_helper.findOne(User, { "email": req.body.email })
+        if (user.status == 1) {
+            var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(user.data._id), status: "Not Joined" });
+        }
+        else {
+            var pastOffer = [];
+        }
+        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: pastOffer });
+
+    }
+    catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
+    }
+})
+
 
 cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(
