@@ -3,8 +3,9 @@ import { DOCUMENT } from '@angular/common';
 import { admin, employer, candidate, sub_employer } from '../../_nav';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
-import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployerService } from '../../../views/employer/employer.service';
+import { ModalOptions } from '../../modal_options';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   userDetail;
   obj: any;
   _profile_data: any = [];
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -40,80 +42,15 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       attributes: true,
       attributeFilter: ['class']
     });
-
-
-    // for expanded sidebar
-    // let c = document.getElementsByTagName('app-sidebar-nav');
-    // let c = document.getElementsByClassName('nav-dropdown');
-    // console.log('c => ', c);
-    // console.log('0 index => ', c.item(0));
-    // console.log('0 index => ', c.item(0));
-    // console.log(' document.getElementsByClassName(`nav-dropdown`).length => ', document.getElementsByClassName(`nav-dropdown`).length);
-    // console.log(' queryselector => ', document.querySelectorAll('.nav-dropdown')
-    // );
-
-    // var arr = Array.prototype.slice.call(c);
-    // console.log('arr => ', arr);
   }
-
-  changepassword() {
-    // console.log(this.userDetail.role);
-    if (this.userDetail.role === 'admin') {
-      this.router.navigate(['admin/change-password']);
-    } else if (this.userDetail.role === 'employer') {
-      this.router.navigate(['employer/change-password']);
-    } else if (this.userDetail.role === 'candidate') {
-      this.router.navigate(['candidate/change-password']);
-    } else if (this.userDetail.role === 'sub-employer') {
-      this.router.navigate(['sub_employer/change-password']);
-    }
-  }
-  profile() {
-    // console.log(this.userDetail.role);
-    // if (this.userDetail.role === 'admin') {
-    //   this.router.navigate(['admin/profile']);
-    // } else
-    if (this.userDetail.role === 'employer') {
-      this.router.navigate(['employer/profile']);
-    } else if (this.userDetail.role === 'candidate') {
-      this.router.navigate(['candidate/profile']);
-    }
-    // else if (this.userDetail.role === 'sub-employer') {
-    //   this.router.navigate(['sub_employer/profile']);
-    // }
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userid');
-    localStorage.clear();
-    // localStorage.removeItem('user');
-    this.router.navigate(['/login']);
-  }
-
-  // ViewProfile() {
-  //   this.router.navigate(['employer/profile']);
-  // }
-
-  // customField() {
-  //   this.router.navigate(['employer/customfeild/list']);
-  // }
 
   ngOnInit() {
     const userType = localStorage.getItem('user');
-    // if (this.userDetail.role !== 'admin') {
-
-    // }
-
-
 
     if (userType === 'admin') {
       this.navItems = admin;
       this.name = this.userDetail.email;
     } else {
-      // this.commonService.getDecryptedProfileDetail().then(res => {
-      //   console.log('res=>', res);
 
       let profile;
       this.commonService.profileData().then(res => {
@@ -122,8 +59,15 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this._profile_data = profile;
 
         if (userType === 'employer') {
+
           this.navItems = employer;
           this.name = this._profile_data[0].username;
+
+          if (this._profile_data[0].user_id.is_login_first === false) {
+            // options for modal
+            this.modalService.open(this.content, ModalOptions);
+          }
+
         } else if (userType === 'sub-employer') {
 
           this.commonService.getFirstLogin.subscribe(res => {
@@ -147,15 +91,39 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
           }
         }
-        if (userType === 'employer') {
-          if (this._profile_data[0].user_id.is_login_first === false) {
-            this.modalService.open(this.content);
-          }
-        }
       });
-      // });
     }
   }
+
+  changepassword() {
+    // console.log(this.userDetail.role);
+    if (this.userDetail.role === 'admin') {
+      this.router.navigate(['admin/change-password']);
+    } else if (this.userDetail.role === 'employer') {
+      this.router.navigate(['employer/change-password']);
+    } else if (this.userDetail.role === 'candidate') {
+      this.router.navigate(['candidate/change-password']);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['sub_employer/change-password']);
+    }
+  }
+
+  profile() {
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate(['employer/profile']);
+    } else if (this.userDetail.role === 'candidate') {
+      this.router.navigate(['candidate/profile']);
+    }
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userid');
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
   setup(id) {
     console.log('id=>', id);
     this.obj = {
@@ -170,7 +138,6 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       // this.activeModal.close();
     });
   }
-
 
   ngOnDestroy(): void {
     this.changes.disconnect();

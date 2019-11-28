@@ -8,6 +8,7 @@ import { AES, enc } from 'crypto-ts';
 import * as  moment from 'moment';
 import { EmployerService } from '../views/employer/employer.service';
 import { CandidateService } from '../views/shared-components/candidates/candidate.service';
+import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({
   providedIn: 'root'
@@ -155,3 +156,9 @@ export class CommonService {
   //   return this.http.delete<any[]>(`${this.url}` + '/employer/' + id);
   // }
 }
+
+const ngbModalOptions: NgbModalOptions = {
+  backdrop: 'static',
+  keyboard: false,
+  centered: true
+};
