@@ -83,6 +83,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   userDetail: any = [];
   offerList: any;
   grpId: string;
+  isExpired = false;
 
   constructor(
     private fb: FormBuilder,
@@ -393,6 +394,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`][0];
+          const d = new Date();
+          d.setDate(d.getDate() - 1);
+          if (this.resData.status && d > new Date(this.resData.expirydate)) {
+            this.isExpired = true;
+          } else {
+            this.isExpired = false;
+          }
+
           if (this.resData.created_by.username) {
             this.userName = this.resData.created_by.username;
           } else {
