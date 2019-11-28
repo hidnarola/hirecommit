@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
         else {
             var obj = {
                 "emp_id": req.userInfo.id,
-                "key": req.body.key.toLowerCase(),
+                "key": req.body.key,
                 "serial_number": serial_number
             };
 

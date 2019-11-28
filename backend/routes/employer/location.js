@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             var reg_obj = {
                 "emp_id": user.data.emp_id,
                 "country": req.body.country,
@@ -84,10 +84,14 @@ router.post('/get', async (req, res) => {
             [sortOrderColumn]: sortOrder
         }
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        console.log('user.data.role_id', user.data.role_id);
 
         if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            console.log('1', 1);
 
             var user_id = user.data.emp_id
+            console.log('user_id', user_id);
+
         }
         else {
             var user_id = req.userInfo.id
@@ -96,7 +100,7 @@ router.post('/get', async (req, res) => {
         var aggregate = [
             {
                 $match:
-                    { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
+                    { $or: [{ "emp_id": new ObjectId(user_id) }, { "emp_id": new ObjectId(user_id) }], "is_del": false }
 
             }
         ]
