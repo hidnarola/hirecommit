@@ -420,122 +420,124 @@ cron.schedule('00 00 * * *', async (req, res) => {
     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
 });
 
-cron.schedule('*/1 * * * *', async (req, res) => {
-    var offer_resp = await Offer.find({ "is_del": false });
-    console.log(' : offer_resp ==> ', offer_resp.length);
-    var index = 0;
-
-    var interval = setInterval(async function () {
-        //console.log(i);
-        let element = offer_resp[index];
-        // console.log(element);
-
-        var options = {
-            method: 'GET',
-            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-            // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
-            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-            //body: '{}'
-        };
-
-        request(options, function (error, response, body) {
-            if (error) throw new Error(error);
-            // console.log(response);
-            var resp = JSON.parse(response.body);
-
-            if (resp && resp.error) {
-                console.log(resp.error);
-            } else if (resp && resp.messages) {
-                if (body.messages[0].opens_count == 0) {
-                    // let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
-                    //     "to": body.messages[0].to_email,
-                    //     "subject": "Offer",
-                    //     "trackid": "new123"
-                    // }, content);
-                } else {
-                    console.log("end");
-                }
-            }
-            // if (!error) {
-            //     var body = JSON.parse(body);
-            //     // console.log("====>", body);
-            //     if (!body.error) {
-            //         var content = "RESEND OFFER MSG";
-            //         if (body.messages[0].opens_count == 0) {
-            //             let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
-            //                 "to": body.messages[0].to_email,
-            //                 "subject": "Offer",
-            //                 "trackid": "new123"
-            //             }, content);
-            //         } else {
-            //             console.log("end");
-            //         }
-            //     }
-            // }
-
-            //------------ log in db-------------//
-
-            // var obj = {
-            //     "api_response": body
-            // }
-            // var data = common_helper.insert(ApiLog, { 'api_response': body });
-            // console.log(data);
-            //------------------//
-            // resp = body.messages;
-        });
-        // console.log(index);
-        index++;
-        // offer_resp.length
-        if (index == offer_resp.length) {
-            clearInterval(interval);
-        }
-    }, 1000);
-    // console.log("=======>", offer_resp.length);
-
-    // for (let index = 0; index < offer_resp.length; index++) {
-
-    //     // resp = [];
-    //     // console.log(element._id);
-    //     setTimeout(async function timer() {
-    //         let element = offer_resp[index];
-    //         var options = {
-    //             method: 'GET',
-    //             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-    //             // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
-    //             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-    //             //body: '{}'
-    //         };
-    //         // var options = {
-    //         //     "method": "GET",
-    //         //     "hostname": "api.sendgrid.com",
-    //         //     "port": null,
-    //         //     "path": "/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-    //         //     "headers": {
-    //         //         "authorization": "Bearer " + config.SENDGRID_API_KEY
-    //         //     }
-    //         // };
-
-    //         request(options, function (error, response, body) {
-    //             if (error) throw new Error(error);
-    //             var body = JSON.parse(body);
-    //             console.log(body);
-    //             resp = body.messages;
-    //             console.log("hii", typeof resp);
-    //             // console.log(' :  ==> ', );
-    //             // if (resp[0].opens_count === 0) {
-    //             //     console.log(resp);
-    //             // }
-    //             // res.send(body)
-    //         });
-    //     }, index * 10000);
-
-    // }
 
 
-    // if (offer_resp.status === 1) {
-    //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
-    // }
-});
+// cron.schedule('*/1 * * * *', async (req, res) => {
+//     var offer_resp = await Offer.find({ "is_del": false });
+//     console.log(' : offer_resp ==> ', offer_resp.length);
+//     var index = 0;
+
+//     var interval = setInterval(async function () {
+//         //console.log(i);
+//         let element = offer_resp[index];
+//         // console.log(element);
+
+//         var options = {
+//             method: 'GET',
+//             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+//             // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
+//             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//             //body: '{}'
+//         };
+
+//         request(options, function (error, response, body) {
+//             if (error) throw new Error(error); 
+//             // console.log(response);
+//             var resp = JSON.parse(response.body);
+
+//             if (resp && resp.error) {
+//                 console.log(resp.error);
+//             } else if (resp && resp.messages) {
+//                 if (body.messages[0].opens_count == 0) {
+//                     // let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
+//                     //     "to": body.messages[0].to_email,
+//                     //     "subject": "Offer",
+//                     //     "trackid": "new123"
+//                     // }, content);
+//                 } else {
+//                     console.log("end");
+//                 }
+//             }
+//             // if (!error) {
+//             //     var body = JSON.parse(body);
+//             //     // console.log("====>", body);
+//             //     if (!body.error) {
+//             //         var content = "RESEND OFFER MSG";
+//             //         if (body.messages[0].opens_count == 0) {
+//             //             let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
+//             //                 "to": body.messages[0].to_email,
+//             //                 "subject": "Offer",
+//             //                 "trackid": "new123"
+//             //             }, content);
+//             //         } else {
+//             //             console.log("end");
+//             //         }
+//             //     }
+//             // }
+
+//             //------------ log in db-------------//
+
+//             // var obj = {
+//             //     "api_response": body
+//             // }
+//             // var data = common_helper.insert(ApiLog, { 'api_response': body });
+//             // console.log(data);
+//             //------------------//
+//             // resp = body.messages;
+//         });
+//         // console.log(index);
+//         index++;
+//         // offer_resp.length
+//         if (index == offer_resp.length) {
+//             clearInterval(interval);
+//         }
+//     }, 1000);
+//     // console.log("=======>", offer_resp.length);
+
+//     // for (let index = 0; index < offer_resp.length; index++) {
+
+//     //     // resp = [];
+//     //     // console.log(element._id);
+//     //     setTimeout(async function timer() {
+//     //         let element = offer_resp[index];
+//     //         var options = {
+//     //             method: 'GET',
+//     //             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+//     //             // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
+//     //             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//     //             //body: '{}'
+//     //         };
+//     //         // var options = {
+//     //         //     "method": "GET",
+//     //         //     "hostname": "api.sendgrid.com",
+//     //         //     "port": null,
+//     //         //     "path": "/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+//     //         //     "headers": {
+//     //         //         "authorization": "Bearer " + config.SENDGRID_API_KEY
+//     //         //     }
+//     //         // };
+
+//     //         request(options, function (error, response, body) {
+//     //             if (error) throw new Error(error);
+//     //             var body = JSON.parse(body);
+//     //             console.log(body);
+//     //             resp = body.messages;
+//     //             console.log("hii", typeof resp);
+//     //             // console.log(' :  ==> ', );
+//     //             // if (resp[0].opens_count === 0) {
+//     //             //     console.log(resp);
+//     //             // }
+//     //             // res.send(body)
+//     //         });
+//     //     }, index * 10000);
+
+//     // }
+
+
+//     // if (offer_resp.status === 1) {
+//     //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
+//     // }
+// });
 
 router.post('/get', async (req, res) => {
     var schema = {
