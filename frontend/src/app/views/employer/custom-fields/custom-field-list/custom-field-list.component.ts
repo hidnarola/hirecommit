@@ -38,7 +38,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   public bind() {
-    if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.dtOptions = {
         pagingType: 'full_numbers',
         pageLength: 10,
@@ -50,13 +50,8 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         ajax: (dataTablesParameters: any, callback) => {
           this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
             console.log('custom feild res =>>', res);
-
             if (res['status'] === 1) {
               this.data = res['salary'];
-              // if (this.data.length == 0) {
-              //   var el = document.getElementById('DataTables_Table_0_paginate');
-              //   el.style.display = 'none';
-              // }
               callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
             }
           }, err => {
@@ -75,45 +70,46 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
           }
         ]
       };
-    } else if (this.userDetail.role === 'sub-employer') {
-      this.dtOptions = {
-        pagingType: 'full_numbers',
-        pageLength: 10,
-        serverSide: true,
-        processing: true,
-        // order: [[0, 'desc']],
-        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
-        destroy: true,
-        ajax: (dataTablesParameters: any, callback) => {
-          this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
-            console.log('custom feild res =>>', res);
-
-            if (res['status'] === 1) {
-              this.data = res['salary'];
-              // if (this.data.length == 0) {
-              //   var el = document.getElementById('DataTables_Table_0_paginate');
-              //   el.style.display = 'none';
-              // }
-              callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
-            }
-          }, err => {
-            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-          });
-        },
-        columnDefs: [{ targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
-        columns: [
-          {
-            data: 'index'
-          },
-          {
-            data: 'key'
-          },
-          // {
-          //   data: 'action'
-          // }
-        ]
-      };
     }
+    //  else if (this.userDetail.role === 'sub-employer') {
+    //   this.dtOptions = {
+    //     pagingType: 'full_numbers',
+    //     pageLength: 10,
+    //     serverSide: true,
+    //     processing: true,
+    //     // order: [[0, 'desc']],
+    //     language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+    //     destroy: true,
+    //     ajax: (dataTablesParameters: any, callback) => {
+    //       this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
+    //         console.log('custom feild res =>>', res);
+
+    //         if (res['status'] === 1) {
+    //           this.data = res['salary'];
+    //           // if (this.data.length == 0) {
+    //           //   var el = document.getElementById('DataTables_Table_0_paginate');
+    //           //   el.style.display = 'none';
+    //           // }
+    //           callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
+    //         }
+    //       }, err => {
+    //         callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+    //       });
+    //     },
+    //     columnDefs: [{ targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
+    //     columns: [
+    //       {
+    //         data: 'index'
+    //       },
+    //       {
+    //         data: 'key'
+    //       },
+    //       // {
+    //       //   data: 'action'
+    //       // }
+    //     ]
+    //   };
+    // }
 
   }
 
@@ -137,7 +133,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     this.EmpService.information({ 'msg_type': 'custom_field' }).subscribe(res => {
       console.log('res=>', res);
       this.msg = res['message']
-    })
+    });
   }
 
   rrerender(): void {

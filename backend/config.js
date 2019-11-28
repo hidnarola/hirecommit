@@ -25,6 +25,9 @@ module.exports = {
   "GMAIL_USER": process.env.GMAIL_USER,
   "GMAIL_PASSWORD": process.env.GMAIL_PASSWORD,
 
+  //CAPTCHA KEY
+  "CAPTCHA_SECRET_KEY": process.env.CAPTCHA_SECRET_KEY,
+
   // JWT
   "ACCESS_TOKEN_SECRET_KEY": "access_token_for_lamtech",
   "REFRESH_TOKEN_SECRET_KEY": "access_token_for_lamtech",

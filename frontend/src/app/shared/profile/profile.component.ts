@@ -158,7 +158,7 @@ export class ProfileComponent implements OnInit {
   }
 
   edit(valid, id) {
-    this.submitted = true
+    this.submitted = true;
     console.log('id=>', id);
     if (valid) {
       this.show_spinner = true;
@@ -184,8 +184,7 @@ export class ProfileComponent implements OnInit {
               localStorage.clear();
               // localStorage.removeItem('user');
               this.route.navigate(['/login']);
-            }
-            else {
+            } else {
               console.log('else=>');
 
             }
@@ -194,15 +193,15 @@ export class ProfileComponent implements OnInit {
               this.show_spinner = false;
               this.tostsr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             }
-          )
+          );
         }
-      })
-    }
+      });
+    } this.show_spinner = false;
 
   }
 
   candidate_profile(valid, id) {
-    this.submitted = true
+    this.submitted = true;
     console.log('id=>', id);
     console.log('valid=>', valid);
     if (valid) {
@@ -230,8 +229,7 @@ export class ProfileComponent implements OnInit {
               localStorage.clear();
               // localStorage.removeItem('user');
               this.route.navigate(['/login']);
-            }
-            else {
+            } else {
               console.log('else=>');
 
             }
@@ -242,8 +240,9 @@ export class ProfileComponent implements OnInit {
             }
           );
         }
-      })
+      });
     }
+    this.show_spinner = false;
 
   }
 

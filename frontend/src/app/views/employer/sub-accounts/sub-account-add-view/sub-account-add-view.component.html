@@ -64,6 +64,9 @@
                         <button *ngIf="userDetail.role === 'employer'" type="button" class="btn btn-md btn-danger"
                             [routerLink]="cancel_link">
                             Cancel</button>
+                        <button *ngIf="userDetail.role === 'sub-employer'" type="button" class="btn btn-md btn-danger"
+                            [routerLink]="['/sub_employer/sub_accounts/list']">
+                            Cancel</button>
                         <button *ngIf="userDetail.role === 'admin'" type="button" class="btn btn-md btn-danger"
                             [routerLink]="cancel_link1">
                             Cancel</button>
@@ -107,6 +110,9 @@
                 <div class="w-100 card-footer text-right">
                     <button *ngIf="userDetail.role === 'employer'" type="button" class="btn btn-md btn-primary"
                         [routerLink]="cancel_link">
+                        Back</button>
+                    <button *ngIf="userDetail.role === 'sub-employer'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="['/sub_employer/sub_accounts/list']">
                         Back</button>
                     <button *ngIf="userDetail.role === 'admin'" type="button" class="btn btn-md btn-primary"
                         [routerLink]="cancel_link1">

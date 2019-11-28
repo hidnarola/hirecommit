@@ -58,7 +58,7 @@ export class SubAccountAddViewComponent implements OnInit {
         this.id = params['id'];
       });
       this.getDetail(this.id);
-      if (this.userDetail.role === 'employer') {
+      if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
         if (this.route.snapshot.data.title === 'Edit') {
           this.is_Edit = true;
         } else {
@@ -86,7 +86,7 @@ export class SubAccountAddViewComponent implements OnInit {
   }
 
   getDetail(id) {
-    if (this.id && this.userDetail.role === 'employer') {
+    if (this.id && (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer')) {
       this.panelTitle = 'Edit';
 
       this.service.view_sub_acc_detail(id).subscribe(res => {
@@ -154,7 +154,7 @@ export class SubAccountAddViewComponent implements OnInit {
 
   onSubmit(flag: boolean) {
     this.submitted = true;
-    if (this.id && flag && this.userDetail.role === 'employer') {
+    if (this.id && flag && (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer')) {
       if (this.detail['admin_rights'] === false) {
         this.obj = {
           username: this.detail['username'],
@@ -177,6 +177,8 @@ export class SubAccountAddViewComponent implements OnInit {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             if (this.userDetail.role === 'employer') {
               this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
               this.router.navigate([this.cancel_link1]);
             }

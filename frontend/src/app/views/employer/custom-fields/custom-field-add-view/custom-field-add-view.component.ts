@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService } from 'primeng/api';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-custom-field-add-view',
@@ -22,6 +23,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   isEdit = false;
   isView = false;
   show_spinner = false;
+  userDetail: any;
   cancel_link = '/employer/custom_fields/list';
   constructor(
     private service: CustomFieldService,
@@ -30,7 +32,11 @@ export class CustomFieldAddViewComponent implements OnInit {
     private router: Router,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-  ) { }
+    private commonService: CommonService
+  ) {
+
+    this.userDetail = this.commonService.getLoggedUserDetail();
+  }
 
   ngOnInit() {
     this.spinner.show();
@@ -85,7 +91,12 @@ export class CustomFieldAddViewComponent implements OnInit {
             if (res['data'].status === 1) {
 
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-              this.router.navigate([this.cancel_link]);
+              if (this.userDetail.role === 'employer') {
+                this.router.navigate([this.cancel_link]);
+              } else if (this.userDetail.role === 'sub-employer') {
+                this.router.navigate(['/sub_employer/custom_fields/list']);
+              }
+
               this.addCustomFeild.reset();
             }
             this.submitted = false;
@@ -102,7 +113,11 @@ export class CustomFieldAddViewComponent implements OnInit {
           if (res['data']['status'] === 1) {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            this.router.navigate([this.cancel_link]);
+            if (this.userDetail.role === 'employer') {
+              this.router.navigate([this.cancel_link]);
+            } else if (this.userDetail.role === 'sub-employer') {
+              this.router.navigate(['/sub_employer/custom_fields/list']);
+            }
             this.addCustomFeild.reset();
           }
         }, (err) => {

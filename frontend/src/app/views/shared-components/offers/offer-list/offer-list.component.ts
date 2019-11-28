@@ -46,6 +46,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   hide_list = false;
   grpId: string;
   userDetail: any = [];
+  // hideAccept = false;
   constructor(
     private service: OfferService,
     private route: Router,
@@ -140,8 +141,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           if (profile) {
             this.profileData = profile;
             if (!this.profileData[0].user_id.email_verified) {
-              console.log('true=======>');
-
               this.hide_list = true;
             }
 
@@ -181,6 +180,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+
               console.log('offerData=>', this.offerData);
 
               this.offerData.forEach(offer => {
@@ -281,9 +281,18 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
-              console.log('this.offerData=>', this.offerData);
-
-              this.offerData.forEach(offer => {
+              // if (this.offerData.status === 'Released' && this.offerData.expirydate > new Date()) {
+              //   document.getElementById('accept').classList.add('d-0');
+              // }
+              this.offerData.forEach((offer) => {
+                offer.isExpired = false;
+                const d = new Date();
+                d.setDate(d.getDate() - 1);
+                if (offer.status && d > new Date(offer.expirydate)) {
+                  offer['isExpired'] = true;
+                } else {
+                  offer['isExpired'] = false;
+                }
                 offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
 
                 // if (offer['created_by'].length > 0) {
