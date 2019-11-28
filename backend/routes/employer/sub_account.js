@@ -37,18 +37,26 @@ router.post("/", async (req, res) => {
 
     var errors = req.validationErrors();
     if (!errors) {
+
         var reg_obj = {
             "username": req.body.username,
             "email": req.body.email,
             "admin_rights": req.body.admin_rights,
             "is_del": false,
-            "emp_id": req.userInfo.id,
+            // "emp_id": req.userInfo.id,
             "email_verified": true,
             "is_register": true,
             "isAllow": true,
             "role_id": "5d9d99003a0c78039c6dd00f"
 
         };
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            reg_obj.emp_id = user.data.emp_id
+        }
+        else if (user && user.data.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+            reg_obj.emp_id = req.userInfo.id
+        }
         var user_data = await common_helper.findOne(User, { "is_del": false, "email": req.body.email })
 
         if (user_data.status == 2) {
@@ -97,7 +105,14 @@ router.post('/get', async (req, res) => {
     var schema = {};
     req.checkBody(schema);
     var errors = req.validationErrors();
+    var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
+    if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+        var user_id = user.data.emp_id
+    }
+    else {
+        var user_id = req.userInfo.id
+    }
     if (!errors) {
         var sortOrderColumnIndex = req.body.order[0].column;
         let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
@@ -109,7 +124,7 @@ router.post('/get', async (req, res) => {
             {
                 $match: {
                     "is_del": false,
-                    "emp_id": new ObjectId(req.userInfo.id)
+                    "emp_id": new ObjectId(user_id)
                 }
             }
         ]
@@ -126,7 +141,7 @@ router.post('/get', async (req, res) => {
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {

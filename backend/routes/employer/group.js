@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
     var errors = req.validationErrors();
     if (!errors) {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
 
             var reg_obj = {
                 "emp_id": user.data.emp_id,
@@ -100,11 +100,11 @@ router.post("/", async (req, res) => {
                 "low_notreplied": req.body.medium_notreplied,
                 "start": req.body.start,
                 "end": req.body.end
-
             };
         }
-
-        var group_resp = await common_helper.findOne(group, { "is_del": false, "emp_id": req.userInfo.id, "name": req.body.name.toLowerCase() });
+        var string = req.body.name;
+        var regex = new RegExp(["^", string, "$"].join(""), "i");
+        var group_resp = await common_helper.findOne(group, { "is_del": false, "emp_id": reg_obj.emp_id, "name": regex });
         if (group_resp.status == 2) {
             var interest_resp = await common_helper.insert(group, reg_obj);
             if (interest_resp.status == 0) {
