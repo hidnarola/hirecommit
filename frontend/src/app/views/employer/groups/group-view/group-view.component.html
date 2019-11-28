@@ -151,7 +151,11 @@
                     <!-- communication -->
                 </div>
                 <div class="w-100 card-footer text-right">
-                    <button type="button" class="btn btn-md btn-primary" [routerLink]="cancel_link">
+                    <button *ngIf="userDetail.role === 'employer'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="cancel_link">
+                        Back</button>
+                    <button *ngIf="userDetail.role === 'sub-employer'" type="button" class="btn btn-md btn-primary"
+                        [routerLink]="['/sub_employer/groups/list']">
                         Back</button>
 
                 </div>

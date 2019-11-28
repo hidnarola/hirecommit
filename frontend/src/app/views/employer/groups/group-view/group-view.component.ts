@@ -3,6 +3,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CommonService } from '../../../../services/common.service';
 
 @Component({
   selector: 'app-group-view',
@@ -16,12 +17,16 @@ export class GroupViewComponent implements OnInit {
   groupData: any = [];
   communicationData: any = [];
   cancel_link = '/employer/groups/list';
+  userDetail: any;
   constructor(
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
     private service: GroupService,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService
   ) {
+
+    this.userDetail = this.commonService.getLoggedUserDetail();
     // show spinner
     this.spinner.show();
 

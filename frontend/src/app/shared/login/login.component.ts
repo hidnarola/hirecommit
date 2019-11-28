@@ -116,7 +116,7 @@ export class LoginComponent implements OnInit {
             } else if (this.role === 'candidate') {
               if (this.profile.user_id.email_verified) {
                 this.router.navigate(['candidate']);
-              } else {
+              } else if (!this.profile.user_id.email_verified) {
                 this.router.navigate(['candidate/account_verification']);
               }
             }

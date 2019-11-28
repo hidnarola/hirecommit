@@ -192,7 +192,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     return promise;
   }
 
-  //
+  // salary duration positive check
+  checkPositive() {
+    if (this.form.value.salarytype === 'hourly') {
+      if (this.form.value.salaryduration.length > 0) {
+        this.form.controls['salaryduration'].setValidators([Validators.pattern(/^[0-9]*$/)]);
+      }
+      this.form.controls['salaryduration'].updateValueAndValidity();
+    }
+  }
+
+  // emial blur pattern check
   checkEmail() {
     if (this.form.value.email.length > 0) {
       this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
@@ -227,7 +237,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   getSalaryType() {
     if (this.form.value.salarytype === 'hourly') {
       this.disabled = false;
-      this.form.controls['salaryduration'].setValidators([Validators.required]);
+      this.form.controls['salaryduration'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
+      // if (this.form.value.salaryduration.length > 0) {
+      this.form.controls['salaryduration'].setValidators([Validators.pattern(/^[0-9]*$/)]);
+      // }
+      // this.form.controls['salaryduration'].updateValueAndValidity();
     } else {
       this.disabled = true;
       this.form.controls['salaryduration'].setValidators(null);

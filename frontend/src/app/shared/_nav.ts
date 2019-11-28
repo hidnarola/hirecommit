@@ -138,6 +138,12 @@ export const sub_employer: NavData[] = [
     icon: 'icon-grid',
   },
   {
+    name: 'Sub Accounts',
+    // name: 'Manage Sub-accounts',
+    url: 'sub_accounts/list',
+    icon: 'icon-puzzle',
+  },
+  {
     name: 'Groups',
     // name: 'Manage Groups',
     url: 'groups/list',

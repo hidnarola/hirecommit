@@ -82,7 +82,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public bind() {
-    if (this.userDetail.role === 'employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.dtOptions = {
         pagingType: 'full_numbers',
         pageLength: 10,
@@ -132,57 +132,58 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         ]
       };
-    } else if (this.userDetail.role === 'sub-employer') {
-      this.dtOptions = {
-        pagingType: 'full_numbers',
-        pageLength: 10,
-        serverSide: true,
-        processing: true,
-        order: [[0, 'desc']],
-        language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
-        destroy: true,
-        ajax: (dataTablesParameters: any, callback) => {
-          this.service.lists(dataTablesParameters).subscribe(res => {
-            if (res['status']) {
-
-              this.groups = res['groups'];
-              // if (this.groups.length == 0) {
-              //   var el = document.getElementById('DataTables_Table_0_paginate');
-              //   el.style.display = 'none';
-              // }
-              callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
-            }
-          }, err => {
-            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-          });
-        }
-        , columnDefs: [{ targets: 0, width: '25%' }]
-        ,
-        columns: [
-          {
-            data: 'name'
-          },
-          {
-            data: 'high_unopened'
-          },
-          {
-            data: 'high_notreplied'
-          },
-          {
-            data: 'medium_unopened'
-          },
-          {
-            data: 'medium_notreplied'
-          },
-          {
-            data: 'low_unopened'
-          },
-          {
-            data: 'low_notreplied'
-          }
-        ]
-      };
     }
+    // else if (this.userDetail.role === 'sub-employer') {
+    //   this.dtOptions = {
+    //     pagingType: 'full_numbers',
+    //     pageLength: 10,
+    //     serverSide: true,
+    //     processing: true,
+    //     order: [[0, 'desc']],
+    //     language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
+    //     destroy: true,
+    //     ajax: (dataTablesParameters: any, callback) => {
+    //       this.service.lists(dataTablesParameters).subscribe(res => {
+    //         if (res['status']) {
+
+    //           this.groups = res['groups'];
+    //           // if (this.groups.length == 0) {
+    //           //   var el = document.getElementById('DataTables_Table_0_paginate');
+    //           //   el.style.display = 'none';
+    //           // }
+    //           callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
+    //         }
+    //       }, err => {
+    //         callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
+    //       });
+    //     }
+    //     , columnDefs: [{ targets: 0, width: '25%' }]
+    //     ,
+    //     columns: [
+    //       {
+    //         data: 'name'
+    //       },
+    //       {
+    //         data: 'high_unopened'
+    //       },
+    //       {
+    //         data: 'high_notreplied'
+    //       },
+    //       {
+    //         data: 'medium_unopened'
+    //       },
+    //       {
+    //         data: 'medium_notreplied'
+    //       },
+    //       {
+    //         data: 'low_unopened'
+    //       },
+    //       {
+    //         data: 'low_notreplied'
+    //       }
+    //     ]
+    //   };
+    // }
 
   }
 
