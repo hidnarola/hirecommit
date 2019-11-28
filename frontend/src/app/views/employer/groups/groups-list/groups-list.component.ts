@@ -24,6 +24,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject();
   groups: any[];
   userDetail: any;
+  _profile_data: any;
   constructor(
     private router: Router,
     private service: GroupService,
@@ -34,6 +35,9 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     private EmpService: EmployerService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
+    this.commonService.profileData().then(res => {
+      this._profile_data = res[0];
+    });
   }
 
   ngOnInit(): void {

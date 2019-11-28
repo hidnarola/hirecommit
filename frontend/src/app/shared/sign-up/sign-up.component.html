@@ -84,14 +84,14 @@
                       </div>
                     </div>
                   </fieldset>
-                  <div class="input-group">
+                  <!-- <div class="input-group">
                     <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
                       [(ngModel)]="formData.recaptcha" name="recaptcha">
                     </ngx-recaptcha2>
                     <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
                       <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
                     </div>
-                  </div>
+                  </div> -->
 
                 </div>
                 <div class="step-form-btn">
@@ -226,6 +226,19 @@
                       </div>
                     </div>
                   </div>
+
+                  <!-- captcha -->
+                  <div class="input-group mb-3">
+                    <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
+                      [(ngModel)]="formData.recaptcha" name="recaptcha">
+                    </ngx-recaptcha2>
+                    <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
+                      <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
+                    </div>
+                  </div>
+                  <!-- captcha -->
+
+
                   <div class="input-group mb-3">
                     <div class="custome-checkbox">
                       <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"

@@ -8,6 +8,7 @@ import { AES, enc } from 'crypto-ts';
 import * as  moment from 'moment';
 import { EmployerService } from '../views/employer/employer.service';
 import { CandidateService } from '../views/shared-components/candidates/candidate.service';
+import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({
   providedIn: 'root'
@@ -98,8 +99,10 @@ export class CommonService {
   profileData() {
     return new Promise((resolve, reject) => {
       this.details = this.getLoggedUserDetail();
+      console.log('this.details == service ==>', this.details);
+
       this.profile({ 'id': this.details.id }).subscribe(res => {
-        // console.log('profileData==>', res['data']);
+        console.log('profileData == res[`data`] ==>', res['data']);
 
         // this.profileDetail = res['data'];
         this.profileDetail.next(res[`data`]);
@@ -155,3 +158,9 @@ export class CommonService {
   //   return this.http.delete<any[]>(`${this.url}` + '/employer/' + id);
   // }
 }
+
+const ngbModalOptions: NgbModalOptions = {
+  backdrop: 'static',
+  keyboard: false,
+  centered: true
+};

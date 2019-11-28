@@ -470,7 +470,7 @@
 
             <!-- view -->
             <div class="card"
-                *ngIf="is_View && userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin'">
+                *ngIf="is_View && (userDetail.role === 'employer' || userDetail.role === 'sub-employer' || userDetail.role === 'admin')">
                 <div class="card-header">
                     <strong style="font-size: 20px;">View Offer</strong>
                 </div>

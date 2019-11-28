@@ -36,6 +36,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   profileData: any = [];
   message: any;
   Canididate_message: any;
+
   // offer type options
   offer_type_optoins = [
     { label: 'Select Offer Type', value: '' },
@@ -74,6 +75,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       //     // this.hide_list = true;
       //   });
     };
+
     if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         if (res['status'] === 0) {

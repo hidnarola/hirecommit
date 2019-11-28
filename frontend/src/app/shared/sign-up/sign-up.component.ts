@@ -100,7 +100,9 @@ export class SignUpComponent implements OnInit {
   next1() {
     this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
-    if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid && this.registerForm.controls['recaptcha'].valid) {
+    if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid
+      //  && this.registerForm.controls['recaptcha'].valid
+    ) {
       this.isFormSubmitted = false;
       this.step2 = true;
       this.stepper.next();
@@ -150,6 +152,7 @@ export class SignUpComponent implements OnInit {
   onSubmit(valid) {
     this.isFormSubmitted = true;
     console.log('valid => ', valid);
+    console.log('registerForm => ', this.registerForm);
     if (valid) {
       this.show_spinner = true;
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
@@ -159,6 +162,7 @@ export class SignUpComponent implements OnInit {
           console.log('error 1 => ');
           this.show_spinner = false;
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
+          // this.formData.recaptcha = '';
         } else if (res['data'].status === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({
@@ -176,7 +180,11 @@ export class SignUpComponent implements OnInit {
         this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 9000 });
       });
+    } else {
+      console.log('this.registerForm.value == else => ', this.registerForm.value);
     }
+
+    console.log('this.registerForm.value == last ======> ', this.registerForm.value);
   }
 
   checkValue(e) {
