@@ -543,7 +543,7 @@ router.post('/sub_account/get', async (req, res) => {
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, req.body.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await user_helper.get_all_subs_users(Sub_Employer_Detail, req.body.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {
@@ -819,7 +819,6 @@ router.get('/', async (req, res) => {
 
 router.put('/sub_account/details', async (req, res) => {
     var obj = {}
-    console.log('req.body', req.body);
 
     if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
         obj.admin_rights = req.body.data.admin_rights

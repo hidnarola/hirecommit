@@ -42,10 +42,10 @@ router.use("/profile", auth, userpProfile);
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
-var captcha_secret = config.CAPTCHA_SECRET_KEY;
+var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
 //
 //local
-// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+//var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -548,6 +548,19 @@ router.post("/check_employer_email", async (req, res) => {
   } else {
     res.status(config.OK_STATUS).json({ "status": 1, "message": "Email address not Register" });
   }
+})
+
+
+router.post("/email_exists", async (req, res) => {
+  var user_id = req.body.user_id;
+  var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
+  if (user_resp.status === 1) {
+    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
+  }
+  else {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Email address not Register" });
+  }
+
 })
 
 router.post('/login', async (req, res) => {
