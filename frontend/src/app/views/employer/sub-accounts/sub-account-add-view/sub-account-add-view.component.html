@@ -32,16 +32,21 @@
                                     autocomplete="email" [(ngModel)]="detail.email" formControlName="email" id="email"
                                     disabled> -->
                                 <input type="email" class="form-control" placeholder="Enter Email" autocomplete="email"
-                                    [(ngModel)]="detail.email" formControlName="email" id="email">
+                                    [(ngModel)]="detail.email" formControlName="email" id="email" (blur)="checkEmail()">
 
                                 <span *ngIf="!addAccount.get('email').valid && submitted" class="text-danger">
                                     <span
                                         *ngIf="addAccount.get('email').errors['required'] || addAccount.get('email').errors.whitespace">This
                                         field is required.</span>
-                                    <span
-                                        *ngIf="addAccount.get('email').errors.email && !addAccount.get('email').errors.whitespace">Email
-                                        must be in valid format.</span>
                                 </span>
+                                <div class="cust_err_msg" *ngIf="!addAccount.controls['email'].valid">
+                                    <span *ngIf="addAccount.controls['email'].errors['pattern']"
+                                        class="text-danger">Email
+                                        must be in valid format.</span>
+                                    <span *ngIf="addAccount.controls['email'].errors['isExist']" class="text-danger">
+                                        This Email address is already registered.
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

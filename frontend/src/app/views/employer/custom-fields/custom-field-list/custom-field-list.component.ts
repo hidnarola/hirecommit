@@ -23,6 +23,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
   dtTrigger: Subject<any> = new Subject();
   userDetail: any;
   _profile_data: any;
+  adminRights = false;
   constructor(private confirmationService: ConfirmationService,
     private toastr: ToastrService,
     private service: CustomFieldService,
@@ -34,6 +35,9 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     this.userDetail = this.commonService.getLoggedUserDetail();
     this.commonService.profileData().then(res => {
       this._profile_data = res[0];
+      if (this._profile_data.user_id.admin_rights === 'yes') {
+        this.adminRights = true;
+      }
     });
   }
 
@@ -61,7 +65,8 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
           }, err => {
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
-        }, columnDefs: [{ orderable: false, targets: 2 }, { targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
+        }, columnDefs: [{ orderable: false, targets: 0 },
+        { orderable: false, targets: 2 }, { targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
         columns: [
           {
             data: 'index'

@@ -25,6 +25,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
   groups: any[];
   userDetail: any;
   _profile_data: any;
+  adminRights = false;
   constructor(
     private router: Router,
     private service: GroupService,
@@ -37,6 +38,9 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userDetail = this.commonService.getLoggedUserDetail();
     this.commonService.profileData().then(res => {
       this._profile_data = res[0];
+      if (this._profile_data.user_id.admin_rights === 'yes') {
+        this.adminRights = true;
+      }
     });
   }
 

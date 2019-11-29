@@ -132,20 +132,18 @@ export class ProfileComponent implements OnInit {
       this.emp_data = res['data']
       this.CompanyName = res['data']['companyname'];
       this.Website = res['data']['website'];
-      this.Email = res['data']['email']
-      this.Country = res['data']['country']
-      this.BusinessType = res['data']['businesstype']
-      this.UserName = res['data']['username']
-      this.CountryCode = res['data']['countrycode']
-      this.ContactNumber = res['data']['contactno']
-      console.log('res=>', this.emp_data);
+      this.Email = res['data']['email'];
+      this.Country = res['data']['country'];
+      this.BusinessType = res['data']['businesstype'];
+      this.UserName = res['data']['username'];
+      this.CountryCode = res['data']['countrycode'];
+      this.ContactNumber = res['data']['contactno'];
     })
   }
 
   getCandidate() {
     this.candidateService.get_Profile_Candidate(this.id).subscribe(res => {
-      console.log('res=> ', res['data']['documentimage'][0]);
-      this.candidate_data = res['data']
+      this.candidate_data = res['data'];
       this.FirstName = res['data']['firstname'];
       this.LastName = res['data']['lastname'];
       this.Candidate_Email = res['data']['email'];
@@ -154,6 +152,7 @@ export class ProfileComponent implements OnInit {
       this.DocumentImage = res['data']['documentimage'][0];
       this.Candidate_ContactNo = res['data']['contactno'];
       this.Candidate_CountryCode = res['data']['countrycode'];
+      console.log('res=> ', this.candidate_data);
     })
   }
 
@@ -270,5 +269,22 @@ export class ProfileComponent implements OnInit {
 
   cancel1() {
     this.route.navigate(['/candidate/offers/list']);
+  }
+
+  checkEmail() {
+    if (this.userDetail.role === 'employer') {
+      this.service.email_exists({ 'email': this.profileForm.value.email, 'user_id': this.emp_data.user_id._id }).subscribe(res => {
+      }, (err) => {
+        this.profileForm.controls['email'].setErrors({ 'isExist': true });
+        this.profileForm.updateValueAndValidity();
+      });
+    } else if (this.userDetail.role === 'candidate') {
+      this.service.email_exists({ 'email': this.CandidateForm.value.candidate_email, 'user_id': this.candidate_data.user_id }).subscribe(res => {
+      }, (err) => {
+        this.CandidateForm.controls['candidate_email'].setErrors({ 'isExist': true });
+        this.CandidateForm.updateValueAndValidity();
+      });
+    }
+
   }
 }

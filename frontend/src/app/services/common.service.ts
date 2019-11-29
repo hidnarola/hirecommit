@@ -110,6 +110,9 @@ export class CommonService {
       });
     });
   }
+  email_exists(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + 'email_exists', data);
+  }
 
   async encrypt(message: any) {
     return AES.encrypt(message, this.secretKey).toString();

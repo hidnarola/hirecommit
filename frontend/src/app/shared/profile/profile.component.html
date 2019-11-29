@@ -35,14 +35,22 @@
                                         <div class="col-md-6">
                                             <label>Email</label>
                                             <input type="email" class="form-control" [(ngModel)]="Email"
-                                                formControlName="email" name="email">
+                                                formControlName="email" name="email" (blur)="checkEmail()">
                                             <div class="cust_err_msg">
                                                 <span *ngIf="!profileForm.get('email').valid && submitted"
                                                     class="text-danger">
                                                     <span *ngIf="profileForm.get('email').errors['required'] ">This
                                                         field is required.</span>
-                                                    <span *ngIf="profileForm.get('email').errors['pattern']">Enter
-                                                        Valid data</span>
+
+                                                </span>
+                                            </div>
+                                            <div class="cust_err_msg" *ngIf="!profileForm.controls['email'].valid">
+                                                <span *ngIf="profileForm.controls['email'].errors['pattern']"
+                                                    class="text-danger">Email
+                                                    must be in valid format.</span>
+                                                <span *ngIf="profileForm.controls['email'].errors['isExist']"
+                                                    class="text-danger">
+                                                    This Email address is already registered.
                                                 </span>
                                             </div>
                                         </div>
@@ -178,18 +186,27 @@
                                         <div class="col-md-6">
                                             <label>Email</label>
                                             <input type="email" class="form-control" [(ngModel)]="Candidate_Email"
-                                                formControlName="candidate_email" name="candidate_email">
+                                                formControlName="candidate_email" name="candidate_email"
+                                                (blur)="checkEmail()">
                                             <div class="cust_err_msg">
                                                 <span *ngIf="!CandidateForm.get('candidate_email').valid && submitted"
                                                     class="text-danger">
                                                     <span
                                                         *ngIf="CandidateForm.get('candidate_email').errors['required'] ">This
                                                         field is required.</span>
-                                                    <span
-                                                        *ngIf="CandidateForm.get('candidate_email').errors['pattern']">Enter
-                                                        Valid data</span>
                                                 </span>
-
+                                            </div>
+                                            <div class="cust_err_msg"
+                                                *ngIf="!CandidateForm.controls['candidate_email'].valid">
+                                                <span
+                                                    *ngIf="CandidateForm.controls['candidate_email'].errors['pattern']"
+                                                    class="text-danger">Email
+                                                    must be in valid format.</span>
+                                                <span
+                                                    *ngIf="CandidateForm.controls['candidate_email'].errors['isExist']"
+                                                    class="text-danger">
+                                                    This Email address is already registered.
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

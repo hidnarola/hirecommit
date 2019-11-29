@@ -61,14 +61,13 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         if (userType === 'employer') {
           this.navItems = employer;
           this.name = this._profile_data[0].username;
+          // if (this._profile_data[0].user_id.is_email_change) {
+          //   this.router.navigate(['/employer/change-password']);
+          // }
           if (this._profile_data[0].user_id.is_login_first === false) {
             this.modalService.open(this.content, ModalOptions);
-          } else if (this._profile_data[0].user_id.is_email_change) {
-            this.router.navigate(['/employer/change-password']);
           }
-
         } else if (userType === 'sub-employer') {
-
           this.commonService.getFirstLogin.subscribe(res => {
             if (res) {
               this._profile_data[0].user_id.is_login_first = res;
@@ -76,19 +75,23 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             if (this._profile_data[0].user_id.is_login_first === false) {
               this.router.navigate(['sub_employer/change-password']);
               this.name = this._profile_data[0].username;
-            } else if (this._profile_data[0].user_id.is_login_first) {
+            }
+            // else if (this._profile_data[0].user_id.is_email_change) {
+            //   this.router.navigate(['/sub_employer/change-password']);
+            // }
+            else {
               this.navItems = sub_employer;
               this.name = this._profile_data[0].username;
-            } else if (this._profile_data[0].user_id.is_email_change) {
-              this.router.navigate(['/sub_employer/change-password']);
             }
           });
         } else if (userType === 'candidate') {
+          console.log('this._profile_data[0].user_id.is_email_change=>', this._profile_data[0].user_id.is_email_change);
+          // if (this._profile_data[0].user_id.is_email_change === true) {
+          //   this.router.navigate(['candidate/change-password']);
+          // } else
           if (this._profile_data[0].user_id.email_verified) {
             this.navItems = candidate;
             this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
-          } else if (this._profile_data[0].user_id.is_email_change) {
-            this.router.navigate(['/candidate/change-password']);
           } else {
             this.navItems = [];
             this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
