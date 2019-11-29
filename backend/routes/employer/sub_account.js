@@ -124,7 +124,8 @@ router.post('/get', async (req, res) => {
             {
                 $match: {
                     "is_del": false,
-                    "emp_id": new ObjectId(user_id)
+                    "emp_id": new ObjectId(user_id),
+                    "user_id": { $ne: ObjectId(req.userInfo.id) }
                 }
             }
         ]
@@ -141,7 +142,7 @@ router.post('/get', async (req, res) => {
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+        var resp_data = await user_helper.get_all_sub_user(Sub_Employer_Detail, user_id, req.userInfo.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
         if (resp_data.status == 1) {
             res.status(config.OK_STATUS).json(resp_data);
         } else {

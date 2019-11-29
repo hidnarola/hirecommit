@@ -46,6 +46,7 @@ router.put('/login_first_status', async (req, res) => {
 })
 
 router.put('/', async (req, res) => {
+
     var obj = {}
     if (req.body.username && req.body.username != "") {
         obj.username = req.body.username
@@ -64,6 +65,7 @@ router.put('/', async (req, res) => {
     }
     if (req.body.email && req.body.email != "") {
         obj.email = req.body.email
+        obj.is_email_change = true
     }
 
     var employer = await common_helper.findOne(User, { "_id": req.body.id }, obj)
@@ -92,19 +94,21 @@ router.put('/', async (req, res) => {
             let content = message.data.content;
 
             logger.trace("sending mail");
-            let mail_resp = await mail_helper.send("email_confirmation", {
-                "to": employer_upadate.data.email,
-                "subject": "HireCommit - Email Confirmation"
-            }, {
-                "msg": content,
-                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
-            });
-
-            if (mail_resp.status === 0) {
-                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-            } else {
-                res.json({ "message": "Email has been changed, Email verification link sent to your mail.", "data": employer_upadate })
+            if (req.body.email && req.body.email != "") {
+                let mail_resp = await mail_helper.send("email_confirmation", {
+                    "to": employer_upadate.data.email,
+                    "subject": "HireCommit - Email Confirmation"
+                }, {
+                    "msg": content,
+                    "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                });
             }
+
+            // if (mail_resp.status === 0) {
+            // res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+            // } else {
+            res.json({ "message": "Email has been changed, Email verification link sent to your mail.", "data": employer_upadate })
+            // }
         } else {
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Profile updated successfully", "data": employer_upadate });
         }

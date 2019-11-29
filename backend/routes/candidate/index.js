@@ -8,10 +8,12 @@ var common_helper = require('../../helpers/common_helper');
 var cron = require('node-cron');
 var MailType = require('../../models/mail_content');
 var DisplayMessage = require('../../models/display_messages');
-
+var mail_helper = require('../../helpers/mail_helper');
 var offer_helper = require('../../helpers/offer_helper');
-
+var btoa = require('btoa');
 var logger = config.logger;
+var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
 var moment = require("moment")
 var User = require('../../models/user');
 var Candidate = require('../../models/candidate-detail');
@@ -116,6 +118,7 @@ router.put('/', async (req, res) => {
     var candidate = await common_helper.findOne(User, { "_id": req.body.id }, obj)
     if (candidate.data.email !== req.body.email) {
         obj.email_verified = false
+        obj.is_email_change = true
     }
 
     var sub_account_upadate = await common_helper.update(Candidate, { "user_id": req.body.id }, obj)
@@ -139,19 +142,22 @@ router.put('/', async (req, res) => {
             let content = message.data.content;
 
             logger.trace("sending mail");
-            let mail_resp = await mail_helper.send("email_confirmation", {
-                "to": sub_account_upadate.data.email,
-                "subject": "HireCommit - Email Confirmation"
-            }, {
-                "msg": content,
-                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
-            });
+            if (req.body.email && req.body.email != "") {
+                let mail_resp = await mail_helper.send("email_confirmation", {
+                    "to": sub_account_upadate.data.email,
+                    "subject": "HireCommit - Email Confirmation"
+                }, {
+                    "msg": content,
+                    "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                });
+                console.log('mail_resp', mail_resp);
 
-            if (mail_resp.status === 0) {
-                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-            } else {
-                res.json({ "message": "Email has been changed, Email verification link sent to your mail.", "data": sub_account_upadate })
             }
+            // if (mail_resp.status === 0) {
+            //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+            // } else {
+            res.json({ "message": "Email has been changed, Email verification link sent to your mail.", "data": sub_account_upadate })
+            // }
         } else {
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Profile updated successfully", "data": sub_account_upadate });
         }
