@@ -59,13 +59,12 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this._profile_data = profile;
 
         if (userType === 'employer') {
-
           this.navItems = employer;
           this.name = this._profile_data[0].username;
-
           if (this._profile_data[0].user_id.is_login_first === false) {
-            // options for modal
             this.modalService.open(this.content, ModalOptions);
+          } else if (this._profile_data[0].user_id.is_email_change) {
+            this.router.navigate(['/employer/change-password']);
           }
 
         } else if (userType === 'sub-employer') {
@@ -77,15 +76,19 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
             if (this._profile_data[0].user_id.is_login_first === false) {
               this.router.navigate(['sub_employer/change-password']);
               this.name = this._profile_data[0].username;
-            } else if (this._profile_data[0].user_id.is_login_first === true) {
+            } else if (this._profile_data[0].user_id.is_login_first) {
               this.navItems = sub_employer;
               this.name = this._profile_data[0].username;
+            } else if (this._profile_data[0].user_id.is_email_change) {
+              this.router.navigate(['/sub_employer/change-password']);
             }
           });
         } else if (userType === 'candidate') {
           if (this._profile_data[0].user_id.email_verified) {
             this.navItems = candidate;
             this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
+          } else if (this._profile_data[0].user_id.is_email_change) {
+            this.router.navigate(['/candidate/change-password']);
           } else {
             this.navItems = [];
             this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
