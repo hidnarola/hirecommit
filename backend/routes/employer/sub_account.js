@@ -138,7 +138,6 @@ router.post('/get', async (req, res) => {
             });
         }
 
-
         let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 

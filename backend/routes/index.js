@@ -45,7 +45,7 @@ var common_helper = require('./../helpers/common_helper')
 var captcha_secret = config.CAPTCHA_SECRET_KEY;
 //
 //local
-// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+//var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
