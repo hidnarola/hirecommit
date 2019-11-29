@@ -86,7 +86,6 @@ router.post('/get_new', async (req, res) => {
             });
         }
 
-
         let totalMatchingCountRecords = await Employer.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
 
@@ -820,22 +819,28 @@ router.get('/', async (req, res) => {
 
 router.put('/sub_account/details', async (req, res) => {
     var obj = {}
+    console.log('req.body', req.body);
+
     if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
         obj.admin_rights = req.body.data.admin_rights
     }
     if (req.body.data.email && req.body.data.email !== "") {
         obj.email = req.body.data.email
+        obj.is_email_change = true
     }
     if (req.body.data.username && req.body.data.username !== "") {
         obj.username = req.body.data.username;
     }
     var id = req.body.id;
 
-    var user_detail = await common_helper.findOne(User, { '_id': id });
+    var user_detail = await common_helper.findOne(User, { '_id': ObjectId(id) });
+    console.log('user_detail', user_detail);
+
     var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
-    if (user_detail.data.email !== req.body.email) {
-        var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
-        let content = message.data.content;
+    // if (user_detail.data.email !== req.body.email) {
+    var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
+    let content = message.data.content;
+    if (req.body.data.email && req.body.data.email != "") {
         content = content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email}`);
         obj.email_verified = false;
         logger.trace("sending mail");
@@ -846,36 +851,43 @@ router.put('/sub_account/details', async (req, res) => {
             'msg': content,
 
         });
+        console.log('mail_resp', mail_resp);
 
-        if (mail_resp.status === 0) {
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-        } else {
-            var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
-            var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
-            // console.log("==>", resp_user_data.data.email);
-
-            var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
-                config.ACCESS_TOKEN_SECRET_KEY, {
-                expiresIn: 60 * 60 * 24 * 3
-            }
-            )).toString('base64');
-
-            var time = new Date();
-            time.setMinutes(time.getMinutes() + 20);
-            time = btoa(time);
-
-            let mail_response = await mail_helper.send("email_confirmation", {
-                "to": resp_user_data.data.email,
-                "subject": "HireCommit - Email Confirmation"
-            }, {
-                "msg": message.data.content,
-                // config.website_url + "/email_confirm/" + interest_resp.data._id
-                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
-            });
-            console.log("====>", mail_response);
-
-        }
     }
+
+
+    // if (mail_resp.status === 0) {
+    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+    // } else {
+    var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
+    console.log('resp_user_data', resp_user_data);
+
+    var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
+    // console.log("==>", resp_user_data.data.email);
+
+    var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
+        config.ACCESS_TOKEN_SECRET_KEY, {
+        expiresIn: 60 * 60 * 24 * 3
+    }
+    )).toString('base64');
+
+    var time = new Date();
+    time.setMinutes(time.getMinutes() + 20);
+    time = btoa(time);
+    if (req.body.data.email && req.body.data.email != "") {
+        let mail_response = await mail_helper.send("email_confirmation", {
+            "to": resp_user_data.data.email,
+            "subject": "HireCommit - Email Confirmation"
+        }, {
+            "msg": message.data.content,
+            // config.website_url + "/email_confirm/" + interest_resp.data._id
+            "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+        });
+        console.log('mail_response', mail_response);
+
+    }
+    // }
+    // }
 
     if (resp_Detail_data.status == 0) {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
@@ -924,6 +936,7 @@ router.put('/update', async (req, res) => {
     }
     if (req.body.email && req.body.email != "") {
         obj.email = req.body.email
+        obj.is_email_change = true
     }
     if (req.body.contactno && req.body.contactno != "") {
         obj.contactno = req.body.contactno
@@ -937,39 +950,41 @@ router.put('/update', async (req, res) => {
         content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
         obj.email_verified = false;
         logger.trace("sending mail");
-        let mail_resp = await mail_helper.send("welcome_email", {
-            "to": user_detail.data.email,
-            "subject": "Attention Mail"
-        }, {
-            'msg': content
-        });
-        console.log('mail_resp', mail_resp);
-
-        if (mail_resp.status === 0) {
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-        } else {
-            var employer_upadate = await common_helper.update(User, { "_id": req.body.user_id }, obj)
-            var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
-                config.ACCESS_TOKEN_SECRET_KEY, {
-                expiresIn: 60 * 60 * 24 * 3
-            }
-            )).toString('base64');
-
-            var time = new Date();
-            time.setMinutes(time.getMinutes() + 20);
-            time = btoa(time);
-
-            let mail_response = await mail_helper.send("email_confirmation", {
-                "to": employer_upadate.data.email,
-                "subject": "HireCommit - Email Confirmation"
+        if (req.body.email && req.body.email != "") {
+            let mail_resp = await mail_helper.send("welcome_email", {
+                "to": user_detail.data.email,
+                "subject": "Attention Mail"
             }, {
-                // config.website_url + "/email_confirm/" + interest_resp.data._id
-                "msg": "",
-                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                'msg': content
             });
-            console.log('mail_response', mail_response);
-
+            console.log('mail_resp===============>>>', mail_resp);
         }
+
+        // if (mail_resp.status === 0) {
+        //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+        // } else {
+        var employer_upadate = await common_helper.update(User, { "_id": req.body.user_id }, obj)
+        var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
+            config.ACCESS_TOKEN_SECRET_KEY, {
+            expiresIn: 60 * 60 * 24 * 3
+        }
+        )).toString('base64');
+
+        var time = new Date();
+        time.setMinutes(time.getMinutes() + 20);
+        time = btoa(time);
+
+        let mail_response = await mail_helper.send("email_confirmation", {
+            "to": employer_upadate.data.email,
+            "subject": "HireCommit - Email Confirmation"
+        }, {
+            // config.website_url + "/email_confirm/" + interest_resp.data._id
+            "msg": "",
+            "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+        });
+        console.log('>>>>>>>mail_response', mail_response);
+
+        // }
     }
 
     if (employer_detail_upadate.status == 0) {

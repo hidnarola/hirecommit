@@ -1,7 +1,7 @@
 var ObjectId = require('mongodb').ObjectID;
 
 var user_helper = {};
-user_helper.get_all_sub_user = async (collection, id, search, start, length, recordsTotal, sort) => {
+user_helper.get_all_sub_user = async (collection, id, user_id, search, start, length, recordsTotal, sort) => {
 
   try {
 
@@ -10,7 +10,8 @@ user_helper.get_all_sub_user = async (collection, id, search, start, length, rec
       {
         $match: {
           "is_del": false,
-          "emp_id": new ObjectId(id)
+          "emp_id": new ObjectId(id),
+          "user_id": { $ne: new ObjectId(user_id) }
         }
       },
       {
