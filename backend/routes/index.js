@@ -550,6 +550,19 @@ router.post("/check_employer_email", async (req, res) => {
   }
 })
 
+
+router.post("/email_exists", async (req, res) => {
+  var user_id = req.body.user_id;
+  var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
+  if (user_resp.status === 1) {
+    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
+  }
+  else {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "Email address not Register" });
+  }
+
+})
+
 router.post('/login', async (req, res) => {
   var schema = {
     'email': {
