@@ -61,7 +61,8 @@
                                 <td>{{acc.email}}</td>
                                 <td>
                                     <p-inputSwitch [(ngModel)]="acc.admin_rights"
-                                        (onChange)="changeRights($event, acc.user_id)">
+                                        (onChange)="changeRights($event, acc.user_id)"
+                                        [disabled]="userDetail.role === 'sub-employer'  &&  _profile_data.user_id.admin_rights === 'no'">
                                     </p-inputSwitch>
                                     <!-- <label class="switch">
                                         <input [checked]="acc.user.admin_rights === 'yes'" type="checkbox"
