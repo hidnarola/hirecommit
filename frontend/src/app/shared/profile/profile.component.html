@@ -97,15 +97,25 @@
                                                             <span
                                                                 *ngIf="profileForm.get('contactno').errors['required'] ">This
                                                                 field is required.</span>
-                                                            <span
-                                                                *ngIf="(profileForm.controls['contactno'].errors['minlength'] || profileForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
-                                                                Valid data</span>
                                                         </span>
                                                     </div>
+                                                    <div class="cust_err_msg">
+                                                        <span *ngIf="!profileForm.get('contactno').valid"
+                                                            class="text-danger">
+
+                                                            <span
+                                                                *ngIf="profileForm.controls['contactno'].errors['pattern']">Enter
+                                                                10 digits of mobile number.</span>
+                                                        </span>
+                                                    </div>
+
                                                 </div>
                                             </div>
 
                                         </div>
+                                    </div>
+
+                                    <div class="form-row mb-12">
                                         <div class="col-md-12 text-right">
                                             <button type="submit" class="btn btn-primary"
                                                 [disabled]="show_spinner">Submit
@@ -114,6 +124,7 @@
                                                 (click)='cancel()'>Close</button>
                                         </div>
                                     </div>
+
                                 </form>
                             </div>
                         </form>
@@ -213,30 +224,36 @@
                                     <div class="form-row mb-3">
                                         <div class="col-md-12 contact-number-field">
                                             <label class="lbl">Contact Number</label>
-                                            <div class="d-flex">
+                                            <div class="number-countrycode">
                                                 <input type="text" class="form-control countrycode-input"
                                                     disabled="true" value="{{Candidate_CountryCode}}"
                                                     formControlName="candidate_countrycode"
                                                     name="candidate_countrycode">
-                                                <input type="text" class="form-control countryno-input"
-                                                    [(ngModel)]="Candidate_ContactNo"
-                                                    formControlName="candidate_contactno" name="candidate_contactno">
-                                            </div>
-                                            <div class="cust_err_msg">
-                                                <span
-                                                    *ngIf="!CandidateForm.get('candidate_contactno').valid && submitted"
-                                                    class="text-danger">
-                                                    <span
-                                                        *ngIf="CandidateForm.get('candidate_contactno').errors['required'] ">This
-                                                        field is required.</span>
-                                                    <span
-                                                        *ngIf="!(CandidateForm.controls['candidate_contactno'].errors['minLength'] || CandidateForm.controls['candidate_contactno'].errors['maxLength'])">Enter
-                                                        10 digit contact number.
-                                                    </span>
-                                                    <span
-                                                        *ngIf="CandidateForm.controls['candidate_contactno'].errors['pattern']">Enter
-                                                        Valid data</span>
-                                                </span>
+                                                <div class="countryno-input">
+                                                    <input type="number" class="form-control countryno-input"
+                                                        [(ngModel)]="Candidate_ContactNo"
+                                                        formControlName="candidate_contactno"
+                                                        name="candidate_contactno">
+                                                    <div class="cust_err_msg">
+                                                        <span
+                                                            *ngIf="!CandidateForm.get('candidate_contactno').valid && submitted"
+                                                            class="text-danger">
+                                                            <span
+                                                                *ngIf="CandidateForm.get('candidate_contactno').errors['required'] ">This
+                                                                field is required.</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="cust_err_msg">
+                                                        <span *ngIf="!CandidateForm.get('candidate_contactno').valid"
+                                                            class="text-danger">
+                                                            <span
+                                                                *ngIf="CandidateForm.controls['candidate_contactno'].errors['pattern']">Enter
+                                                                10 digit contact number.
+                                                            </span>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
 
                                             </div>
                                         </div>

@@ -53,51 +53,64 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     } else {
 
       let profile;
-      this.commonService.profileData().then(res => {
-        profile = res;
 
-        this._profile_data = profile;
 
-        if (userType === 'employer') {
-          this.navItems = employer;
-          this.name = this._profile_data[0].username;
-          // if (this._profile_data[0].user_id.is_email_change) {
-          //   this.router.navigate(['/employer/change-password']);
-          // }
-          if (this._profile_data[0].user_id.is_login_first === false) {
-            this.modalService.open(this.content, ModalOptions);
-          }
-        } else if (userType === 'sub-employer') {
-          this.commonService.getFirstLogin.subscribe(res => {
-            if (res) {
-              this._profile_data[0].user_id.is_login_first = res;
-            }
-            if (this._profile_data[0].user_id.is_login_first === false) {
-              this.router.navigate(['sub_employer/change-password']);
-              this.name = this._profile_data[0].username;
-            }
-            // else if (this._profile_data[0].user_id.is_email_change) {
-            //   this.router.navigate(['/sub_employer/change-password']);
+      // this.commonService.getFirstLogin.subscribe((res) => {
+      //   console.log('resss for first logi=>', res);
+      // });
+
+      this.commonService.getChangedProfileDetail.subscribe((resp) => {
+        console.log('res === chack for now ==>', resp);
+        this.commonService.profileData().then(res => {
+          profile = res;
+          this._profile_data = profile;
+          if (userType === 'employer') {
+            this.navItems = employer;
+            this.name = this._profile_data[0].username;
+            // if (this._profile_data[0].user_id.is_email_change) {
+            //   this.router.navigate(['/employer/change-password']);
             // }
-            else {
-              this.navItems = sub_employer;
-              this.name = this._profile_data[0].username;
+            if (this._profile_data[0].user_id.is_login_first === false) {
+              this.modalService.open(this.content, ModalOptions);
             }
-          });
-        } else if (userType === 'candidate') {
-          console.log('this._profile_data[0].user_id.is_email_change=>', this._profile_data[0].user_id.is_email_change);
-          // if (this._profile_data[0].user_id.is_email_change === true) {
-          //   this.router.navigate(['candidate/change-password']);
-          // } else
-          if (this._profile_data[0].user_id.email_verified) {
-            this.navItems = candidate;
-            this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
-          } else {
-            this.navItems = [];
-            this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
+          } else if (userType === 'sub-employer') {
+
+
+            this.commonService.getFirstLogin.subscribe(res => {
+              console.log('res=>', res);
+              console.log(' this._profile_data[0].user_id.is_login_first=>', this._profile_data[0].user_id.is_login_first);
+              // if (res) {
+              //   this._profile_data[0].user_id.is_login_first = res;
+              // }
+              if (this._profile_data[0].user_id.is_login_first === false) {
+                this.router.navigate(['sub_employer/change-password']);
+                console.log(' this.commonService.changedProfileDetail=>');
+                this.name = this._profile_data[0].username;
+              }
+              // else if (this._profile_data[0].user_id.is_email_change) {
+              //   this.router.navigate(['/sub_employer/change-password']);
+              // }
+              else {
+                this.navItems = sub_employer;
+                this.name = this._profile_data[0].username;
+              }
+            });
+          } else if (userType === 'candidate') {
+            console.log('this._profile_data[0].user_id.is_email_change=>', this._profile_data[0].user_id.is_email_change);
+            // if (this._profile_data[0].user_id.is_email_change === true) {
+            //   this.router.navigate(['candidate/change-password']);
+            // } else
+            if (this._profile_data[0].user_id.email_verified) {
+              this.navItems = candidate;
+              this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
+            } else {
+              this.navItems = [];
+              this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
+            }
           }
-        }
+        });
       });
+
     }
   }
 

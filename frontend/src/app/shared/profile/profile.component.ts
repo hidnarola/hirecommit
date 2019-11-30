@@ -23,7 +23,7 @@ export class ProfileComponent implements OnInit {
   obj: any;
   obj1: any;
   CompanyName: any;
-  Website: any
+  Website: any;
   Email: any;
   Country: any;
   BusinessType: any;
@@ -45,6 +45,7 @@ export class ProfileComponent implements OnInit {
   businessCode: any;
   show_spinner = false;
   userDetail: any = [];
+  _profile_data: any;
   constructor(
     private service: CommonService,
     private router: ActivatedRoute,
@@ -53,12 +54,16 @@ export class ProfileComponent implements OnInit {
     private candidateService: CandidateService,
     private tostsr: ToastrService,
     private route: Router,
-    private confirmationService: ConfirmationService, ) {
+    private confirmationService: ConfirmationService,
+    private commonService: CommonService) {
     this.userDetail = this.service.getLoggedUserDetail();
-    console.log('this,userDetail.profile=>', this.userDetail);
     this.id = {
       'id': this.userDetail.id
-    }
+    };
+
+    this.service.profileData().then(res => {
+      this._profile_data = res[0];
+    });
     this.profileForm = new FormGroup({
       companyname: new FormControl(''),
       website: new FormControl(''),
@@ -68,8 +73,7 @@ export class ProfileComponent implements OnInit {
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       contactno: new FormControl('', Validators.compose([Validators.required,
-      Validators.pattern(/^-?(0|[1-9]\d*)?$/),
-      Validators.maxLength(10), Validators.minLength(10)
+      Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)
       ])),
     });
 
@@ -83,8 +87,7 @@ export class ProfileComponent implements OnInit {
       candidate_email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       candidate_contactno: new FormControl('',
         Validators.compose([Validators.required,
-        Validators.pattern(/^-?(0|[1-9]\d*)?$/),
-        Validators.maxLength(10), Validators.minLength(10)
+        Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)
         ])),
     });
   }
@@ -138,7 +141,7 @@ export class ProfileComponent implements OnInit {
       this.UserName = res['data']['username'];
       this.CountryCode = res['data']['countrycode'];
       this.ContactNumber = res['data']['contactno'];
-    })
+    });
   }
 
   getCandidate() {
@@ -152,13 +155,11 @@ export class ProfileComponent implements OnInit {
       this.DocumentImage = res['data']['documentimage'][0];
       this.Candidate_ContactNo = res['data']['contactno'];
       this.Candidate_CountryCode = res['data']['countrycode'];
-      console.log('res=> ', this.candidate_data);
-    })
+    });
   }
 
   edit(valid, id) {
     this.submitted = true;
-    console.log('id=>', id);
     if (valid) {
       this.show_spinner = true;
       this.obj = {
@@ -167,14 +168,13 @@ export class ProfileComponent implements OnInit {
         'email': this.Email,
         'contactno': this.ContactNumber
       };
-      console.log('this.obj=> ', this.obj);
-
       this.confirmationService.confirm({
         message: 'Are you sure that you want to update your Profile?',
         accept: () => {
           this.show_spinner = false;
           this.Employerservice.update_Profile(this.obj).subscribe(res => {
             this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.commonService.changedProfileDetail(true);
             this.getEmploterData();
             if (this.userDetail.email != this.Email) {
               localStorage.removeItem('token');
@@ -200,9 +200,9 @@ export class ProfileComponent implements OnInit {
   }
 
   candidate_profile(valid, id) {
+    console.log('candidate profile, submit function=======>');
+
     this.submitted = true;
-    console.log('id=>', id);
-    console.log('valid=>', valid);
     if (valid) {
 
       this.show_spinner = true;
@@ -220,8 +220,10 @@ export class ProfileComponent implements OnInit {
           this.show_spinner = false;
           this.candidateService.update_Profile_candidate(this.obj1).subscribe(res => {
             this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+            console.log('success=======>');
+            this.commonService.changedProfileDetail(true);
             this.getCandidate();
-            if (this.userDetail.email != this.Candidate_Email) {
+            if (this.userDetail.email !== this.Candidate_Email) {
               localStorage.removeItem('token');
               localStorage.removeItem('user');
               localStorage.removeItem('userid');
@@ -268,7 +270,11 @@ export class ProfileComponent implements OnInit {
   }
 
   cancel1() {
-    this.route.navigate(['/candidate/offers/list']);
+    if (this._profile_data.user_id.email_verified) {
+      this.route.navigate(['/candidate/offers/list']);
+    } else {
+      this.route.navigate(['/candidate/account_verification']);
+    }
   }
 
   checkEmail() {

@@ -21,9 +21,11 @@ export class CommonService {
   private url = env.environment.API_URL;
   private secretKey = 'myhardpassword';
   private profileDetail = new BehaviorSubject(null);
+  public changed_profile_detail = new BehaviorSubject(null);
   private firstLoginDetail = new BehaviorSubject(null);
 
   getprofileDetail = this.profileDetail.asObservable();
+  getChangedProfileDetail = this.changed_profile_detail.asObservable();
   getFirstLogin = this.firstLoginDetail.asObservable();
 
   constructor(
@@ -127,10 +129,20 @@ export class CommonService {
     this.profileDetail.next(profileData);
   }
   public firstLogin(data: boolean) {
-    // console.log('in observable');
+    console.log('data for first login=>', data);
 
     this.firstLoginDetail.next(data);
   }
+
+
+  public changedProfileDetail(data: boolean) {
+    // console.log('in observable');
+    console.log('data === changedProfileDetail === in service =====>', data);
+
+    this.changed_profile_detail.next(data);
+  }
+
+
   async getDecryptedProfileDetail() {
     const profile = await this.decrypt(localStorage.getItem('profile'));
     return JSON.parse(profile);

@@ -208,18 +208,19 @@
                             formControlName="countrycode" name="countrycode" disabled>
                         </div>
                         <div class="contact-number">
-                          <input type="text" class="form-control" placeholder="10-digit number"
+                          <input type="number" class="form-control" placeholder="10-digit number"
                             [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
                             required="required">
                           <div class="error pull-left"
                             *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
                             <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
                               is required.</span>
-                            <span
-                              *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
+                          </div>
+                          <div class="error pull-left" *ngIf="!registerForm.controls['contactno'].valid ">
+
+                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
                               10 digits of mobile number.</span>
-                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers
-                              0-9.</span>
+
                           </div>
                         </div>
 
