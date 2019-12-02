@@ -8,7 +8,7 @@
               <h1>Sign Up</h1>
               <div class="row">
                 <div class="form-group col-md-6">
-                  <label for="firstname">First Name</label>
+                  <label for="firstname">First Name<p class="ast"> *</p></label>
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
@@ -18,6 +18,7 @@
 
                     <input type="text" class="form-control" placeholder="First Name" formControlName="firstname"
                       [(ngModel)]="registerData.firstname" name="firstname" required="required">
+
                     <div class="error" *ngIf="!registerForm.controls['firstname'].valid && isFormSubmitted">
                       <span
                         *ngIf="registerForm.controls['firstname'].errors.required || registerForm.controls['firstname'].errors.whitespace">This
@@ -26,7 +27,7 @@
                   </div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="firstname">Last Name</label>
+                  <label for="firstname">Last Name<p class="ast"> *</p></label>
                   <div class="">
                     <input type="text" class="form-control" placeholder="Last Name" formControlName="lastname"
                       [(ngModel)]="registerData.lastname" name="lastname" required="required">
@@ -40,7 +41,7 @@
               </div>
               <div class="row">
                 <div class="form-group col-md-6">
-                  <label for="email">Your Work Email</label>
+                  <label for="email">Your Work Email<p class="ast"> *</p></label>
                   <div class="input-group ">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
@@ -65,7 +66,7 @@
                   </div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="country">Country</label>
+                  <label for="country">Country<p class="ast"> *</p></label>
                   <p-dropdown [options]="countryList" placeholder="Select Country" formControlName="country" #country
                     id="country" (onChange)="getCode($event)" [(ngModel)]="registerData.country" [required]>
                   </p-dropdown>
@@ -78,7 +79,7 @@
 
               <div class="row">
                 <div class="form-group col-md-6">
-                  <label for="contactno">Contact Number</label>
+                  <label for="contactno">Contact Number <p class="ast"> *</p></label>
 
                   <div class="input-group">
                     <div class="d-flex w-100">
@@ -121,7 +122,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                  <label for="documenttype">Document Type</label>
+                  <label for="documenttype">Document Type <p class="ast"> *</p></label>
                   <p-dropdown [options]="Document_optoins" placeholder="Select Document Types"
                     formControlName="documenttype" [(ngModel)]="registerData.documenttype" id="documenttype" [required]>
                   </p-dropdown>
@@ -151,7 +152,7 @@
               </div>
               <div class="row">
                 <div class="form-group col-md-6">
-                  <label for="password">Password</label>
+                  <label for="password">Password <p class="ast"> *</p></label>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
@@ -172,7 +173,7 @@
                   </div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="confirmpassword">Confirm Password</label>
+                  <label for="confirmpassword">Confirm Password <p class="ast"> *</p></label>
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">

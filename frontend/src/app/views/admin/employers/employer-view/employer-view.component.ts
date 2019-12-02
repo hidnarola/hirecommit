@@ -70,8 +70,7 @@ export class EmployerViewComponent implements OnInit {
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       contactno: new FormControl('', Validators.compose([Validators.required,
-      Validators.pattern(/^-?(0|[1-9]\d*)?$/),
-      Validators.maxLength(10), Validators.minLength(10)
+      Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)
       ])),
     });
   }
@@ -149,6 +148,7 @@ export class EmployerViewComponent implements OnInit {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.show_spinner = false;
             this.getDetails();
+            this.router.navigate([this.cancel_link2]);
           }, err => {
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
@@ -168,6 +168,7 @@ export class EmployerViewComponent implements OnInit {
   }
 
   onApprove(id) {
+    document.getElementById('approve').setAttribute('disabled', 'true');
     const obj = {
       'id': id
     };

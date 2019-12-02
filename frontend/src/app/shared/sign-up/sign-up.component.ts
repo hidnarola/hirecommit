@@ -103,6 +103,8 @@ export class SignUpComponent implements OnInit {
   next1() {
     this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
+    console.log('this.registerForm.controls[`email`].valid=>', this.registerForm.controls[`email`].valid);
+    // this.checkEmail();
     if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid
       //  && this.registerForm.controls['recaptcha'].valid
     ) {
@@ -136,6 +138,8 @@ export class SignUpComponent implements OnInit {
   }
 
   checkEmail() {
+    console.log('in function=======>');
+
     this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
     }, (err) => {
       this.registerForm.controls['email'].setErrors({ 'isExist': true });
