@@ -68,6 +68,7 @@ export class CandidateViewComponent implements OnInit {
   }
 
   approve(id) {
+    document.getElementById('approve').setAttribute('disabled', 'true');
     this.approval = true;
     const obj = {
       'id': id

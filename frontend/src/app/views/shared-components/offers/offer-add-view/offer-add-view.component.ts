@@ -221,6 +221,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       if (this.pastDetails.length > 0) {
         this.modalService.open(this.content, ModalOptions);
       }
+      else {
+
+      }
     });
     if (this.form.value.email.length > 0) {
       this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
@@ -311,19 +314,24 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
-          if (res['data'].status === 'Accepted') {
-            this.isAccepted = true;
-            this.form.controls['title'].disable();
-            this.form.controls['salarybracket'].disable();
-            this.form.controls['salarybracket_from'].disable();
-            this.form.controls['salarybracket_to'].disable();
-            this.form.controls['salaryduration'].disable();
-            this.form.controls['offertype'].disable();
-            this.form.controls['notes'].disable();
-            this.form.controls['status'].disable();
-            document.getElementById('annual').setAttribute('disabled', 'true');
-            document.getElementById('hourly').setAttribute('disabled', 'true');
+          if (this.is_Edit) {
+            if (res['data'].status === 'Accepted') {
+              this.isAccepted = true;
+              this.form.controls['title'].disable();
+              this.form.controls['salarybracket'].disable();
+              this.form.controls['salarybracket_from'].disable();
+              this.form.controls['salarybracket_to'].disable();
+              // this.form.controls['salaryduration'].disable();
+              this.disabled = true;
+              this.form.controls['offertype'].disable();
+              this.form.controls['notes'].disable();
+              this.form.controls['status'].disable();
+              document.getElementById('annual').setAttribute('disabled', 'true');
+              document.getElementById('hourly').setAttribute('disabled', 'true');
+
+            }
           }
+
           this.resData = res[`data`];
           this.candidateData = res['candidate_data']['data'];
           this.grpId = this.resData.user_id;
@@ -545,6 +553,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   Accept(id) {
+    document.getElementById('accept').setAttribute('disabled', 'true');
     const obj = {
       'id': id
     };
@@ -558,6 +567,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           }
         );
         this.spinner.hide();
+
       }
     });
   }

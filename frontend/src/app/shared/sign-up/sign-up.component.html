@@ -37,7 +37,7 @@
               <div id="test-l-1" class="content">
                 <div class="form-inner row step-one">
                   <fieldset class="form-group col-md-6 mb-3">
-                    <label for="email">Your Work Email</label>
+                    <label for="email">Your Work Email <p class="ast"> *</p></label>
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -52,19 +52,23 @@
                           *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
                           field
                           is required.</span>
-
-                      </div>
-                      <div class="error" *ngIf="!registerForm.controls['email'].valid">
                         <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
                           must be in valid format.</span>
                         <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
                           This Email address is already registered.
                         </span>
                       </div>
+                      <div class="error" *ngIf="!registerForm.controls['email'].valid">
+                        <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
+                          must be in valid format.</span>
+                        <span *ngIf="registerForm.controls['email'].errors['isExist']  && !isFormSubmitted ">
+                          This Email address is already registered.
+                        </span>
+                      </div>
                     </div>
                   </fieldset>
                   <fieldset class="form-group col-md-6 mb-3">
-                    <label for="password"> Password</label>
+                    <label for="password"> Password <p class="ast"> *</p></label>
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <span class="input-group-text">
@@ -107,7 +111,7 @@
                 <div class="form-inner">
                   <div class="row">
                     <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="country">Country</label>
+                      <label class="col-form-label" for="country">Country <p class="ast"> *</p></label>
                       <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
                         id="country" (onChange)="getCode($event)">
                       </p-dropdown>
@@ -117,7 +121,7 @@
                       </div>
                     </fieldset>
                     <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="businesstype">Business Type</label>
+                      <label class="col-form-label" for="businesstype">Business Type <p class="ast"> *</p></label>
                       <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
                         formControlName="businesstype" id="businesstype">
                       </p-dropdown>
@@ -135,58 +139,90 @@
               <div id="test-l-3" class="content text-center">
                 <div class="form-inner">
                   <h5>Need Your Business Details</h5>
-                  <h4>Company</h4>
+                  <!-- <h4>Company Detail</h4> -->
                   <div class="row">
-                    <div class="input-group mb-3 col-md-6">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="icon-calendar"></i>
-                        </span>
-                      </div>
-                      <input type="text" class="form-control" placeholder="Company Name"
-                        [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
-                        required="required">
-                      <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmitted">
-                        <span
-                          *ngIf="registerForm.controls['companyname'].errors['required'] || registerForm.controls['companyname'].errors['whitespace']">This
-                          field
-                          is required.</span>
-                      </div>
-                    </div>
 
-                    <div class="input-group mb-3 col-md-6">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="icon-globe"></i>
-                        </span>
+
+
+
+
+                    <fieldset class="form-group col-md-6 mb-3">
+                      <label class="col-form-label" for="companyname" style="text-align: left">Comapny Name <p
+                          class="ast">
+                          *</p></label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-calendar"></i>
+                          </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Company Name *"
+                          [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
+                          required="required">
+                        <!-- error mb-2 mt-1 -->
+                        <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmitted">
+                          <span
+                            *ngIf="registerForm.controls['companyname'].errors['required'] || registerForm.controls['companyname'].errors['whitespace']">This
+                            field
+                            is required.</span>
+                        </div>
                       </div>
-                      <input type="text" class="form-control" placeholder="Website" formControlName="website"
-                        (blur)="checkPattern($event)">
-                      <!-- <div class="error" *ngIf="!registerForm.controls['website'].valid && isFormSubmitted">
-                        <span *ngIf=" registerForm.controls['website'].errors['whitespace']">This
-                          field
-                          is required.</span>
-                        <span *ngIf="registerForm.controls['website'].errors['pattern']">Enter valid value.</span>
-                      </div> -->
-                      <div class="error" *ngIf="!registerForm.controls['website'].valid">
-                        <span *ngIf="registerForm.controls['website'].errors['pattern']">Enter valid value.</span>
+                    </fieldset>
+
+                    <fieldset class="form-group col-md-6 mb-3">
+                      <label class="col-form-label" for="website" style="text-align: left">Website</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-globe"></i>
+                          </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Website" formControlName="website"
+                          (blur)="checkPattern($event)">
+                        <!-- error mb-2 mt-1 -->
+                        <div class="error" *ngIf="!registerForm.controls['website'].valid">
+                          <span *ngIf="registerForm.controls['website'].errors['pattern']">Enter valid value.</span>
+                        </div>
                       </div>
-                    </div>
+                    </fieldset>
                     <p class="msg">Leave blank if unavailable</p>
 
                   </div>
 
                   <br><br>
 
-                  <h4>Contact Details</h4>
+                  <!-- <h4>Contact Details</h4> -->
                   <div class="row">
-                    <div class="input-group mb-3 col-md-6">
+                    <fieldset class="form-group col-md-6 mb-3">
+                      <label class="col-form-label" for="username" style="text-align: left">User Name <p class="ast">
+                          *</p></label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-user"></i>
+                          </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Your Name *"
+                          [(ngModel)]="formData.username" name="username" formControlName="username"
+                          required="required">
+                        <!-- error mb-2 mt-1 -->
+                        <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
+                          <span
+                            *ngIf="registerForm.controls['username'].errors['required'] || registerForm.controls['username'].errors['whitespace']">This
+                            field
+                            is required.</span>
+                        </div>
+                      </div>
+                    </fieldset>
+
+                    <!-- <div class="input-group mb-3 col-md-6">
                       <div class="input-group-prepend">
                         <span class="input-group-text">
                           <i class="icon-user"></i>
                         </span>
                       </div>
-                      <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
+                      <label class="col-form-label" for="country">Person Name <p class="ast"> *</p></label>
+                      <input type="text" class="form-control" placeholder="Your Name *" [(ngModel)]="formData.username"
                         name="username" formControlName="username" required="required">
                       <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
                         <span
@@ -194,21 +230,29 @@
                           field
                           is required.</span>
                       </div>
-                    </div>
+                    </div> -->
 
-                    <div class="input-group mb-3 col-md-6 country-code-box-wrap">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="icon-phone"></i>
-                        </span>
-                      </div>
-                      <div class="d-flex">
+
+
+
+
+                    <!-- <fieldset class="form-group col-md-6 mb-3">
+                      <label class="col-form-label" for="contactno" style="text-align: left">Comapny Name <p
+                          class="ast">
+                          *</p></label>
+                      <div class="input-group mb-3 col-md-6 country-code-box-wrap">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-phone"></i>
+                          </span>
+                        </div>
                         <div class="country-code">
+                          <label class="col-form-label" for="country">Contact Number <p class="ast"> *</p></label>
                           <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
                             formControlName="countrycode" name="countrycode" disabled>
                         </div>
                         <div class="contact-number">
-                          <input type="number" class="form-control" placeholder="10-digit number"
+                          <input type="number" class="form-control" placeholder="10-digit number *"
                             [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
                             required="required">
                           <div class="error pull-left"
@@ -223,9 +267,44 @@
 
                           </div>
                         </div>
-
                       </div>
-                    </div>
+                    </fieldset> -->
+
+                    <fieldset class="form-group col-md-6 mb-3">
+                      <label class="col-form-label" style="text-align: left;">Contact Number</label>
+                      <div class="input-group  country-code-box-wrap">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="icon-phone"></i>
+                          </span>
+                        </div>
+                        <div class="d-flex">
+                          <div class="country-code">
+                            <input type="text" [(ngModel)]="formData.countrycode" class="form-control"
+                              placeholder="Code" formControlName="countrycode" name="countrycode" disabled>
+                          </div>
+                          <div class="contact-number">
+                            <input type="number" class="form-control" placeholder="10-digit number *"
+                              [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
+                              required="required">
+                            <div class="error pull-left"
+                              *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
+                              <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
+                                is required.</span>
+                            </div>
+                            <div class="error pull-left" *ngIf="!registerForm.controls['contactno'].valid ">
+                              <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
+                                10 digits of mobile number.</span>
+
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </fieldset>
+
+
+
                   </div>
 
                   <!-- captcha -->

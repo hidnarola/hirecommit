@@ -55,7 +55,7 @@
                             [routerLink]="['/admin/employers/approved_employer']">Cancel</button> -->
                         <div style="float: right;">
                             <button type="button" *ngIf="employer_type === 'New'" class="btn btn-md btn-success"
-                                (click)="onApprove(employer_detail.user_id)">Approve</button>
+                                (click)="onApprove(employer_detail.user_id)" id="approve">Approve</button>
                             <!-- <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
                                                         (click)="unapprove()">Unapprove</button> -->
 
@@ -138,10 +138,16 @@
                                                 class="text-danger">
                                                 <span *ngIf="empForm.get('contactno').errors['required'] ">This
                                                     field is required.</span>
-                                                <span
-                                                    *ngIf="(empForm.controls['contactno'].errors['minlength'] || empForm.controls['contactno'].errors['maxlength']) && !profileForm.controls['contactno'].errors['pattern']">Enter
+
+                                            </span>
+                                        </div>
+                                        <div class="cust_err_msg">
+                                            <span *ngIf="!empForm.get('contactno').valid " class="text-danger">
+
+                                                <span *ngIf="empForm.controls['contactno'].errors['pattern']">Enter
                                                     Valid data</span>
                                             </span>
+
                                         </div>
                                     </div>
                                 </div>
