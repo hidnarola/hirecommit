@@ -20,6 +20,7 @@ var EmployerDetail = require("../../models/employer-detail");
 var Role = require('../../models/role');
 var Status = require("../../models/status");
 var History = require('../../models/offer_history');
+var MailRecord = require('../../models/mail_record');
 var ApiLog = require('../../models/api_log');
 var request = require('request');
 var http = require("https");
@@ -215,7 +216,7 @@ router.post("/", async (req, res) => {
                 }
 
 
-                let mail_resp = await new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
+                let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                     "to": user.data.email,
                     "subject": "Offer",
                     "trackid": interest_resp.data._id
@@ -253,6 +254,8 @@ router.post('/pastOffer', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
     }
 })
+
+
 
 
 cron.schedule('00 00 * * *', async (req, res) => {
@@ -306,238 +309,813 @@ cron.schedule('00 00 * * *', async (req, res) => {
         ]
     )
 
-    var current_date = moment().format("YYYY-MM-DD")
+    var current_date = moment().startOf('day')
+
+    console.log('hi');
 
     for (const resp of resp_data) {
-        for (const comm of resp.communication.communication) {
-            if (comm.trigger == "afterOffer") {
-                // console.log('====>', comm.trigger);
-                var days = comm.day
-                var offer_date = moment(resp.createdAt).add(days, 'day')
-                // console.log('offer_date1 ==> ', moment(offer_date).format());
-                offer_date = moment(offer_date).format("YYYY-MM-DD")
-                // console.log('offer_date ==> ', offer_date, current_date);
-                // console.log('------->', (moment(current_date).isSame(offer_date) == ));
+        if (resp.communication !== undefined && resp.communication.communication !== undefined) {
+            for (const comm of resp.communication.communication) {
+                if (comm.trigger == "afterOffer") {
+                    var days = comm.day
+                    var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                    // console.log('offer_date1 ==> ', offer_date.format());
+                    offer_date = moment(offer_date);
 
-                var message = comm.message;
-                var email = resp.candidate.email
+                    var message = comm.message;
+                    var email = resp.candidate.email
+
+                    // console.log("current_date", moment(current_date).format());
+                    // console.log(' offer_date:  ==> ', moment(offer_date).format());
+
+                    // console.log(moment(current_date).isSame(offer_date));
 
 
-                if (moment(current_date).isSame(offer_date) == true) {
-                    console.log('hiii', email, message);
-                    logger.trace("sending mail");
-                    let mail_resp = await mail_helper.send("offer", {
-                        "to": email,
-                        "subject": "Offer Letter"
-                    }, {
+                    if (moment(current_date).isSame(offer_date) == true) {
+                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'afterOffer', "offer_id": resp._id })
+                        logger.trace("sending mail");
+                        // let mail_resp = await mail_helper.send("offer", {
+                        //     "to": email,
+                        //     "subject": "Offer Letter"
+                        // }, {
+                        //     "msg": message
+                        // });
+                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                            "to": resp.candidate.email,
+                            "subject": "Communication mail",
+                            "trackid": resp._id + 'afterOffer'
+                        }, message);
+                    }
 
-                        "msg": message
-                    });
+                }
+
+                if (comm.trigger == "beforeJoining") {
+                    var days = comm.day
+                    var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    var message = comm.message;
+                    var email = resp.candidate.email
+
+                    if (moment(current_date).isSame(offer_date) == true) {
+                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'beforeJoining', "offer_id": resp._id })
+                        // let mail_resp = await mail_helper.send("offer", {
+                        //     "to": resp.candidate.email,
+                        //     "subject": "Before Joining"
+                        // }, {
+
+                        //     "msg": message
+                        // });
+                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                            "to": resp.candidate.email,
+                            "subject": "Communication mail",
+                            "trackid": resp._id + 'beforeJoining'
+                        }, message);
+
+                    }
+                }
+
+                if (comm.trigger == "afterJoining") {
+                    var days = comm.day
+                    var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    var message = comm.message;
+                    var email = resp.candidate.email
+                    if (moment(current_date).isSame(offer_date) == true) {
+                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'afterJoining', "offer_id": resp._id })
+                        // let mail_resp = await mail_helper.send("offer", {
+                        //     "to": email,
+                        //     "subject": "After Joining"
+                        // }, {
+
+                        //     "msg": message
+                        // });
+                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                            "to": resp.candidate.email,
+                            "subject": "Communication mail",
+                            "trackid": resp._id + 'afterJoining'
+                        }, message);
+                    }
+
+                }
+                if (comm.trigger == "beforeExpiry") {
+                    var days = comm.day
+                    var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    var message = comm.message;
+                    var email = resp.candidate.email
+                    if (moment(current_date).isSame(offer_date) == true) {
+                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'beforeExpiry', "offer_id": resp._id })
+                        // let mail_resp = await mail_helper.send("offer", {
+                        //     "to": email,
+                        //     "subject": "Before Expiry"
+                        // }, {
+
+                        //     "msg": message
+                        // });
+                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                            "to": resp.candidate.email,
+                            "subject": "Communication mail",
+                            "trackid": resp._id + 'beforeExpiry'
+                        }, message);
+                    }
+
+                }
+                if (comm.trigger == "afterExpiry") {
+                    var days = comm.day
+                    var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    var message = comm.message;
+                    var email = resp.candidate.email
+                    if (moment(current_date).isSame(offer_date) == true) {
+                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'afterExpiry', "offer_id": resp._id })
+                        // let mail_resp = await mail_helper.send("offer", {
+                        //     "to": email,
+                        //     "subject": "After Expiry"
+                        // }, {
+
+                        //     "msg": message
+                        // });
+                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                            "to": resp.candidate.email,
+                            "subject": "Communication mail",
+                            "trackid": resp._id + 'afterExpiry'
+                        }, message);
+                    }
+
+                }
+                if (comm.trigger == "afterAcceptance") {
+                    var days = comm.day
+                    var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    var message = comm.message;
+                    var email = resp.candidate.email
+                    if (moment(current_date).isSame(offer_date) == true) {
+                        var mail_record = await common_helper.insert(MailRecord, { "mail_record": resp._id + 'afterAcceptance', "offer_id": resp._id })
+                        // let mail_resp = await mail_helper.send("offer", {
+                        //     "to": email,
+                        //     "subject": "After Acceptance"
+                        // }, {
+                        //     "msg": message
+                        // });
+                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                            "to": resp.candidate.email,
+                            "subject": "Communication mail",
+                            "trackid": resp._id + 'afterAcceptance'
+                        }, message);
+                    }
+
                 }
 
             }
-
-            if (comm.trigger == "beforeJoining") {
-                var days = comm.day
-                var offer_date = moment(resp.joiningdate).subtract(days, 'day')
-                offer_date = moment(offer_date).format("YYYY-MM-DD")
-
-                var message = comm.message;
-                var email = resp.candidate.email
-
-                if (moment(current_date).isSame(offer_date) == true) {
-                    let mail_resp = await mail_helper.send("offer", {
-                        "to": resp.candidate.email,
-                        "subject": "Before Joining"
-                    }, {
-
-                        "msg": message
-                    });
-
-                }
-            }
-
-            if (comm.trigger == "afterJoining") {
-                var days = comm.day
-                var offer_date = moment(resp.joiningdate).add(days, 'day')
-                offer_date = moment(offer_date).format("YYYY-MM-DD")
-
-                var message = comm.message;
-                var email = resp.candidate.email
-                if (moment(current_date).isSame(offer_date) == true) {
-                    let mail_resp = await mail_helper.send("offer", {
-                        "to": email,
-                        "subject": "After Joining"
-                    }, {
-
-                        "msg": message
-                    });
-                }
-
-            }
-            if (comm.trigger == "beforeExpiry") {
-                var days = comm.day
-                var offer_date = moment(resp.expirydate).subtract(days, 'day')
-                offer_date = moment(offer_date).format("YYYY-MM-DD")
-
-                var message = comm.message;
-                var email = resp.candidate.email
-                if (moment(current_date).isSame(offer_date) == true) {
-                    let mail_resp = await mail_helper.send("offer", {
-                        "to": email,
-                        "subject": "Before Expiry"
-                    }, {
-
-                        "msg": message
-                    });
-                }
-
-            }
-            if (comm.trigger == "afterExpiry") {
-                var days = comm.day
-                var offer_date = moment(resp.expirydate).add(days, 'day')
-                offer_date = moment(offer_date).format("YYYY-MM-DD")
-
-                var message = comm.message;
-                var email = resp.candidate.email
-                if (moment(current_date).isSame(offer_date) == true) {
-                    let mail_resp = await mail_helper.send("offer", {
-                        "to": email,
-                        "subject": "After Expiry"
-                    }, {
-
-                        "msg": message
-                    });
-                }
-
-            }
-
-
         }
-
     }
 
     // res.status(config.OK_STATUS).json({ "mesage": "mail sent for before joining", resp_data });
 });
 
+cron.schedule('00 00 * * *', async (req, res) => {
+    var resp_data = await Offer.aggregate(
+        [
+            // {
+            //     $lookup:
+            //     {
+            //         from: "user",
+            //         localField: "user_id",
+            //         foreignField: "_id",
+            //         as: "candidate"
+            //     }
+            // },
+            // {
+            //     $unwind: {
+            //         path: "$candidate",
+            //         // preserveNullAndEmptyArrays: true
+            //     },
+            // },
+            {
+                $lookup:
+                {
+                    from: "group",
+                    localField: "groups",
+                    foreignField: "_id",
+                    as: "group"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$group",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
+                    from: "group_detail",
+                    localField: "group._id",
+                    foreignField: "group_id",
+                    as: "communication"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$communication",
+                    preserveNullAndEmptyArrays: true
+                },
+            }
+        ]
+    )
 
 
-// cron.schedule('*/1 * * * *', async (req, res) => {
-//     var offer_resp = await Offer.find({ "is_del": false });
-//     console.log(' : offer_resp ==> ', offer_resp.length);
-//     var index = 0;
+    var current_date = moment().startOf('day')
 
-//     var interval = setInterval(async function () {
-//         //console.log(i);
-//         let element = offer_resp[index];
-//         // console.log(element);
+    for (const resp of resp_data) {
+        var index = 0;
+        // var interval = setInterval(async function () {
+        if (resp.communication !== undefined && resp.communication.communication !== undefined) {
+            for (const comm of resp.communication.communication) {
+                if (comm.trigger == "afterOffer") {
+                    var days = comm.day
+                    var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
+                    let element = resp;
+                    var options = {
+                        method: 'GET',
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + 'afterOffer' + "%22)",
+                        headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                    };
 
-//         var options = {
-//             method: 'GET',
-//             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-//             // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
-//             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//             //body: '{}'
-//         };
+                    if (comm.priority == "High") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.high_unopened, 'day')
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'high'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
 
-//         request(options, function (error, response, body) {
-//             if (error) throw new Error(error); 
-//             // console.log(response);
-//             var resp = JSON.parse(response.body);
+                    } else if (comm.priority == "Medium") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.medium_unopened, 'day')
 
-//             if (resp && resp.error) {
-//                 console.log(resp.error);
-//             } else if (resp && resp.messages) {
-//                 if (body.messages[0].opens_count == 0) {
-//                     // let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
-//                     //     "to": body.messages[0].to_email,
-//                     //     "subject": "Offer",
-//                     //     "trackid": "new123"
-//                     // }, content);
-//                 } else {
-//                     console.log("end");
-//                 }
-//             }
-//             // if (!error) {
-//             //     var body = JSON.parse(body);
-//             //     // console.log("====>", body);
-//             //     if (!body.error) {
-//             //         var content = "RESEND OFFER MSG";
-//             //         if (body.messages[0].opens_count == 0) {
-//             //             let mail_resp = new_mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
-//             //                 "to": body.messages[0].to_email,
-//             //                 "subject": "Offer",
-//             //                 "trackid": "new123"
-//             //             }, content);
-//             //         } else {
-//             //             console.log("end");
-//             //         }
-//             //     }
-//             // }
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'medium'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    } else if (comm.priority == "Low") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.low_unopened, 'day')
 
-//             //------------ log in db-------------//
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'low'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else if (comm.trigger == "beforeJoining") {
+                    var days = comm.day
+                    var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+                    offer_date = moment(offer_date)
 
-//             // var obj = {
-//             //     "api_response": body
-//             // }
-//             // var data = common_helper.insert(ApiLog, { 'api_response': body });
-//             // console.log(data);
-//             //------------------//
-//             // resp = body.messages;
-//         });
-//         // console.log(index);
-//         index++;
-//         // offer_resp.length
-//         if (index == offer_resp.length) {
-//             clearInterval(interval);
-//         }
-//     }, 1000);
-//     // console.log("=======>", offer_resp.length);
+                    let element = resp;
+                    var options = {
+                        method: 'GET',
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + 'beforeJoining' + "%22)",
+                        headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                    };
 
-//     // for (let index = 0; index < offer_resp.length; index++) {
+                    if (comm.priority == "High") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.high_unopened, 'day')
 
-//     //     // resp = [];
-//     //     // console.log(element._id);
-//     //     setTimeout(async function timer() {
-//     //         let element = offer_resp[index];
-//     //         var options = {
-//     //             method: 'GET',
-//     //             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-//     //             // qs: { limit: '1', query: 'unique_args[\'trackid\'] = ' + element._id },
-//     //             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//     //             //body: '{}'
-//     //         };
-//     //         // var options = {
-//     //         //     "method": "GET",
-//     //         //     "hostname": "api.sendgrid.com",
-//     //         //     "port": null,
-//     //         //     "path": "/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-//     //         //     "headers": {
-//     //         //         "authorization": "Bearer " + config.SENDGRID_API_KEY
-//     //         //     }
-//     //         // };
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'high'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
 
-//     //         request(options, function (error, response, body) {
-//     //             if (error) throw new Error(error);
-//     //             var body = JSON.parse(body);
-//     //             console.log(body);
-//     //             resp = body.messages;
-//     //             console.log("hii", typeof resp);
-//     //             // console.log(' :  ==> ', );
-//     //             // if (resp[0].opens_count === 0) {
-//     //             //     console.log(resp);
-//     //             // }
-//     //             // res.send(body)
-//     //         });
-//     //     }, index * 10000);
+                    } else if (comm.priority == "Medium") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.medium_unopened, 'day')
 
-//     // }
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'medium'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    } else if (comm.priority == "Low") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.low_unopened, 'day')
 
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'low'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else if (comm.trigger == "afterJoining") {
+                    var days = comm.day
+                    var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
 
-//     // if (offer_resp.status === 1) {
-//     //     res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_resp });
-//     // }
-// });
+                    let element = resp;
+                    var options = {
+                        method: 'GET',
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + 'afterJoining' + "%22)",
+                        headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                    };
+
+                    if (comm.priority == "High") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.high_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'high'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+
+                    } else if (comm.priority == "Medium") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.medium_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'medium'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    } else if (comm.priority == "Low") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.low_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'low'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else if (comm.trigger == "beforeExpiry") {
+                    var days = comm.day
+                    var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    let element = resp;
+                    var options = {
+                        method: 'GET',
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                        headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                    };
+
+                    if (comm.priority == "High") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.high_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'high'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+
+                    } else if (comm.priority == "Medium") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.medium_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'medium'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    } else if (comm.priority == "Low") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.low_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'low'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else if (comm.trigger == "afterExpiry") {
+                    var days = comm.day
+                    var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    let element = resp;
+                    var options = {
+                        method: 'GET',
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                        headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                    };
+
+                    if (comm.priority == "High") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.high_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'high'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+
+                    } else if (comm.priority == "Medium") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.medium_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'medium'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    } else if (comm.priority == "Low") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.low_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'low'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else if (comm.trigger == "afterAcceptance") {
+                    var days = comm.day
+                    var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+                    offer_date = moment(offer_date)
+
+                    let element = resp;
+                    var options = {
+                        method: 'GET',
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                        headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                    };
+
+                    if (comm.priority == "High") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.high_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'high'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+
+                    } else if (comm.priority == "Medium") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.medium_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'medium'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    } else if (comm.priority == "Low") {
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            var new_resp = JSON.parse(response.body);
+                            if (new_resp && new_resp.error) {
+                                console.log(new_resp.error);
+                            } else if (new_resp && new_resp.messages) {
+                                // console.log(' : new_resp.message ==> ', new_resp.messages);
+                                for (const newresp of new_resp.messages) {
+                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
+                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+                                        // console.log('new_resp ==> ', newresp);
+                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.group.low_unopened, 'day')
+
+                                        if (moment(current_date).isSame(resend_mail_date) == true) {
+                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                                "to": newresp.to_email,
+                                                "subject": "Offer",
+                                                "trackid": element._id + 'low'
+                                            }, comm.message);
+                                        }
+                                    } else {
+                                        console.log("end");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        //     index++;
+        //     if (index == resp_data.length) {
+        //         clearInterval(interval);
+        //     }
+        // }, 1000)
+    };
+
+});
 
 router.post('/get', async (req, res) => {
     var schema = {

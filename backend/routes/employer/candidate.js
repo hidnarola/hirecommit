@@ -314,7 +314,7 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 // })
 
 router.get('/', async (req, res) => {
-    // console.log("hiiiiiiiiiiii");
+    console.log("hiiiiiiiiiiii");
 
     var aggregate = [
         {
@@ -334,7 +334,7 @@ router.get('/', async (req, res) => {
         {
             $unwind: {
                 path: "$user",
-                preserveNullAndEmptyArrays: true
+                // preserveNullAndEmptyArrays: true
             },
         },
         {
