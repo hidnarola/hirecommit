@@ -314,7 +314,6 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 // })
 
 router.get('/', async (req, res) => {
-    // console.log("hiiiiiiiiiiii");
 
     var aggregate = [
         {
@@ -337,11 +336,11 @@ router.get('/', async (req, res) => {
                 preserveNullAndEmptyArrays: true
             },
         },
-        {
-            $match: {
-                "user.isAllow": true
-            }
-        }
+        // {
+        //     $match: {
+        //         "user.isAllow": true
+        //     }
+        // }
     ]
     let candidate_list = await Candidate.aggregate(aggregate);
 
