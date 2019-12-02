@@ -29,6 +29,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   subAccountList: any = [];
   _profile_data: any;
   id: any;
+  adminRights = false;
   constructor(
     private router: Router,
     private service: SubAccountService,
@@ -45,14 +46,11 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
       this.id = params['id'];
     });
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('userDetail === check here ==>', this.userDetail);
-
     this.commonService.profileData().then(res => {
-      console.log('res========>', res);
-
       this._profile_data = res[0];
-      console.log('_profile_data=========>', this._profile_data);
-
+      if (this._profile_data.user_id.admin_rights === 'yes') {
+        this.adminRights = true;
+      }
     });
   }
 
@@ -189,7 +187,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
-  get_SubEmployer() { }
 
   checkValue(e) {
     if (e.target.checked === true) {

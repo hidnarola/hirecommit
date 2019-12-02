@@ -46,7 +46,7 @@ export class SubAccountAddViewComponent implements OnInit {
   ngOnInit() {
     this.addAccount = new FormGroup({
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      email: new FormControl('', [Validators.required, this.noWhitespaceValidator, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       admin_rights: new FormControl(false)
     });
     this.route.params.subscribe((params: Params) => {
@@ -265,6 +265,13 @@ export class SubAccountAddViewComponent implements OnInit {
         });
       }
     }
+  }
+  checkEmail() {
+    this.commonService.email_exists({ 'email': this.addAccount.value.email, 'user_id': this.update_data_id }).subscribe(res => {
+    }, (err) => {
+      this.addAccount.controls['email'].setErrors({ 'isExist': true });
+      this.addAccount.updateValueAndValidity();
+    });
   }
 
 }

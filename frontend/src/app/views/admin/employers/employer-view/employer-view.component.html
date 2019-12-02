@@ -100,15 +100,20 @@
                             <div class="col-md-6">
                                 <label>Email</label>
                                 <input class="form-control" type="text" placeholder="{{email}}" formControlName="email"
-                                    name="email" [(ngModel)]="email">
+                                    name="email" [(ngModel)]="email" (blur)="checkEmail()">
                                 <div class="cust_err_msg">
                                     <span *ngIf="!empForm.get('email').valid && submitted" class="text-danger">
                                         <span *ngIf="empForm.get('email').errors['required'] ">This
                                             field is required.</span>
-                                        <span *ngIf="empForm.get('email').errors['pattern']">Enter
-                                            Valid data</span>
                                     </span>
-
+                                    <div class="cust_err_msg" *ngIf="!empForm.controls['email'].valid">
+                                        <span *ngIf="empForm.controls['email'].errors['pattern']"
+                                            class="text-danger">Email
+                                            must be in valid format.</span>
+                                        <span *ngIf="empForm.controls['email'].errors['isExist']" class="text-danger">
+                                            This Email address is already registered.
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">

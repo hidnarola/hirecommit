@@ -159,6 +159,14 @@ export class EmployerViewComponent implements OnInit {
     }
   }
 
+  checkEmail() {
+    this.commonService.email_exists({ 'email': this.empForm.value.email, 'user_id': this.employer_detail.user_id._id }).subscribe(res => {
+    }, (err) => {
+      this.empForm.controls['email'].setErrors({ 'isExist': true });
+      this.empForm.updateValueAndValidity();
+    });
+  }
+
   onApprove(id) {
     const obj = {
       'id': id

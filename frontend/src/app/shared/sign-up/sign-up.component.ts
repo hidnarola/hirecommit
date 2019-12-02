@@ -58,7 +58,10 @@ export class SignUpComponent implements OnInit {
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       countrycode: new FormControl('', [Validators.required]),
       // tslint:disable-next-line: max-line-length
-      contactno: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.maxLength(10), Validators.minLength(10)])),
+      contactno: new FormControl('',
+        Validators.compose(
+          [Validators.required,
+          Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)])),
       recaptcha: new FormControl('', [Validators.required]),
       isChecked: new FormControl('', [Validators.required])
     });

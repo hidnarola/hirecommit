@@ -46,8 +46,7 @@ export class RegisterComponent implements OnInit {
       countrycode: new FormControl('', [Validators.required]),
       contactno: new FormControl('',
         Validators.compose([Validators.required,
-        Validators.pattern(/^-?(0|[1-9]\d*)?$/),
-        Validators.maxLength(10), Validators.minLength(10)
+        Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)
         ])),
       documenttype: new FormControl('', [Validators.required]),
       password: new FormControl('',
@@ -65,6 +64,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+
   ngOnInit() {
     this.service.country_registration().subscribe(res => {
       this.alldata = res['data'];
@@ -75,6 +75,8 @@ export class RegisterComponent implements OnInit {
     this.formData = new FormData();
 
   }
+
+
 
   checkEmail() {
     this.service.check_candidate_email({ 'email': this.registerForm.value.email }).subscribe(res => {
@@ -182,5 +184,6 @@ export class RegisterComponent implements OnInit {
       });
     }
   }
+
 
 }

@@ -47,6 +47,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   hide_list = false;
   grpId: string;
   userDetail: any = [];
+  adminRights = false;
   // hideAccept = false;
   constructor(
     private service: OfferService,
@@ -125,6 +126,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.commonService.getprofileDetail.subscribe(async res => {
         if (res) {
           this.profileData = res;
+          if (this.profileData[0].user_id.admin_rights === 'yes') {
+            this.adminRights = true;
+          }
           if (this.userDetail.role === 'employer') {
             this.grpId = this.profileData[0].user_id._id;
             this.joinGroup(this.profileData[0].user_id._id);

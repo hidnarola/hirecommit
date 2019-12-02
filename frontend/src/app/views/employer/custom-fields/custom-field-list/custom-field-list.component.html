@@ -16,7 +16,7 @@
                         Add Custom Fields
                     </button>
 
-                    <button *ngIf="userDetail.role === 'sub-employer'  &&  _profile_data.user_id.admin_rights === 'yes'"
+                    <button *ngIf="userDetail.role === 'sub-employer'  &&  adminRights"
                         class="pull-right btn btn-sm btn-primary custom-margin"
                         [routerLink]="['/sub_employer/custom_fields/add']">
                         <i class="icon-plus"></i>
@@ -51,7 +51,7 @@
                         style="width:100%;">
                         <thead>
                             <tr>
-                                <th>No.</th>
+                                <th style="background: none;">No.</th>
                                 <th>Custom Fields</th>
 
                                 <th *ngIf="userDetail.role ==='employer' || userDetail.role ==='sub-employer'">Action
@@ -61,7 +61,8 @@
 
                         <tbody *ngIf=" data?.length !=0">
                             <tr *ngFor="let d of data; let i = index;">
-                                <td>{{d.serial_number}} </td>
+                                <!-- <td>{{d.serial_number}} </td> -->
+                                <td>{{i+1}}</td>
                                 <td>{{d.key}}</td>
 
                                 <td *ngIf="userDetail.role === 'employer'">
@@ -83,13 +84,13 @@
                                         [routerLink]="['/sub_employer/custom_fields/view/',d._id]">
                                         <i class="icon-eye"></i></button>
 
-                                    <button *ngIf="_profile_data.user_id.admin_rights === 'yes'" tooltip='Edit'
-                                        type="button" class="btn btn-sm btn-primary"
+                                    <button *ngIf="adminRights" tooltip='Edit' type="button"
+                                        class="btn btn-sm btn-primary"
                                         [routerLink]="['/sub_employer/custom_fields/edit/',d._id]">
                                         <i class="icon-pencil"></i></button>
 
-                                    <button *ngIf="_profile_data.user_id.admin_rights === 'yes'" tooltip='Delete'
-                                        type="button" class="btn btn-sm btn-danger" (click)="delete(d._id)">
+                                    <button *ngIf="adminRights" tooltip='Delete' type="button"
+                                        class="btn btn-sm btn-danger" (click)="delete(d._id)">
                                         <i class="icon-trash"></i></button>
                                 </td>
                             </tr>

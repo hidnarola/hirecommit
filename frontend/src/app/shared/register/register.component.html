@@ -98,17 +98,21 @@
 
                       <div class="contact-number">
                         <div class="input-group-prepend">
-                          <input type="text" class="form-control" placeholder="10-digit number"
+                          <input type="number" class="form-control" placeholder="10-digit number"
                             formControlName="contactno" [(ngModel)]="registerData.contactno" name="contactno"
                             required="required">
                           <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
                             <span *ngIf="registerForm.controls['contactno'].errors['required']">This field is required.
                             </span>
-                            <span
+                            <!-- <span
                               *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
+                              10 digits of mobile number.</span> -->
+
+                          </div>
+                          <div class="error" *ngIf="!registerForm.controls['contactno'].valid">
+
+                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
                               10 digits of mobile number.</span>
-                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Allow only numbers
-                              0-9.</span>
                           </div>
                         </div>
                       </div>
