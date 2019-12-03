@@ -401,33 +401,32 @@ router.post("/candidate_register", async (req, res) => {
 });
 
 router.post('/check_document_size', async (req, res) => {
-  // console.log("hii");
-  // if (req.files && req.files["documentimage"]) {
-  //   var documentImage = req.files["documentimage"];
-  //   // if (documentImage.size > 5000000) {
-
-  //   }
-
-  //   var file = req.files['documentimage'];
-  //   var files = [].concat(req.files.documentimage);
-  //   async.eachSeries(
-  //     files,
-  //     function (file, loop_callback) {
-  //       var mimetype = path.extname(file.name);
-  //       var mimetype = ["image/jpeg", "image/png", 'application/pdf'];
-  //       if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
-  //         res.status(config.BAD_REQUEST).json({ "status": 1, "message": "Valid" });
-  //       } else {
-  //         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This file is not uploaded please add valid file.(ex. .jpeg, .png or .pdf)." });
-  //       }
-  //     })
-  // }
+  if (req.files && req.files["documentimage"]) {
+    var documentImage = req.files["documentimage"];
+    if (documentImage.size > 5000000) {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This document file size to large, it's accepted only maximum 5 MB of file." });
+    } else {
+      var file = req.files['documentimage'];
+      var files = [].concat(req.files.documentimage);
+      async.eachSeries(
+        files,
+        function (file, loop_callback) {
+          var mimetype = path.extname(file.name);
+          var mimetype = ["image/jpeg", "image/png", 'application/pdf'];
+          if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
+            res.status(config.BAD_REQUEST).json({ "status": 1, "message": "Valid" });
+          } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This file is not uploaded please add valid file.(ex. .jpeg, .png or .pdf)." });
+          }
+        })
+    }
+  }
 
   // if (documentImage.size > 5000000) {
-  //   res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This document file size to large, it's accepted only maximum 5 MB of file." });
+  //
   // }
   // else {
-  res.status(config.OK_STATUS).json({ "status": 1, "message": "File Accepted" });
+  // res.status(config.OK_STATUS).json({ "status": 1, "message": "File Accepted" });
   // }
 })
 
