@@ -150,7 +150,7 @@ router.post("/", async (req, res) => {
 
         var candidate_user = await common_helper.find(User, { 'email': req.body.email, 'is_del': false });
         if (candidate_user.data.length <= 0) {
-            var interest_candidate = await common_helper.insert(User, { 'email': req.body.email, 'role_id': '5d9d98e13a0c78039c6dd00e' });
+            var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
 
             if (req.body.candidate_name != '') {
                 let candidate_name = req.body.candidate_name.split(' ');
