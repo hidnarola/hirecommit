@@ -545,8 +545,11 @@ router.post("/employer_register", async (req, res) => {
 });
 
 router.post("/check_employer_email", async (req, res) => {
-
-  let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false })
+  re = new RegExp(req.body.email, "i");
+  value = {
+    $regex: re
+  };
+  let user_resp = await common_helper.findOne(User, { "email": value, "is_del": false })
   if (user_resp.status === 1) {
     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
   } else {
@@ -557,7 +560,11 @@ router.post("/check_employer_email", async (req, res) => {
 
 router.post("/email_exists", async (req, res) => {
   var user_id = req.body.user_id;
-  var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
+  re = new RegExp(req.body.email, "i");
+  value = {
+    $regex: re
+  };
+  var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": value, "is_del": false })
   if (user_resp.status === 1) {
     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
   }
