@@ -579,7 +579,9 @@ router.post('/login', async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
     // let user_resp = await common_helper.findOne(User, { "email": req.body.email })
-    let user_resp = await User.findOne({ "email": req.body.email }).populate("role_id").lean();
+    let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
+
+
     // console.log(req.body, user_resp);
 
     if (!user_resp) {
@@ -701,7 +703,10 @@ router.post('/login', async (req, res) => {
             ])
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
           } else {
-            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
+            var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'candidate_not_approve' });
+            // console.log(message);
+
+            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": message.data.content });
           }
         } else if (user_resp.role_id.role === "employer") {
           if (user_resp.email_verified == true) {

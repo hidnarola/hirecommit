@@ -544,7 +544,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     let element = resp;
                     var options = {
                         method: 'GET',
-                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + 'afterOffer' + "%22)",
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "afterOffer" + "%22)",
                         headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
                     };
 
@@ -638,7 +638,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     let element = resp;
                     var options = {
                         method: 'GET',
-                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + 'beforeJoining' + "%22)",
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "beforeJoining" + "%22)",
                         headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
                     };
 
@@ -733,7 +733,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     let element = resp;
                     var options = {
                         method: 'GET',
-                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + 'afterJoining' + "%22)",
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "afterJoining" + "%22)",
                         headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
                     };
 
@@ -828,7 +828,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     let element = resp;
                     var options = {
                         method: 'GET',
-                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "beforeExpiry" + "%22)",
                         headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
                     };
 
@@ -923,7 +923,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     let element = resp;
                     var options = {
                         method: 'GET',
-                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "afterExpiry" + "%22)",
                         headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
                     };
 
@@ -1018,7 +1018,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     let element = resp;
                     var options = {
                         method: 'GET',
-                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                        url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "afterAcceptance" + "%22)",
                         headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
                     };
 
