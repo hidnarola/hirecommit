@@ -16,6 +16,7 @@ var Candidate = require('../../models/candidate-detail');
 var History = require('../../models/offer_history');
 var Employer = require('../../models/employer-detail');
 var Status = require('../../models/status');
+var OfferTypeMessage = require('../../models/offer_type_message');
 
 var mail_helper = require('../../helpers/mail_helper');
 
@@ -177,6 +178,19 @@ router.post('/get', async (req, res) => {
     } else {
         logger.error("Validation Error = ", errors);
         res.status(config.BAD_REQUEST).json({ message: errors });
+    }
+});
+
+
+router.post('/type_message', async (req, res) => {
+    console.log('1', 1);
+    console.log('req.body.type', req.body.type);
+
+    try {
+        const message_type = await OfferTypeMessage.findOne({ "type": req.body.type })
+        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: message_type });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
