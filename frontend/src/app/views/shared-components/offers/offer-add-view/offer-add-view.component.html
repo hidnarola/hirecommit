@@ -336,7 +336,7 @@
                                 <div class="col-md-6 form-group" formGroupName="{{i}}"
                                     *ngFor="let customfield of offer_data.customfieldItem; let i=index">
                                     <label class="col-form-label" for="customfield.key">
-                                        {{customfield.key |titlecase}}
+                                        {{customfield.key}}
                                     </label>
                                     <input type="text" formControlName="value" class="form-control"
                                         placeholder="Enter value" id="value{{i}}" *ngIf="!isAccepted">
@@ -413,18 +413,16 @@
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="trigger">Trigger</label>
                                                     <div class="col-md-7 no-gutters">
-                                                        <select id="trigger" name="select1" class="form-control"
-                                                            formControlName="trigger" [(ngModel)]="customfield.trigger">
-                                                            <option value="" selected="selected">Please select
-                                                                trigger
-                                                            </option>
-                                                            <option value="beforeJoining">Before Joining</option>
-                                                            <option value="afterJoining">After Joining</option>
-                                                            <option value="afterOffer">After Offer</option>
-                                                            <option value="beforeExpiry">Before Expiry</option>
-                                                            <option value="afterExpiry">After Expiry</option>
-                                                            <option value="afterAcceptance">After Acceptance</option>
-                                                        </select>
+                                                        <!-- <select id="trigger" name="select1" class="form-control"
+                                                            formControlName="trigger" [(ngModel)]="customfield.trigger"
+                                                            options="Trigger_Option">
+
+                                                        </select> -->
+                                                        <p-dropdown [options]="Trigger_Option"
+                                                            [style]="{'width':'100%'}" formControlName="trigger"
+                                                            placeholder="Select Trigger" id="trigger" id="trigger"
+                                                            [(ngModel)]="customfield.trigger">
+                                                        </p-dropdown>
                                                     </div>
                                                 </div>
                                             </div>
@@ -432,7 +430,7 @@
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="day">Day</label>
                                                     <div class="col-md-7">
-                                                        <input type="number" min="1" id="day" name="day"
+                                                        <input type="number" min="0" id="day" name="day"
                                                             class="form-control" placeholder="Enter Days"
                                                             formControlName="day" [(ngModel)]="customfield.day">
 
@@ -499,7 +497,11 @@
                         <!-- communication -->
 
                     </div>
+
                     <div class="card-footer text-right">
+                        <p *ngIf="!form.valid && is_submitted" class="text-danger">
+                            Please review fields with error and Submit again
+                        </p>
                         <button type="submit" class="btn btn-md btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
@@ -667,7 +669,7 @@
                             Group
                         </div>
                         <div class="col-md-6 ">
-                            {{resData.groupName}}
+                            {{resData.groupName ? resData.groupName : '-'}}
                         </div>
                     </div>
 
@@ -720,9 +722,9 @@
                 </div>
                 <div class="card-footer text-right">
 
-                    <button *ngIf="userDetail.role === 'candidate'" type="button" class="btn btn-md btn-success"
+                    <!-- <button *ngIf="userDetail.role === 'candidate'" type="button" class="btn btn-md btn-success"
                         (click)="Accept(resData._id)" [disabled]="resData.status === 'Accepted'">
-                        Accept</button>
+                        Accept</button> -->
                     <button type="button" class="btn btn-md btn-primary" (click)='cancel()'>
                         Back</button>
                 </div>

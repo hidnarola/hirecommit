@@ -45,6 +45,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
+
   from: any;
   to: any;
   customfield: any = [];
@@ -73,6 +74,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'Candidate Commit', value: 'candidateCommit' },
     { label: 'Both Commit', value: 'bothCommit' }
   ];
+  Trigger_Option = [
+    { label: 'Select Offer Type', value: '' },
+    { label: 'Before Joining', value: "beforeJoining" },
+    { label: 'After Joining', value: 'afterJoining' },
+    { label: 'After Offer', value: 'afterOffer' },
+    { label: 'Before Expiry', value: "beforeExpiry" },
+    { label: 'After Expiry', value: 'afterExpiry' },
+    { label: 'After Acceptance', value: 'afterAcceptance' }
+
+  ];
   contryList: any;
   cancel_link = '/employer/offers/list';
   cancel_link1 = '/sub_employer/offers/list';
@@ -89,6 +100,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offerList: any;
   grpId: string;
   isExpired = false;
+  is_submitted = false;
 
   constructor(
     private fb: FormBuilder,
@@ -314,6 +326,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
+          console.log('res=>', res);
+
+          res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+          if (this.is_View && res[`data`][`communication`].length > 0) {
+            res[`data`][`communication`][0].trigger = (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+          }
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
               this.isAccepted = true;
@@ -433,6 +451,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`][0];
+          this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
           const d = new Date();
           d.setDate(d.getDate() - 1);
           if (this.resData.status && d > new Date(this.resData.expirydate)) {
@@ -546,8 +565,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   async groupDetail(id) {
     const groupById = this.group_optoins.find(x => x.value === id);
-    this.form.controls.group.setValue(groupById.value);
-    if (this.is_View) {
+    if (groupById) {
+      this.form.controls.group.setValue(groupById.value);
+    }
+    if (groupById && this.is_View) {
       this.resData.groupName = groupById.label;
     }
   }
@@ -569,6 +590,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.spinner.hide();
 
       }
+      this.router.navigate(['/candidate/offers/list']);
     });
   }
 
@@ -752,6 +774,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
+    this.is_submitted = true;
     // customised fields
     const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {

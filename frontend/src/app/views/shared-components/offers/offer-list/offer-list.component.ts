@@ -188,11 +188,14 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.offerData = res['offer'];
 
               console.log('offerData=>', this.offerData);
+              //  changed offer type valu to offer type label for display purpose only
+              // this.offerData.forEach(offer => {
+              //   offer.offertype = (this.offer_type_optoins
+              //     .find(o => o.value === offer.offertype).label);
+              // });
 
-              this.offerData.forEach(offer => {
-                offer.offertype = (this.offer_type_optoins
-                  .find(o => o.value === offer.offertype).label);
-              });
+
+
               // if (this.offerData.length == 0) {
               //   var el = document.getElementById('DataTables_Table_0_paginate');
               //   el.style.display = 'none';
@@ -293,13 +296,18 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.offerData.forEach((offer) => {
                 offer.isExpired = false;
                 const d = new Date();
-                d.setDate(d.getDate() - 1);
-                if (offer.status && d > new Date(offer.expirydate)) {
+                // d.setDate(d.getDate() - 1);
+
+                if (offer.status && ((d > new Date(offer.expirydate) &&
+                  (Math.floor(d.getTime() / 86400000) !== Math.floor(new Date(offer.expirydate).getTime() / 86400000))))) {
                   offer['isExpired'] = true;
                 } else {
                   offer['isExpired'] = false;
                 }
-                offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
+
+
+                //  changed offer type valu to offer type label for display purpose only
+                // offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
 
                 // if (offer['created_by'].length > 0) {
                 //   console.log('res sub emp=======>', offer['created_by'].username);
@@ -309,6 +317,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
                 //   this.userName = offer['employer_id']['employer'].username;
                 // }
               });
+              console.log('this.offerData=>', this.offerData);
               // if (this.offerData.length == 0) {
               //   var el = document.getElementById('DataTables_Table_0_paginate');
               //   el.style.display = 'none';
@@ -435,31 +444,44 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onAccept(id) {
-    this.accept_btn = true;
-    const obj = {
-      'id': id
-    };
-    this.service.offer_accept(obj).subscribe(res => {
-      console.log('accepted!!', res['data']['data'].employer_id);
-      this.socketService.leaveGrp(this.grpId);
-      this.socketService.joinGrp(res['data']['data'].employer_id);
-      this.socketService.changeOffer(res['data']['data'].employer_id);
-      this.socketService.leaveGrp(res['data']['data'].employer_id);
-      this.joinGroup(this.grpId);
+  onAccept(id, type) {
+    console.log('type=>', type);
 
-      this.rrerender();
-      // this.s
-      this.accept_btn = false;
-      if (res['data'].status === 1) {
-        Swal.fire(
-          {
-            type: 'success',
-            text: res['message']
-          }
-        );
-      }
-    });
+    if (type === 'No Commit') {
+      let type = 'noCommit'
+    }
+    else if (type === 'No Commit') {
+
+    }
+
+    this.accept_btn = true;
+    this.service.type_message({ 'type': type }).subscribe(res => {
+      console.log('res=>', res);
+
+    })
+    // const obj = {
+    //   'id': id
+    // };
+    // this.service.offer_accept(obj).subscribe(res => {
+    //   console.log('accepted!!', res['data']['data'].employer_id);
+    //   this.socketService.leaveGrp(this.grpId);
+    //   this.socketService.joinGrp(res['data']['data'].employer_id);
+    //   this.socketService.changeOffer(res['data']['data'].employer_id);
+    //   this.socketService.leaveGrp(res['data']['data'].employer_id);
+    //   this.joinGroup(this.grpId);
+
+    //   this.rrerender();
+    //   // this.s
+    //   this.accept_btn = false;
+    //   if (res['data'].status === 1) {
+    //     Swal.fire(
+    //       {
+    //         type: 'success',
+    //         text: res['message']
+    //       }
+    //     );
+    //   }
+    // });
   }
 
   rrerender(): void {

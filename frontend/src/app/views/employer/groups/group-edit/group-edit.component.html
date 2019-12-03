@@ -35,7 +35,7 @@
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="high_unopened">High - UnOpened</label>
                             <div class="input-group col-md-2">
-                                <input type="number" class="form-control" autocomplete="high_unopened"
+                                <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                     formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
                                     id="high_unopened">
                                 <div class="input-group-append">

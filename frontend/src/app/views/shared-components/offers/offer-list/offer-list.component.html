@@ -37,7 +37,7 @@
                         style="width:100%;">
                         <thead>
                             <tr>
-                                <th>Date</th>
+                                <th> Offer Date</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     Candidate Email</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
@@ -137,8 +137,8 @@
                                             class="fa fa-history"></i></button>
 
                                     <button *ngIf="userDetail.role === 'candidate'" type="button" tooltip='Accept'
-                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id)" id="accept{{i}}"
-                                        [disabled]="offer.status === 'Accepted' || accept_btn"
+                                        class="btn btn-sm btn-primary" (click)="onAccept(offer._id,offer.offertype)"
+                                        id="accept{{i}}" [disabled]="offer.status === 'Accepted' || accept_btn"
                                         [ngClass]="offer.isExpired ? 'd-0' : ''">
                                         <!-- [ngClass]="offer.hideAccept ? 'd-0' : ''" -->
                                         <i class="icon-check"></i></button>
@@ -173,9 +173,6 @@
         </div>
         <!-- employer -->
 
-        <!-- candidate -->
-
-        <!-- candidate -->
     </div>
 </div>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
