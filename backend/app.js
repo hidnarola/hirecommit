@@ -14,6 +14,7 @@ var expressValidator = require('express-validator');
 var cors = require('cors');
 //var cron_jobs = require('./crons/index');
 var compression = require('compression')
+var timeout = require('connect-timeout');
 
 var swaggerUi = require('swagger-ui-express'),
   swaggerDocument = require('./swagger.json');
@@ -28,6 +29,7 @@ var config = require('./config');
 var dbConnect = require('./database/mongoDbConnection');
 
 var app = express();
+
 app.use(fileUpload());
 app.use(cors());
 app.set('view engine', 'ejs');
@@ -113,6 +115,14 @@ if (app.get('env') === 'development') {
   });
 }
 
+//  time out handline
+app.use(timeout(60000));
+app.use(haltOnTimedout);
+
+function haltOnTimedout(req, res, next) {
+  if (!req.timedout) next();
+}
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -120,8 +130,8 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).send({ success: false, message: err.message });
+  // res.render('error');
 });
 
 //cron_jobs.init();

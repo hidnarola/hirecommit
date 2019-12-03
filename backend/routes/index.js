@@ -184,6 +184,10 @@ router.post("/candidate_register", async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
 
+    re = new RegExp(req.body.email, "i");
+    value = {
+      $regex: re
+    };
     let user_resp = await common_helper.findOne(User, {
       "email": req.body.email.toLowerCase(),
       "is_del": false,
@@ -396,6 +400,36 @@ router.post("/candidate_register", async (req, res) => {
   }
 });
 
+router.post('/check_document_size', async (req, res) => {
+  if (req.files && req.files["documentimage"]) {
+    var documentImage = req.files["documentimage"];
+    if (documentImage.size > 5000000) {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This document file size to large, it's accepted only maximum 5 MB of file." });
+    } else {
+      var file = req.files['documentimage'];
+      var files = [].concat(req.files.documentimage);
+      async.eachSeries(
+        files,
+        function (file, loop_callback) {
+          var mimetype = path.extname(file.name);
+          var mimetype = ["image/jpeg", "image/png", 'application/pdf'];
+          if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
+            res.status(config.BAD_REQUEST).json({ "status": 1, "message": "Valid" });
+          } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This file is not uploaded please add valid file.(ex. .jpeg, .png or .pdf)." });
+          }
+        })
+    }
+  }
+
+  // if (documentImage.size > 5000000) {
+  //
+  // }
+  // else {
+  // res.status(config.OK_STATUS).json({ "status": 1, "message": "File Accepted" });
+  // }
+})
+
 router.post("/check_candidate_email", async (req, res) => {
 
   let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false, "is_register": true })
@@ -541,8 +575,11 @@ router.post("/employer_register", async (req, res) => {
 });
 
 router.post("/check_employer_email", async (req, res) => {
-
-  let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false })
+  re = new RegExp(req.body.email, "i");
+  value = {
+    $regex: re
+  };
+  let user_resp = await common_helper.findOne(User, { "email": value, "is_del": false })
   if (user_resp.status === 1) {
     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
   } else {
@@ -553,7 +590,11 @@ router.post("/check_employer_email", async (req, res) => {
 
 router.post("/email_exists", async (req, res) => {
   var user_id = req.body.user_id;
-  var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
+  re = new RegExp(req.body.email, "i");
+  value = {
+    $regex: re
+  };
+  var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": value, "is_del": false })
   if (user_resp.status === 1) {
     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
   }
@@ -579,7 +620,9 @@ router.post('/login', async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
     // let user_resp = await common_helper.findOne(User, { "email": req.body.email })
-    let user_resp = await User.findOne({ "email": req.body.email }).populate("role_id").lean();
+    let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
+
+
     // console.log(req.body, user_resp);
 
     if (!user_resp) {
@@ -590,7 +633,7 @@ router.post('/login', async (req, res) => {
     else if (user_resp) {
       // if (user_resp.data.email_verified == true) {
       logger.trace("valid token. Generating token");
-      if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email)) {
+      if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email.toLowerCase())) {
 
         if (user_resp.role_id.role === "candidate") {
           if (user_resp.isAllow == true) {
@@ -701,7 +744,10 @@ router.post('/login', async (req, res) => {
             ])
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
           } else {
-            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
+            var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'candidate_not_approve' });
+            // console.log(message);
+
+            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": message.data.content });
           }
         } else if (user_resp.role_id.role === "employer") {
           if (user_resp.email_verified == true) {

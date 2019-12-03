@@ -333,7 +333,7 @@ router.get('/', async (req, res) => {
         {
             $unwind: {
                 path: "$user",
-                preserveNullAndEmptyArrays: true
+                // preserveNullAndEmptyArrays: true
             },
         },
         // {
