@@ -184,6 +184,10 @@ router.post("/candidate_register", async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
 
+    re = new RegExp(req.body.email, "i");
+    value = {
+      $regex: re
+    };
     let user_resp = await common_helper.findOne(User, {
       "email": req.body.email.toLowerCase(),
       "is_del": false,
@@ -592,7 +596,7 @@ router.post('/login', async (req, res) => {
     else if (user_resp) {
       // if (user_resp.data.email_verified == true) {
       logger.trace("valid token. Generating token");
-      if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email)) {
+      if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email.toLowerCase())) {
 
         if (user_resp.role_id.role === "candidate") {
           if (user_resp.isAllow == true) {
