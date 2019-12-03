@@ -240,7 +240,11 @@ router.post("/", async (req, res) => {
 
 router.post('/pastOffer', async (req, res) => {
     try {
-        var user = await common_helper.findOne(User, { "email": req.body.email })
+        re = new RegExp(req.body.email, "i");
+        value = {
+            $regex: re
+        };
+        var user = await common_helper.findOne(User, { "email": value })
         if (user.status == 1) {
             var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(user.data._id), status: "Not Joined" });
         }
