@@ -396,6 +396,17 @@ router.post("/candidate_register", async (req, res) => {
   }
 });
 
+router.post('/check_document_size', async (req, res) => {
+  // console.log("hii");
+  var documentImage = req.files["documentimage"];
+  if (documentImage.size > 5000000) {
+    res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This document file size to large, it's accepted only maximum 5 MB of file." });
+  }
+  else {
+    res.status(config.OK_STATUS).json({ "status": 1, "message": "File Accepted" });
+  }
+})
+
 router.post("/check_candidate_email", async (req, res) => {
 
   let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false, "is_register": true })

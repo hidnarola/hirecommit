@@ -532,8 +532,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
     var current_date = moment().startOf('day')
 
+    var index = 0;
     for (const resp of resp_data) {
-        var index = 0;
         // var interval = setInterval(async function () {
         if (resp.communication !== undefined && resp.communication.communication !== undefined) {
             for (const comm of resp.communication.communication) {
