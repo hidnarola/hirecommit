@@ -90,7 +90,7 @@ export class GroupEditComponent implements OnInit {
             communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
             trigger: ['', Validators.required],
             priority: ['', Validators.required],
-            day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+            day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
             message: ['', [Validators.required, this.noWhitespaceValidator]]
             // message: ['', Validators.required]
           }));
@@ -164,7 +164,7 @@ export class GroupEditComponent implements OnInit {
       communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
-      day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
 

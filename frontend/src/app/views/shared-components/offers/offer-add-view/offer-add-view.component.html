@@ -411,43 +411,6 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 row no-gutters">
-                                                    <label class="col-md-5 col-form-label" for="trigger">Trigger</label>
-                                                    <div class="col-md-7 no-gutters">
-                                                        <!-- <select id="trigger" name="select1" class="form-control"
-                                                            formControlName="trigger" [(ngModel)]="customfield.trigger"
-                                                            options="Trigger_Option">
-
-                                                        </select> -->
-                                                        <p-dropdown [options]="Trigger_Option"
-                                                            [style]="{'width':'100%'}" formControlName="trigger"
-                                                            placeholder="Select Trigger" id="trigger" id="trigger"
-                                                            [(ngModel)]="customfield.trigger">
-                                                        </p-dropdown>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-goup no-gutters row">
-                                                <div class="col-md-6 row no-gutters">
-                                                    <label class="col-md-5 col-form-label" for="day">Day</label>
-                                                    <div class="col-md-7">
-                                                        <input type="number" min="0" id="day" name="day"
-                                                            class="form-control" placeholder="Enter Days"
-                                                            formControlName="day" [(ngModel)]="customfield.day">
-
-                                                        <div class="cust_err_msg"
-                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
-                                                            <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
-                                                                class="text-danger">
-                                                                This field is required.
-                                                            </span>
-                                                            <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
-                                                                class="text-danger">Enter valid value.</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label"
                                                         for="trigger">Priority</label>
                                                     <div class="col-md-7">
@@ -471,6 +434,39 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="form-goup no-gutters row">
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label" for="trigger">Trigger</label>
+                                                    <div class="col-md-7 no-gutters">
+                                                        <p-dropdown [options]="Trigger_Option"
+                                                            [style]="{'width':'100%'}" formControlName="trigger"
+                                                            placeholder="Select Trigger" id="trigger" id="trigger"
+                                                            [(ngModel)]="customfield.trigger">
+                                                        </p-dropdown>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label" for="day">Day</label>
+                                                    <div class="col-md-7">
+                                                        <input type="number" min="0" id="day" name="day"
+                                                            class="form-control" placeholder="Enter Days"
+                                                            formControlName="day" [(ngModel)]="customfield.day">
+
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                            <span
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
+                                                                class="text-danger">Enter valid value.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="form row">
                                                 <label class="col-md-12 col-form-label" for="message">Message</label>
@@ -500,7 +496,7 @@
 
                     <div class="card-footer text-right">
                         <p *ngIf="!form.valid && is_submitted" class="text-danger">
-                            Please review fields with error and Submit again
+                            Please review fields with error and Submit again.
                         </p>
                         <button type="submit" class="btn btn-md btn-primary" (click)="onSubmit(form.valid)"
                             [disabled]="show_spinner">
@@ -687,21 +683,21 @@
                                         <div class="col-md-4 detail-input">
                                             {{communication.communicationname}}
                                         </div>
+                                        <label class="col-md-2 detail-label">Priority</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.priority}}
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Trigger</label>
                                         <div class="col-md-4 detail-input">
                                             {{communication.trigger}}
                                         </div>
-                                    </div>
-                                    <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">
                                             Day
                                         </label>
                                         <div class="col-md-4 detail-input">
                                             {{communication.day}}
-                                        </div>
-                                        <label class="col-md-2 detail-label">Priority</label>
-                                        <div class="col-md-4 detail-input">
-                                            {{communication.priority}}
                                         </div>
                                     </div>
                                     <div class="row detail-panel">
@@ -894,12 +890,6 @@
                             {{resData.groupName}}
                         </div>
                     </div> -->
-
-
-                    <!-- communication -->
-
-                    <!-- communication -->
-
 
                 </div>
                 <div class="card-footer text-right">

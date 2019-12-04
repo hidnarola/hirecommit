@@ -125,9 +125,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
       location: new FormControl('', [Validators.required]),
-      salarybracket: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
-      salarybracket_from: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
-      salarybracket_to: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
+      salarybracket: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
+      salarybracket_from: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
+      salarybracket_to: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
       status: new FormControl(),
@@ -270,9 +270,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   getSalaryType() {
     if (this.form.value.salarytype === 'hourly') {
       this.disabled = false;
-      this.form.controls['salaryduration'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
+      this.form.controls['salaryduration'].setValidators([Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
       // if (this.form.value.salaryduration.length > 0) {
-      this.form.controls['salaryduration'].setValidators([Validators.pattern(/^[0-9]*$/)]);
+      this.form.controls['salaryduration'].setValidators([Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
       // }
       // this.form.controls['salaryduration'].updateValueAndValidity();
     } else {
@@ -328,10 +328,21 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         res => {
           console.log('res=>', res);
 
-          res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+          // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+
+
+          console.log('res[`data`][`communication`] => ', res[`data`][`communication`]);
           if (this.is_View && res[`data`][`communication`].length > 0) {
-            res[`data`][`communication`][0].trigger = (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+            res[`data`][`communication`].forEach(element => {
+              console.log('element =======> ', element);
+              element.trigger =
+                (this.Trigger_Option.find(o => o.value === element.trigger).label);
+
+            });
+            // res[`data`][`communication`][0].trigger =
+            //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
           }
+
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
               this.isAccepted = true;
@@ -641,7 +652,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
-      day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
     this.communicationData.push(new_communication);
