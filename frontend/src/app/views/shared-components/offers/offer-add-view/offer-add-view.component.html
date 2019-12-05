@@ -76,6 +76,10 @@
                                 <div class="cust_err_msg" *ngIf="!form.controls['email'].valid">
                                     <span *ngIf="form.controls['email'].errors['pattern']" class="text-danger">Email
                                         must be in valid format.</span>
+
+                                    <span *ngIf="form.controls['email'].errors['isExist']" class="text-danger">
+                                        This Email address is already registered.
+                                    </span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -243,7 +247,7 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
-                                    [disabled]="is_View || isAccepted" [minDate]="min_date" [maxDate]="max_date"
+                                    [disabled]="is_View || isAccepted" [minDate]="max_date"
                                     (onSelect)="getJoiningDate($event)">
                                 </p-calendar>
                                 <div class="cust_err_msg"
@@ -259,7 +263,7 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View || isAccepted" [minDate]="min_expiry_date"
+                                    [disabled]="is_View || isAccepted" [minDate]="min_date"
                                     (onSelect)="getExpiryDate($event)">
                                 </p-calendar>
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
@@ -317,7 +321,7 @@
                                                         </p-inputSwitch> -->
                                 <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
                                     optionValue="value" formControlName="offerStatus" id="offerStatus"
-                                    placeholder="Please Select Status" [disabled]="isAccepted">
+                                    placeholder="Please Select Status">
                                 </p-dropdown>
                             </div>
                         </div>

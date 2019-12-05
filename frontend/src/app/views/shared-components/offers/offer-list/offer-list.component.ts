@@ -445,43 +445,34 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAccept(id, type) {
-    console.log('type=>', type);
-
-    if (type === 'No Commit') {
-      let type = 'noCommit'
-    }
-    else if (type === 'No Commit') {
-
-    }
-
     this.accept_btn = true;
     this.service.type_message({ 'type': type }).subscribe(res => {
       console.log('res=>', res);
 
     })
-    // const obj = {
-    //   'id': id
-    // };
-    // this.service.offer_accept(obj).subscribe(res => {
-    //   console.log('accepted!!', res['data']['data'].employer_id);
-    //   this.socketService.leaveGrp(this.grpId);
-    //   this.socketService.joinGrp(res['data']['data'].employer_id);
-    //   this.socketService.changeOffer(res['data']['data'].employer_id);
-    //   this.socketService.leaveGrp(res['data']['data'].employer_id);
-    //   this.joinGroup(this.grpId);
+    const obj = {
+      'id': id
+    };
+    this.service.offer_accept(obj).subscribe(res => {
+      console.log('accepted!!', res['data']['data'].employer_id);
+      this.socketService.leaveGrp(this.grpId);
+      this.socketService.joinGrp(res['data']['data'].employer_id);
+      this.socketService.changeOffer(res['data']['data'].employer_id);
+      this.socketService.leaveGrp(res['data']['data'].employer_id);
+      this.joinGroup(this.grpId);
 
-    //   this.rrerender();
-    //   // this.s
-    //   this.accept_btn = false;
-    //   if (res['data'].status === 1) {
-    //     Swal.fire(
-    //       {
-    //         type: 'success',
-    //         text: res['message']
-    //       }
-    //     );
-    //   }
-    // });
+      this.rrerender();
+      // this.s
+      this.accept_btn = false;
+      if (res['data'].status === 1) {
+        Swal.fire(
+          {
+            type: 'success',
+            text: res['message']
+          }
+        );
+      }
+    });
   }
 
   rrerender(): void {

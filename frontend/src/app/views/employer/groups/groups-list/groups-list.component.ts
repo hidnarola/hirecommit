@@ -112,7 +112,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
           }, err => {
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
-        }, columnDefs: [{ orderable: false, targets: 7 }, { targets: 0, width: '25%' }],
+        }, columnDefs: [{ orderable: false, targets: 5 }, { targets: 0, width: '25%' }],
         columns: [
           {
             data: 'name'
@@ -129,12 +129,12 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
           {
             data: 'medium_notreplied'
           },
-          {
-            data: 'low_unopened'
-          },
-          {
-            data: 'low_notreplied'
-          },
+          // {
+          //   data: 'low_unopened'
+          // },
+          // {
+          //   data: 'low_notreplied'
+          // },
           {
             data: 'actions'
           }

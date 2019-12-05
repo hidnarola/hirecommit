@@ -224,12 +224,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // emial blur pattern check
   checkEmail(value) {
     let email = value.target.value;
+    this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
+    }, (err) => {
+      this.form.controls['email'].setErrors({ 'isExist': true });
+      this.form.updateValueAndValidity();
+    });
     console.log('value=>', value.target.value);
 
     this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
       this.pastDetails = res[`data`][`data`];
-      console.log('pastDetails=>', this.pastDetails);
-
       if (this.pastDetails.length > 0) {
         this.modalService.open(this.content, ModalOptions);
       }
@@ -354,7 +357,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.disabled = true;
               this.form.controls['offertype'].disable();
               this.form.controls['notes'].disable();
-              this.form.controls['status'].disable();
+              // this.form.controls['status'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
 
@@ -606,12 +609,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   // get joining date
-  getJoiningDate(e) {
-    const date = new Date(e);
-    const month = date.getMonth() + 1;
-    this.joiningdate = date.getFullYear() + '-' + month + '-' + date.getDate();
-    this.min_expiry_date = this.form.value.joiningdate;
-  }
+  // getJoiningDate(e) {
+  //   const date = new Date(e);
+  //   const month = date.getMonth() + 1;
+  //   this.joiningdate = date.getFullYear() + '-' + month + '-' + date.getDate();
+  //   this.min_expiry_date = this.form.value.joiningdate;
+  // }
 
   getExpiryDate(e) {
     const date = new Date(e);
@@ -683,7 +686,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
-      if (value.target.value === element.user.email) {
+      if (value.target.value.toLowerCase() === element.user.email) {
         this.display_msg = true;
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
         document.getElementById('candidate_name').setAttribute('disabled', 'true');
@@ -757,8 +760,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.to = parseInt(to, 10);
     if (this.from > this.to) {
       this.error = true;
-      this.err_from = 'can\'t be greater then maximum salary!';
-      this.err_to = 'can\'t be less then minimum salary!';
+      this.err_from = 'Salary From can\'t be greater than Salary To';
+      this.err_to = 'Salary To can\'t be lesser than Salary From.';
     } else if (this.from === this.to) {
       this.error = true;
       this.err_from = 'Can\'t be same!';
@@ -772,8 +775,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.from = parseInt(to, 10);
     if (this.from > this.to) {
       this.error = true;
-      this.err_from = 'can\'t be greater then maximum salary!';
-      this.err_to = 'can\'t be less then minimum salary!';
+      this.err_from = 'Salary From can\'t be greater than Salary To';
+      this.err_to = 'Salary To can\'t be lesser than Salary From.';
     } else if (this.from === this.to) {
       this.error = true;
       this.err_from = 'Can\'t be same!';

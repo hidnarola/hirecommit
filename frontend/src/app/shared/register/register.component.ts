@@ -161,6 +161,7 @@ export class RegisterComponent implements OnInit {
         const value = this.registerData[key];
         this.formData.append(key, value);
       }
+      console.log('this.formData=>', this.formData);
 
       if (this.fileFormData.get('filename')) {
         this.formData.append('documentimage', this.fileFormData.get('filename'));
