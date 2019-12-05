@@ -21,6 +21,7 @@ var Role = require('../../models/role');
 var Status = require("../../models/status");
 var History = require('../../models/offer_history');
 var MailRecord = require('../../models/mail_record');
+var MailContent = require('../../models/mail_content');
 var ApiLog = require('../../models/api_log');
 var request = require('request');
 var http = require("https");
@@ -78,7 +79,7 @@ router.post("/", async (req, res) => {
         // }
     };
     req.checkBody(schema);
-    console.log(req.body);
+    // console.log(req.body);
 
     var errors = req.validationErrors();
     if (!errors) {
@@ -88,12 +89,17 @@ router.post("/", async (req, res) => {
         //     { user_id: new ObjectId(req.body.email) });
 
         var employer;
+        var company;
         if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
             employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
+
+            var company_resp = await common_helper.findOne(EmployerDetail, { user_id: user.data.emp_id });
+            company = company_resp.data.companyname;
+
             var obj = {
                 "employer_id": user.data.emp_id,
                 "created_by": req.userInfo.id,
-                "email": req.body.email,
+                "email": req.body.email.toLowerCase(),
                 "candidate_name": req.body.candidate_name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
@@ -119,10 +125,12 @@ router.post("/", async (req, res) => {
         }
         else {
             employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
+            company = employer.data.companyname;
+            // console.log(' : employer ==> ', company); return false;
             var obj = {
                 "employer_id": req.userInfo.id,
                 "created_by": req.userInfo.id,
-                "email": req.body.email,
+                "email": req.body.email.toLowerCase(),
                 "candidate_name": req.body.candidate_name,
                 "title": req.body.title,
                 "salarytype": req.body.salarytype,
@@ -148,7 +156,7 @@ router.post("/", async (req, res) => {
 
         };
 
-        var candidate_user = await common_helper.find(User, { 'email': req.body.email, 'is_del': false });
+        var candidate_user = await common_helper.find(User, { 'email': req.body.email.toLowerCase(), 'is_del': false });
         if (candidate_user.data.length <= 0) {
             var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
 
@@ -207,13 +215,14 @@ router.post("/", async (req, res) => {
                 var candidate = await common_helper.findOne(CandidateDetail,
                     { user_id: new ObjectId(interest_resp.data.user_id) });
                 var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
-                let content = status.data.MessageContent;
+                var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'offer_mail' });
+                let content = mailcontent.data.content;
 
-                if (candidate.data.firstname != "" && candidate.data.lastname != "") {
-                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
-                } else {
-                    content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', ' you.');
-                }
+                // if (candidate.data.firstname != "" && candidate.data.lastname != "") {
+                content = content.replace("{companyname}", `${company}`).replace('{title}', interest_resp.data.title);
+                // } else {
+                //     content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', ' you.');
+                // }
 
 
                 let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
@@ -247,11 +256,20 @@ router.post('/pastOffer', async (req, res) => {
         var user = await common_helper.findOne(User, { "email": value })
         if (user.status == 1) {
             var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(user.data._id), status: "Not Joined" });
+
+            // var previousOffer = await common_helper.find(Offer, {
+            //     "user_id": ObjectId(user.data._id),
+            //     "created_by": req.userInfo.id,
+            //     $or: [{ status: { $eq: "Accepted" } }, { status: { $eq: "On Hold" } }],
+            //     $and: [{ status: { $eq: "Released" } }, { expirydate: { $lte: new Date() } }]
+            // });
         }
         else {
             var pastOffer = [];
+            // var previousOffer = [];
         }
-        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: pastOffer });
+        // , "previousOffer": previousOffer
+        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, "data": pastOffer });
 
     }
     catch (error) {
@@ -259,8 +277,26 @@ router.post('/pastOffer', async (req, res) => {
     }
 })
 
+router.post('/check_is_candidate', async (req, res) => {
+    try {
+        // console.log(req.body.email.toLowerCase());
 
+        re = new RegExp(req.body.email.toLowerCase(), "i");
+        value = {
+            $regex: re
+        };
+        var user = await common_helper.findOne(User, { "email": value })
 
+        if (user.status == 2 || user.status == 1 && user.data.role_id == "5d9d98e13a0c78039c6dd00e") {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "valid candidate" });
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "You can not sent offer to this user." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': "Error occurred while fetching", "status": 0 });
+    }
+})
 
 cron.schedule('00 00 * * *', async (req, res) => {
     var resp_data = await Offer.aggregate(

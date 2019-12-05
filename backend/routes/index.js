@@ -34,6 +34,8 @@ var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
 var Offer = require('./../models/offer');
 var MailType = require('./../models/mail_content');
+var new_mail_helper = require('./../helpers/new_mail_helper');
+
 var DisplayMessage = require('./../models/display_messages');
 var userpProfile = require('./profile');
 
@@ -557,7 +559,8 @@ router.post("/employer_register", async (req, res) => {
               if (mail_resp.status === 0) {
                 res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
               } else {
-                res.json({ "message": "Employer registration successful", "data": interest_user_resp })
+
+                res.json({ "message": "Employer registration successful, Confirmation mail send to your email", "data": interest_user_resp })
               }
             } else {
               res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
@@ -1252,6 +1255,21 @@ router.post('/match_old_password', async (req, res) => {
   } else {
     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Password is not matched." });
   }
+})
+
+router.post('/test_mail', async (req, res) => {
+  var content = req.body.content;
+  var trackid = req.body.trackid;
+
+  let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+    "to": req.body.email,
+    "reply_to": req.body.reply_to,
+    "subject": "Offer",
+    "trackid": trackid
+  }, content);
+
+  // if (mail_resp)
+  res.json({ "message": "success" })
 })
 
 async function getCountry(req, res) {
