@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { OfferService } from '../../shared-components/offers/offer.service';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as  moment from 'moment';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
   selector: 'app-timeline',
@@ -16,8 +17,13 @@ export class TimelineComponent implements OnInit {
   offer: any = [];
   history: any[] = [];
   moment: any;
+  userDetail: any;
   constructor(private service: OfferService,
-    private route: ActivatedRoute, ) {
+    private route: ActivatedRoute,
+    private commonservice: CommonService,
+    private router: Router) {
+
+    this.userDetail = this.commonservice.getLoggedUserDetail();
   }
 
   ngOnInit() {
@@ -33,6 +39,14 @@ export class TimelineComponent implements OnInit {
       this.employer = history['employer'];
     });
 
+  }
+
+  Back() {
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate(['/employer/offers/list']);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['/sub_employer/offers/list']);
+    }
   }
 
 

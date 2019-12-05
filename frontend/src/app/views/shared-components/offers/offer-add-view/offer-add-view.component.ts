@@ -45,6 +45,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
+
   from: any;
   to: any;
   customfield: any = [];
@@ -73,6 +74,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'Candidate Commit', value: 'candidateCommit' },
     { label: 'Both Commit', value: 'bothCommit' }
   ];
+  Trigger_Option = [
+    { label: 'Select Offer Type', value: '' },
+    { label: 'Before Joining', value: "beforeJoining" },
+    { label: 'After Joining', value: 'afterJoining' },
+    { label: 'After Offer', value: 'afterOffer' },
+    { label: 'Before Expiry', value: "beforeExpiry" },
+    { label: 'After Expiry', value: 'afterExpiry' },
+    { label: 'After Acceptance', value: 'afterAcceptance' }
+
+  ];
   contryList: any;
   cancel_link = '/employer/offers/list';
   cancel_link1 = '/sub_employer/offers/list';
@@ -89,6 +100,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offerList: any;
   grpId: string;
   isExpired = false;
+  is_submitted = false;
 
   constructor(
     private fb: FormBuilder,
@@ -113,9 +125,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
       location: new FormControl('', [Validators.required]),
-      salarybracket: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
-      salarybracket_from: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
-      salarybracket_to: new FormControl('', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]),
+      salarybracket: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
+      salarybracket_from: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
+      salarybracket_to: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
       status: new FormControl(),
@@ -212,12 +224,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // emial blur pattern check
   checkEmail(value) {
     let email = value.target.value;
+    this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
+    }, (err) => {
+      this.form.controls['email'].setErrors({ 'isExist': true });
+      this.form.updateValueAndValidity();
+    });
     console.log('value=>', value.target.value);
 
     this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
       this.pastDetails = res[`data`][`data`];
-      console.log('pastDetails=>', this.pastDetails);
-
       if (this.pastDetails.length > 0) {
         this.modalService.open(this.content, ModalOptions);
       }
@@ -258,9 +273,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   getSalaryType() {
     if (this.form.value.salarytype === 'hourly') {
       this.disabled = false;
-      this.form.controls['salaryduration'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)]);
+      this.form.controls['salaryduration'].setValidators([Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
       // if (this.form.value.salaryduration.length > 0) {
-      this.form.controls['salaryduration'].setValidators([Validators.pattern(/^[0-9]*$/)]);
+      this.form.controls['salaryduration'].setValidators([Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
       // }
       // this.form.controls['salaryduration'].updateValueAndValidity();
     } else {
@@ -314,6 +329,23 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
+          console.log('res=>', res);
+
+          // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+
+
+          console.log('res[`data`][`communication`] => ', res[`data`][`communication`]);
+          if (this.is_View && res[`data`][`communication`].length > 0) {
+            res[`data`][`communication`].forEach(element => {
+              console.log('element =======> ', element);
+              element.trigger =
+                (this.Trigger_Option.find(o => o.value === element.trigger).label);
+
+            });
+            // res[`data`][`communication`][0].trigger =
+            //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+          }
+
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
               this.isAccepted = true;
@@ -325,7 +357,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.disabled = true;
               this.form.controls['offertype'].disable();
               this.form.controls['notes'].disable();
-              this.form.controls['status'].disable();
+              // this.form.controls['status'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
 
@@ -433,6 +465,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
           this.resData = res[`data`][0];
+          this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
           const d = new Date();
           d.setDate(d.getDate() - 1);
           if (this.resData.status && d > new Date(this.resData.expirydate)) {
@@ -546,8 +579,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   async groupDetail(id) {
     const groupById = this.group_optoins.find(x => x.value === id);
-    this.form.controls.group.setValue(groupById.value);
-    if (this.is_View) {
+    if (groupById) {
+      this.form.controls.group.setValue(groupById.value);
+    }
+    if (groupById && this.is_View) {
       this.resData.groupName = groupById.label;
     }
   }
@@ -569,16 +604,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.spinner.hide();
 
       }
+      this.router.navigate(['/candidate/offers/list']);
     });
   }
 
   // get joining date
-  getJoiningDate(e) {
-    const date = new Date(e);
-    const month = date.getMonth() + 1;
-    this.joiningdate = date.getFullYear() + '-' + month + '-' + date.getDate();
-    this.min_expiry_date = this.form.value.joiningdate;
-  }
+  // getJoiningDate(e) {
+  //   const date = new Date(e);
+  //   const month = date.getMonth() + 1;
+  //   this.joiningdate = date.getFullYear() + '-' + month + '-' + date.getDate();
+  //   this.min_expiry_date = this.form.value.joiningdate;
+  // }
 
   getExpiryDate(e) {
     const date = new Date(e);
@@ -619,7 +655,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
-      day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
     this.communicationData.push(new_communication);
@@ -650,7 +686,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
-      if (value.target.value === element.user.email) {
+      if (value.target.value.toLowerCase() === element.user.email) {
         this.display_msg = true;
         this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
         document.getElementById('candidate_name').setAttribute('disabled', 'true');
@@ -724,8 +760,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.to = parseInt(to, 10);
     if (this.from > this.to) {
       this.error = true;
-      this.err_from = 'can\'t be greater then maximum salary!';
-      this.err_to = 'can\'t be less then minimum salary!';
+      this.err_from = 'Salary From can\'t be greater than Salary To';
+      this.err_to = 'Salary To can\'t be lesser than Salary From.';
     } else if (this.from === this.to) {
       this.error = true;
       this.err_from = 'Can\'t be same!';
@@ -739,8 +775,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.from = parseInt(to, 10);
     if (this.from > this.to) {
       this.error = true;
-      this.err_from = 'can\'t be greater then maximum salary!';
-      this.err_to = 'can\'t be less then minimum salary!';
+      this.err_from = 'Salary From can\'t be greater than Salary To';
+      this.err_to = 'Salary To can\'t be lesser than Salary From.';
     } else if (this.from === this.to) {
       this.error = true;
       this.err_from = 'Can\'t be same!';
@@ -752,6 +788,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
+    this.is_submitted = true;
     // customised fields
     const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {

@@ -59,7 +59,7 @@
                         </span>
                       </div>
                       <div class="error" *ngIf="!registerForm.controls['email'].valid">
-                        <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
+                        <span *ngIf="registerForm.controls['email'].errors['pattern']  && !isFormSubmitted ">Email
                           must be in valid format.</span>
                         <span *ngIf="registerForm.controls['email'].errors['isExist']  && !isFormSubmitted ">
                           This Email address is already registered.
@@ -156,7 +156,7 @@
                             <i class="icon-calendar"></i>
                           </span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Company Name *"
+                        <input type="text" class="form-control" placeholder="Company Name"
                           [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
                           required="required">
                         <!-- error mb-2 mt-1 -->
@@ -202,9 +202,8 @@
                             <i class="icon-user"></i>
                           </span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Your Name *"
-                          [(ngModel)]="formData.username" name="username" formControlName="username"
-                          required="required">
+                        <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
+                          name="username" formControlName="username" required="required">
                         <!-- error mb-2 mt-1 -->
                         <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
                           <span
@@ -271,7 +270,8 @@
                     </fieldset> -->
 
                     <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" style="text-align: left;">Contact Number</label>
+                      <label class="col-form-label" style="text-align: left;">Contact Number <p class="ast">*</p>
+                      </label>
                       <div class="input-group  country-code-box-wrap">
                         <div class="input-group-prepend">
                           <span class="input-group-text">
@@ -284,7 +284,7 @@
                               placeholder="Code" formControlName="countrycode" name="countrycode" disabled>
                           </div>
                           <div class="contact-number">
-                            <input type="number" class="form-control" placeholder="10-digit number *"
+                            <input type="number" class="form-control" placeholder="10-digit number"
                               [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
                               required="required">
                             <div class="error pull-left"
@@ -338,6 +338,7 @@
                   </div>
                 </div>
                 <div class="step-form-btn">
+                  <!-- <p *ngIf="!form.valid"></p> -->
                   <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
                     (click)="onSubmit(registerForm.valid)">Submit <i *ngIf="show_spinner"
                       class="fa fa-spinner fa-spin"></i></button>

@@ -103,7 +103,9 @@ export class OfferService {
     offer_detail_candidate(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.candidate_url}` + '/offer/details/' + id);
     }
-
+    type_message(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.candidate_url}` + '/offer/type_message', data);
+    }
     history(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + '/offer/history/' + id);
     }
@@ -113,6 +115,9 @@ export class OfferService {
 
     commit_status(id): Observable<any[]> {
         return this.http.get<any[]>(`${this.employer_url}` + '/group/commit_status/' + id);
+    }
+    email_exists(data): Observable<any[]> {
+        return this.http.post<any[]>(`${this.employer_url}` + '/offer/check_is_candidate', data);
     }
     // Candidate Service
 

@@ -51,6 +51,9 @@
                         </div>
                     </div>
                     <div class="w-100 card-footer text-right">
+                        <p *ngIf="!addLocation.valid && submitted" class="text-danger">
+                            Please review fields with error and Submit again.
+                        </p>
                         <button type="submit" class="btn btn-md btn-primary" [disabled]="show_spinner">
                             <!-- <i class="fa fa-dot-circle-o"></i> -->
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>

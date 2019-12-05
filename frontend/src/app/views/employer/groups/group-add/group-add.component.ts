@@ -27,6 +27,7 @@ export class GroupAddComponent implements OnInit {
   formData: FormData;
   show_spinner = false;
   userDetail: any;
+  days: any;
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -40,14 +41,17 @@ export class GroupAddComponent implements OnInit {
     // form controls
     this.addGroup = this.fb.group({
       name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      high_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      high_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)])
+      high_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      high_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      medium_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      medium_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      // low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      // low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)])
     });
 
+    this.service.alert_days().subscribe(res => {
+      this.days = res[`data`];
+    })
     // add communications
     this.communicationForm = this.fb.group({
       communicationFieldItems: this.fb.array([])
@@ -90,7 +94,8 @@ export class GroupAddComponent implements OnInit {
       communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
-      day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+      // day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
       // message: ['', Validators.required]
     }));
@@ -174,12 +179,12 @@ export class GroupAddComponent implements OnInit {
         const obj = {
           id: this.group_id,
           name: this.groupData['name'],
-          high_unopened: this.groupData['high_unopened'],
-          high_notreplied: this.groupData['high_notreplied'],
-          medium_unopened: this.groupData['medium_unopened'],
-          medium_notreplied: this.groupData['medium_notreplied'],
-          low_unopened: this.groupData['low_unopened'],
-          low_notreplied: this.groupData['low_notreplied'],
+          high_unopened: this.groupData['high_unopened'] ? this.groupData['high_unopened'] : '',
+          high_notreplied: this.groupData['high_notreplied'] ? this.groupData['high_notreplied'] : '',
+          medium_unopened: this.groupData['medium_unopened'] ? this.groupData['medium_unopened'] : '',
+          medium_notreplied: this.groupData['medium_notreplied'] ? this.groupData['medium_notreplied'] : '',
+          // low_unopened: this.groupData['low_unopened'],
+          // low_notreplied: this.groupData['low_notreplied'],
           data: JSON.stringify(communication_array)
         };
 

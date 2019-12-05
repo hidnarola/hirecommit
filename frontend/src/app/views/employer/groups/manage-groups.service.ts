@@ -17,7 +17,6 @@ export class GroupService {
   }
 
   edit_group(data): Observable<any[]> {
-    console.log('in service =>> ', data);
     return this.http.put<any[]>(`${this.url}` + '/group', data);
   }
 
@@ -33,7 +32,6 @@ export class GroupService {
   }
 
   get_communication_detail(id): Observable<any[]> {
-    console.log('group id from service ==>', id);
     return this.http.get<any[]>(`${this.url}` + '/group/communication_detail/' + id);
   }
 
@@ -46,8 +44,9 @@ export class GroupService {
   }
 
   deactivate_communication(id): Observable<any[]> {
-    console.log('>><<', id);
-
     return this.http.put<any[]>(`${this.url}` + '/group/deactivate_communication/' + id, {});
+  }
+  alert_days(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + '/group/alert_days');
   }
 }
