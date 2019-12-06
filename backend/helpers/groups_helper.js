@@ -22,8 +22,8 @@ groups_helper.get_all_groups = async (collection, id, search, start, length, rec
             { "high_notreplied": RE },
             { "medium_unopened": RE },
             { "medium_notreplied": RE },
-            { "low_unopened": RE },
-            { "low_notreplied": RE }
+            // { "low_unopened": RE },
+            // { "low_notreplied": RE }
           ]
         },
       });

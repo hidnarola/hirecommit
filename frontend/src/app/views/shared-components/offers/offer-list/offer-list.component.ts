@@ -75,7 +75,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       //     console.log('err=>', err);
       //     // this.hide_list = true;
       //   });
-    };
+    }
 
     if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {

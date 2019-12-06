@@ -11,6 +11,7 @@ var groups_helper = require('../../helpers/groups_helper');
 var logger = config.logger;
 var group = require('../../models/group');
 var GroupDetail = require('../../models/group-detail');
+var AlertDays = require('../../models/alert_days');
 var Offer = require('../../models/offer');
 
 var User = require('../../models/user');
@@ -35,6 +36,14 @@ router.get("/groups_list", async (req, res) => {
     }
 })
 
+router.get("/alert_days", async (req, res) => {
+    var resp_data = await common_helper.findOne(AlertDays, { "_id": "5de8c4d8e714b7546c9f6361" })
+    if (resp_data.status == 1) {
+        return res.status(config.OK_STATUS).json({ 'message': "Alert days List", "status": 1, data: resp_data.data });
+    } else {
+        return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
+    }
+})
 
 //groups
 router.post("/", async (req, res) => {
@@ -43,30 +52,30 @@ router.post("/", async (req, res) => {
             notEmpty: true,
             errorMessage: "Group Name is required"
         },
-        "high_unopened": {
-            notEmpty: true,
-            errorMessage: "High priority is required"
-        },
-        "high_notreplied": {
-            notEmpty: true,
-            errorMessage: "High priority is required"
-        },
-        "medium_unopened": {
-            notEmpty: true,
-            errorMessage: "Medium priority is required"
-        },
-        "medium_notreplied": {
-            notEmpty: true,
-            errorMessage: "Medium priority is required"
-        },
-        "low_unopened": {
-            notEmpty: true,
-            errorMessage: "Low priority is required"
-        },
-        "low_notreplied": {
-            notEmpty: true,
-            errorMessage: "Low priority is required"
-        }
+        // "high_unopened": {
+        //     notEmpty: true,
+        //     errorMessage: "High priority is required"
+        // },
+        // "high_notreplied": {
+        //     notEmpty: true,
+        //     errorMessage: "High priority is required"
+        // },
+        // "medium_unopened": {
+        //     notEmpty: true,
+        //     errorMessage: "Medium priority is required"
+        // },
+        // "medium_notreplied": {
+        //     notEmpty: true,
+        //     errorMessage: "Medium priority is required"
+        // },
+        // "low_unopened": {
+        //     notEmpty: true,
+        //     errorMessage: "Low priority is required"
+        // },
+        // "low_notreplied": {
+        //     notEmpty: true,
+        //     errorMessage: "Low priority is required"
+        // }
     };
     req.checkBody(schema);
 
@@ -162,7 +171,11 @@ router.post('/get', async (req, res) => {
         if (req.body.search && req.body.search != "") {
             aggregate.push({
                 "$match":
-                    { $or: [{ "name": RE }, { "high_unopened": RE }, { "high_notreplied": RE }, { "medium_unopened": RE }, { "medium_notreplied": RE }, { "low_unopened": RE }, { "low_notreplied": RE }] }
+                {
+                    $or: [{ "name": RE }, { "high_unopened": RE }, { "high_notreplied": RE }, { "medium_unopened": RE }, { "medium_notreplied": RE },
+                        // { "low_unopened": RE }, { "low_notreplied": RE }
+                    ]
+                }
             });
         }
 
@@ -190,24 +203,24 @@ router.put('/', async (req, res) => {
     if (req.body.name && req.body.name != "") {
         obj.name = req.body.name
     }
-    if (req.body.high_unopened && req.body.high_unopened != "") {
-        obj.high_unopened = req.body.high_unopened
-    }
-    if (req.body.high_notreplied && req.body.high_notreplied != "") {
-        obj.high_notreplied = req.body.high_notreplied
-    }
-    if (req.body.medium_unopened && req.body.medium_unopened != "") {
-        obj.medium_unopened = req.body.medium_unopened
-    }
-    if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
-        obj.medium_notreplied = req.body.medium_notreplied
-    }
-    if (req.body.low_unopened && req.body.low_unopened != "") {
-        obj.low_unopened = req.body.low_unopened
-    }
-    if (req.body.low_notreplied && req.body.low_notreplied != "") {
-        obj.low_notreplied = req.body.low_notreplied
-    }
+    // if (req.body.high_unopened && req.body.high_unopened != "") {
+    obj.high_unopened = req.body.high_unopened
+    // }
+    // if (req.body.high_notreplied && req.body.high_notreplied != "") {
+    obj.high_notreplied = req.body.high_notreplied
+    // }
+    // if (req.body.medium_unopened && req.body.medium_unopened != "") {
+    obj.medium_unopened = req.body.medium_unopened
+    // }
+    // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+    obj.medium_notreplied = req.body.medium_notreplied
+    // }
+    // if (req.body.low_unopened && req.body.low_unopened != "") {
+    //     obj.low_unopened = req.body.low_unopened
+    // }
+    // if (req.body.low_notreplied && req.body.low_notreplied != "") {
+    //     obj.low_notreplied = req.body.low_notreplied
+    // }
     var id = req.body.id;
 
     var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)

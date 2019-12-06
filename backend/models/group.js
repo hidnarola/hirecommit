@@ -15,28 +15,28 @@ const GroupSchema = new Schema({
   },
   high_unopened: {
     type: Number,
-    required: true
+    // required: true
   },
   high_notreplied: {
     type: Number,
-    required: true
+    // required: true
   },
   medium_unopened: {
     type: Number,
-    required: true
+    // required: true
   },
   medium_notreplied: {
     type: Number,
-    required: true
+    // required: true
   },
-  low_unopened: {
-    type: Number,
-    required: true
-  },
-  low_notreplied: {
-    type: Number,
-    required: true
-  },
+  // low_unopened: {
+  //   type: Number,
+  // required: true
+  // },
+  // low_notreplied: {
+  //   type: Number,
+  // required: true
+  // },
   is_del: {
     type: Boolean,
     default: false
