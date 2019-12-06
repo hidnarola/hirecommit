@@ -185,7 +185,6 @@ router.post("/candidate_register", async (req, res) => {
   req.checkBody(schema);
   var errors = req.validationErrors();
   if (!errors) {
-
     re = new RegExp(req.body.email, "i");
     value = {
       $regex: re
