@@ -448,7 +448,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.accept_btn = true;
     this.service.type_message({ 'type': type }).subscribe(res => {
       console.log('res=>', res);
-
     })
     const obj = {
       'id': id
