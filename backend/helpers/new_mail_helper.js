@@ -3,7 +3,6 @@ var EmailTemplate = require('email-templates').EmailTemplate;
 const bcrypt = require('bcryptjs');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const sgMail = require('@sendgrid/mail');
-var mail_api_key = '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';
 var request = require("request");
 var new_mail_helper = {};
 var config = require("./../config");
