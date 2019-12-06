@@ -221,24 +221,19 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  // emial blur pattern check
+  // email blur pattern check
   checkEmail(value) {
-    let email = value.target.value;
+    console.log('check email=======>');
+
+    const email = value.target.value;
+
     this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
+      console.log('res=>', res);
+
     }, (err) => {
+      console.log('err=>', err);
+
       this.form.controls['email'].setErrors({ 'isExist': true });
-      this.form.updateValueAndValidity();
-    });
-    console.log('value=>', value.target.value);
-
-    this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
-      this.pastDetails = res[`data`][`data`];
-      if (this.pastDetails.length > 0) {
-        this.modalService.open(this.content, ModalOptions);
-      }
-      else {
-
-      }
     });
     if (this.form.value.email.length > 0) {
       this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
@@ -246,6 +241,35 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.form.controls['email'].setValidators([Validators.required]);
     }
     this.form.controls['email'].updateValueAndValidity();
+
+    this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
+      this.pastDetails = res[`data`][`data`];
+      if (this.pastDetails.length > 0) {
+        this.modalService.open(this.content, ModalOptions);
+      }
+    });
+
+    console.log('this.form.controls[`email`]=>', this.form.controls[`email`]);
+
+  }
+
+  // key up event for email
+  findEmail(value) {
+    console.log('find email=======>');
+
+    for (let index = 0; index < this.candidate.length; index++) {
+      const element = this.candidate[index];
+      if (value.target.value.toLowerCase() === element.user.email) {
+        this.display_msg = true;
+        this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
+        document.getElementById('candidate_name').setAttribute('disabled', 'true');
+        break;
+      } else {
+        this.display_msg = false;
+        this.form.controls.candidate_name.setValue('');
+        document.getElementById('candidate_name').removeAttribute('disabled');
+      }
+    }
   }
 
   // get location
@@ -682,22 +706,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  findEmail(value) {
 
-    for (let index = 0; index < this.candidate.length; index++) {
-      const element = this.candidate[index];
-      if (value.target.value.toLowerCase() === element.user.email) {
-        this.display_msg = true;
-        this.form.controls.candidate_name.setValue(element.firstname + ' ' + element.lastname);
-        document.getElementById('candidate_name').setAttribute('disabled', 'true');
-        break;
-      } else {
-        this.display_msg = false;
-        this.form.controls.candidate_name.setValue('');
-        document.getElementById('candidate_name').removeAttribute('disabled');
-      }
-    }
-  }
 
   // blur event for salary input
   onSalaryBlur() {

@@ -80,6 +80,9 @@
                                     <span *ngIf="form.controls['email'].errors['isExist']" class="text-danger">
                                         This Email address is already registered.
                                     </span>
+                                    <span *ngIf="form.controls['email'].errors['required'] " class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
