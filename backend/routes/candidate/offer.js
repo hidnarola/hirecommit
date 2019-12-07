@@ -183,9 +183,8 @@ router.post('/get', async (req, res) => {
 
 
 router.post('/type_message', async (req, res) => {
-    console.log('1', 1);
-    console.log('req.body.type', req.body.type);
-
+    // console.log('1', 1);
+    // console.log('req.body.type', req.body.type);
     try {
         const message_type = await OfferTypeMessage.findOne({ "type": req.body.type })
         return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: message_type });
