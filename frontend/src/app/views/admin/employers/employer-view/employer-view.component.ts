@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
-import { EmployerService as emp } from '../../../employer/employer.service'
+import { EmployerService as emp } from '../../../employer/employer.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -56,8 +56,7 @@ export class EmployerViewComponent implements OnInit {
     }
     if (this.route.snapshot.url[1].path === 'edit') {
       this.is_Edit = true;
-    }
-    else if (this.route.snapshot.url[1].path === 'view') {
+    } else if (this.route.snapshot.url[1].path === 'view') {
       this.is_View = true;
     }
 
@@ -68,7 +67,9 @@ export class EmployerViewComponent implements OnInit {
       bussinesstype: new FormControl(''),
       countrycode: new FormControl(''),
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      email: new FormControl('', [Validators.required,
+      Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]
+      ),
       contactno: new FormControl('', Validators.compose([Validators.required,
       Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)
       ])),
@@ -139,7 +140,7 @@ export class EmployerViewComponent implements OnInit {
         'username': this.username,
         'email': this.email,
         'contactno': this.contactno
-      }
+      };
       this.confirmationService.confirm({
         message: 'Are you sure that you want to update Employer Profile?',
         accept: () => {

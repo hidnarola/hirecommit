@@ -141,7 +141,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'custom_field' }).subscribe(res => {
       console.log('res=>', res);
-      this.msg = res['message']
+      this.msg = res['message'];
     });
   }
 

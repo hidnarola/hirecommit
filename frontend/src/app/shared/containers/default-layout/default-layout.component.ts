@@ -76,8 +76,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
           } else if (userType === 'sub-employer') {
 
 
-            this.commonService.getFirstLogin.subscribe(res => {
-              console.log('res=>', res);
+            this.commonService.getFirstLogin.subscribe(response => {
+              // console.log('res=>', res);
               console.log(' this._profile_data[0].user_id.is_login_first=>', this._profile_data[0].user_id.is_login_first);
               // if (res) {
               //   this._profile_data[0].user_id.is_login_first = res;
@@ -86,11 +86,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
                 this.router.navigate(['sub_employer/change-password']);
                 console.log(' this.commonService.changedProfileDetail=>');
                 this.name = this._profile_data[0].username;
-              }
-              // else if (this._profile_data[0].user_id.is_email_change) {
-              //   this.router.navigate(['/sub_employer/change-password']);
-              // }
-              else {
+                // }
+                // else if (this._profile_data[0].user_id.is_email_change) {
+                //   this.router.navigate(['/sub_employer/change-password']);
+                // }
+              } else {
                 this.navItems = sub_employer;
                 this.name = this._profile_data[0].username;
               }
