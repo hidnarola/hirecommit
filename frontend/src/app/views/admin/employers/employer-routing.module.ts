@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { EmployerListComponent } from './employer-list/employer-list.component';
 import { EmployerViewComponent } from './employer-view/employer-view.component';
 import { ReportComponent } from './report/report.component';
-import { ReportHistoryComponent } from './report/report-history/report-history.component'
+import { ReportHistoryComponent } from './report/report-history/report-history.component';
 import { OfferAddViewComponent } from '../../shared-components/offers/offer-add-view/offer-add-view.component';
 import { SubAccountsListComponent } from '../../employer/sub-accounts/sub-accounts-list/sub-accounts-list.component';
 import { SubAccountAddViewComponent } from '../../employer/sub-accounts/sub-account-add-view/sub-account-add-view.component';

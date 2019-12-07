@@ -120,11 +120,10 @@ export class ProfileComponent implements OnInit {
     //   console.log('it is admin!');
     // }
 
-    //employer get details
+    // employer get details
     if (this.userDetail.role === 'employer') {
       this.getEmploterData();
-    }
-    else if (this.userDetail.role === 'candidate') {
+    } else if (this.userDetail.role === 'candidate') {
       this.getCandidate();
     }
 
@@ -132,7 +131,7 @@ export class ProfileComponent implements OnInit {
 
   getEmploterData() {
     this.Employerservice.get_profile(this.id).subscribe(res => {
-      this.emp_data = res['data']
+      this.emp_data = res['data'];
       this.CompanyName = res['data']['companyname'];
       this.Website = res['data']['website'];
       this.Email = res['data']['email'];
@@ -176,7 +175,7 @@ export class ProfileComponent implements OnInit {
             this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.commonService.changedProfileDetail(true);
             this.getEmploterData();
-            if (this.userDetail.email != this.Email) {
+            if (this.userDetail.email !== this.Email) {
               localStorage.removeItem('token');
               localStorage.removeItem('user');
               localStorage.removeItem('userid');
@@ -285,8 +284,9 @@ export class ProfileComponent implements OnInit {
         this.profileForm.updateValueAndValidity();
       });
     } else if (this.userDetail.role === 'candidate') {
-      this.service.email_exists({ 'email': this.CandidateForm.value.candidate_email, 'user_id': this.candidate_data.user_id }).subscribe(res => {
-      }, (err) => {
+      this.service.email_exists({
+        'email': this.CandidateForm.value.candidate_email, 'user_id': this.candidate_data.user_id
+      }).subscribe(res => { }, (err) => {
         this.CandidateForm.controls['candidate_email'].setErrors({ 'isExist': true });
         this.CandidateForm.updateValueAndValidity();
       });

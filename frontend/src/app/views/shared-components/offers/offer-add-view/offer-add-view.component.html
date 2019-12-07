@@ -78,11 +78,12 @@
                                         must be in valid format.</span>
 
                                     <span *ngIf="form.controls['email'].errors['isExist']" class="text-danger">
-                                        This Email address is already registered.
+                                        <!-- This Email address is already registered. -->
+                                        You can not sent offer to this user.
                                     </span>
-                                    <span *ngIf="form.controls['email'].errors['required'] " class="text-danger">
+                                    <!-- <span *ngIf="form.controls['email'].errors['required'] " class="text-danger">
                                         This field is required.
-                                    </span>
+                                    </span> -->
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">

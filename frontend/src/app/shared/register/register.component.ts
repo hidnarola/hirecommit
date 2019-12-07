@@ -34,6 +34,7 @@ export class RegisterComponent implements OnInit {
     private service: CommonService,
     private toastr: ToastrService,
     public fb: FormBuilder,
+    public fbb: FormBuilder,
     private cd: ChangeDetectorRef
   ) {
     this.registerData = {};
@@ -59,7 +60,7 @@ export class RegisterComponent implements OnInit {
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
 
-    this.documentImage = this.fb.group({
+    this.documentImage = this.fbb.group({
       documentimage: new FormControl(''),
     });
   }
@@ -101,17 +102,46 @@ export class RegisterComponent implements OnInit {
     const reader = new FileReader();
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
-      this.fileFormData.append('filename', this.file);
+      console.log('this.file => ', this.file);
+      if (this.file.size < 5000000) {
+        this.fileFormData.append('filename', this.file);
 
-      reader.readAsDataURL(this.file);
-      reader.onload = () => {
-        this.documentImage.patchValue({
-          documentimage: reader.result
-        });
-        // need to run CD since file load runs outside of zone
-        this.cd.markForCheck();
-      };
+        reader.readAsDataURL(this.file);
+        reader.onload = () => {
+          this.documentImage.patchValue({
+            documentimage: reader.result
+          });
+          // need to run CD since file load runs outside of zone
+          this.cd.markForCheck();
+        };
+      } else {
+        console.log('error => ');
+        this.documentImage.controls['documentimage'].setErrors({ 'fileSizeValidation': true });
+        this.documentImage.updateValueAndValidity();
+      }
+      console.log('this.registerForm => ', this.documentImage.controls['documentimage']);
+
     }
+
+
+
+    // if (file.size <= 500000) {
+    //   this.image_upload = file;
+    //   this.track_img = environment.API_URL + environment.ARTIST_TRACK + file.name;
+    //   const fr = new FileReader();
+    //   fr.onload = (e: any) => {
+    //     this.track_img = e.target.result;
+    //     this.add_track_img = e.target.result;
+    //   };
+    //   fr.readAsDataURL(file);
+    //   this.add_track_img = environment.API_URL + environment.ARTIST_TRACK + file;
+    // } else {
+    //   this.toastr.error('Please choose Image less then 500 kb.', 'Error!');
+    //   return false;
+    // }
+
+
+
   }
 
   getCode(e) {
@@ -141,8 +171,11 @@ export class RegisterComponent implements OnInit {
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
     const confirmpassword = g.get('confirmpassword').value;
-    if (password !== undefined && password != null && confirmpassword !== null && confirmpassword !== undefined) {
-      return password === confirmpassword ? null : g.get('confirmpassword').setErrors({ 'mismatch': true });
+    // if (password !== undefined && password != null && confirmpassword !== null && confirmpassword !== undefined) {
+    if (password && confirmpassword) {
+      return password === confirmpassword ?
+        g.get('confirmpassword').setErrors({}) :
+        g.get('confirmpassword').setErrors({ 'mismatch': true });
     }
   }
 

@@ -1256,20 +1256,6 @@ router.post('/match_old_password', async (req, res) => {
   }
 })
 
-router.post('/test_mail', async (req, res) => {
-  var content = req.body.content;
-  var trackid = req.body.trackid;
-
-  let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-    "to": req.body.email,
-    "reply_to": req.body.reply_to,
-    "subject": "Offer",
-    "trackid": trackid
-  }, content);
-
-  // if (mail_resp)
-  res.json({ "message": "success" })
-})
 
 async function getCountry(req, res) {
   try {
