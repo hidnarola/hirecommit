@@ -184,6 +184,7 @@ router.post("/candidate_register", async (req, res) => {
 
   req.checkBody(schema);
   var errors = req.validationErrors();
+
   if (!errors) {
     re = new RegExp(req.body.email, "i");
     value = {
@@ -402,6 +403,16 @@ router.post("/candidate_register", async (req, res) => {
 });
 
 router.post('/check_document_size', async (req, res) => {
+
+  // var schema = {
+  //   image: {
+  //     required: true,
+  //     extension: "jpg,jpeg,pdf",
+  //     // filesize: 5,
+  //   }
+  // }
+
+
   if (req.files && req.files["documentimage"]) {
     var documentImage = req.files["documentimage"];
     if (documentImage.size > 5000000) {
