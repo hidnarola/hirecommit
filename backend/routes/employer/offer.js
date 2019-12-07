@@ -255,21 +255,61 @@ router.post('/pastOffer', async (req, res) => {
         };
         var user = await common_helper.findOne(User, { "email": value })
         if (user.status == 1) {
-            var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(user.data._id), status: "Not Joined" });
+            var pastOffer = await common_helper.find(Offer, { "employer_id": ObjectId(req.userInfo.id), "user_id": ObjectId(user.data._id), status: "Not Joined" });
+
+            if (pastOffer.data.length > 0) {
+                pastOffer.displayMessage = "Below are List of offer(s) which the candidate accepted and Not Joined in the past.Offer will be created in Hold status, please manually change it to Released status if desired.";
+            }
 
             var previousOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
                 "created_by": req.userInfo.id,
-                $or: [{ status: { $eq: "Accepted" } }, { status: { $eq: "On Hold" } }],
-                $and: [{ status: { $eq: "Released" } }, { expirydate: { $lte: new Date() } }]
+                $or: [
+                    { status: { $eq: "Accepted" } },
+                    { status: { $eq: "On Hold" } },
+                    // {
+                    //     $and:
+                    //         [
+                    //             { status: { $eq: "Released" } }, {
+                    //                 expirydate: {
+                    //                     $lte: new Date()
+                    //                 }
+                    //             }
+                    //         ]
+                    // }
+                ]
             });
+
+            if (previousOffer.data.length > 0) {
+                previousOffer.displayMessage = " Please check, this candidate already has offer in either Released, Accepted or On Hold status. You can use edit offer to make any changes to Released and On Hold offers.";
+            }
+
+            var ReleasedOffer = await common_helper.find(Offer, {
+                "user_id": ObjectId(user.data._id),
+                "created_by": req.userInfo.id,
+                $and:
+                    [
+                        { status: { $eq: "Released" } }, {
+                            expirydate: {
+                                $lte: new Date()
+                            }
+                        }
+                    ]
+
+
+            });
+
+            if (ReleasedOffer.data.length > 0) {
+                ReleasedOffer.displayMessage = "There is already Relesed offer for this Candidate , So you can't create offer.";
+            }
         }
         else {
             var pastOffer = [];
             var previousOffer = [];
+            var ReleasedOffer = [];
         }
         // , "previousOffer": previousOffer
-        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, "data": pastOffer, "previousOffer": previousOffer });
+        return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, "data": pastOffer, "previousOffer": previousOffer, "ReleasedOffer": ReleasedOffer });
 
     }
     catch (error) {
