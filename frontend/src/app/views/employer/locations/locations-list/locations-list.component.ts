@@ -157,8 +157,8 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
   open(content) {
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'locations' }).subscribe(res => {
-      this.msg = res['message']
-    })
+      this.msg = res['message'];
+    });
   }
 
   rrerender(): void {

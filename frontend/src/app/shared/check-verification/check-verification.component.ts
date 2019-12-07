@@ -34,7 +34,7 @@ export class CheckVerificationComponent implements OnInit {
     //     }
     //   });
 
-    // } else 
+    // } else
     if (this.userDetail.role === 'candidate') {
       this.candidateService.check_verified(this.userDetail.id).subscribe(res => {
         this.Canididate_message = res['message'];

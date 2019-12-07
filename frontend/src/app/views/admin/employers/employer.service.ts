@@ -29,7 +29,7 @@ export class EmployerService {
     return this.http.get<any[]>(`${this.url}` + '/employer/' + id);
   }
 
-  //sub - employer
+  // sub - employer
   get_sub_employers(params): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + '/employer/sub_account/get', { ...params });
   }
@@ -89,5 +89,5 @@ export class EmployerService {
   get_customfield(id): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}` + '/employer/customfield/first/' + id);
   }
-  //http://localhost:3000/admin/employer/details/5dc53b1c42b0a03b045f050a
+  // http://localhost:3000/admin/employer/details/5dc53b1c42b0a03b045f050a
 }

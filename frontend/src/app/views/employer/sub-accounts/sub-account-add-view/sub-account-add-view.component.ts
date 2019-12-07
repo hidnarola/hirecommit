@@ -134,8 +134,7 @@ export class SubAccountAddViewComponent implements OnInit {
         // };
         this.update_data_id = res['data']['user_id']['_id'];
       });
-    }
-    else {
+    } else {
       this.detail = {
         _id: null,
         username: null,
@@ -188,8 +187,7 @@ export class SubAccountAddViewComponent implements OnInit {
           });
         }
       });
-    }
-    else if (this.id && flag && this.userDetail.role === 'admin') {
+    } else if (this.id && flag && this.userDetail.role === 'admin') {
       alert(this.userDetail.role);
       if (this.detail['admin_rights'] === false) {
         this.obj = {
@@ -223,7 +221,7 @@ export class SubAccountAddViewComponent implements OnInit {
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         }
-      })
+      });
     } else {
       if (flag) {
         this.show_spinner = true;

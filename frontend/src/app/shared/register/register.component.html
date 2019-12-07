@@ -41,7 +41,8 @@
               </div>
               <div class="row">
                 <div class="form-group col-md-6">
-                  <label for="email">Your Work Email<p class="ast"> *</p></label>
+                  <label for="email">Your Email<p class="ast"> *</p></label>
+                  <!-- <label for="email">Your Work Email<p class="ast"> *</p></label> -->
                   <div class="input-group ">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
@@ -147,6 +148,14 @@
                     <!-- <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
                       <span>This field is required.</span>
                     </div> -->
+
+                    <!-- for file size validation -->
+                    <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
+                      <span *ngIf="documentImage.controls['documentimage'].errors['fileSizeValidation']">
+                        Please select file less than 5mb.
+                      </span>
+                    </div>
+                    <!-- for file size validation -->
                   </div>
                 </div>
               </div>
@@ -166,6 +175,11 @@
                       <span
                         *ngIf="registerForm.controls['password'].errors['required'] || registerForm.controls['password'].errors['whitespace']">This
                         field is required.</span>
+                      <!-- <span
+                        *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
+                        Password should be 8 character long , 1 small letter and 1 number is required.</span> -->
+                    </div>
+                    <div class="error" *ngIf="!registerForm.controls['password'].valid">
                       <span
                         *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
                         Password should be 8 character long , 1 small letter and 1 number is required.</span>
@@ -185,13 +199,18 @@
                       name="confirmpassword" required="required">
                     <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid && isFormSubmitted">
                       <span
-                        *ngIf="registerForm.controls['confirmpassword'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">This
-                        field is
-                        required.</span>
+                        *ngIf="registerForm.controls['confirmpassword'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
+                        This field is required.
+                      </span>
+                      <!-- <span
+                        *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">
+                        Password and Confirm password should be same.
+                      </span> -->
+                    </div>
+                    <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid">
                       <span
-                        *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">Password
-                        and Confirm
-                        password should be same.</span>
+                        *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">
+                        Password and Confirm password should be same.</span>
                     </div>
                   </div>
                 </div>

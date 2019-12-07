@@ -76,10 +76,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   ];
   Trigger_Option = [
     { label: 'Select Offer Type', value: '' },
-    { label: 'Before Joining', value: "beforeJoining" },
+    { label: 'Before Joining', value: 'beforeJoining' },
     { label: 'After Joining', value: 'afterJoining' },
     { label: 'After Offer', value: 'afterOffer' },
-    { label: 'Before Expiry', value: "beforeExpiry" },
+    { label: 'Before Expiry', value: 'beforeExpiry' },
     { label: 'After Expiry', value: 'afterExpiry' },
     { label: 'After Acceptance', value: 'afterAcceptance' }
 
@@ -227,30 +227,61 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     const email = value.target.value;
 
-    this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
-      console.log('res=>', res);
+    console.log('email control => ', this.form['controls'].email);
+    console.log('check for valid email control => ', this.form['controls'].email.valid);
 
-    }, (err) => {
-      console.log('err=>', err);
+    if (this.form['controls'].email.valid) {
 
-      this.form.controls['email'].setErrors({ 'isExist': true });
-    });
-    if (this.form.value.email.length > 0) {
-      this.form.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
+      this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
+        console.log('res=>', res);
+
+      }, (err) => {
+        console.log('err=>', err);
+
+        this.form.controls['email'].setErrors({ 'isExist': true });
+      });
+
+      this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
+        this.pastDetails = res[`data`][`data`];
+        if (this.pastDetails.length > 0) {
+          this.modalService.open(this.content, ModalOptions);
+        }
+      });
+
     } else {
-      this.form.controls['email'].setValidators([Validators.required]);
-    }
-    this.form.controls['email'].updateValueAndValidity();
-
-    this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
-      this.pastDetails = res[`data`][`data`];
-      if (this.pastDetails.length > 0) {
-        this.modalService.open(this.content, ModalOptions);
+      if (this.form.value.email.length > 0) {
+        this.form.controls['email'].setValidators(
+          [Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]
+        );
+      } else {
+        this.form.controls['email'].setValidators([Validators.required]);
       }
-    });
+      this.form.controls['email'].updateValueAndValidity();
+    }
 
-    console.log('this.form.controls[`email`]=>', this.form.controls[`email`]);
+    // this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
+    //   console.log('res=>', res);
 
+    // }, (err) => {
+    //   console.log('err=>', err);
+
+    //   this.form.controls['email'].setErrors({ 'isExist': true });
+    // });
+    // if (this.form.value.email.length > 0) {
+    //   this.form.controls['email'].setValidators(
+    //     [Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]
+    //   );
+    // } else {
+    //   this.form.controls['email'].setValidators([Validators.required]);
+    // }
+    // this.form.controls['email'].updateValueAndValidity();
+
+    // this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
+    //   this.pastDetails = res[`data`][`data`];
+    //   if (this.pastDetails.length > 0) {
+    //     this.modalService.open(this.content, ModalOptions);
+    //   }
+    // });
   }
 
   // key up event for email

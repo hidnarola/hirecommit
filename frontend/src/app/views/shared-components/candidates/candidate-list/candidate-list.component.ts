@@ -72,7 +72,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
         //   }, err => {
         //     callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         //   });
-        // } else 
+        // } else
         if (this.router.snapshot.data.type === 'approved' && this.userDetail.role === 'admin') {
           this.service.get_approved_candidate_admin(dataTablesParameters).subscribe(res => {
             console.log('res of approved candidates => ', res);

@@ -51,7 +51,7 @@ export class GroupAddComponent implements OnInit {
 
     this.service.alert_days().subscribe(res => {
       this.days = res[`data`];
-    })
+    });
     // add communications
     this.communicationForm = this.fb.group({
       communicationFieldItems: this.fb.array([])

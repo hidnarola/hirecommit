@@ -21,7 +21,7 @@ export class EmployerService {
     }
 
     setup(data): Observable<any[]> {
-        return this.http.put<any[]>(`${this.url}` + '/login_first_status', data)
+        return this.http.put<any[]>(`${this.url}` + '/login_first_status', data);
     }    // employer/login_first_status
 
     check_approved(data): Observable<any[]> {
@@ -29,6 +29,6 @@ export class EmployerService {
     }
 
     information(data): Observable<any[]> {
-        return this.http.post<any[]>(`${this.url}` + '/display_message', data)
+        return this.http.post<any[]>(`${this.url}` + '/display_message', data);
     }
 }
