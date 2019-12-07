@@ -21,15 +21,13 @@
                             <ng-template #content let-c="close" let-d="dismiss">
                                 <div class="modal-header instructions-popup-head">
                                     <h4 class="modal-title" id="modal-basic-title">Instructions</h4>
-                                    <button type="button" id="closeBtn" class="close" aria-label="Close"
+                                    <button type="button" *ngIf="isShow" id="closeBtn" class="close" aria-label="Close"
                                         (click)="d('Cross click')"><i class="fa fa-times">
                                         </i></button>
                                 </div>
                                 <div class="modal-body offer-popup-body">
-                                    <h5>Below are List of offer(s) which the candidate accepted and Not Joined in the
-                                        past. Offer will be created in Hold
-                                        status, please manually change it to Released status if desired.</h5>
-                                    <div class="row offer-popup-content">
+                                    <h5>{{msg}}</h5>
+                                    <div class="row offer-popup-content" *ngIf="isShow">
                                         <div class="col-md-4">
                                             <h6>Date</h6>
                                         </div>
@@ -37,27 +35,28 @@
                                             <h6>Offers</h6>
                                         </div>
                                     </div>
-
-                                    <div *ngFor="let data of pastDetails" class="row">
-                                        <div class="col-md-4">
-                                            <!-- <h6> -->
-                                            {{data.joiningdate | date: 'dd/MM/yyyy' : 'utc'}}
-                                            <!-- </h6> -->
-                                        </div>
-                                        <div class="col-md-8">
-                                            <!-- <h6> -->
-                                            {{data.title}}
-                                            <!-- </h6>
+                                    <div *ngIf="isShow">
+                                        <div *ngFor="let data of details" class="row">
+                                            <div class="col-md-4">
+                                                <!-- <h6> -->
+                                                {{data.joiningdate | date: 'dd/MM/yyyy' : 'utc'}}
+                                                <!-- </h6> -->
+                                            </div>
+                                            <div class="col-md-8">
+                                                <!-- <h6> -->
+                                                {{data.title}}
+                                                <!-- </h6>
                                              -->
+                                            </div>
                                         </div>
                                     </div>
 
                                 </div>
-                                <!-- <div class="modal-footer instructions-popup-footer">
-                                    <button type="button" class="btn btn-primary"
-                                        (click)="setup(_profile_data[0].user_id._id)">Let's
-                                        Setup</button>
-                                </div> -->
+                                <div class="modal-footer instructions-popup-footer" *ngIf="!isShow">
+                                    <button type="button" class="btn btn-primary" (click)="d('Cross click')"
+                                        [routerLink]="['/employer/offers/list']">Got
+                                        It!</button>
+                                </div>
                             </ng-template>
                             <!-- popup -->
                             <div class="col-md-6 form-group">
@@ -251,8 +250,7 @@
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
-                                    [disabled]="is_View || isAccepted" [minDate]="max_date"
-                                    (onSelect)="getJoiningDate($event)">
+                                    [disabled]="is_View || isAccepted" [minDate]="max_date">
                                 </p-calendar>
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">

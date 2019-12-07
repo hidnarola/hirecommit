@@ -42,6 +42,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   joiningdate: any;
   isAccepted = false;
   pastDetails: any;
+  msg: any;
+  isShow = false;
+  details: any;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -223,18 +226,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // email blur pattern check
   checkEmail(value) {
-    console.log('check email=======>');
 
     const email = value.target.value;
-
-    console.log('email control => ', this.form['controls'].email);
-    console.log('check for valid email control => ', this.form['controls'].email.valid);
 
     if (this.form['controls'].email.valid) {
 
       this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
-        console.log('res=>', res);
-
       }, (err) => {
         console.log('err=>', err);
 
@@ -242,10 +239,24 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       });
 
       this.service.add_offer_pastOffer({ 'email': email }).subscribe(res => {
-        this.pastDetails = res[`data`][`data`];
-        if (this.pastDetails.length > 0) {
+        this.isShow = false;
+        this.pastDetails = res;
+        if (this.pastDetails.ReleasedOffer.data.length > 0) {
           this.modalService.open(this.content, ModalOptions);
+          this.msg = this.pastDetails.ReleasedOffer.displayMessage;
+
         }
+        else if (this.pastDetails.data.data.length > 0) {
+          this.details = res['data']['data'];
+          this.isShow = true;
+          this.modalService.open(this.content, ModalOptions);
+          this.msg = this.pastDetails.data.displayMessage;
+        } else if (this.pastDetails.previousOffer.data.length > 0) {
+          this.isShow = false;
+          this.modalService.open(this.content, ModalOptions);
+          this.msg = this.pastDetails.previousOffer.displayMessage;
+        }
+
       });
 
     } else {
@@ -258,6 +269,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
       this.form.controls['email'].updateValueAndValidity();
     }
+
 
     // this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
     //   console.log('res=>', res);
@@ -282,6 +294,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     //     this.modalService.open(this.content, ModalOptions);
     //   }
     // });
+  }
+  send() {
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate(['/employer/offers/list']);
+    }
+    else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['/sub_employer/offers/list']);
+    }
   }
 
   // key up event for email
