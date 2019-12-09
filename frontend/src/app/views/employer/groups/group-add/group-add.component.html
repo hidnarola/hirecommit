@@ -37,19 +37,15 @@
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                     formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
-                                    value="{{days.high_unopened}}" id="high_unopened">
+                                    id="high_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <!-- <div class="cust_err_msg"
-                                    *ngIf="!addGroup.controls['high_unopened'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['high_unopened'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
-                                    <span
-                                        *ngIf="addGroup.controls['high_unopened'].errors['pattern'] || !addGroup.controls['high_unopened'].errors['required']"
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['high_unopened'].valid">
+
+                                    <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']"
                                         class="text-danger">Only Month Days</span>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 
@@ -58,18 +54,15 @@
                             <div class="input-group col-md-2">
                                 <input type="number" min="1" class="form-control" autocomplete="high_notreplied"
                                     formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                    value="{{days.high_notreplied}}" id="high_notreplied">
+                                    id="high_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <!-- <div class="cust_err_msg"
-                                    *ngIf="!addGroup.controls['high_notreplied'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['high_notreplied'].valid ">
+
                                     <span *ngIf="addGroup.controls['high_notreplied'].errors['pattern']"
                                         class="text-danger">Only Month Days</span>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 
@@ -78,18 +71,15 @@
                             <div class="input-group col-md-2">
                                 <input type="number" min="1" class="form-control" autocomplete="medium_unopened"
                                     formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                    value="{{days.medium_unopened}}" id="medium_unopened">
+                                    id="medium_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <!-- <div class="cust_err_msg"
-                                    *ngIf="!addGroup.controls['medium_unopened'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['required']"
-                                        class="text-danger">This field is
-                                        required.</span>
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_unopened'].valid">
+
                                     <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']"
                                         class="text-danger">Only Month Days</span>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 
@@ -98,18 +88,15 @@
                             <div class="input-group col-md-2">
                                 <input type="number" min="1" class="form-control" autocomplete="medium_notreplied"
                                     formControlName="medium_notreplied" [(ngModel)]="groupData.medium_notreplied"
-                                    value="{{days.medium_notreplied}}" id="medium_notreplied">
+                                    id="medium_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <!-- <div class="cust_err_msg"
-                                    *ngIf="!addGroup.controls['medium_notreplied'].valid && isFormSubmitted">
-                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['required']"
-                                        class="text-danger">This field
-                                        is required.</span>
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_notreplied'].valid">
+
                                     <span *ngIf="addGroup.controls['medium_notreplied'].errors['pattern']"
                                         class="text-danger">Only Month Days</span>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 
@@ -186,10 +173,12 @@
                                     <div class="card communication-fills">
 
                                         <div class="card-header h5">Record - {{i+1}}
-                                            <span class="input-group-text pull-right" *ngIf="i < 1"
+                                            <span class="input-group-text pull-right"
+                                                (click)="remove_communication(i)"><i class="icon-close"></i></span>
+                                            <span class="input-group-text pull-right"
                                                 (click)="add_new_communication(i)"><i class="icon-plus"></i></span>
-                                            <span class="input-group-text pull-right" *ngIf="i > 0"
-                                                (click)="remove_communication(i)"><i class="icon-minus"></i></span>
+
+
                                         </div>
                                         <div class="card-body">
                                             <div class="form-group no-gutters row">

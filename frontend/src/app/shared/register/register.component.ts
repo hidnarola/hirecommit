@@ -171,10 +171,14 @@ export class RegisterComponent implements OnInit {
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
     const confirmpassword = g.get('confirmpassword').value;
+    console.log('password======================>', password);
+    console.log('confirmpassword=================>', confirmpassword);
+
     // if (password !== undefined && password != null && confirmpassword !== null && confirmpassword !== undefined) {
     if (password && confirmpassword) {
       return password === confirmpassword ?
-        g.get('confirmpassword').setErrors({}) :
+        g.get('confirmpassword').setErrors(null) :
+        // null :
         g.get('confirmpassword').setErrors({ 'mismatch': true });
     }
   }
@@ -185,6 +189,9 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
+    console.log('form=>', this.registerForm);
+
+    console.log('=>', valid, this.marked);
 
     if (valid && this.marked) {
       this.show_spinner = true;

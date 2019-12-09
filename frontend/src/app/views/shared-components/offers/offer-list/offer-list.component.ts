@@ -12,6 +12,9 @@ import { EmployerService } from '../../../employer/employer.service';
 
 import { CandidateService } from '../../candidates/candidate.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalOptions } from '../../../../shared/modal_options';
+import { IfStmt } from '@angular/compiler';
+import { AnyARecord } from 'dns';
 
 @Component({
   selector: 'app-offer-list',
@@ -21,6 +24,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   checked1: boolean = true;
+  @ViewChild('content1', { static: false }) content1: ElementRef;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -28,15 +32,19 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   // first_custom_field: any;
   first_custom_field = '';
   employer: any;
+  salaryDuration: any;
+  Info_msg: any;
   empId;
   userName: any;
   offerData: any = [];
   form = false;
   accept_btn: boolean = false;
   profileData: any = [];
+  isNoCommit = false;
   message: any;
   Canididate_message: any;
-
+  isAccept = false;
+  offerID: any;
   // offer type options
   offer_type_optoins = [
     { label: 'Select Offer Type', value: '' },
@@ -49,6 +57,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   userDetail: any = [];
   adminRights = false;
   // hideAccept = false;
+  selectedValue: string;
+
   constructor(
     private service: OfferService,
     private route: Router,
@@ -305,6 +315,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
                   offer['isExpired'] = false;
                 }
 
+                // this.salaryDuration = this.offerData.salaryduration;
+                // if (offer.salaryduration === null) {
+                //   offer.salaryduration = '-';
+                // } else {
+                //   offer.salaryduration;
+                // }
 
                 //  changed offer type valu to offer type label for display purpose only
                 // offer.offertype = (this.offer_type_optoins.find(o => o.value === offer.offertype).label);
@@ -318,6 +334,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
                 // }
               });
               console.log('this.offerData=>', this.offerData);
+
               // if (this.offerData.length == 0) {
               //   var el = document.getElementById('DataTables_Table_0_paginate');
               //   el.style.display = 'none';
@@ -334,9 +351,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 9 },
+        columnDefs: [{ orderable: false, targets: 10 },
         { targets: 1, width: '50%' },
-        { targets: 4, width: '30%' }],
+        { targets: 5, width: '30%' }],
         columns: [
           {
             data: 'createdAt'
@@ -350,6 +367,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           {
             data: 'salarytype'
           },
+          {
+            data: 'salaryduration'
+          },
+
           {
             data: 'salarybracket.from'
           },
@@ -447,32 +468,58 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   onAccept(id, type) {
     this.accept_btn = true;
     this.service.type_message({ 'type': type }).subscribe(res => {
-      console.log('res=>', res);
-    });
-    const obj = {
-      'id': id
-    };
-    this.service.offer_accept(obj).subscribe(res => {
-      console.log('accepted!!', res['data']['data'].employer_id);
-      this.socketService.leaveGrp(this.grpId);
-      this.socketService.joinGrp(res['data']['data'].employer_id);
-      this.socketService.changeOffer(res['data']['data'].employer_id);
-      this.socketService.leaveGrp(res['data']['data'].employer_id);
-      this.joinGroup(this.grpId);
-
-      this.rrerender();
-      // this.s
-      this.accept_btn = false;
-      if (res['data'].status === 1) {
-        Swal.fire(
-          {
-            type: 'success',
-            text: res['message']
-          }
-        );
+      if (type === 'noCommit') {
+        this.isNoCommit = true;
+        this.Info_msg = res[`data`][`message`]
+        this.modalService.open(this.content1, ModalOptions);
       }
+      else {
+        this.isNoCommit = false;
+        this.Info_msg = res[`data`][`message`]
+        this.modalService.open(this.content1, ModalOptions);
+      }
+
+    });
+    this.offerID = id;
+
+    // this.service.offer_accept(obj).subscribe(res => {
+    //   console.log('accepted!!', res['data']['data'].employer_id);
+    //   this.socketService.leaveGrp(this.grpId);
+    //   this.socketService.joinGrp(res['data']['data'].employer_id);
+    //   this.socketService.changeOffer(res['data']['data'].employer_id);
+    //   this.socketService.leaveGrp(res['data']['data'].employer_id);
+    //   this.joinGroup(this.grpId);
+
+    //   this.rrerender();
+    //   // this.s
+    //   this.accept_btn = false;
+    //   if (res['data'].status === 1) {
+    //     Swal.fire(
+    //       {
+    //         type: 'success',
+    //         text: res['message']
+    //       }
+    //     );
+    //   }
+    // });
+  }
+  acceptOffer(e) {
+    console.log('selectedValue=>', this.selectedValue);
+    if (this.selectedValue === 'accept') {
+      this.isAccept = true;
+    } else {
+      this.isAccept = false;
+    }
+  }
+  acceptedOffer() {
+    this.modalService.dismissAll(this.content1);
+    this.service.offer_accept({ 'id': this.offerID }).subscribe(res => {
+      this.accept_btn = false;
+      this.rrerender();
+
     });
   }
+
 
   rrerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

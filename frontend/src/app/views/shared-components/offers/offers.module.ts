@@ -13,7 +13,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TimelineComponent } from '../../employer/timeline/timeline.component';
-
+import { RadioButtonModule } from 'primeng/radiobutton'
 @NgModule({
   declarations: [
     OfferListComponent,
@@ -31,7 +31,8 @@ import { TimelineComponent } from '../../employer/timeline/timeline.component';
     CalendarModule,
     InputSwitchModule,
     CKEditorModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    RadioButtonModule
   ], providers: [ConfirmationService]
 })
 export class OffersModule { }

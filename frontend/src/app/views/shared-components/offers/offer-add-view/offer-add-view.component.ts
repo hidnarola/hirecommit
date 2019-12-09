@@ -21,6 +21,7 @@ import { ModalOptions } from '../../../../shared/modal_options';
 })
 export class OfferAddViewComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
+  @ViewChild('content1', { static: false }) content1: ElementRef;
   userName: any;
   public Editor = ClassicEditor;
   resData: any;
@@ -31,6 +32,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   user_detail: any = {};
   candidate: any = [];
   candidateList: any = [];
+  groupForm: FormGroup;
   country: any = [];
   countryList: any = [];
   candidateData: any;
@@ -43,8 +45,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   isAccepted = false;
   pastDetails: any;
   msg: any;
+  err_msg: any;
   isShow = false;
   details: any;
+  groupData: any = {};
+  is_communication_added = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -102,12 +107,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   userDetail: any = [];
   offerList: any;
   grpId: string;
+  getGroupDetails = false;
   isExpired = false;
   is_submitted = false;
 
   constructor(
     private fb: FormBuilder,
     private service: OfferService,
+    private Groupservice: GroupService,
     private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute,
@@ -158,6 +165,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
+    // if (this.is_Edit || this.is_View) {
+    //   this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    //   this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    //   this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    //   this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    // }
+
   }
 
   get f() { return this.form.controls; }
@@ -242,19 +256,49 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.isShow = false;
         this.pastDetails = res;
         if (this.pastDetails.ReleasedOffer.data.length > 0) {
-          this.modalService.open(this.content, ModalOptions);
-          this.msg = this.pastDetails.ReleasedOffer.displayMessage;
+          this.modalService.open(this.content1, ModalOptions);
+          this.err_msg = this.pastDetails.ReleasedOffer.displayMessage;
 
-        }
-        else if (this.pastDetails.data.data.length > 0) {
-          this.details = res['data']['data'];
-          this.isShow = true;
-          this.modalService.open(this.content, ModalOptions);
-          this.msg = this.pastDetails.data.displayMessage;
-        } else if (this.pastDetails.previousOffer.data.length > 0) {
-          this.isShow = false;
-          this.modalService.open(this.content, ModalOptions);
-          this.msg = this.pastDetails.previousOffer.displayMessage;
+        } else {
+          if (this.pastDetails.data.data.length > 0 && this.pastDetails.previousOffer.data.length == 0) {
+            this.details = res['data']['data'];
+            this.isShow = true;
+            this.modalService.open(this.content, ModalOptions);
+            this.msg = this.pastDetails.data.displayMessage;
+          }
+          else if (this.pastDetails.data.data.length == 0 && this.pastDetails.previousOffer.data.length > 0) {
+            this.details = res['data']['data'];
+            this.isShow = true;
+            this.modalService.open(this.content1, ModalOptions);
+            this.err_msg = this.pastDetails.data.displayMessage;
+          }
+          if ((this.pastDetails.data.data.length > 0) && (this.pastDetails.previousOffer.data.length > 0)) {
+            this.isShow = false;
+            this.details = res['data']['data'];
+            this.isShow = true;
+            this.modalService.open(this.content, ModalOptions);
+            this.msg = this.pastDetails.data.displayMessage;
+            // this.d();
+          }
+          //  else {
+          //   this.details = res['data']['data'];
+          //   this.isShow = true;
+          //   this.modalService.open(this.content, ModalOptions);
+          //   this.msg = this.pastDetails.data.displayMessage;
+          // }
+          // //  error popup
+          // if (this.pastDetails.previousOffer.data.length > 0) {
+          //   this.isShow = false;
+          //   this.modalService.open(this.content, ModalOptions);
+          //   this.msg = this.pastDetails.previousOffer.displayMessage;
+          // };
+          // //  info popup
+          // if (this.pastDetails.data.data.length > 0) {
+          //   this.details = res['data']['data'];
+          //   this.isShow = true;
+          //   this.modalService.open(this.content, ModalOptions);
+          //   this.msg = this.pastDetails.data.displayMessage;
+          // };
         }
 
       });
@@ -280,9 +324,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     //   this.form.controls['email'].setErrors({ 'isExist': true });
     // });
     // if (this.form.value.email.length > 0) {
-    //   this.form.controls['email'].setValidators(
-    //     [Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]
-    //   );
+    // this.form.controls['email'].setValidators(
+    //   [Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]
+    // );
     // } else {
     //   this.form.controls['email'].setValidators([Validators.required]);
     // }
@@ -295,13 +339,26 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     //   }
     // });
   }
+  next(e) {
+    this.modalService.dismissAll(this.content);
+    this.modalService.open(this.content1, ModalOptions);
+    this.err_msg = this.pastDetails.previousOffer.displayMessage;
+  }
   send() {
-    if (this.userDetail.role === 'employer') {
-      this.router.navigate(['/employer/offers/list']);
+    if (this.pastDetails.ReleasedOffer.data.length > 0) {
+      if (this.userDetail.role === 'employer') {
+        this.modalService.dismissAll(this.content1);
+        this.router.navigate(['/employer/offers/list']);
+      } else if (this.userDetail.role === 'sub-employer') {
+        this.modalService.dismissAll(this.content1);
+        this.router.navigate(['/sub_employer/offers/list']);
+      }
     }
-    else if (this.userDetail.role === 'sub-employer') {
-      this.router.navigate(['/sub_employer/offers/list']);
+    else {
+      this.modalService.dismissAll(this.content1);
     }
+
+
   }
 
   // key up event for email
@@ -404,15 +461,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
-          console.log('res=>', res);
-
           // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
 
-
-          console.log('res[`data`][`communication`] => ', res[`data`][`communication`]);
           if (this.is_View && res[`data`][`communication`].length > 0) {
             res[`data`][`communication`].forEach(element => {
-              console.log('element =======> ', element);
               element.trigger =
                 (this.Trigger_Option.find(o => o.value === element.trigger).label);
 
@@ -449,6 +501,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
           this.spinner.hide();
           this.groupDetail(res[`data`].groups);
+
           if (res[`data`] && this.is_Edit) {
             // set communication
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
@@ -484,7 +537,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['location'].setValue(res[`data`]['location'][`_id`]);
             this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
-            this.form.controls['status'].setValue(res['data'].status);
+            // this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             this.form.controls['acceptanceDate'].setValue(new Date(res['data'].acceptedAt));
             this.form.controls['notes'].setValue(res[`data`].notes);
@@ -505,6 +558,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.form.controls['salarybracket'].setErrors(null);
               this.updateValidation();
             }
+            // if (res['data'].groups) {
+            //   this.form.controls['group'].setValue(res[`data`]['groups']);
+            //   this.form.controls['high_unopened'].setValue(res[`data`].high_unopened);
+            //   this.form.controls['high_notreplied'].setValue(res[`data`].high_notreplied);
+            //   this.form.controls['medium_unopened'].setValue(res[`data`].medium_unopened);
+            //   this.form.controls['medium_notreplied'].setValue(res[`data`].medium_notreplied);
+            // }
             const _array = [];
             const test = res[`data`]['customfeild'];
             this.service.get_customfield().subscribe(
@@ -653,13 +713,88 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   async groupDetail(id) {
+    console.log('group details function=======>');
+
     const groupById = this.group_optoins.find(x => x.value === id);
     if (groupById) {
       this.form.controls.group.setValue(groupById.value);
+      this.getGroupDetails = true;
+      this.setGroupFormControl();
+
+      this.groupData.high_unopened = this.resData.high_unopened;
+      this.groupData.high_notreplied = this.resData.high_notreplied;
+      this.groupData.medium_unopened = this.resData.medium_unopened;
+      this.groupData.medium_notreplied = this.resData.medium_notreplied;
+      console.log('this.groupData=>', this.groupData);
+
     }
     if (groupById && this.is_View) {
       this.resData.groupName = groupById.label;
     }
+  }
+
+  //  set controls for group form
+  setGroupFormControl() {
+    this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    this.form.updateValueAndValidity();
+  }
+
+  // On change of group
+  groupChange(e) {
+
+    this.Groupservice.get_detail(e.value).subscribe(res => {
+      this.getGroupDetails = true;
+      this.setGroupFormControl();
+      // this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+      // this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+      // this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+      // this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+
+      this.groupData = res['data']['data'][0];
+      if (res['communication']['data'] && res['communication']['data'].length > 0) {
+        this.communicationData = res['communication']['data'][0]['communication'];
+      }
+
+      // set communication
+      if (this.communicationData && this.communicationData.length > 0) {
+        this.is_communication_added = true;
+        const _array = [];
+        this.communicationData.forEach((element, index) => {
+          const new_communication = {
+            'communicationname': element.communicationname,
+            'trigger': element.trigger,
+            'priority': element.priority,
+            'day': element.day,
+            'message': element.message,
+          };
+          this.communicationFieldItems.setControl(index, this.fb.group({
+            communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+            trigger: ['', Validators.required],
+            priority: ['', Validators.required],
+            day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+            message: ['', [Validators.required, this.noWhitespaceValidator]]
+            // message: ['', Validators.required]
+          }));
+          _array.push(new_communication);
+        });
+        this.communicationData = _array;
+
+        // this.form.updateValueAndValidity();
+      } else {
+        console.log('no communicaiondata found => ');
+        // if (this.Comm_Flag) {
+
+        this.add_new_communication();
+        // }
+      }
+      // set communication
+    });
+
+
+
   }
 
   Accept(id) {
@@ -786,10 +921,24 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   cancel() {
     if (this.userDetail.role === 'employer') {
-      this.router.navigate([this.cancel_link]);
+      this.confirmationService.confirm({
+        message: 'Are you sure you want to cancel?',
+        accept: () => {
+          this.show_spinner = true;
+          this.router.navigate([this.cancel_link]);
+        }
+      });
+
     } else if (this.userDetail.role === 'sub-employer') {
-      this.router.navigate([this.cancel_link1]);
-    } else if (this.userDetail.role === 'candidate') {
+      this.confirmationService.confirm({
+        message: 'Are you sure you want to cancel?',
+        accept: () => {
+          this.show_spinner = true;
+          this.router.navigate([this.cancel_link1]);
+        }
+      });
+    }
+    else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
     } else if (this.userDetail.role === 'admin') {
       const backID = this.route.snapshot.params.report_id;
@@ -910,8 +1059,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
     if (this.form.value.group && this.route.snapshot.data.title === 'Add') {
+      console.log('this.form.value.group=>', this.form.value.group);
       this.formData.append('groups', this.form.value.group);
     } else if (this.route.snapshot.data.title === 'Edit') {
+
       this.formData.append('groups', this.form.value.group !== undefined && this.form.value.group !== null &&
         this.form.value.group !== '' ? this.form.value.group : '');
     }

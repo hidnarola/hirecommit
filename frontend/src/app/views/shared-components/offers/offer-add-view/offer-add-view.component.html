@@ -21,13 +21,13 @@
                             <ng-template #content let-c="close" let-d="dismiss">
                                 <div class="modal-header instructions-popup-head">
                                     <h4 class="modal-title" id="modal-basic-title">Instructions</h4>
-                                    <button type="button" *ngIf="isShow" id="closeBtn" class="close" aria-label="Close"
+                                    <button type="button" id="closeBtn" *ngIf="!isShow" class="close" aria-label="Close"
                                         (click)="d('Cross click')"><i class="fa fa-times">
                                         </i></button>
                                 </div>
                                 <div class="modal-body offer-popup-body">
                                     <h5>{{msg}}</h5>
-                                    <div class="row offer-popup-content" *ngIf="isShow">
+                                    <div class="row offer-popup-content">
                                         <div class="col-md-4">
                                             <h6>Date</h6>
                                         </div>
@@ -52,13 +52,32 @@
                                     </div>
 
                                 </div>
-                                <div class="modal-footer instructions-popup-footer" *ngIf="!isShow">
-                                    <button type="button" class="btn btn-primary" (click)="d('Cross click')"
-                                        [routerLink]="['/employer/offers/list']">Got
+                                <div class="modal-footer instructions-popup-footer" *ngIf="isShow">
+                                    <button type="button" class="btn btn-primary" (click)="next('Cross click')">Got
                                         It!</button>
                                 </div>
                             </ng-template>
                             <!-- popup -->
+
+                            <!-- popup 2 -->
+                            <ng-template #content1 let-c="close" let-d="dismiss">
+                                <div class="modal-header instructions-popup-head">
+                                    <h4 class="modal-title" id="modal-basic-title">Warning</h4>
+                                    <!-- <button type="button" *ngIf="isShow" id="closeBtn" class="close" aria-label="Close"
+                                        (click)="d('Cross click')"><i class="fa fa-times">
+                                        </i></button> -->
+                                </div>
+                                <div class="modal-body offer-popup-body">
+                                    <h5>{{err_msg}}</h5>
+
+
+                                </div>
+                                <div class="modal-footer instructions-popup-footer">
+                                    <button type="button" class="btn btn-primary" (click)="send()">Got
+                                        It!</button>
+                                </div>
+                            </ng-template>
+                            <!-- popup 2 -->
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="email">Email</label>
                                 <input type="email" *ngIf="!is_Edit" class="form-control" placeholder="Enter Email"
@@ -318,7 +337,8 @@
                                     disabled id="status">
                             </div>
                             <div class="col-md-6 form-group" *ngIf="is_Edit">
-                                <label class="col-form-label" for="offerStatus">Offer Status</label>
+                                <label class="col-form-label" for="offerStatus">Offer Status(To change, select
+                                    value)</label>
                                 <!-- <p-inputSwitch [(ngModel)]="offerStatus" formControlName="is_active" name="is_active">
                                                         </p-inputSwitch> -->
                                 <p-dropdown [options]="offerStatus" [style]="{'width':'100%'}" optionLabel="label"
@@ -327,10 +347,6 @@
                                 </p-dropdown>
                             </div>
                         </div>
-
-
-
-
 
                         <!-- Custom Field -->
                         <ng-container formArrayName="customfieldItem">
@@ -368,13 +384,14 @@
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="group">Group</label>
                                 <p-dropdown [options]="group_optoins" [style]="{'width':'100%'}" formControlName="group"
-                                    placeholder="Select Group" id="group" [disabled]="isAccepted">
+                                    placeholder="Select Group" id="group" [disabled]="isAccepted"
+                                    (onChange)="groupChange($event)">
                                 </p-dropdown>
                                 <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['group'].valid">
-                                                                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
-                                                                                        This field is required.
-                                                                                    </span>
-                                                                                </div> -->
+                                    <span *ngIf="form.controls['group'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div> -->
                             </div>
                             <div class="col-md-6 form-group">
                                 <label> &nbsp; </label>
@@ -383,6 +400,90 @@
                                     Add More Communication
                                 </button>
                             </div>
+
+
+                            <!-- group details -->
+                            <div *ngIf="getGroupDetails">
+                                <div class="col-md-12 form-group">
+                                    <label class="d-block text-left col-form-label" for="commitStatus">
+                                        <h5>Set no. of days after which alert email will be sent.</h5>
+                                    </label>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="ml-4 col-md-6" for="high_unopened">High - UnOpened</label>
+                                    <div class="input-group col-md-4">
+                                        <input type="number" min="0" class="form-control" autocomplete="high_unopened"
+                                            formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
+                                            id="high_unopened">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Days</span>
+                                        </div>
+                                        <div class="cust_err_msg" *ngIf="!form.controls['high_unopened'].valid ">
+
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['high_unopened'].errors['pattern']">
+                                                Only Month Days
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="ml-4 col-md-6" for="high_notreplied">High - NotReplied</label>
+                                    <div class="input-group col-md-4">
+                                        <input type="number" class="form-control" autocomplete="high_notreplied"
+                                            formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
+                                            id="high_notreplied">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Days</span>
+                                        </div>
+                                        <div class="cust_err_msg" *ngIf="!form.controls['high_notreplied'].valid ">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['high_notreplied'].errors['pattern']">
+                                                Only Month Days
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="ml-4 col-md-6" for="medium_unopened">Medium - UnOpened</label>
+                                    <div class="input-group col-md-4">
+                                        <input type="number" class="form-control" autocomplete="medium_unopened"
+                                            formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
+                                            id="medium_unopened">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Days</span>
+                                        </div>
+                                        <div class="cust_err_msg" *ngIf="!form.controls['medium_unopened'].valid">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['medium_unopened'].errors['pattern']">
+                                                Only Month Days
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="ml-4 col-md-6" for="medium_notreplied">Medium - NotReplied</label>
+                                    <div class="input-group col-md-4">
+                                        <input type="number" class="form-control" autocomplete="medium_notreplied"
+                                            formControlName="medium_notreplied"
+                                            [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Days</span>
+                                        </div>
+                                        <div class="cust_err_msg" *ngIf="!form.controls['medium_notreplied'].valid">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['medium_notreplied'].errors['pattern']">
+                                                Only Month Days
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- group details -->
                         </div>
                         <!-- communication -->
                         <ng-container formArrayName="communicationFieldItems">
@@ -391,10 +492,10 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
                                         <div class="card-header h5">Record - {{i+1}}
-                                            <span class="input-group-text pull-right" *ngIf="i < 1"
+                                            <span class="input-group-text pull-right"
+                                                (click)="remove_communication(i)"><i class="icon-close"></i></span>
+                                            <span class="input-group-text pull-right"
                                                 (click)="add_new_communication(i)"><i class="icon-plus"></i></span>
-                                            <span class="input-group-text pull-right" *ngIf="i > 0"
-                                                (click)="remove_communication(i)"><i class="icon-minus"></i></span>
                                         </div>
                                         <div class="card-body">
                                             <div class="form-goup no-gutters row">
@@ -674,6 +775,58 @@
                             {{resData.groupName ? resData.groupName : '-'}}
                         </div>
                     </div>
+
+                    <!-- group details -->
+                    <div *ngIf="getGroupDetails">
+                        <div class="row detail-panel">
+                            <div class="col-md-3 detail-label lbl">
+                                High - UnOpened
+                            </div>
+                            <div class="col-md-1 detail-input">
+                                {{resData.high_unopened}}
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Days</span>
+                            </div>
+                        </div>
+
+                        <div class="row detail-panel">
+                            <div class="col-md-3 detail-label lbl">
+                                High - NotReplied
+                            </div>
+                            <div class="col-md-1 detail-input">
+                                {{resData.high_notreplied}}
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Days</span>
+                            </div>
+                        </div>
+                        <div class="row detail-panel">
+                            <div class="col-md-3 detail-label lbl">
+                                Medium - UnOpened
+                            </div>
+                            <div class="col-md-1 detail-input">
+                                {{resData.medium_unopened}}
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Days</span>
+                            </div>
+                        </div>
+                        <div class="row detail-panel">
+                            <div class="col-md-3 detail-label lbl">
+                                Medium - NotReplied
+                            </div>
+                            <div class="col-md-1 detail-input">
+                                {{resData.medium_notreplied}}
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- group details -->
+
+
 
 
                     <!-- communication -->

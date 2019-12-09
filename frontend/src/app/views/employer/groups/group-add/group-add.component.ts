@@ -33,7 +33,6 @@ export class GroupAddComponent implements OnInit {
     private service: GroupService,
     private toastr: ToastrService,
     private router: Router,
-    private spinner: NgxSpinnerService,
     private commonService: CommonService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
@@ -44,13 +43,14 @@ export class GroupAddComponent implements OnInit {
       high_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       high_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       medium_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      // low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      // low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)])
+      medium_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)])
     });
 
     this.service.alert_days().subscribe(res => {
-      this.days = res[`data`];
+      // this.days = res[`data`];
+      console.log('this.days=>', this.days);
+      this.groupData = res[`data`];
+
     });
     // add communications
     this.communicationForm = this.fb.group({

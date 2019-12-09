@@ -67,7 +67,7 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     }),
     NgxCaptchaModule,
     ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
+      positionClass: 'toast-top-right',
       preventDuplicates: true
     }),
     SocketIoModule.forRoot(config)

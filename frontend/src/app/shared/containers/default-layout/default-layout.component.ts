@@ -60,7 +60,6 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       // });
 
       this.commonService.getChangedProfileDetail.subscribe((resp) => {
-        console.log('res === chack for now ==>', resp);
         this.commonService.profileData().then(res => {
           profile = res;
           this._profile_data = profile;
