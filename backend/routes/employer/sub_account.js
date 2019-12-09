@@ -207,7 +207,8 @@ router.put('/details', async (req, res) => {
 
     var user_detail = await common_helper.findOne(User, { '_id': id });
     var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
-    if (user_detail.data.email !== req.body.email) {
+
+    if (user_detail.data.email !== req.body.data.email) {
         var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
         let content = message.data.content;
         content = content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email}`);
