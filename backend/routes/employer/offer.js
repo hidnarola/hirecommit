@@ -113,6 +113,10 @@ router.post("/", async (req, res) => {
                 //  "status": true,
                 "offertype": req.body.offertype,
                 "groups": req.body.groups,
+                "high_unopened": req.body.high_unopened,
+                "high_notreplied": req.body.high_notreplied,
+                "medium_unopened": req.body.medium_unopened,
+                "medium_notreplied": req.body.medium_notreplied,
                 // "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
@@ -144,6 +148,10 @@ router.post("/", async (req, res) => {
                 //  "status": true,
                 "offertype": req.body.offertype,
                 "groups": req.body.groups,
+                "high_unopened": req.body.high_unopened,
+                "high_notreplied": req.body.high_notreplied,
+                "medium_unopened": req.body.medium_unopened,
+                "medium_notreplied": req.body.medium_notreplied,
                 // "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
@@ -284,19 +292,16 @@ router.post('/pastOffer', async (req, res) => {
                 previousOffer.displayMessage = " Please check, this candidate already has offer in either Released, Accepted or On Hold status. You can use edit offer to make any changes to Released and On Hold offers.";
             }
 
+            // console.log("2019-12-08T10:20:03.000Z", new Date());
+
             var ReleasedOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
                 "created_by": req.userInfo.id,
                 $and:
                     [
-                        { status: { $eq: "Released" } }, {
-                            expirydate: {
-                                $lte: new Date()
-                            }
-                        }
+                        { status: { $eq: "Released" } },
+                        { expirydate: { $gte: new Date() } }
                     ]
-
-
             });
 
             if (ReleasedOffer.data.length > 0) {
@@ -1206,6 +1211,19 @@ router.put('/', async (req, res) => {
         obj.groups = req.body.groups
     }
 
+    if (req.body.high_unopened && req.body.high_unopened != "") {
+        obj.high_unopened = req.body.high_unopened
+    }
+    if (req.body.high_notreplied && req.body.high_notreplied != "") {
+        obj.high_notreplied = req.body.high_notreplied
+    }
+    if (req.body.medium_unopened && req.body.medium_unopened != "") {
+        obj.medium_unopened = req.body.medium_unopened
+    }
+    if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+        obj.medium_notreplied = req.body.medium_notreplied
+    }
+
     if (req.body.title && req.body.title != "") {
         obj.title = req.body.title
     }
@@ -1513,25 +1531,25 @@ router.get("/status_list/:status", async (req, res) => {
     var obj = {};
     if (status === 'On Hold') {
         obj.status = [
-            // { label: 'On Hold', value: 'On Hold' },
+            { label: 'On Hold', value: 'On Hold' },
             { label: 'Released', value: 'Released' },
             // { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Released') {
         obj.status = [
-            // { label: 'Released', value: 'Released' },
+            { label: 'Released', value: 'Released' },
             { label: 'Inactive', value: 'Inactive' }
         ];
     }
     else if (status === 'Accepted') {
         obj.status = [
-            // { label: 'Accepted', value: 'Accepted' },
+            { label: 'Accepted', value: 'Accepted' },
             { label: 'Not Joined', value: 'Not Joined' },
             // { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Not Joined') {
         obj.status = [
-            // { label: 'Not Joined', value: 'Not Joined' },
+            { label: 'Not Joined', value: 'Not Joined' },
             { label: 'Inactive', value: 'Inactive' }
         ];
     } else if (status === 'Inactive') {

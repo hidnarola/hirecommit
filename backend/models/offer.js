@@ -113,6 +113,18 @@ const OfferSchema = new Schema({
   salary_to: {
     type: Number
   },
+  high_unopened: {
+    type: Number,
+  },
+  high_notreplied: {
+    type: Number,
+  },
+  medium_unopened: {
+    type: Number,
+  },
+  medium_notreplied: {
+    type: Number,
+  },
   is_active: {
     type: Boolean,
     default: true
