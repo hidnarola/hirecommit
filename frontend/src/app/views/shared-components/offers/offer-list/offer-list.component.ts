@@ -14,7 +14,7 @@ import { CandidateService } from '../../candidates/candidate.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalOptions } from '../../../../shared/modal_options';
 import { IfStmt } from '@angular/compiler';
-import { AnyARecord } from 'dns';
+
 
 @Component({
   selector: 'app-offer-list',
@@ -518,6 +518,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.rrerender();
 
     });
+  }
+  disabledAccept() {
+    this.accept_btn = false;
   }
 
 

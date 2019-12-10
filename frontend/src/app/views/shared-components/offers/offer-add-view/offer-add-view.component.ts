@@ -270,7 +270,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.details = res['data']['data'];
             this.isShow = true;
             this.modalService.open(this.content1, ModalOptions);
-            this.err_msg = this.pastDetails.data.displayMessage;
+            this.err_msg = this.pastDetails.previousOffer.displayMessage;
+            console.log('this.pastDetails.previousOffer.displayMessage=>', this.pastDetails.previousOffer.displayMessage);
+
           }
           if ((this.pastDetails.data.data.length > 0) && (this.pastDetails.previousOffer.data.length > 0)) {
             this.isShow = false;

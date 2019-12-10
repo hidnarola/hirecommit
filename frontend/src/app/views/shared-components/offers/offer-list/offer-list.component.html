@@ -63,7 +63,8 @@
                             *ngIf="!isAccept && !isNoCommit ">Accept</button>
                         <button type="button" id="acceptbtn" class="btn btn-primary" *ngIf="isAccept || isNoCommit"
                             (click)="acceptedOffer()">Accept</button>
-                        <button type="button" class="btn btn-info" (click)="d('Cross click')">Back</button>
+                        <button type="button" class="btn btn-info"
+                            (click)="d('Cross click'); disabledAccept()">Back</button>
                     </div>
                 </ng-template>
                 <!-- popup -->
