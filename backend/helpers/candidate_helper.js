@@ -71,7 +71,7 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
       aggregate.push({
         "$match":
         {
-          $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "createdAt": RE }, { "status": RE },]
+          $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "drivingLicenseState": RE }, { "documentNumber": RE }, { "createdAt": RE }, { "status": RE },]
         }
       });
     }
@@ -104,8 +104,6 @@ candidate_helper.get_all_approved_candidate = async (collection, search, start, 
 
 candidate_helper.get_all_new_candidate = async (collection, search, start, length, recordsTotal, sort) => {
   try {
-    console.log(collection, search, start, length, recordsTotal, sort);
-
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
       {
@@ -171,7 +169,7 @@ candidate_helper.get_all_new_candidate = async (collection, search, start, lengt
       aggregate.push({
         "$match":
         {
-          $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "createdAt": RE }, { "status": RE }]
+          $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "drivingLicenseState": RE }, { "documentNumber": RE }, { "createdAt": RE }, { "status": RE }]
         }
 
       });

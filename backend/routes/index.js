@@ -35,6 +35,7 @@ var DocumentType = require('./../models/document_type');
 var Offer = require('./../models/offer');
 var MailType = require('./../models/mail_content');
 var new_mail_helper = require('./../helpers/new_mail_helper');
+var testmail_helper = require('./../helpers/testmail_helper');
 
 var DisplayMessage = require('./../models/display_messages');
 var userpProfile = require('./profile');
@@ -136,6 +137,7 @@ router.post("/admin_register", async (req, res) => {
 
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
+  console.log(' : req.body ==> ', req.body);
   var schema = {
     "firstname": {
       notEmpty: true,
@@ -250,6 +252,8 @@ router.post("/candidate_register", async (req, res) => {
             "contactno": req.body.contactno,
             "documenttype": req.body.documenttype,
             "documentimage": req.body.documentImage,
+            "documentNumber": req.body.documentNumber,
+            "drivingLicenseState": req.body.drivingLicenseState,
             "user_id": interest_user_resp._id,
             "createdAt": new Date(),
             "is_del": false,
@@ -1267,6 +1271,22 @@ router.post('/match_old_password', async (req, res) => {
   }
 })
 
+// router.post('/test_mail', async (req, res) => {
+
+//   // console.log('req.body ==> ', req.body);
+//   var content = req.body.content;
+//   var trackid = req.body.trackid;
+
+//   let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+//     "to": req.body.email,
+//     "reply_to": req.body.reply_to,
+//     "subject": "Offer",
+//     "trackid": trackid
+//   }, content);
+
+//   // if (mail_resp)
+//   res.json({ "message": "success" })
+// })
 
 async function getCountry(req, res) {
   try {
@@ -1305,5 +1325,14 @@ router.get('/business_type/:country', async (req, res) => {
 
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
+
+// router.get('/get_email', async (req, res) => {
+//   try {
+//     console.log('==> getmail : req.body ==> ', req.body);
+//     res.status(200).send('success');
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
+// })
 
 module.exports = router;
