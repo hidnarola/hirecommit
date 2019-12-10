@@ -352,7 +352,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         },
         columnDefs: [{ orderable: false, targets: 10 },
-        { targets: 1, width: '50%' },
+        { targets: 2, width: '50%' },
         { targets: 5, width: '30%' }],
         columns: [
           {
@@ -515,6 +515,12 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalService.dismissAll(this.content1);
     this.service.offer_accept({ 'id': this.offerID }).subscribe(res => {
       this.accept_btn = false;
+      Swal.fire(
+        {
+          type: 'success',
+          text: res['message']
+        }
+      );
       this.rrerender();
 
     });

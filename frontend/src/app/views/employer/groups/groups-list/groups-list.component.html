@@ -29,7 +29,7 @@
                             (click)="d('Cross click')"><i class="fa fa-times"> </i></button>
                     </div>
                     <div class="modal-body instructions-popup-body">
-                        <h5>Groups:</h5>
+                        <h5>Groups(Optional):</h5>
                         <h6>{{msg}}
                         </h6>
 
@@ -95,7 +95,8 @@
                         <tbody></tbody>
                         <tbody *ngIf="groups?.length == 0">
                             <tr>
-                                <td colspan="8" class="no-data-available">No Groups Available!</td>
+                                <td colspan="8" class="no-data-available">Optional Setup. Click on Add Groups to setup
+                                    email communication for groups/subsets. Click on i for more information.</td>
                             </tr>
                         <tbody>
                     </table>

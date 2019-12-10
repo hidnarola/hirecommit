@@ -38,12 +38,14 @@
                         <h4 class="modal-title" id="modal-basic-title"><i class="icon-info"></i>
                             Information</h4>
                         <button type="button" id="closeBtn" class="close" aria-label="Close"
-                            (click)="d('Cross click')"><i class="fa fa-times"> </i></button>
+                            (click)="d('Cross click'); disabledAccept()"><i class="fa fa-times"> </i></button>
                     </div>
                     <div class="modal-body instructions-popup-body">
                         <!-- <h5></h5> -->
-                        <h6>{{Info_msg}}
-                        </h6>
+
+                        <h5 class="text-decoration">{{Info_msg}}
+                        </h5>
+                        <a *ngIf="!isNoCommit" href="termsandcondition" target="_blank">Terms and Conditions</a><br>
                         <!-- <input type="radio" id="accept" value="accept" name="accept" formControlName="accept"
                             (click)="accept($event)"> -->
                         <p-radioButton name="accept" value="accept" [(ngModel)]="selectedValue"
@@ -116,15 +118,17 @@
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.candidate.firstname}} {{offer.candidate.lastname}}</td>
                                 <td *ngIf="userDetail.role === 'candidate'">
-                                    {{offer.created_by.username ? offer.created_by.username : offer.employer_id.employer.username}}
+                                    {{offer.employer_id.employer.companyname}}
+                                    <!-- {{offer.created_by.username ? offer.created_by.username : offer.employer_id.employer.username}} -->
                                 </td>
 
                                 <td>{{offer.title}}</td>
-                                <td *ngIf="userDetail.role === 'candidate'">{{offer.salarytype}}</td>
+                                <td *ngIf="userDetail.role === 'candidate'">{{offer.salarytype|titlecase}}</td>
                                 <td *ngIf="userDetail.role === 'candidate'">
                                     {{offer.salaryduration != "null" ? offer.salaryduration : '-'}}
                                 </td>
-                                <td *ngIf="offer.salary && userDetail.role === 'candidate'">{{offer.salary}}</td>
+                                <td *ngIf="offer.salary && userDetail.role === 'candidate'">{{offer.salary}}
+                                </td>
                                 <td *ngIf="offer.salary_from && offer.salary_to && userDetail.role === 'candidate'">
                                     {{offer.salary_from}} to {{offer.salary_to}}
                                 </td>

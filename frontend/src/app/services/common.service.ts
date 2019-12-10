@@ -172,6 +172,7 @@ export class CommonService {
   // delemployer(id): Observable<any[]> {
   //   return this.http.delete<any[]>(`${this.url}` + '/employer/' + id);
   // }
+
 }
 
 const ngbModalOptions: NgbModalOptions = {

@@ -28,7 +28,9 @@ export class RegisterComponent implements OnInit {
   Document_optoins: any = [];
   countryID: any;
   // tslint:disable-next-line: max-line-length
-
+  labelName: any;
+  isDocumentType = false;
+  isDrivingLicense = false;
   constructor(
     public router: Router,
     private service: CommonService,
@@ -50,6 +52,8 @@ export class RegisterComponent implements OnInit {
         Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)
         ])),
       documenttype: new FormControl('', [Validators.required]),
+      documentNumber: new FormControl(''),
+      drivingLicenseState: new FormControl(''),
       password: new FormControl('',
         Validators.compose([
           Validators.required,
@@ -79,6 +83,7 @@ export class RegisterComponent implements OnInit {
 
 
 
+
   checkEmail() {
     this.service.check_candidate_email({ 'email': this.registerForm.value.email }).subscribe(res => {
     }, (err) => {
@@ -97,28 +102,92 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  // check for Aadhar card number
+  checkAadharNumber(control: FormControl) {
+    const adharcardTwelveDigit = /^\d{12}$/;
+    const adharSixteenDigit = /^\d{16}$/;
+    if (control.value && control.value !== '' && control.valid !== null) {
+      const isValid = (control.value.match(adharcardTwelveDigit) || control.value.match(adharSixteenDigit))
+      return isValid ? null : { 'invalid': true };
+    }
+  }
+
+  checkPANCardNumber(control: FormControl) {
+    const regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+    console.log('control.value=>', control.value);
+    if (control.value && control.value !== '' && control.valid !== null) {
+      regpan.test(control.value)
+      const isValid = control.value.match(regpan);
+      console.log('isValid=>', isValid);
+      // valid pan card number
+      return isValid ? null : { 'invalid': true };
+    }
+
+  }
+  checkDrivingLicense(control: FormControl) {
+    const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{15,15}$/;
+    console.log('control.value=>', control.value);
+    if (control.value && control.value !== '' && control.valid !== null) {
+      pattern.test(control.value)
+      const isValid = control.value.match(pattern);
+      console.log('isValid=>', isValid);
+      // valid pan card number
+      return isValid ? null : { 'invalid': true };
+    }
+  }
+
+
+  DocumentType(e) {
+    this.isDocumentType = true;
+    console.log('e.target.value=>', e);
+    //  "5dae95f549f04b196089e906" = AadharCard
+    //  "5dae95f549f04b196089e907" = PanCard
+    //  "5dae95f549f04b196089e908" = Driving Licence
+    if (e.value === '5dae95f549f04b196089e907') {
+      this.labelName = 'PAN Card Number';
+      this.registerForm.controls['documentNumber'].setValidators([Validators.required, this.checkPANCardNumber]);
+    } else if (e.value === '5dae95f549f04b196089e906') {
+      this.registerForm.controls['documentNumber'].setValidators([Validators.required, this.checkAadharNumber]);
+      this.labelName = 'Aadhar Card Number';
+    } else if (e.value === '5dae95f549f04b196089e908') {
+      this.isDrivingLicense = true;
+      this.labelName = 'Driving License Number';
+      this.registerForm.controls['drivingLicenseState'].setValidators([Validators.required, this.noWhitespaceValidator]);
+      this.registerForm.controls['documentNumber'].setValidators([Validators.required, this.checkDrivingLicense]);
+    }
+    this.registerForm.updateValueAndValidity();
+  }
+
   onFileChange(e) {
     this.fileFormData = new FormData();
     const reader = new FileReader();
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
-      console.log('this.file => ', this.file);
+      console.log('this.file => ', this.file.name);
+      let fileName = this.file.name.split('.')
+      console.log('fileName[1]=>', fileName[1]);
+
+
       if (this.file.size < 5000000) {
         this.fileFormData.append('filename', this.file);
 
-        reader.readAsDataURL(this.file);
-        reader.onload = () => {
-          this.documentImage.patchValue({
-            documentimage: reader.result
-          });
-          // need to run CD since file load runs outside of zone
-          this.cd.markForCheck();
-        };
+        if (fileName[1] === 'png' || fileName[1] === 'jpg' || fileName[1] === 'jpeg') {
+          reader.readAsDataURL(this.file);
+          reader.onload = () => {
+            this.documentImage.patchValue({
+              documentimage: reader.result
+            });
+            // need to run CD since file load runs outside of zone
+            this.cd.markForCheck();
+          };
+        } else {
+          this.documentImage.controls['documentimage'].setErrors({ 'fileTypeValidation': true });
+        }
       } else {
         console.log('error => ');
         this.documentImage.controls['documentimage'].setErrors({ 'fileSizeValidation': true });
-        this.documentImage.updateValueAndValidity();
       }
+      this.documentImage.updateValueAndValidity();
       console.log('this.registerForm => ', this.documentImage.controls['documentimage']);
 
     }
@@ -171,8 +240,6 @@ export class RegisterComponent implements OnInit {
   checkPasswords(g: FormGroup) { // here we have the 'passwords' group
     const password = g.get('password').value;
     const confirmpassword = g.get('confirmpassword').value;
-    console.log('password======================>', password);
-    console.log('confirmpassword=================>', confirmpassword);
 
     // if (password !== undefined && password != null && confirmpassword !== null && confirmpassword !== undefined) {
     if (password && confirmpassword) {

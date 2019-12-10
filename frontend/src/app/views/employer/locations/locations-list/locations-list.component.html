@@ -32,7 +32,7 @@
                             (click)="d('Cross click')"><i class="fa fa-times"> </i></button>
                     </div>
                     <div class="modal-body instructions-popup-body">
-                        <h5>Location:</h5>
+                        <h5>Locations(Required):</h5>
                         <h6>{{msg}}
                         </h6>
 
@@ -88,7 +88,8 @@
                         </tbody>
                         <tbody *ngIf="locations?.length == 0">
                             <tr>
-                                <td colspan="8" class="no-data-available">No Locations Available!</td>
+                                <td colspan="8" class="no-data-available">Required Setup. Click on Add Location to setup
+                                    physical locations. Click on i for more information.</td>
                             </tr>
                         <tbody>
                     </table>

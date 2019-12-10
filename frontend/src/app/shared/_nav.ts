@@ -96,6 +96,12 @@ export const employer: NavData[] = [
   //   ]
   // },
   {
+    name: 'Locations',
+    // name: 'Manage Location',
+    url: 'locations/list',
+    icon: 'icon-location-pin',
+  },
+  {
     name: 'Sub Accounts',
     // name: 'Manage Sub-accounts',
     url: 'sub_accounts/list',
@@ -113,12 +119,7 @@ export const employer: NavData[] = [
   //   url: 'salary_brackets/list',
   //   icon: 'icon-wallet',
   // },
-  {
-    name: 'Locations',
-    // name: 'Manage Location',
-    url: 'locations/list',
-    icon: 'icon-location-pin',
-  },
+
   {
     name: 'Custom Field',
     url: 'custom_fields',
@@ -138,6 +139,12 @@ export const sub_employer: NavData[] = [
     icon: 'icon-grid',
   },
   {
+    name: 'Locations',
+    // name: 'Manage Location',
+    url: 'locations/list',
+    icon: 'icon-location-pin',
+  },
+  {
     name: 'Sub Accounts',
     // name: 'Manage Sub-accounts',
     url: 'sub_accounts/list',
@@ -149,12 +156,7 @@ export const sub_employer: NavData[] = [
     url: 'groups/list',
     icon: 'icon-people',
   },
-  {
-    name: 'Locations',
-    // name: 'Manage Location',
-    url: 'locations/list',
-    icon: 'icon-location-pin',
-  },
+
   {
     name: 'Custom Field',
     url: 'custom_fields',
