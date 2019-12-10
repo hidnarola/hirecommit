@@ -12,7 +12,8 @@ import { ResetPasswordComponent } from './shared/reset-password/reset-password.c
 import { PrivacyPolicyComponent } from './shared/privacy-policy/privacy-policy.component';
 import { TermsConditionComponent } from './shared/terms-condition/terms-condition.component';
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
+  // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'privacypolicy', component: PrivacyPolicyComponent },
   { path: 'termsandcondition', component: TermsConditionComponent },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
