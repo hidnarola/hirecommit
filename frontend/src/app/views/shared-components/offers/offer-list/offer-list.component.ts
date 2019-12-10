@@ -518,6 +518,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     });
   }
+  disabledAccept() {
+    this.accept_btn = false;
+  }
 
 
   rrerender(): void {
