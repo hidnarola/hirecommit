@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-candidate-landing',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./candidate-landing.component.scss']
 })
 export class CandidateLandingComponent implements OnInit {
+  current_url = '';
 
-  constructor() { }
+  constructor(private location: Location, ) { }
 
   ngOnInit() {
+    this.current_url = this.location.path();
   }
 
 }

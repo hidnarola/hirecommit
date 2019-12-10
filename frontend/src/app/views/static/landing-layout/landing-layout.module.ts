@@ -11,9 +11,9 @@ import { EmployerLandingComponent } from '../employer-landing/employer-landing.c
 
 @NgModule({
   declarations: [
-    LandingLayoutComponent,
-    CandidateLandingComponent,
-    EmployerLandingComponent,
+    // LandingLayoutComponent,
+    // CandidateLandingComponent,
+    // EmployerLandingComponent,
     HeaderComponent,
     FooterComponent,
   ],
