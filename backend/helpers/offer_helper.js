@@ -252,7 +252,7 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
     if (search && search.value != '') {
       aggregate.push({
         "$match":
-          { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }, { "employer_id.employer.username": RE }, { "created_by.username": RE }] }
+          { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }, { "employer_id.employer.username": RE }, { "created_by.username": RE }, { "employer_id.employer.companyname": RE }] }
       });
     }
     if (sort) {

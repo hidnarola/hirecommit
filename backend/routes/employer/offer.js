@@ -403,11 +403,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
         ]
     )
 
+
+
     var current_date = moment().startOf('day')
 
-    // console.log('hi');
+    // console.log('resp_data', resp_data.length);
 
     for (const resp of resp_data) {
+        // console.log(resp);
         if (resp.communication !== undefined && resp.communication.communication !== undefined) {
             for (const comm of resp.communication.communication) {
                 if (comm.trigger == "afterOffer") {

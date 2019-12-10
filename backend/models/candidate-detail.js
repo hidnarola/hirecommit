@@ -31,6 +31,14 @@ const CandidateDetailSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'document_type'
   },
+  drivingLicenseState: {
+    type: String,
+    // required: true
+  },
+  documentNumber: {
+    type: String,
+    // required: true
+  },
   document_verified: {
     type: Boolean,
     default: false
