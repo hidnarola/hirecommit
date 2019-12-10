@@ -11,8 +11,13 @@ import { EmailconfermationComponent } from './shared/emailconfermation/emailconf
 import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
 import { PrivacyPolicyComponent } from './shared/privacy-policy/privacy-policy.component';
 import { TermsConditionComponent } from './shared/terms-condition/terms-condition.component';
+import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
+import { EmployerLandingComponent } from './views/static/employer-landing/employer-landing.component';
+import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  // { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
+  { path: '', component: LandingLayoutComponent },
+  // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'privacypolicy', component: PrivacyPolicyComponent },
   { path: 'termsandcondition', component: TermsConditionComponent },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
@@ -21,6 +26,15 @@ export const routes: Routes = [
   { path: 'candidate_register', component: RegisterComponent, canActivate: [LoginGuard] },
   { path: 'confirmation/:token', component: EmailconfermationComponent, canActivate: [LoginGuard] },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
+  // { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
+  // {
+  //   path: 'candidate-landing',
+  //   component: CandidateLandingComponent
+  // },
+  // {
+  //   path: 'employer-landing',
+  //   component: EmployerLandingComponent
+  // },
   {
     path: 'admin',
     loadChildren: () => import('./views/admin/admin.module').then(m => m.AdminModule),

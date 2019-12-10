@@ -37,6 +37,11 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { TooltipModule } from 'ng2-tooltip-directive';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
+import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
+import { EmployerLandingComponent } from './views/static/employer-landing/employer-landing.component';
+// import { HeaderComponent } from './views/static/header/header.component';
+// import { FooterComponent } from './views/static/footer/footer.component';
 
 console.log('url', environment.API_URL);
 
@@ -84,6 +89,11 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     P500Component,
     EmailconfermationComponent,
     ResetPasswordComponent,
+    LandingLayoutComponent,
+    CandidateLandingComponent,
+    EmployerLandingComponent,
+    // HeaderComponent,
+    // FooterComponent,
   ],
   providers: [
     AuthService,

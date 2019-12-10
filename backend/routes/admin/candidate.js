@@ -55,7 +55,28 @@ router.post('/get_new', async (req, res) => {
                 }
             },
             {
-                $unwind: "$user"
+                $unwind:
+                {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "document_type",
+                    localField: "documenttype",
+                    foreignField: "_id",
+                    as: "document"
+                }
+            },
+            {
+                $unwind:
+                {
+                    path: "$document",
+                    // preserveNullAndEmptyArrays: true
+                }
+
             },
             {
                 $match: { "user.isAllow": false }
@@ -67,12 +88,10 @@ router.post('/get_new', async (req, res) => {
             aggregate.push({
                 "$match":
                 {
-                    $or: [{ "username": RE },
-                    { "user.email": RE }, { "business.country": RE }, { "companyname": RE }]
+                    $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "drivingLicenseState": RE }, { "documentNumber": RE }, { "createdAt": RE }, { "status": RE }]
                 }
             });
         }
-
 
         let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length;
@@ -165,7 +184,7 @@ router.post('/get_approved', async (req, res) => {
         if (req.body.search && req.body.search != "") {
             aggregate.push({
                 "$match":
-                    { $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }] }
+                    { $or: [{ "firstname": RE }, { "user.email": RE }, { "contactno": RE }, { "document.name": RE }, { "drivingLicenseState": RE }, { "documentNumber": RE }, { "createdAt": RE }, { "status": RE }] }
             });
         }
 

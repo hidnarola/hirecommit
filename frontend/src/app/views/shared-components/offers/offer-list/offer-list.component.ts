@@ -13,8 +13,8 @@ import { EmployerService } from '../../../employer/employer.service';
 import { CandidateService } from '../../candidates/candidate.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalOptions } from '../../../../shared/modal_options';
-import { IfStmt } from '@angular/compiler';
-
+// import { IfStmt } from '@angular/compiler';
+// import { AnyARecord } from 'dns';
 
 @Component({
   selector: 'app-offer-list',
@@ -470,12 +470,11 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {
         this.isNoCommit = true;
-        this.Info_msg = res[`data`][`message`]
+        this.Info_msg = res[`data`][`message`];
         this.modalService.open(this.content1, ModalOptions);
-      }
-      else {
+      } else {
         this.isNoCommit = false;
-        this.Info_msg = res[`data`][`message`]
+        this.Info_msg = res[`data`][`message`];
         this.modalService.open(this.content1, ModalOptions);
       }
 
