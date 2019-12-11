@@ -19,11 +19,11 @@ var CommunicationSchema = new Schema({
 });
 
 var AdhockSchema = new Schema({
-  communicationname: { type: String, required: true },
-  trigger: { type: String, required: true },
-  day: { type: Number, required: true },
-  priority: { type: String, required: true },
-  message: { type: String },
+  AdHoc_communicationname: { type: String, required: true },
+  AdHoc_trigger: { type: String, required: true },
+  AdHoc_day: { type: Number, required: true },
+  AdHoc_priority: { type: String, required: true },
+  AdHoc_message: { type: String },
   is_del: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
