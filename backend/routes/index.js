@@ -1326,7 +1326,7 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
-// router.get('/get_email', async (req, res) => {
+// router.post('/get_email', async (req, res) => {
 //   try {
 //     console.log('==> getmail : req.body ==> ', req.body);
 //     res.status(200).send('success');

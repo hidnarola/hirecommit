@@ -82,6 +82,8 @@ router.post("/", async (req, res) => {
         countrycode: candidate_resp[0].countrycode,
         contactno: candidate_resp[0].contactno,
         documenttype: candidate_resp[0].documenttype.name,
+        documentNumber: candidate_resp[0].documentNumber,
+        drivingLicenseState: candidate_resp[0].drivingLicenseState,
         documentimage: candidate_resp[0].documentimage,
         user_id: candidate_resp[0].user_id
     }
