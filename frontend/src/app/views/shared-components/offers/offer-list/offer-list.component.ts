@@ -503,7 +503,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     // });
   }
   acceptOffer(e) {
-    console.log('selectedValue=>', this.selectedValue);
     if (this.selectedValue === 'accept') {
       this.isAccept = true;
     } else {

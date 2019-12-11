@@ -15,9 +15,12 @@ export class LandingLayoutComponent implements OnInit {
     this.hostName = window.location.hostname;
     if (this.hostName === 'employer.hirecommit.com') {
       this.isEmployer = true;
-    } else if (this.hostName === 'candidate.hirecommit.com') {
+    } else {
       this.isCandidate = true;
     }
+    // else if (this.hostName === 'candidate.hirecommit.com') {
+    //   this.isCandidate = true;
+    // }
   }
 
   ngOnInit() {

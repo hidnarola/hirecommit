@@ -91,7 +91,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'Both Commit', value: 'bothCommit' }
   ];
   Trigger_Option = [
-    { label: 'Select Offer Type', value: '' },
+    { label: 'Select Trigger', value: '' },
     { label: 'Before Joining', value: 'beforeJoining' },
     { label: 'After Joining', value: 'afterJoining' },
     { label: 'After Offer', value: 'afterOffer' },
@@ -106,6 +106,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   show_spinner = false;
   formData: FormData;
   communicationData: any = [];
+  AdHocCommunicationData: any = [];
   is_disabled_btn = false;
   disable_salary_period = false;
   profileData: any;
@@ -155,6 +156,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
+      AdHocCommunication: this.fb.array([]),
       offerStatus: new FormControl(''),
       acceptanceDate: new FormControl('')
     });
@@ -192,6 +194,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // communication field items controls
   get communicationFieldItems() {
     return this.form.get('communicationFieldItems') as FormArray;
+  }
+
+  //AdHoc Communication 
+  get AdHocCommunication() {
+    return this.form.get('AdHocCommunication') as FormArray;
   }
 
   // Update form validation
@@ -483,6 +490,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
           }
 
+          if (this.is_View && res[`data`]['AdHoc'].length > 0) {
+            res[`data`][`AdHoc`].forEach(element => {
+              element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
+            });
+          }
+
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
               this.isAccepted = true;
@@ -542,6 +555,32 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.communicationData = _communication_array;
             }
             // set communication
+            console.log('res=>', res['data']['AdHoc']);
+
+            //set AdHoc
+            if (res['data']['AdHoc'] && res['data']['AdHoc'].length > 0) {
+              this.AdHocCommunicationData = res['data']['AdHoc'];
+              const _Adhoc_communication_array = [];
+              this.AdHocCommunicationData.forEach((element, index) => {
+                const new_communication = {
+                  'AdHoc_communicationname': element.AdHoc_communicationname,
+                  'AdHoc_trigger': element.AdHoc_trigger,
+                  'AdHoc_priority': element.AdHoc_priority,
+                  'AdHoc_day': element.AdHoc_day,
+                  'AdHoc_message': element.AdHoc_message,
+                };
+                this.AdHocCommunication.setControl(index, this.fb.group({
+                  AdHoc_communicationname: ['', Validators.required],
+                  AdHoc_trigger: ['', Validators.required],
+                  AdHoc_priority: ['', Validators.required],
+                  AdHoc_day: ['', Validators.required],
+                  AdHoc_message: ['']
+                }));
+                _Adhoc_communication_array.push(new_communication);
+              });
+              this.AdHocCommunicationData = _Adhoc_communication_array;
+            }
+            //set AdHoc
             this.form.controls['email'].setValue(res[`data`].user_id.email);
             this.form.controls['candidate_name'].setValue(
               res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname
@@ -554,7 +593,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             // this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
-            this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
+            if (res['data'].acceptedAt) {
+
+              this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
+            }
+            else {
+
+              this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
+            }
             // this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
@@ -809,7 +855,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.communicationData = _array;
 
         // this.form.updateValueAndValidity();
-      } else {
+      }
+      else {
         console.log('no communicaiondata found => ');
         // if (this.Comm_Flag) {
 
@@ -908,10 +955,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // add more communication
   addMoreCommunication() {
-    this.is_disabled_btn = true;
-    this.add_new_communication();
+    // this.is_disabled_btn = true;
+    this.add_new_AdHoc_communication();
   }
-
   // add new communication
   add_new_communication(data_index = null) {
     let index = 0;
@@ -945,6 +991,39 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.updateValidation();
   }
 
+  //Add AdHoc Communication
+  add_new_AdHoc_communication(data_index = null) {
+    let index = 0;
+    if (data_index == null) {
+      if (this.AdHocCommunicationData && this.AdHocCommunicationData.length > 0) {
+        index = this.AdHocCommunicationData.length;
+      } else {
+        this.AdHocCommunicationData = [];
+      }
+    } else {
+      if (this.AdHocCommunicationData && this.AdHocCommunicationData.length > 0) {
+        index = this.AdHocCommunicationData.length;
+      }
+    }
+    const new_communication = {
+      'AdHoc_communicationname': '',
+      'AdHoc_trigger': '',
+      'AdHoc_priority': '',
+      'AdHoc_day': '',
+      'AdHoc_message': '',
+    };
+
+    this.AdHocCommunication.setControl(index, this.fb.group({
+      AdHoc_communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+      AdHoc_trigger: ['', Validators.required],
+      AdHoc_priority: ['', Validators.required],
+      AdHoc_day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+      AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
+    }));
+    this.AdHocCommunicationData.push(new_communication);
+    this.updateValidation();
+  }
+
   // Remove communication
   remove_communication(index: number) {
     delete this.communicationData[index];
@@ -956,6 +1035,19 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
     this.communicationData = array;
+  }
+
+  //Remove AdHOC
+  remove_AdHoc_communication(index: number) {
+    delete this.AdHocCommunicationData[index];
+    this.AdHocCommunication.removeAt(index);
+    const array = [];
+    for (let i = 0; i < this.AdHocCommunicationData.length; i++) {
+      if (this.AdHocCommunicationData[i] !== undefined) {
+        array.push(this.AdHocCommunicationData[i]);
+      }
+    }
+    this.AdHocCommunicationData = array;
   }
 
   public onReady(editor) {
@@ -1104,6 +1196,23 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else {
       communication_array.push();
     }
+
+    //AdHoc Communication 
+    const AdHOc_communication_array = [];
+    if (this.AdHocCommunicationData.length > 0) {
+      this.AdHocCommunicationData.forEach(element => {
+        AdHOc_communication_array.push({
+          AdHoc_communicationname: element.AdHoc_communicationname,
+          AdHoc_trigger: element.AdHoc_trigger,
+          AdHoc_priority: element.AdHoc_priority,
+          AdHoc_day: element.AdHoc_day,
+          AdHoc_message: element.AdHoc_message
+        });
+      });
+    }
+    else {
+      AdHOc_communication_array.push();
+    }
     this.formData = new FormData();
     const unwantedFields = [
       'candidate',
@@ -1113,6 +1222,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'status',
       'employer_id',
       'communicationFieldItems',
+      'AdHocCommunication',
       'salarybracket',
       'salarybracket_from',
       'salarybracket_to',
@@ -1128,6 +1238,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
       data: JSON.stringify(communication_array),
+      AdHoc: JSON.stringify(AdHOc_communication_array),
+      medium_notreplied: this.form.value.medium_notreplied ? this.form.value.medium_notreplied : '',
+      medium_unopened: this.form.value.medium_unopened ? this.form.value.medium_unopened : '',
+      high_notreplied: this.form.value.high_notreplied ? this.form.value.high_notreplied : '',
+      high_unopened: this.form.value.high_unopened ? this.form.value.high_unopened : '',
     };
     Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {

@@ -20,8 +20,8 @@
 .static-page h3{ margin:0 0 10px; padding:0; color:#333; line-height:30px; font-weight:700; font-size:20px; display:block; text-transform:uppercase;}
 
 
-
-.static-page .container {max-width: 1200px;}
+.static-page-header .container,
+.static-page .container {max-width: 1140px;}
 /***** Header css *****/
 header.header {padding:36px 0 0; z-index:10; position: relative;}
 .hirecommit-logo { margin:-25px 0 -25px -32px;}
@@ -33,7 +33,7 @@ header .d-flex {background: #fff;max-height:70px;border-radius:4px;margin:25px 0
 .candidate-employer{ position: absolute; top: -40px; right: 0; max-width: 256px; width: 100%; text-align: center;}
 .candidate-employer a{ color: #fff !important; font-size: 16px; font-weight: 500; text-decoration: none; text-transform: uppercase; margin: 0 15px;  display: inline-block; vertical-align: top; letter-spacing: .04em; position:relative;}
 .candidate-employer a:hover,
-.candidate-employer a.active{ text-decoration:underline; color:#fff;}
+.candidate-employer a.active{ text-decoration:underline !important; color:#bf7a68 !important;}
 .candidate-employer a:hover:before,
 .candidate-employer a.active:before {width: 0;height: 0;border-left: 15px solid transparent;border-right: 15px solid transparent;border-bottom: 15px solid #bf7a68;content: '';position: absolute;top: 30px;left: 50%;transform: translateX(-50%);}
 
@@ -41,11 +41,11 @@ header .d-flex {background: #fff;max-height:70px;border-radius:4px;margin:25px 0
 /**** header blue part *****/
 section.header-bluepart {background: #162741;margin: -157px 0 100px;padding:210px 0 50px;}
 section.header-bluepart .d-flex{align-items: flex-end;}
-.header-bluepart-l{ width:53%;}
+.header-bluepart-l{ width:57%;}
 .header-bluepart-l h4{ color:#fff; font-weight:400; line-height:28px; display:block; font-size:20px; margin:0; padding:0;}
 .header-bluepart-l h4 + h4{ margin-top:40px;}
 .header-bluepart-l p{ color:#333;} 
-.header-bluepart-r{ margin:0 0 -80px auto; width:45%; text-align:right; position:relative;}
+.header-bluepart-r{ margin:0 0 -80px auto; width:42%; text-align:right; position:relative;}
 .header-bluepart-r:before{    content: ''; position: absolute; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,.03); border-radius: 100%; width: 80%; height: 100%; top: -100px;}
 .header-bluepart-r img{ max-width:100%; border-radius: 4px;box-shadow: 0 0 30px 0 rgba(0,0,0,.3);}
  
@@ -118,9 +118,18 @@ section.header-bluepart .d-flex{align-items: flex-end;}
 .contact-link{ margin:0 0 0 auto;}
 .contact-link a{ font-size:14px; line-height:normal; color:#666; font-size:14px; font-weight:600; line-height:20px;}
 .contact-link a:hover{ text-decoration:none; color:#bf7a68;}
-
+.mobile-view{ display:none !important;}
+.boxes-section ul li:nth-child(2n+2) .boxes-section-div h3{ color:#bf7a68;}
 
 /***** Media start *****/
+@media(min-width:768px) and (max-width:1099px){
+    .boxes-section-div { position:relative;}
+    .boxes-section-div span {display:block; margin:0; position:absolute; top:0; left:0;}
+    .boxes-section-div h3 {height:50px; display: flex;align-items: center;padding: 0 0 0 65px;line-height: normal;margin: 0 0 20px;max-width: 252px;}
+    li.monitor-alerts-li .boxes-section-div h3{ word-break:break-all;}
+    .boxes-section-div span img {max-height: 50px;}
+    
+} 
 @media(max-width:1099px){
     .header-bluepart-l h1 {margin: 0 0 30px; font-size: 34px;}
     .header-bluepart-l h1 small {font-size: 34px;}
@@ -138,6 +147,7 @@ section.header-bluepart .d-flex{align-items: flex-end;}
     .sign-up-form { margin:0 0 20px;}
     .static-page p {line-height: 26px;font-size: 16px;}
     .static-page p + p {margin-top: 20px;}
+    .boxes-section ul li {width: calc(50% - 30px);}
     
 }
 
@@ -150,7 +160,7 @@ section.header-bluepart .d-flex{align-items: flex-end;}
     .static-page h2 small, .static-page h2 {font-size: 26px;}
     .structured-automated-r h2 {margin: 0 0 20px;}
     .structured-automated-r p + p {margin-top: 10px;}
-    .static-page p {line-height: 22px;font-size: 15px;}
+    .static-page p {line-height: 20px;font-size: 14px;}
     .structured-automated {margin: 0 0 50px;}
     .advance-alerts {margin: 0 0 50px;}
     .boxes-section {margin:0 auto 20px;}
@@ -164,35 +174,35 @@ section.header-bluepart .d-flex{align-items: flex-end;}
 
 }
 @media(max-width:767px){
-    .header .container, .static-page .container { max-width:100%;}
-    .header-bluepart-l h1 small, .header-bluepart-l h1 {font-size: 26px;}
-    .static-page h2 small, .static-page h2 {font-size: 24px;}
+    .header .container, .static-page .container { max-width:480px;}
+    .header-bluepart-l h1 small, .header-bluepart-l h1 {font-size: 25px;}
+    .static-page h2 small, .static-page h2 {font-size: 20px; margin-bottom:10px;}
     .login-signup span { padding:22px 2px 24px; line-height:24px;}
-    .login-signup {max-width:160px;}
+    .login-signup {max-width:180px;}
     header .d-flex {max-height: 50px; margin:15px 0 15px 30px;}
-    .login-signup a {padding: 13px 5px; font-size:15px;}
+    .login-signup a {padding:15px 5px; font-size:15px;}
     .login-signup span {padding:12px 2px 14px;}
-    .header-bluepart-l h1 { margin:0 0 20px; font-size:28px;}
+    .header-bluepart-l h1 { margin:0 0 15px;}
     .sign-up-form input{ width:100%;}
     .sign-up-form button{ margin-top:15px;}
-    .header-bluepart-l h4 {line-height: 22px;font-size: 16px;}
-    .header-bluepart-l h4 + h4 {margin-top:20px;}
+    .header-bluepart-l h4 {line-height: 20px;font-size: 15px;}
+    .header-bluepart-l h4 + h4 {margin-top:15px;}
     .header-bluepart-l {width: 100%;padding: 0 10px 20px;}
     .hirecommit-logo a img{ width:auto; max-width:160px;}
     header.header {padding: 35px 0 0;}
     .structured-automated-l {width: 100%;margin: 0 0 20px;}
     .structured-automated-r {width: 100%;padding: 0;}
-    .advance-alerts-bg {min-height: inherit; padding: 50px 0; background-size: cover;}
-    .boxes-section ul li { width: 100%; margin: 0 0 25px;}
+    .advance-alerts-bg {min-height: inherit; padding:30px 15px; background-size: cover;}
+    .boxes-section ul li { width: 100%; margin:0 0 15px; padding:20px;}
     .boxes-section ul {margin: 0;}
     .data-security .d-flex {flex-direction: column;}
-    .data-security-l {width: 100%;text-align: left;padding: 0 0 20px;}
+    .data-security-l {width: 100%;text-align: left;padding: 0 0 15px;}
     .data-security-r {width: 100%;margin: 0;}
-    .transparency-bg {min-height: inherit; padding: 50px 30px;}
+    .transparency-bg {min-height: inherit; padding:30px 15px;}
     .support-identity .d-flex{ flex-wrap:wrap;}
     .support-identity-l {width: 100%;padding: 0 0 20px;}
     .support-identity-r {width: 100%; margin:0;}
-    .structured-automated {margin: 0 0 30px;}
+    .structured-automated {margin: 0 0 20px;}
     .advance-alerts {margin: 0 0 30px;}
     .boxes-section {margin:0 auto 10px;}
     .data-security {margin:0 0 30px;}
@@ -201,11 +211,24 @@ section.header-bluepart .d-flex{align-items: flex-end;}
     .footer .d-flex{ flex-direction: column-reverse; justify-content: center; text-align: center;}
     .contact-link {margin: 0 auto;padding: 0 0 10px;}
     .boxes-section ul.four-box li{width:100%;}
-    .candidate-employer {right: 0;max-width: 160px;top: -34px;}
-    .candidate-employer a {font-size: 13px; letter-spacing: 0;    margin: 0 5px;}
+    .candidate-employer {right: 0;max-width: 180px;top: -34px;}
+    .candidate-employer a {font-size: 13px; letter-spacing: 0; margin:0 5px;}
     header.header {padding: 30px 0 0;}
     .candidate-employer a:hover:before,
-    .candidate-employer a.active:before {top: 30px;}
+    .candidate-employer a.active:before {top:23px;}
+    .mobile-view{ display:block !important;}
+    .static-page  h2.mobileview-none{ display:none;}
+    .static-page p + p {margin-top:15px;}
+    .boxes-section-div { position:relative;}
+    .boxes-section-div span {display: block; margin:0; position:absolute; top:0; left:0; width:auto;}
+    .boxes-section-div span img{max-height:44px;}
+    .boxes-section-div h3 {margin: 0 0 15px;padding: 4px 0 0 61px;font-size: 16px;line-height: normal;height: 44px;display: flex;align-items: center;}
+    li.monitor-alerts-li .boxes-section-div h3{ word-break:break-all; max-width:220px;}
+    section.header-bluepart { padding:170px 0 15px;}
+    .transparency-bg p br{ display:none;}
+    .support-identity-l h2 small{ display:block; margin:0;}
+    .copyright p {font-size:13px; line-height:normal;}
+    .advance-alerts-bg  h2{ max-width:296px;}
 }    
 
 @media(max-width:399px){

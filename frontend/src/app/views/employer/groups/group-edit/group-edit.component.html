@@ -173,11 +173,15 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
 
-                                        <div class="card-header h5">Record - {{i+1}}
-                                            <span class="input-group-text pull-right"
+                                        <div class="card-header h5">Communication - {{i+1}}
+                                            <button class="btn btn-danger pull-right"
+                                                (click)="remove_communication(i)">Delete</button>
+                                            <button class=" btn btn-secondary  pull-right mr-2"
+                                                (click)="add_new_communication(i)">Add Communication</button>
+                                            <!-- <span class="input-group-text pull-right"
                                                 (click)="remove_communication(i)"><i class="icon-close"></i></span>
                                             <span class="input-group-text pull-right"
-                                                (click)="add_new_communication(i)"><i class="icon-plus"></i></span>
+                                                (click)="add_new_communication(i)"><i class="icon-plus"></i></span> -->
                                         </div>
                                         <div class="card-body">
                                             <div class="form-group no-gutters row">
@@ -248,22 +252,26 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 row no-gutters">
-                                                    <label class="col-md-5 col-form-label" for="day">Day</label>
-                                                    <div class="col-md-7">
+                                                    <label class="col-md-5 col-form-label" for="day">-</label>
+                                                    <div class="input-group col-md-7">
                                                         <input type="number" id="day" name="day" class="form-control"
                                                             placeholder="Enter Days" formControlName="day"
                                                             [(ngModel)]="customfield.day">
-                                                        <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
-                                                            class="cust_err_msg">
-                                                            <div class="text-danger"
-                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
-                                                                This field is required.
-                                                            </div>
-                                                            <span
-                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
-                                                                class="text-danger">Only Positive
-                                                                Number</span>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Day(s)</span>
                                                         </div>
+
+                                                    </div>
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
+                                                        class="cust_err_msg">
+                                                        <div class="text-danger"
+                                                            *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
+                                                            This field is required.
+                                                        </div>
+                                                        <span
+                                                            *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
+                                                            class="text-danger">Only Positive
+                                                            Number</span>
                                                     </div>
                                                 </div>
                                             </div>

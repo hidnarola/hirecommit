@@ -136,7 +136,15 @@ export class GroupAddComponent implements OnInit {
     this.isFormSubmitted = true;
     if (valid) {
       this.show_spinner = true;
-      this.service.addGroup(this.addGroup.value).subscribe(res => {
+      const obj = {
+        ...this.addGroup.value,
+        high_unopened: this.addGroup.controls[`high_unopened`].value ? this.addGroup.controls[`high_unopened`].value : undefined,
+        high_notreplied: this.addGroup.controls[`high_notreplied`].value ? this.addGroup.controls[`high_notreplied`].value : undefined,
+        medium_unopened: this.addGroup.controls[`medium_unopened`].value ? this.addGroup.controls[`medium_unopened`].value : undefined,
+        medium_notreplied: this.addGroup.controls[`medium_notreplied`].value ?
+          this.addGroup.controls[`medium_notreplied`].value : undefined,
+      }
+      this.service.addGroup(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
           this.isFormSubmitted = false;
