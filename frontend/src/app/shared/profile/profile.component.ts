@@ -37,6 +37,8 @@ export class ProfileComponent implements OnInit {
   Candidate_Country: any;
   Candidate_CountryCode: any;
   DocumentType: any;
+  DocumentNumber: any;
+  DrivingLicenseState: any;
   DocumentImage: any;
   id: any;
   emp_data: any;
@@ -83,6 +85,8 @@ export class ProfileComponent implements OnInit {
       candidatecountry: new FormControl(''),
       documenttype: new FormControl(''),
       documentimage: new FormControl(),
+      documentNumber: new FormControl(),
+      drivingLicenseState: new FormControl(),
       candidate_countrycode: new FormControl(''),
       candidate_email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       candidate_contactno: new FormControl('',
@@ -146,11 +150,15 @@ export class ProfileComponent implements OnInit {
   getCandidate() {
     this.candidateService.get_Profile_Candidate(this.id).subscribe(res => {
       this.candidate_data = res['data'];
+      console.log('this.candidate_data=>', res['data']);
+
       this.FirstName = res['data']['firstname'];
       this.LastName = res['data']['lastname'];
       this.Candidate_Email = res['data']['email'];
       this.Candidate_Country = res['data']['country'];
       this.DocumentType = res['data']['documenttype'];
+      this.DocumentNumber = res['data']['documentNumber'];
+      this.DrivingLicenseState = res['data']['drivingLicenseState'];
       this.DocumentImage = res['data']['documentimage'][0];
       this.Candidate_ContactNo = res['data']['contactno'];
       this.Candidate_CountryCode = res['data']['countrycode'];

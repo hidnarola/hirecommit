@@ -14,6 +14,7 @@ import { SocketService } from '../../../../services/socket.service';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalOptions } from '../../../../shared/modal_options';
+import * as moment from 'moment';
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
@@ -22,6 +23,7 @@ import { ModalOptions } from '../../../../shared/modal_options';
 export class OfferAddViewComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
   @ViewChild('content1', { static: false }) content1: ElementRef;
+  @ViewChild('content2', { static: false }) content2: ElementRef;
   userName: any;
   public Editor = ClassicEditor;
   resData: any;
@@ -33,6 +35,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   candidate: any = [];
   candidateList: any = [];
   groupForm: FormGroup;
+  date: any;
   country: any = [];
   countryList: any = [];
   candidateData: any;
@@ -43,12 +46,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   expirydate: any;
   joiningdate: any;
   isAccepted = false;
+  isAccept = false;
   pastDetails: any;
   msg: any;
   err_msg: any;
   isShow = false;
   details: any;
   groupData: any = {};
+  selectedValue: string;
   is_communication_added = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
@@ -67,6 +72,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offerStatus: any = [];
   custom_field: any = [];
   id: any;
+  Info_msg: any;
+  isNoCommit: any;
+  OfferID: any;
   is_Edit: boolean = false;
   is_View: boolean = false;
   // salary duration options
@@ -110,7 +118,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   getGroupDetails = false;
   isExpired = false;
   is_submitted = false;
-
+  accept_btn = false;
   constructor(
     private fb: FormBuilder,
     private service: OfferService,
@@ -458,12 +466,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.getDetail();
     }
   }
-
+  //getDetail-
   getDetail() {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
-          // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+          res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
 
           if (this.is_View && res[`data`][`communication`].length > 0) {
             res[`data`][`communication`].forEach(element => {
@@ -486,6 +494,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.disabled = true;
               this.form.controls['offertype'].disable();
               this.form.controls['notes'].disable();
+
+              // this.form.controls['high_unopened'].disable();
+              // this.form.controls['high_notreplied'].disable();
+              // this.form.controls['medium_unopened'].disable();
+              // this.form.controls['medium_notreplied'].disable();
               // this.form.controls['status'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
@@ -541,7 +554,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             // this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
-            this.form.controls['acceptanceDate'].setValue(new Date(res['data'].acceptedAt));
+            this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
+            // this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
@@ -624,6 +638,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       //  do code here for admin side - offer detail
       this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
+          res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+
+          if (res[`data`][`communication`].length > 0) {
+            res[`data`][`communication`].forEach(element => {
+              element.trigger =
+                (this.Trigger_Option.find(o => o.value === element.trigger).label);
+
+            });
+            // res[`data`][`communication`][0].trigger =
+            //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+          }
           this.resData = res[`data`];
           this.candidateData = res['candidate_data']['data'];
           this.spinner.hide();
@@ -715,8 +740,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   async groupDetail(id) {
-    console.log('group details function=======>');
-
     const groupById = this.group_optoins.find(x => x.value === id);
     if (groupById) {
       this.form.controls.group.setValue(groupById.value);
@@ -727,7 +750,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.groupData.high_notreplied = this.resData.high_notreplied;
       this.groupData.medium_unopened = this.resData.medium_unopened;
       this.groupData.medium_notreplied = this.resData.medium_notreplied;
-      console.log('this.groupData=>', this.groupData);
+      // if (this.resData.status === 'Accepted') {
+      //   document.getElementById('high_unopened').setAttribute('disabled', 'true');
+      // }
 
     }
     if (groupById && this.is_View) {
@@ -746,7 +771,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // On change of group
   groupChange(e) {
-
     this.Groupservice.get_detail(e.value).subscribe(res => {
       this.getGroupDetails = true;
       this.setGroupFormControl();
@@ -799,25 +823,72 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   }
 
-  Accept(id) {
-    document.getElementById('accept').setAttribute('disabled', 'true');
-    const obj = {
-      'id': id
-    };
-    this.service.offer_accept(obj).subscribe(res => {
-      if (res['data'].status === 1) {
-        this.spinner.show();
-        Swal.fire(
-          {
-            type: 'success',
-            text: res['message']
-          }
-        );
-        this.spinner.hide();
+  Accept(id, type) {
+    this.accept_btn = true;
+    console.log('id,type=>', id, type);
+    type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
+    console.log('type=>', type);
+    this.service.type_message({ 'type': type }).subscribe(res => {
+      if (type === 'noCommit') {
+        this.isNoCommit = true;
+        this.Info_msg = res[`data`][`message`];
+        this.modalService.open(this.content2, ModalOptions);
 
       }
-      this.router.navigate(['/candidate/offers/list']);
+      else {
+        this.isNoCommit = false;
+        this.Info_msg = res[`data`][`message`]
+        console.log('this.Info_msg=>', this.Info_msg);
+        this.modalService.open(this.content2, ModalOptions);
+
+      }
+      this.OfferID = id;
+    })
+    // this.service.offer_accept(obj).subscribe(res => {
+    //   if (res['data'].status === 1) {
+    //     this.spinner.show();
+    //     Swal.fire(
+    //       {
+    //         type: 'success',
+    //         text: res['message']
+    //       }
+    //     );
+    //     this.spinner.hide();
+
+    //   }
+    //   this.router.navigate(['/candidate/offers/list']);
+    // });
+  }
+
+  acceptOffer(e) {
+    if (this.selectedValue === 'accept') {
+      this.isAccept = true;
+    } else {
+      this.isAccept = false;
+    }
+  }
+  acceptedOffer() {
+    this.modalService.dismissAll(this.content1);
+    this.service.offer_accept({ 'id': this.OfferID }).subscribe(res => {
+      this.accept_btn = true;
+      const routee = this.router;
+      Swal.fire(
+        {
+          type: 'success',
+          text: res['message']
+        }
+      ).then(function (isConfirm) {
+        if (isConfirm) {
+          routee.navigate(['/candidate/offers/list']);
+        }
+      });
+
     });
+  }
+  disabledAccept() {
+    this.accept_btn = false;
+
+    // document.getElementById('accept').setAttribute('disabled', 'false');
   }
 
   // get joining date
@@ -923,22 +994,32 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   cancel() {
     if (this.userDetail.role === 'employer') {
-      this.confirmationService.confirm({
-        message: 'Are you sure you want to cancel?',
-        accept: () => {
-          this.show_spinner = true;
-          this.router.navigate([this.cancel_link]);
-        }
-      });
+      if (!this.is_View) {
+        this.confirmationService.confirm({
+          message: 'Are you sure you want to cancel?',
+          accept: () => {
+            this.show_spinner = true;
+            this.router.navigate([this.cancel_link]);
+          }
+        });
+      }
+      else {
+        this.router.navigate([this.cancel_link]);
+      }
 
     } else if (this.userDetail.role === 'sub-employer') {
-      this.confirmationService.confirm({
-        message: 'Are you sure you want to cancel?',
-        accept: () => {
-          this.show_spinner = true;
-          this.router.navigate([this.cancel_link1]);
-        }
-      });
+      if (!this.is_View) {
+        this.confirmationService.confirm({
+          message: 'Are you sure you want to cancel?',
+          accept: () => {
+            this.show_spinner = true;
+            this.router.navigate([this.cancel_link1]);
+          }
+        });
+      }
+      else {
+        this.router.navigate([this.cancel_link1]);
+      }
     }
     else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);

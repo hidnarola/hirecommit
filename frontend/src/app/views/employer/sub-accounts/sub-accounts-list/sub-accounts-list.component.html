@@ -30,7 +30,7 @@
                             (click)="d('Cross click')"><i class="fa fa-times"> </i></button>
                     </div>
                     <div class="modal-body instructions-popup-body">
-                        <h5>Sub Account:</h5>
+                        <h5>Sub Accounts(Optional):</h5>
                         <h6>{{msg}}
                         </h6>
 
@@ -127,7 +127,9 @@
                         </tbody>
                         <tbody *ngIf="data?.length == 0">
                             <tr>
-                                <td colspan="4" class="no-data-available">No Sub Employer Available!</td>
+                                <td colspan="4" class="no-data-available">Optional Setup. Click on Add Sub Accounts to
+                                    give access to other employees to create offers and setup. Click on i for
+                                    more information.</td>
                             </tr>
                         </tbody>
                     </table>

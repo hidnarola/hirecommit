@@ -14,6 +14,8 @@
                                 <th>Candidate Email</th>
                                 <th>Contact No </th>
                                 <th>ID Proof</th>
+                                <th>ID Proof Number</th>
+                                <th>Driving License State</th>
                                 <th style="width: 15%;">Date of Registration</th>
                                 <!-- <th>Status</th> -->
                                 <th style="width: 12%;">Action</th>
@@ -25,6 +27,8 @@
                                 <td>{{data.user.email}}</td>
                                 <td>{{data.countrycode}} {{data.contactno}}</td>
                                 <td>{{data['document'].name}}</td>
+                                <td>{{data.documentNumber}}</td>
+                                <td>{{data.drivingLicenseState ? data.drivingLicenseState : '-'}}</td>
                                 <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <!-- <td>{{data.status}}</td> -->
                                 <td>
@@ -51,11 +55,11 @@
 
                         <tbody *ngIf="candidates?.length == 0">
                             <tr *ngIf="candidate_type === 'Approved'">
-                                <td colspan="6" class="no-data-available">No Approved Candidate!</td>
+                                <td colspan="8" class="no-data-available">No Approved Candidate!</td>
                             </tr>
 
                             <tr *ngIf="candidate_type === 'New'">
-                                <td colspan="6" class="no-data-available">No New Candidate!</td>
+                                <td colspan="8" class="no-data-available">No New Candidate!</td>
                             </tr>
                         </tbody>
 

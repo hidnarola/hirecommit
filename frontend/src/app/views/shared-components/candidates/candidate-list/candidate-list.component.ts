@@ -95,7 +95,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           });
         }
       },
-      columnDefs: [{ orderable: false, targets: 5 }],
+      columnDefs: [{ orderable: false, targets: 7 }],
       columns: [
         {
           data: 'firstname'
@@ -105,6 +105,12 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           data: 'contactno'
         }, {
           data: 'documenttype'
+        },
+        {
+          data: 'documentNumber'
+        },
+        {
+          data: 'drivingLicenseState'
         }, {
           data: 'createdAt'
         },

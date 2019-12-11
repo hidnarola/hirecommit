@@ -33,6 +33,15 @@
                                 <td>{{documenttype}}</td>
                             </tr>
                             <tr>
+                                <td class="lbl lbl_width">Document Number</td>
+                                <td>{{candidate_detail.documentNumber}}</td>
+                            </tr>
+                            <tr *ngIf="candidate_detail.drivingLicenseState">
+                                <td class="lbl lbl_width">Driving License State</td>
+                                <td>{{candidate_detail.drivingLicenseState ? candidate_detail.drivingLicenseState : '-'}}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="lbl lbl_width">Document Image</td>
                                 <td>
                                     <img src="{{image + candidate_detail.documentimage}}"

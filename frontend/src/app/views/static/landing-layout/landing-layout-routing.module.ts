@@ -6,25 +6,25 @@ import { LandingLayoutComponent } from './landing-layout.component';
 
 
 const routes: Routes = [
-  {
-    path: '',
-    component: LandingLayoutComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'candidate-landing',
-        pathMatch: 'full',
-      },
-      {
-        path: 'candidate-landing',
-        component: CandidateLandingComponent
-      },
-      {
-        path: 'employer-landing',
-        component: EmployerLandingComponent
-      }
-    ]
-  }
+  // {
+  //   path: '',
+  //   component: LandingLayoutComponent,
+  //   children: [
+  //     {
+  //       path: '',
+  //       redirectTo: 'candidate-landing',
+  //       pathMatch: 'full',
+  //     },
+  //     {
+  //       path: 'candidate-landing',
+  //       component: CandidateLandingComponent
+  //     },
+  //     {
+  //       path: 'employer-landing',
+  //       component: EmployerLandingComponent
+  //     }
+  //   ]
+  // }
 ];
 
 @NgModule({

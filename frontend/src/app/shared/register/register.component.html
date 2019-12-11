@@ -125,7 +125,8 @@
                 <div class="form-group col-md-6">
                   <label for="documenttype">Document Type <p class="ast"> *</p></label>
                   <p-dropdown [options]="Document_optoins" placeholder="Select Document Types"
-                    formControlName="documenttype" [(ngModel)]="registerData.documenttype" id="documenttype" [required]>
+                    (onChange)="DocumentType($event)" formControlName="documenttype"
+                    [(ngModel)]="registerData.documenttype" id="documenttype" [required]>
                   </p-dropdown>
                   <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmitted">
                     <span *ngIf="registerForm.controls['documenttype'].errors['required']">This field is required.
@@ -145,17 +146,70 @@
                     </div>
                     <input type="file" class="form-control" placeholder="Select any image file"
                       (change)="onFileChange($event)">
+                    <br>
+                    <br>
+
                     <!-- <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
                       <span>This field is required.</span>
                     </div> -->
+                    <!-- <div>
+                      <p style="color: grey;">('.png' , '.jpg' and '.jpeg')</p>
+                    </div> -->
 
                     <!-- for file size validation -->
-                    <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
+                    <div class="error" *ngIf="!documentImage.controls['documentimage'].valid ">
                       <span *ngIf="documentImage.controls['documentimage'].errors['fileSizeValidation']">
                         Please select file less than 5mb.
                       </span>
+                      <span *ngIf="documentImage.controls['documentimage'].errors['fileTypeValidation']">
+                        Please select valid image.
+                      </span>
                     </div>
                     <!-- for file size validation -->
+                  </div>
+                </div>
+                <div class="form-group col-md-6" *ngIf="isDocumentType">
+                  <label for="documentNumber">{{labelName}} <p class="ast"> *</p></label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-id-card"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Document Number"
+                      formControlName="documentNumber" [(ngModel)]="registerData.documentNumber" name="documentNumber"
+                      required="required" id="documentNumber">
+                    <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid && isFormSubmitted">
+                      <span *ngIf="registerForm.controls['documentNumber'].errors['required']">
+                        This field is required.
+                      </span>
+                    </div>
+                    <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid">
+                      <span *ngIf="registerForm.controls['documentNumber'].errors['invalid'] ">
+                        Please enter valid number</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="isDocumentType && isDrivingLicense">
+                <div class="form-group col-md-6">
+                  <label for="drivingLicenseState">Driving License State <p class="ast"> *</p></label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-flag"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Driving License State"
+                      formControlName="drivingLicenseState" [(ngModel)]="registerData.drivingLicenseState"
+                      name="drivingLicenseState" required="required" id="drivingLicenseState">
+                    <div class="error" *ngIf="!registerForm.controls['drivingLicenseState'].valid && isFormSubmitted">
+                      <span
+                        *ngIf="registerForm.controls['drivingLicenseState'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
+                        This field is required.
+                      </span>
+                    </div>
+
                   </div>
                 </div>
               </div>
