@@ -5,6 +5,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
+import { SocketService } from '../../../../services/socket.service';
 
 @Component({
   selector: 'app-employer-list',
@@ -20,19 +21,27 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   country: any;
   userDetail: any = [];
   employer_type = 'Approved';
+  id: any;
 
   constructor(
     private route: Router,
     private router: ActivatedRoute,
     private service: EmployerService,
     private toastr: ToastrService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private socketService: SocketService
   ) {
     // console.log('this.router.snapshot.data.type => ', this.router.snapshot.data.type);
     if (this.router.snapshot.data.type === 'new') {
       this.employer_type = 'New';
     }
   }
+
+
+  // joinGroup = (id) => {
+  //   this.socketService.joinGrp(id);
+
+  // }
 
   ngOnInit() {
     this.dtOptions = {
@@ -120,6 +129,10 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
       accept: () => {
 
         this.service.aprroved_employer(obj).subscribe(res => {
+          // console.log("hiii", res['data']['data']._id);
+            this.socketService.joinGrp(res['data']['data']._id);
+            this.socketService.isAllow(res['data']['data']._id);
+            this.socketService.leaveGrp(res['data']['data']._id);
           this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
           this.rrerender();
         }, (err) => {
@@ -164,6 +177,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+    // this.socketService.leaveGrp(this.id);
   }
 
 }

@@ -1271,22 +1271,22 @@ router.post('/match_old_password', async (req, res) => {
   }
 })
 
-// router.post('/test_mail', async (req, res) => {
+router.post('/test_mail', async (req, res) => {
 
-//   // console.log('req.body ==> ', req.body);
-//   var content = req.body.content;
-//   var trackid = req.body.trackid;
+  // console.log('req.body ==> ', req.body);
+  var content = req.body.content;
+  var trackid = req.body.trackid;
 
-//   let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
-//     "to": req.body.email,
-//     "reply_to": req.body.reply_to,
-//     "subject": "Offer",
-//     "trackid": trackid
-//   }, content);
+  let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+    "to": req.body.email,
+    "reply_to": req.body.reply_to,
+    "subject": "Offer",
+    "trackid": trackid
+  }, content);
 
-//   // if (mail_resp)
-//   res.json({ "message": "success" })
-// })
+  // if (mail_resp)
+  res.json({ "message": "success" })
+})
 
 async function getCountry(req, res) {
   try {
@@ -1326,13 +1326,13 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
-// router.post('/get_email', async (req, res) => {
-//   try {
-//     console.log('==> getmail : req.body ==> ', req.body);
-//     res.status(200).send('success');
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// })
+router.post('/get_email', async (req, res) => {
+  try {
+    console.log('==> getmail : req.body ==> ', req.body);
+    res.status(200).send('success');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
 
 module.exports = router;

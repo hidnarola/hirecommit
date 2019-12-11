@@ -113,10 +113,10 @@ router.post("/", async (req, res) => {
                 //  "status": true,
                 "offertype": req.body.offertype,
                 "groups": req.body.groups,
-                "high_unopened": req.body.high_unopened,
-                "high_notreplied": req.body.high_notreplied,
-                "medium_unopened": req.body.medium_unopened,
-                "medium_notreplied": req.body.medium_notreplied,
+                "high_unopened": req.body.high_unopened ? req.body.high_unopened : undefined,
+                "high_notreplied": req.body.high_notreplied ? req.body.high_notreplied : undefined,
+                "medium_unopened": req.body.medium_unopened ? req.body.medium_unopened : undefined,
+                "medium_notreplied": req.body.medium_notreplied ? req.body.medium_notreplied : undefined,
                 // "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
@@ -124,6 +124,7 @@ router.post("/", async (req, res) => {
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data),
+                "AdHoc": JSON.parse(req.body.AdHoc),
                 "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
             }
         }
@@ -148,14 +149,15 @@ router.post("/", async (req, res) => {
                 //  "status": true,
                 "offertype": req.body.offertype,
                 "groups": req.body.groups,
-                "high_unopened": req.body.high_unopened,
-                "high_notreplied": req.body.high_notreplied,
-                "medium_unopened": req.body.medium_unopened,
-                "medium_notreplied": req.body.medium_notreplied,
+                "high_unopened": req.body.high_unopened ? req.body.high_unopened : undefined,
+                "high_notreplied": req.body.high_notreplied ? req.body.high_notreplied : undefined,
+                "medium_unopened": req.body.medium_unopened ? req.body.medium_unopened : undefined,
+                "medium_notreplied": req.body.medium_notreplied ? req.body.medium_notreplied : undefined,
                 // "commitstatus": req.body.commitstatus,
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
                 "communication": JSON.parse(req.body.data),
+                "AdHoc": JSON.parse(req.body.AdHoc),
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
@@ -210,11 +212,15 @@ router.post("/", async (req, res) => {
                 // obj.data = pastOffer.data
             }
             var interest_resp = await common_helper.insert(Offer, obj);
-            // console.log(interest_resp);
-            // return false;
+            console.log(interest_resp);
+
             obj.offer_id = interest_resp.data._id
             obj.employer_id = req.userInfo.id;
+            // console.log(obj.employer_id, obj.offer_id);
+
             var interest = await common_helper.insert(History, obj);
+            // console.log(interest);
+
             if (interest_resp.status == 0) {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
@@ -1283,6 +1289,10 @@ router.put('/', async (req, res) => {
     }
     if (req.body.data && req.body.data != "") {
         obj.communication = JSON.parse(req.body.data)
+    }
+
+    if (req.body.AdHoc && req.body.AdHoc != "") {
+        obj.AdHoc = JSON.parse(req.body.AdHoc)
     }
 
     if (req.body.is_active && req.body.is_active != "") {

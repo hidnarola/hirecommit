@@ -203,18 +203,18 @@ router.put('/', async (req, res) => {
     if (req.body.name && req.body.name != "") {
         obj.name = req.body.name
     }
-    // if (req.body.high_unopened && req.body.high_unopened != "") {
-    obj.high_unopened = req.body.high_unopened
-    // }
-    // if (req.body.high_notreplied && req.body.high_notreplied != "") {
-    obj.high_notreplied = req.body.high_notreplied
-    // }
-    // if (req.body.medium_unopened && req.body.medium_unopened != "") {
-    obj.medium_unopened = req.body.medium_unopened
-    // }
-    // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
-    obj.medium_notreplied = req.body.medium_notreplied
-    // }
+    if (req.body.high_unopened && req.body.high_unopened != "") {
+        obj.high_unopened = req.body.high_unopened
+    }
+    if (req.body.high_notreplied && req.body.high_notreplied != "") {
+        obj.high_notreplied = req.body.high_notreplied
+    }
+    if (req.body.medium_unopened && req.body.medium_unopened != "") {
+        obj.medium_unopened = req.body.medium_unopened
+    }
+    if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+        obj.medium_notreplied = req.body.medium_notreplied
+    }
     // if (req.body.low_unopened && req.body.low_unopened != "") {
     //     obj.low_unopened = req.body.low_unopened
     // }

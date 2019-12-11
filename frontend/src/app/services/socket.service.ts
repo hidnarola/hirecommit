@@ -28,4 +28,17 @@ export class SocketService {
       });
     });
   }
+
+  isAllow(id) {
+    this.socket.emit('isAllow', id);
+  }
+  reflectuser() {
+    // console.log('getOffer :  ==> ', );
+    return new Observable((observer) => {
+      this.socket.on('Reflect', (msg) => {
+        // console.log('Client : Offer ==> ');
+        observer.next(msg);
+      });
+    });
+  }
 }

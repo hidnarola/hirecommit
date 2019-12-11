@@ -18,6 +18,16 @@ var CommunicationSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+var AdhockSchema = new Schema({
+  AdHoc_communicationname: { type: String, required: true },
+  AdHoc_trigger: { type: String, required: true },
+  AdHoc_day: { type: Number, required: true },
+  AdHoc_priority: { type: String, required: true },
+  AdHoc_message: { type: String },
+  is_del: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
 // Create Schema
 const OfferSchema = new Schema({
   employer_id: {
@@ -66,6 +76,7 @@ const OfferSchema = new Schema({
     type: String
   },
   communication: [{ type: CommunicationSchema }],
+  AdHoc: [{ type: AdhockSchema }],
 
   // salarybracket: {
   //   type: mongoose.Schema.Types.ObjectId,
