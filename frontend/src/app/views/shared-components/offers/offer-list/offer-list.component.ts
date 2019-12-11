@@ -13,6 +13,7 @@ import { EmployerService } from '../../../employer/employer.service';
 import { CandidateService } from '../../candidates/candidate.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalOptions } from '../../../../shared/modal_options';
+import { ToastrService } from 'ngx-toastr';
 // import { IfStmt } from '@angular/compiler';
 // import { AnyARecord } from 'dns';
 
@@ -69,7 +70,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: ActivatedRoute,
     private empService: EmployerService,
     private candidateService: CandidateService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private toastr: ToastrService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     if (this.userDetail.role === 'employer') {
@@ -127,7 +129,15 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     // let detail;
     // detail = this.commonService.profileData();
     // console.log('this.commonService.profileData(); offer list =>', this.commonService.profileData());
-
+    this.socketService.reflectuser().subscribe(res => {
+      console.log('done...!');
+      this.commonService.profileData().then((resp: any) => {
+        this.profileData = resp;
+        this.toastr.success('Your profile is approved by admin');
+      }).catch(err => {
+        console.log('err ==> ', err.message);
+      });
+  });
 
     this.socketService.getOffer().subscribe(res => {
       this.rrerender();
@@ -513,6 +523,11 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   acceptedOffer() {
     this.modalService.dismissAll(this.content1);
     this.service.offer_accept({ 'id': this.offerID }).subscribe(res => {
+      this.socketService.leaveGrp(this.grpId);
+      this.socketService.joinGrp(res['data']['data'].employer_id);
+      this.socketService.changeOffer(res['data']['data'].employer_id);
+      this.socketService.leaveGrp(res['data']['data'].employer_id);
+      this.joinGroup(this.grpId);
       this.accept_btn = false;
       Swal.fire(
         {

@@ -18,6 +18,12 @@ const socketIO = (server) => {
             socket.to(id).emit('Offer', { id });
         });
 
+        socket.on('isAllow', function (id) {
+            // console.log('changeOffer : server ==> ', id);
+            socket.to(id).emit('Reflect', { id });
+        });
+
+
         socket.on('disconnect', function () {
             io.emit('user disconnected');
         });

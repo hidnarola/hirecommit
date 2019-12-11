@@ -124,6 +124,7 @@ router.post("/", async (req, res) => {
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
                 "communication": JSON.parse(req.body.data),
+                "AdHoc": JSON.parse(req.body.AdHoc),
                 "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
             }
         }
@@ -156,6 +157,7 @@ router.post("/", async (req, res) => {
                 "customfeild": JSON.parse(req.body.customfeild),
                 "notes": req.body.notes,
                 "communication": JSON.parse(req.body.data),
+                "AdHoc": JSON.parse(req.body.AdHoc),
                 "salary_from": req.body.salary_from,
                 "salary_to": req.body.salary_to,
                 "salary": req.body.salary,
