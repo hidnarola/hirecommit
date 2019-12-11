@@ -149,15 +149,14 @@ export class ProfileComponent implements OnInit {
 
   getCandidate() {
     this.candidateService.get_Profile_Candidate(this.id).subscribe(res => {
-      this.candidate_data = res['data'];
       console.log('this.candidate_data=>', res['data']);
-
+      this.candidate_data = res['data'];
       this.FirstName = res['data']['firstname'];
       this.LastName = res['data']['lastname'];
       this.Candidate_Email = res['data']['email'];
       this.Candidate_Country = res['data']['country'];
       this.DocumentType = res['data']['documenttype'];
-      this.DocumentNumber = res['data']['documentNumber'];
+      this.DocumentNumber = res['data']['documentNumber'] ? res['data']['documentNumber'] : '-';
       this.DrivingLicenseState = res['data']['drivingLicenseState'];
       this.DocumentImage = res['data']['documentimage'][0];
       this.Candidate_ContactNo = res['data']['contactno'];
