@@ -259,11 +259,25 @@
                                         </div>
                                     </div>
                                     <div class="form-row mb-3">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <label class="lbl">Document Type</label>
                                             <input type="text" class="form-control" disabled="true"
                                                 [(ngModel)]="DocumentType" formControlName="documenttype"
                                                 name="documenttype">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="lbl">Document Number</label>
+                                            <input type="text" class="form-control" disabled="true"
+                                                [(ngModel)]="DocumentNumber" formControlName="documentNumber"
+                                                name="documentNumber">
+                                        </div>
+                                    </div>
+                                    <div class="form-row mb-3" *ngIf="DrivingLicenseState">
+                                        <div class="col-md-12">
+                                            <label class="lbl">Driving License State</label>
+                                            <input type="text" class="form-control" disabled="true"
+                                                [(ngModel)]="DrivingLicenseState" formControlName="drivingLicenseState"
+                                                name="drivingLicenseState">
                                         </div>
                                     </div>
                                     <!-- formControlName="documentimage"
