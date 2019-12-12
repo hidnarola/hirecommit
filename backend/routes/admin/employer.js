@@ -576,8 +576,8 @@ router.get('/customfield/first/:id', async (req, res) => {
 
 router.get('/history/:id', async (req, res) => {
     var id = req.params.id;
+    var history = [];
     var message = {};
-    history = [];
     try {
         // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         // console.log(req.params.id);
@@ -628,8 +628,6 @@ router.get('/history/:id', async (req, res) => {
             //     },
             // }
         ])
-        // console.log(history_data);
-
 
         for (let index = 0; index < history_data.length; index++) {
             const element = history_data[index];
@@ -644,20 +642,20 @@ router.get('/history/:id', async (req, res) => {
                     var content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
+                        // console.log(element.createdAt);
+                        // message.push(content);
                         message = {
                             "content": content,
                             "createdAt": element.createdAt
                         }
-                        // message.push(content);
                     } else {
                         content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', user.data.email);
+                        // message.push(content);
                         message = {
                             "content": content,
                             "createdAt": element.createdAt
                         }
-                        // message.push(content);
                     }
-
                     history.push(message);
                 } else if (sub_employer.status === 1 && candidate.status === 1 && user.status === 1) {
                     var content = element.message;
@@ -676,11 +674,10 @@ router.get('/history/:id', async (req, res) => {
                         }
                         // message.push(content);
                     }
-
                     history.push(message);
                 }
             } else if (element.employer_id == undefined) {
-                var candidate = await common_helper.findOne(candidate, { "user_id": element.offer.user_id });
+                var candidate = await common_helper.findOne(Candidate, { "user_id": element.offer.user_id });
                 var user = await common_helper.findOne(User, { "_id": element.offer.user_id });
                 if (candidate.status === 1 && user.status === 1) {
                     let content = element.message;
@@ -700,10 +697,10 @@ router.get('/history/:id', async (req, res) => {
                         // message.push(content);
                     }
                 }
-
                 history.push(message);
             }
         }
+
 
         if (history_data) {
             return res.status(config.OK_STATUS).json({ 'message': "Offer history", "status": 1, data: history });
@@ -723,7 +720,7 @@ router.get('/details/:id', async (req, res) => {
                 { path: 'salarybracket' },
                 { path: 'location' },
                 { path: 'user_id' },
-                { path: 'group' },
+                { path: 'groups' },
             ])
             .lean();
         var candidate_detail = await common_helper.findOne(Candidate, { 'user_id': offer_detail.user_id._id });
