@@ -140,6 +140,10 @@ const OfferSchema = new Schema({
     type: Boolean,
     default: true
   },
+  reply: {
+    type: Boolean,
+    default: false
+  },
   is_del: {
     type: Boolean,
     default: false
