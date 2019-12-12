@@ -130,14 +130,13 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     // detail = this.commonService.profileData();
     // console.log('this.commonService.profileData(); offer list =>', this.commonService.profileData());
     this.socketService.reflectuser().subscribe(res => {
-      console.log('done...!');
       this.commonService.profileData().then((resp: any) => {
         this.profileData = resp;
         this.toastr.success('Your profile is approved by admin');
       }).catch(err => {
         console.log('err ==> ', err.message);
       });
-  });
+    });
 
     this.socketService.getOffer().subscribe(res => {
       this.rrerender();
@@ -476,6 +475,10 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAccept(id, type) {
+    console.log('this.offerData[0].offertype=>', this.offerData[0].offertype);
+
+    type = (this.offer_type_optoins.find(o => o.label === this.offerData[0].offertype).value);
+    console.log('type=>', type);
     this.accept_btn = true;
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {
@@ -513,7 +516,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
     // });
   }
   acceptOffer(e) {
-    console.log('selectedValue=>', this.selectedValue);
     if (this.selectedValue === 'accept') {
       this.isAccept = true;
     } else {

@@ -275,7 +275,7 @@ body .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #bf7a68; backgroun
 .close{color:#fff !important;outline: none;}
 .instructions-popup-head.modal-header{background:#162741; color:#fff; border:0; border-radius:4px 4px 0 0; box-shadow:none;}
 .instructions-popup-body.modal-body h5{color:#bf7a68; font-size:18px; text-transform:uppercase; letter-spacing:0; margin:0 0 10px;}
-.instructions-popup-body.modal-body h6{ color:#666; font-size:14px; font-weight:400;}
+.instructions-popup-body.modal-body h6{ color:#666; font-size:14px; font-weight:400; line-height:20px;}
 .instructions-popup-footer.modal-footer { justify-content:center;}
 .instructions-popup .modal-dialog{height: calc(100% - 3.5rem); align-items: center; display: flex;}
 .group-title-221>i{ line-height: 27px;}
@@ -287,15 +287,26 @@ button:focus { outline: none;}
 
 .add-offer-form-part{ margin-bottom:15px; border-bottom:1px solid #eee; padding:0 0 15px;}
 .add-offer-form-part h3{ margin:0; padding:0; display:block; font-size:16px; line-height:normal;}
+body .ui-radiobutton {line-height: 20px; vertical-align: top;}
+html body .ui-radiobutton div.ui-radiobutton-box.ui-state-active:not(.ui-state-disabled):hover,
+html body .ui-radiobutton div.ui-radiobutton-box.ui-state-active:focus,
+html body .ui-radiobutton div.ui-radiobutton-box.ui-state-active { border-color: #bf7a68; background-color: #bf7a68; box-shadow:none;}
+.files-type {color: grey;font-size: 12px;margin: 4px 0 0;}
+.files-type p{ margin:0; padding:0;}
+.form-control-50{ width:50%;}
+.logo-div-01{ display:block; text-align: left; margin:-30px 0 5px -15px;}
+.logo-div-01 img{ max-width:170px;}
 
 /***** Media start it *****/
 @media(min-width:992px){
     .app-header .navbar-toggler{ display:none !important;}
+    
 }
 
 @media(max-width:991px){
     .app-header.navbar button.navbar-toggler{ display:none !important;}
     .app-header.navbar button.navbar-toggler:first-child{ display:block !important;}
+    .form-control-50{ width:100%;}
 }
 
 @media(max-width:767px){

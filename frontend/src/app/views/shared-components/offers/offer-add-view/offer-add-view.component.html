@@ -417,7 +417,10 @@
                                     <div class="input-group col-md-4">
                                         <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                             formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
-                                            id="high_unopened" [disabled]="isAccepted">
+                                            id="high_unopened" disabled *ngIf="isAccepted">
+                                        <input type="number" min="0" class="form-control" autocomplete="high_unopened"
+                                            formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
+                                            id="high_unopened" *ngIf="!isAccepted">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -436,7 +439,10 @@
                                     <div class="input-group col-md-4">
                                         <input type="number" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                            id="high_notreplied" [disabled]="isAccepted">
+                                            id="high_notreplied" disabled *ngIf="isAccepted">
+                                        <input type="number" class="form-control" autocomplete="high_notreplied"
+                                            formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
+                                            id="high_notreplied" *ngIf="!isAccepted">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -454,7 +460,10 @@
                                     <div class="input-group col-md-4">
                                         <input type="number" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                            id="medium_unopened" [disabled]="isAccepted">
+                                            id="medium_unopened" disabled *ngIf="isAccepted">
+                                        <input type="number" class="form-control" autocomplete="medium_unopened"
+                                            formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
+                                            id="medium_unopened" *ngIf="!isAccepted">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -472,7 +481,12 @@
                                     <div class="input-group col-md-4">
                                         <input type="number" class="form-control" autocomplete="medium_notreplied"
                                             formControlName="medium_notreplied"
-                                            [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied">
+                                            [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied" disabled
+                                            *ngIf="isAccepted">
+                                        <input type="number" class="form-control" autocomplete="medium_notreplied"
+                                            formControlName="medium_notreplied"
+                                            [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied"
+                                            *ngIf="!isAccepted">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -493,11 +507,15 @@
                                 *ngFor="let customfield of communicationData; let i=index">
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
-                                        <div class="card-header h5">Record - {{i+1}}
-                                            <span class="input-group-text pull-right"
+                                        <div class="card-header h5">Communication - {{i+1}}
+                                            <button class="btn btn-danger pull-right"
+                                                (click)="remove_communication(i)">Delete</button>
+                                            <!-- <button class=" btn btn-secondary  pull-right mr-2"
+                                                (click)="add_new_communication(i)">Add Communication</button> -->
+                                            <!-- <span class="input-group-text pull-right"
                                                 (click)="remove_communication(i)"><i class="icon-close"></i></span>
                                             <span class="input-group-text pull-right"
-                                                (click)="add_new_communication(i)"><i class="icon-plus"></i></span>
+                                                (click)="add_new_communication(i)"><i class="icon-plus"></i></span> -->
                                         </div>
                                         <div class="card-body">
                                             <div class="form-goup no-gutters row">
@@ -557,22 +575,25 @@
                                                 </div>
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="day">-</label>
-                                                    <div class="col-md-7">
+                                                    <div class="input-group col-md-7">
                                                         <input type="number" min="0" id="day" name="day"
                                                             class="form-control" placeholder="Enter Days"
                                                             formControlName="day" [(ngModel)]="customfield.day">
-
-                                                        <div class="cust_err_msg"
-                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
-                                                            <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
-                                                                class="text-danger">
-                                                                This field is required.
-                                                            </span>
-                                                            <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
-                                                                class="text-danger">Enter valid value.</span>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Day(s)</span>
                                                         </div>
+
+                                                    </div>
+                                                    <div class="cust_err_msg"
+                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
+                                                        <span
+                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
+                                                            class="text-danger">
+                                                            This field is required.
+                                                        </span>
+                                                        <span
+                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['pattern']"
+                                                            class="text-danger">Enter valid value.</span>
                                                     </div>
                                                 </div>
 
@@ -600,6 +621,152 @@
                             </div>
                         </ng-container>
                         <!-- communication -->
+
+                        <!-- AdHoc -->
+                        <!-- communication -->
+                        <ng-container formArrayName="AdHocCommunication">
+                            <div class="form-group row" formGroupName="{{i}}"
+                                *ngFor="let customfield of AdHocCommunicationData; let i=index">
+                                <div class="col-md-12 mt-3">
+                                    <div class="card communication-fills">
+                                        <div class="card-header h5">AdHoc Communication - {{i+1}}
+
+                                            <button class="btn btn-danger pull-right"
+                                                (click)="remove_AdHoc_communication(i)">Delete</button>
+                                            <button class=" btn btn-secondary  pull-right mr-2"
+                                                (click)="add_new_AdHoc_communication(i)">Add AdHoc
+                                                Communication</button>
+                                            <!-- <span class="input-group-text pull-right"
+                                                (click)="remove_AdHoc_communication(i)"><i
+                                                    class="icon-close"></i></span> -->
+                                            <!-- <span class="input-group-text pull-right"
+                                                (click)="add_new_AdHoc_communication(i)"><i
+                                                    class="icon-plus"></i></span> -->
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-goup no-gutters row">
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label" for="name">
+                                                        Communication Name
+                                                    </label>
+                                                    <!-- [(ngModel)]="customfield.communicationname" -->
+                                                    <div class="col-md-7 no-gutters">
+                                                        <input type="text" class="form-control" placeholder="Enter name"
+                                                            formControlName="AdHoc_communicationname"
+                                                            id="AdHoc_communicationname"
+                                                            [(ngModel)]="customfield.AdHoc_communicationname">
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_communicationname'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_communicationname'].errors['required'] || form.controls['AdHocCommunication'].controls[i].controls['communicationname'].errors['whitespace']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label"
+                                                        for="trigger">Priority</label>
+                                                    <div class="col-md-7">
+                                                        <!-- [(ngModel)]="customfield.priority" -->
+                                                        <select id="AdHoc_priority" name="select1" class="form-control"
+                                                            formControlName="AdHoc_priority"
+                                                            [(ngModel)]="customfield.AdHoc_priority">
+                                                            <option value="" selected="selected">Please select
+                                                                Priority
+                                                            </option>
+                                                            <option value="High">High</option>
+                                                            <option value="Medium">Medium</option>
+                                                            <option value="Low">Low</option>
+                                                        </select>
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_priority'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_priority'].errors['required']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-goup no-gutters row">
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label"
+                                                        for="AdHoc_trigger">Trigger</label>
+                                                    <div class="col-md-7 no-gutters">
+                                                        <!--  [(ngModel)]="customfield.trigger" -->
+                                                        <p-dropdown [options]="Trigger_Option"
+                                                            [style]="{'width':'100%'}" formControlName="AdHoc_trigger"
+                                                            placeholder="Select Trigger" id="AdHoc_trigger"
+                                                            id="AdHoc_trigger" [(ngModel)]="customfield.AdHoc_trigger">
+                                                        </p-dropdown>
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_trigger'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_trigger'].errors['required']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label" for="AdHoc_day">-</label>
+                                                    <div class="input-group col-md-7">
+                                                        <!-- [(ngModel)]="customfield.day" -->
+                                                        <input type="number" min="0" id="AdHoc_day" name="AdHoc_day"
+                                                            class="form-control" placeholder="Enter Days"
+                                                            formControlName="AdHoc_day"
+                                                            [(ngModel)]="customfield.AdHoc_day">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Day(s)</span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="cust_err_msg"
+                                                        *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_day'].valid">
+                                                        <span
+                                                            *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_day'].errors['required']"
+                                                            class="text-danger">
+                                                            This field is required.
+                                                        </span>
+                                                        <span
+                                                            *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_day'].errors['pattern']"
+                                                            class="text-danger">Enter valid value.</span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="form row">
+                                                <label class="col-md-12 col-form-label"
+                                                    for="AdHoc_message">Message</label>
+                                                <!-- [(ngModel)]="customfield.AdHoc_message"  -->
+                                                <div class="col-md-12">
+                                                    <ckeditor [editor]="Editor" formControlName="AdHoc_message"
+                                                        (ready)="onReady($event)"
+                                                        [(ngModel)]="customfield.AdHoc_message">
+                                                    </ckeditor>
+                                                    <div class="cust_err_msg"
+                                                        *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].valid">
+                                                        <span
+                                                            *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].errors['required'] ||
+                                                                                                                                form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].errors['whitespace']"
+                                                            class="text-danger">
+                                                            This field is required.
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!-- communication -->
+                        <!-- AdHoc -->
 
                     </div>
 
@@ -835,7 +1002,7 @@
                     <div class="row" *ngIf="resData.communication">
                         <div class="col-md-12 mt-3" *ngFor="let communication of resData.communication;  let i = index">
                             <div class="card">
-                                <div class="card-header h5">Record - {{i+1}} </div>
+                                <div class="card-header h5">Communication - {{i+1}} </div>
                                 <div class="card-body">
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">
@@ -855,10 +1022,13 @@
                                             {{communication.trigger}}
                                         </div>
                                         <label class="col-md-2 detail-label">
-                                            Day
+                                            -
                                         </label>
-                                        <div class="col-md-4 detail-input">
+                                        <div class="input-group col-md-3 detail-input">
                                             {{communication.day}}
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Day(s)</span>
                                         </div>
                                     </div>
                                     <div class="row detail-panel">
@@ -875,6 +1045,52 @@
                     </div>
                     <!-- communication -->
 
+                    <!-- AdHoc communication -->
+                    <div class="row" *ngIf="resData.AdHoc">
+                        <div class="col-md-12 mt-3" *ngFor="let communication of resData.AdHoc;  let i = index">
+                            <div class="card">
+                                <div class="card-header h5">AdHoc Communication - {{i+1}} </div>
+                                <div class="card-body">
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">
+                                            Communication Name
+                                        </label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.AdHoc_communicationname}}
+                                        </div>
+                                        <label class="col-md-2 detail-label">Priority</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.AdHoc_priority}}
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">Trigger</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.AdHoc_trigger}}
+                                        </div>
+                                        <label class="col-md-2 detail-label">
+                                            -
+                                        </label>
+                                        <div class="input-group col-md-3 detail-input">
+                                            {{communication.AdHoc_day}}
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Day(s)</span>
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">Message</label>
+                                        <div class="col-md-9 detail-input">
+                                            <ckeditor [editor]="Editor" [(ngModel)]="communication.AdHoc_message"
+                                                [ngModelOptions]="{standalone: true}" [disabled]="true">
+                                            </ckeditor>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- AdHoc communication -->
 
                 </div>
                 <div class="card-footer text-right">
@@ -891,20 +1107,20 @@
             <!-- candidate view -->
             <!-- popup -->
             <ng-template #content2 let-c="close" let-d="dismiss">
-                <div class="modal-header instructions-popup-head">
+                <div class="modal-header instructions-popup-head information-popup-head-01">
                     <h4 class="modal-title" id="modal-basic-title"><i class="icon-info"></i>
                         Information</h4>
                     <button type="button" id="closeBtn" class="close" aria-label="Close"
                         (click)="d('Cross click'); disabledAccept()"><i class="fa fa-times"> </i></button>
                 </div>
-                <div class="modal-body instructions-popup-body">
+                <div class="modal-body instructions-popup-body information-popup-body-01">
                     <!-- <h5></h5> -->
 
                     <h5 class="text-decoration">{{Info_msg}}
                     </h5>
                     <a *ngIf="!isNoCommit" href="termsandcondition" target="_blank">Terms and Conditions</a><br>
                     <!-- <input type="radio" id="accept" value="accept" name="accept" formControlName="accept"
-                                        (click)="accept($event)"> -->
+                                    (click)="accept($event)"> -->
                     <p-radioButton name="accept" value="accept" [(ngModel)]="selectedValue"
                         (onClick)="acceptOffer($event)" *ngIf="!isNoCommit"></p-radioButton>
                     <label for="accept" *ngIf="!isNoCommit">Accept</label>
@@ -912,9 +1128,9 @@
 
 
                     <!-- <p-radioButton name="notAccept" value="notAccept" [(ngModel)]="selectedValue"
-                                        (onClick)="acceptOffer($event)">
-                                    </p-radioButton>
-                                    <label for="accept">None</label> -->
+                                    (onClick)="acceptOffer($event)">
+                                </p-radioButton>
+                                <label for="accept">None</label> -->
 
                 </div>
                 <div class="modal-footer instructions-popup-footer">
@@ -922,7 +1138,7 @@
                         *ngIf="!isAccept && !isNoCommit ">Accept</button>
                     <button type="button" id="acceptbtn" class="btn btn-primary" *ngIf="isAccept || isNoCommit"
                         (click)="acceptedOffer()">Accept</button>
-                    <button type="button" class="btn btn-info"
+                    <button type="button" class="back-btn-info btn btn-info"
                         (click)="d('Cross click'); disabledAccept()">Back</button>
                 </div>
             </ng-template>

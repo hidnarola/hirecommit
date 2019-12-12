@@ -233,6 +233,7 @@ export class GroupEditComponent implements OnInit {
           // low_notreplied: this.groupData['low_notreplied'],
           data: JSON.stringify(communication_array)
         };
+        console.log('obj=>', obj);
 
         for (const key in obj) {
           if (key) {
@@ -245,6 +246,7 @@ export class GroupEditComponent implements OnInit {
           message: 'Are you sure that you want to Update this record?',
           accept: () => {
             this.show_spinner = true;
+
             this.service.edit_group(this.formData).subscribe(res => {
               if (res['data']['status'] === 1) {
                 this.isFormSubmitted = false;

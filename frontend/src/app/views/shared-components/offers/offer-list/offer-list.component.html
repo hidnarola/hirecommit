@@ -34,13 +34,13 @@
 
                 <!-- popup -->
                 <ng-template #content1 let-c="close" let-d="dismiss">
-                    <div class="modal-header instructions-popup-head">
+                    <div class="modal-header instructions-popup-head information-popup-head-01">
                         <h4 class="modal-title" id="modal-basic-title"><i class="icon-info"></i>
                             Information</h4>
                         <button type="button" id="closeBtn" class="close" aria-label="Close"
                             (click)="d('Cross click'); disabledAccept()"><i class="fa fa-times"> </i></button>
                     </div>
-                    <div class="modal-body instructions-popup-body">
+                    <div class="modal-body instructions-popup-body information-popup-body-01">
                         <!-- <h5></h5> -->
 
                         <h5 class="text-decoration">{{Info_msg}}
@@ -65,7 +65,7 @@
                             *ngIf="!isAccept && !isNoCommit ">Accept</button>
                         <button type="button" id="acceptbtn" class="btn btn-primary" *ngIf="isAccept || isNoCommit"
                             (click)="acceptedOffer()">Accept</button>
-                        <button type="button" class="btn btn-info"
+                        <button type="button" class="back-btn-info btn btn-info"
                             (click)="d('Cross click'); disabledAccept()">Back</button>
                     </div>
                 </ng-template>

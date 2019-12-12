@@ -144,9 +144,11 @@ export class RegisterComponent implements OnInit {
     //  "5dae95f549f04b196089e907" = PanCard
     //  "5dae95f549f04b196089e908" = Driving Licence
     if (e.value === '5dae95f549f04b196089e907') {
+      this.isDrivingLicense = false;
       this.labelName = 'PAN Card Number';
       this.registerForm.controls['documentNumber'].setValidators([Validators.required, this.checkPANCardNumber]);
     } else if (e.value === '5dae95f549f04b196089e906') {
+      this.isDrivingLicense = false;
       this.registerForm.controls['documentNumber'].setValidators([Validators.required, this.checkAadharNumber]);
       this.labelName = 'Aadhar Card Number';
     } else if (e.value === '5dae95f549f04b196089e908') {
@@ -164,7 +166,7 @@ export class RegisterComponent implements OnInit {
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
       console.log('this.file => ', this.file.name);
-      let fileName = this.file.name.split('.')
+      let fileName = this.file.name.split('.');
       console.log('fileName[1]=>', fileName[1]);
 
 
@@ -214,19 +216,17 @@ export class RegisterComponent implements OnInit {
   }
 
   getCode(e) {
-    console.log('element of country =>>', e.value);
     this.countryID = this.alldata.find(x => x._id === e.value);
-    console.log('countryID', this.countryID.country);
     this.Document_optoins = [];
+    this.isDocumentType = false;
     this.service.get_Type(this.countryID.country).subscribe(res => {
-      console.log('response', res['document']);
-      console.log('Document Types of selected country =>', res['document']);
       this.Document_optoins = [];
       res['document'].forEach(element => {
         this.Document_optoins.push({ 'label': element.name, 'value': element._id });
       });
 
       if (this.countryID.country === 'India') {
+        this.isDrivingLicense = false;
         this.registerForm.controls['countrycode'].setValue('+91');
       } else {
         this.registerForm.controls['countrycode'].setValue('+1');

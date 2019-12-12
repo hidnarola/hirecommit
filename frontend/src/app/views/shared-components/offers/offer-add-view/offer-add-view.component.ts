@@ -91,7 +91,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'Both Commit', value: 'bothCommit' }
   ];
   Trigger_Option = [
-    { label: 'Select Offer Type', value: '' },
+    { label: 'Select Trigger', value: '' },
     { label: 'Before Joining', value: 'beforeJoining' },
     { label: 'After Joining', value: 'afterJoining' },
     { label: 'After Offer', value: 'afterOffer' },
@@ -106,6 +106,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   show_spinner = false;
   formData: FormData;
   communicationData: any = [];
+  AdHocCommunicationData: any = [];
   is_disabled_btn = false;
   disable_salary_period = false;
   profileData: any;
@@ -155,6 +156,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       employer_id: new FormControl(''),
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
+      AdHocCommunication: this.fb.array([]),
       offerStatus: new FormControl(''),
       acceptanceDate: new FormControl('')
     });
@@ -192,6 +194,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // communication field items controls
   get communicationFieldItems() {
     return this.form.get('communicationFieldItems') as FormArray;
+  }
+
+  //AdHoc Communication 
+  get AdHocCommunication() {
+    return this.form.get('AdHocCommunication') as FormArray;
   }
 
   // Update form validation
@@ -466,22 +473,31 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.getDetail();
     }
   }
-  //getDetail-
+  // getDetail-
   getDetail() {
+    this.spinner.show();
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe(
         res => {
-          res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+          this.spinner.hide();
+          if (this.is_View && res[`data`][`AdHoc`].length > 0) {
+            res[`data`][`AdHoc`].forEach(element => {
+              element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
+            });
+          }
+          // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+
 
           if (this.is_View && res[`data`][`communication`].length > 0) {
             res[`data`][`communication`].forEach(element => {
               element.trigger =
                 (this.Trigger_Option.find(o => o.value === element.trigger).label);
-
             });
             // res[`data`][`communication`][0].trigger =
             //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
           }
+
+
 
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
@@ -542,6 +558,31 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.communicationData = _communication_array;
             }
             // set communication
+
+            //set AdHoc
+            if (res['data']['AdHoc'] && res['data']['AdHoc'].length > 0) {
+              this.AdHocCommunicationData = res['data']['AdHoc'];
+              const _Adhoc_communication_array = [];
+              this.AdHocCommunicationData.forEach((element, index) => {
+                const new_communication = {
+                  'AdHoc_communicationname': element.AdHoc_communicationname,
+                  'AdHoc_trigger': element.AdHoc_trigger,
+                  'AdHoc_priority': element.AdHoc_priority,
+                  'AdHoc_day': element.AdHoc_day,
+                  'AdHoc_message': element.AdHoc_message,
+                };
+                this.AdHocCommunication.setControl(index, this.fb.group({
+                  AdHoc_communicationname: ['', Validators.required],
+                  AdHoc_trigger: ['', Validators.required],
+                  AdHoc_priority: ['', Validators.required],
+                  AdHoc_day: ['', Validators.required],
+                  AdHoc_message: ['']
+                }));
+                _Adhoc_communication_array.push(new_communication);
+              });
+              this.AdHocCommunicationData = _Adhoc_communication_array;
+            }
+            //set AdHoc
             this.form.controls['email'].setValue(res[`data`].user_id.email);
             this.form.controls['candidate_name'].setValue(
               res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname
@@ -554,7 +595,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             // this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
-            this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
+            if (res['data'].acceptedAt) {
+
+              this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
+            }
+            else {
+
+              this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
+            }
             // this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
@@ -615,8 +663,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else if (this.userDetail.role === 'candidate') {
       this.service.offer_detail_candidate(this.id).subscribe(
         res => {
+          this.spinner.hide();
           this.resData = res[`data`][0];
-          this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
+          // this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
           const d = new Date();
           d.setDate(d.getDate() - 1);
           if (this.resData.status && d > new Date(this.resData.expirydate)) {
@@ -638,8 +687,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       //  do code here for admin side - offer detail
       this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
-          res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+          this.spinner.hide();
+          this.getGroupDetails = true;
+          // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+          if (res[`data`][`AdHoc`].length > 0) {
 
+            res[`data`][`AdHoc`].forEach(element => {
+              element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
+            });
+
+          }
           if (res[`data`][`communication`].length > 0) {
             res[`data`][`communication`].forEach(element => {
               element.trigger =
@@ -653,8 +710,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           this.candidateData = res['candidate_data']['data'];
           this.spinner.hide();
           this.is_View = true;
-          this.resData = res[`data`];
-          this.resData.groupName = res[`data`]['groups']['name'];
+          this.resData.groupName = res['data']['groups']['name'];
         });
     }
   }
@@ -727,6 +783,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // get group list
   async groupList() {
     this.service.get_groups().subscribe(res => {
+      console.log('res=>', res);
+
       if (res[`data`].data) {
         res[`data`].data.forEach(element => {
           this.group_optoins.push({ label: element.name, value: element._id });
@@ -740,24 +798,22 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   async groupDetail(id) {
-    const groupById = this.group_optoins.find(x => x.value === id);
-    if (groupById) {
-      this.form.controls.group.setValue(groupById.value);
-      this.getGroupDetails = true;
-      this.setGroupFormControl();
-
-      this.groupData.high_unopened = this.resData.high_unopened;
-      this.groupData.high_notreplied = this.resData.high_notreplied;
-      this.groupData.medium_unopened = this.resData.medium_unopened;
-      this.groupData.medium_notreplied = this.resData.medium_notreplied;
-      // if (this.resData.status === 'Accepted') {
-      //   document.getElementById('high_unopened').setAttribute('disabled', 'true');
-      // }
-
+    if (!(this.userDetail.role === 'admin')) {
+      const groupById = this.group_optoins.find(x => x.value === id);
+      if (groupById) {
+        this.form.controls.group.setValue(groupById.value);
+        this.getGroupDetails = true;
+        this.setGroupFormControl();
+        this.groupData.high_unopened = this.resData.high_unopened;
+        this.groupData.high_notreplied = this.resData.high_notreplied;
+        this.groupData.medium_unopened = this.resData.medium_unopened;
+        this.groupData.medium_notreplied = this.resData.medium_notreplied;
+      }
+      if (groupById && this.is_View) {
+        this.resData.groupName = groupById.label;
+      }
     }
-    if (groupById && this.is_View) {
-      this.resData.groupName = groupById.label;
-    }
+
   }
 
   //  set controls for group form
@@ -809,7 +865,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.communicationData = _array;
 
         // this.form.updateValueAndValidity();
-      } else {
+      }
+      else {
         console.log('no communicaiondata found => ');
         // if (this.Comm_Flag) {
 
@@ -825,9 +882,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   Accept(id, type) {
     this.accept_btn = true;
-    console.log('id,type=>', id, type);
     type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
-    console.log('type=>', type);
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {
         this.isNoCommit = true;
@@ -908,10 +963,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // add more communication
   addMoreCommunication() {
-    this.is_disabled_btn = true;
-    this.add_new_communication();
+    // this.is_disabled_btn = true;
+    this.add_new_AdHoc_communication();
   }
-
   // add new communication
   add_new_communication(data_index = null) {
     let index = 0;
@@ -945,6 +999,39 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.updateValidation();
   }
 
+  //Add AdHoc Communication
+  add_new_AdHoc_communication(data_index = null) {
+    let index = 0;
+    if (data_index == null) {
+      if (this.AdHocCommunicationData && this.AdHocCommunicationData.length > 0) {
+        index = this.AdHocCommunicationData.length;
+      } else {
+        this.AdHocCommunicationData = [];
+      }
+    } else {
+      if (this.AdHocCommunicationData && this.AdHocCommunicationData.length > 0) {
+        index = this.AdHocCommunicationData.length;
+      }
+    }
+    const new_communication = {
+      'AdHoc_communicationname': '',
+      'AdHoc_trigger': '',
+      'AdHoc_priority': '',
+      'AdHoc_day': '',
+      'AdHoc_message': '',
+    };
+
+    this.AdHocCommunication.setControl(index, this.fb.group({
+      AdHoc_communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+      AdHoc_trigger: ['', Validators.required],
+      AdHoc_priority: ['', Validators.required],
+      AdHoc_day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+      AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
+    }));
+    this.AdHocCommunicationData.push(new_communication);
+    this.updateValidation();
+  }
+
   // Remove communication
   remove_communication(index: number) {
     delete this.communicationData[index];
@@ -956,6 +1043,19 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
     this.communicationData = array;
+  }
+
+  //Remove AdHOC
+  remove_AdHoc_communication(index: number) {
+    delete this.AdHocCommunicationData[index];
+    this.AdHocCommunication.removeAt(index);
+    const array = [];
+    for (let i = 0; i < this.AdHocCommunicationData.length; i++) {
+      if (this.AdHocCommunicationData[i] !== undefined) {
+        array.push(this.AdHocCommunicationData[i]);
+      }
+    }
+    this.AdHocCommunicationData = array;
   }
 
   public onReady(editor) {
@@ -1104,6 +1204,23 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else {
       communication_array.push();
     }
+
+    //AdHoc Communication 
+    const AdHOc_communication_array = [];
+    if (this.AdHocCommunicationData.length > 0) {
+      this.AdHocCommunicationData.forEach(element => {
+        AdHOc_communication_array.push({
+          AdHoc_communicationname: element.AdHoc_communicationname,
+          AdHoc_trigger: element.AdHoc_trigger,
+          AdHoc_priority: element.AdHoc_priority,
+          AdHoc_day: element.AdHoc_day,
+          AdHoc_message: element.AdHoc_message
+        });
+      });
+    }
+    else {
+      AdHOc_communication_array.push();
+    }
     this.formData = new FormData();
     const unwantedFields = [
       'candidate',
@@ -1113,6 +1230,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'status',
       'employer_id',
       'communicationFieldItems',
+      'AdHocCommunication',
       'salarybracket',
       'salarybracket_from',
       'salarybracket_to',
@@ -1128,6 +1246,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salary_to: this.form.value.salarybracket_to ? this.form.value.salarybracket_to : '',
       customfeild: JSON.stringify(_coustomisedFieldsArray),
       data: JSON.stringify(communication_array),
+      AdHoc: JSON.stringify(AdHOc_communication_array),
+      medium_notreplied: this.form.value.medium_notreplied ? this.form.value.medium_notreplied : '',
+      medium_unopened: this.form.value.medium_unopened ? this.form.value.medium_unopened : '',
+      high_notreplied: this.form.value.high_notreplied ? this.form.value.high_notreplied : '',
+      high_unopened: this.form.value.high_unopened ? this.form.value.high_unopened : '',
     };
     Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {
