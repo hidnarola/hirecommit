@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport(
 
 new_mail_helper.send = async (template_id, options, data) => {
     // offer  : d-4e82d6fcf94e4acdb8b94d71e4c32455
-    // console.log(options); return false;
+    // console.log(options);
 
     sgMail.setApiKey(mail_api_key);
     const msg = {
@@ -44,6 +44,7 @@ new_mail_helper.send = async (template_id, options, data) => {
                         "name": "John Doe"
                     }
                 ],
+                "cc": [{ "email": options.reply_to1 }],
                 "dynamic_template_data": {
                     "message": data,
                 },
@@ -54,11 +55,7 @@ new_mail_helper.send = async (template_id, options, data) => {
             "email": "support@hirecommit.com",
             "name": "Hire Commit"
         },
-        "reply_to": {
-            // options.reply_to
-            "email": "support@hirecommit.com",
-            "name": "Hire Commit"
-        },
+        "reply_to": options.reply_to2,
         "template_id": template_id
     };
     var mail_resp = await sgMail.send(msg);
