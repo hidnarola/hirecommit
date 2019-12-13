@@ -1331,6 +1331,11 @@ router.post('/get_email', async (req, res) => {
     console.log('==> getmail : req.body ==> ', req.body);
     console.log(' : from ==> ', req.body.from);
     console.log(' : cc ==> ', req.body.cc);
+    console.log(": to =>", req.body.to)
+    var receive_id = req.body.to;
+    var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
+    console.log(": id ===> ", id);
+
 
     res.status(200).send('success');
   } catch (error) {
