@@ -1,357 +1,365 @@
-<div class="app-body">
-  <main class="main d-flex align-items-center">
-
-    <!-- <div class="animated fadeIn"> -->
-
-    <div class="card signup-box">
-      <div class="card-header">
-        <strong>Sign Up</strong>
+<header class="header static-page-header">
+  <div class="container">
+    <div class="d-flex">
+      <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
+      <div class="candidate-employer">
+        <a href="http://candidate.hirecommit.com">Candidate</a>
+        <a class="active">Employer</a>
       </div>
-      <div class="card-body">
-        <!-- <div class="container"> -->
-        <div id="stepper1" class="bs-stepper">
-          <div class="bs-stepper-header">
-            <div class="step" data-target="#test-l-1">
-              <button class="step-trigger">
-                <span class="bs-stepper-circle">1</span>
-                <span class="bs-stepper-label">Step</span>
-              </button>
-            </div>
-            <div class="line"></div>
-            <div class="step" data-target="#test-l-2">
-              <button class="step-trigger" [disabled]="!step2">
-                <span class="bs-stepper-circle">2</span>
-                <span class="bs-stepper-label">Step</span>
-              </button>
-            </div>
-            <div class="line"></div>
-            <div class="step" data-target="#test-l-3">
-              <button class="step-trigger" [disabled]="!step3">
-                <span class="bs-stepper-circle">3</span>
-                <span class="bs-stepper-label">Step</span>
-              </button>
-            </div>
-          </div>
-          <div class="bs-stepper-content">
-            <form [formGroup]="registerForm">
-              <div id="test-l-1" class="content">
-                <div class="form-inner row step-one">
-                  <fieldset class="form-group col-md-6 mb-3">
-                    <label for="email">Your Work Email <p class="ast"> *</p></label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="icon-envelope-letter"></i>
-                        </span>
-                      </div>
-                      <input type="text" class="form-control" placeholder="yourname@companyname.com"
-                        [(ngModel)]="formData.email" name="email" formControlName="email" required="required"
-                        (blur)="checkEmail()">
-                      <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
-                        <span
-                          *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
-                          field
-                          is required.</span>
-                        <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
-                          must be in valid format.</span>
-                        <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
-                          This Email address is already registered.
-                        </span>
-                      </div>
-                      <div class="error" *ngIf="!registerForm.controls['email'].valid">
-                        <span *ngIf="registerForm.controls['email'].errors['pattern']  && !isFormSubmitted ">Email
-                          must be in valid format.</span>
-                        <span *ngIf="registerForm.controls['email'].errors['isExist']  && !isFormSubmitted ">
-                          This Email address is already registered.
-                        </span>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset class="form-group col-md-6 mb-3">
-                    <label for="password"> Password <p class="ast"> *</p></label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="icon-lock"></i>
-                        </span>
-                      </div>
-                      <input type="password" [(ngModel)]="formData.password" name="password" class="form-control"
-                        placeholder="Min 8 char,1 letter & 1 number" formControlName="password" required="required">
-                      <div class="error mb-2 mt-1" *ngIf="!registerForm.controls['password'].valid && isFormSubmitted">
-                        <span
-                          *ngIf="registerForm.controls['password'].errors['required'] || registerForm.controls['password'].errors['whitespace']">This
-                          field
-                          is required.</span>
-                        <span
-                          *ngIf="registerForm.controls['password'].errors['minlength']  || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
-                          Password should be 8 character long , 1 small letter and 1 number is required.</span>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <!-- <div class="input-group">
-                    <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
-                      [(ngModel)]="formData.recaptcha" name="recaptcha">
-                    </ngx-recaptcha2>
-                    <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
-                      <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
-                    </div>
-                  </div> -->
-
-                </div>
-                <div class="step-form-btn">
-                  <button (click)="next1()" class="btn btn-primary">Next</button>
-                </div>
-                <div class="col-10">
-                  <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
-                    Back to Login</button>
-                </div>
-              </div>
-
-              <div id="test-l-2" class="content">
-                <div class="form-inner">
-                  <div class="row">
-                    <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="country">Country <p class="ast"> *</p></label>
-                      <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country"
-                        id="country" (onChange)="getCode($event)">
-                      </p-dropdown>
-                      <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['country'].errors['required']">This field
-                          is required.</span>
-                      </div>
-                    </fieldset>
-                    <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="businesstype">Business Type <p class="ast"> *</p></label>
-                      <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
-                        formControlName="businesstype" id="businesstype">
-                      </p-dropdown>
-                      <div class="error" *ngIf="!registerForm.controls['businesstype'].valid && isFormSubmitted">
-                        <span *ngIf="registerForm.controls['businesstype'].errors['required']">This field
-                          is required.</span>
-                      </div>
-                    </fieldset>
-                  </div>
-                </div>
-                <div class="step-form-btn">
-                  <button (click)="next2()" class="btn btn-primary">Next</button>
-                </div>
-              </div>
-              <div id="test-l-3" class="content text-center">
-                <div class="form-inner">
-                  <h5>Need Your Business Details</h5>
-                  <!-- <h4>Company Detail</h4> -->
-                  <div class="row">
-
-
-
-
-
-                    <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="companyname" style="text-align: left">Comapny Name <p
-                          class="ast">
-                          *</p></label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="icon-calendar"></i>
-                          </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Company Name"
-                          [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
-                          required="required">
-                        <!-- error mb-2 mt-1 -->
-                        <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmitted">
-                          <span
-                            *ngIf="registerForm.controls['companyname'].errors['required'] || registerForm.controls['companyname'].errors['whitespace']">This
-                            field
-                            is required.</span>
-                        </div>
-                      </div>
-                    </fieldset>
-
-                    <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="website" style="text-align: left">Website</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="icon-globe"></i>
-                          </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Website" formControlName="website"
-                          (blur)="checkPattern($event)">
-                        <!-- error mb-2 mt-1 -->
-                        <div class="error" *ngIf="!registerForm.controls['website'].valid">
-                          <span *ngIf="registerForm.controls['website'].errors['pattern']">Enter valid value.</span>
-                        </div>
-                      </div>
-                    </fieldset>
-                    <p class="msg">Leave blank if unavailable</p>
-
-                  </div>
-
-                  <br><br>
-
-                  <!-- <h4>Contact Details</h4> -->
-                  <div class="row">
-                    <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="username" style="text-align: left">User Name <p class="ast">
-                          *</p></label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="icon-user"></i>
-                          </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
-                          name="username" formControlName="username" required="required">
-                        <!-- error mb-2 mt-1 -->
-                        <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
-                          <span
-                            *ngIf="registerForm.controls['username'].errors['required'] || registerForm.controls['username'].errors['whitespace']">This
-                            field
-                            is required.</span>
-                        </div>
-                      </div>
-                    </fieldset>
-
-                    <!-- <div class="input-group mb-3 col-md-6">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="icon-user"></i>
-                        </span>
-                      </div>
-                      <label class="col-form-label" for="country">Person Name <p class="ast"> *</p></label>
-                      <input type="text" class="form-control" placeholder="Your Name *" [(ngModel)]="formData.username"
-                        name="username" formControlName="username" required="required">
-                      <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
-                        <span
-                          *ngIf="registerForm.controls['username'].errors['required'] || registerForm.controls['username'].errors['whitespace']">This
-                          field
-                          is required.</span>
-                      </div>
-                    </div> -->
-
-
-
-
-
-                    <!-- <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" for="contactno" style="text-align: left">Comapny Name <p
-                          class="ast">
-                          *</p></label>
-                      <div class="input-group mb-3 col-md-6 country-code-box-wrap">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="icon-phone"></i>
-                          </span>
-                        </div>
-                        <div class="country-code">
-                          <label class="col-form-label" for="country">Contact Number <p class="ast"> *</p></label>
-                          <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
-                            formControlName="countrycode" name="countrycode" disabled>
-                        </div>
-                        <div class="contact-number">
-                          <input type="number" class="form-control" placeholder="10-digit number *"
-                            [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
-                            required="required">
-                          <div class="error pull-left"
-                            *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
-                            <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
-                              is required.</span>
-                          </div>
-                          <div class="error pull-left" *ngIf="!registerForm.controls['contactno'].valid ">
-
-                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
-                              10 digits of mobile number.</span>
-
-                          </div>
-                        </div>
-                      </div>
-                    </fieldset> -->
-
-                    <fieldset class="form-group col-md-6 mb-3">
-                      <label class="col-form-label" style="text-align: left;">Contact Number <p class="ast">*</p>
-                      </label>
-                      <div class="input-group  country-code-box-wrap">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="icon-phone"></i>
-                          </span>
-                        </div>
-                        <div class="d-flex">
-                          <div class="country-code">
-                            <input type="text" [(ngModel)]="formData.countrycode" class="form-control"
-                              placeholder="Code" formControlName="countrycode" name="countrycode" disabled>
-                          </div>
-                          <div class="contact-number">
-                            <input type="number" class="form-control" placeholder="10-digit number"
-                              [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
-                              required="required">
-                            <div class="error pull-left"
-                              *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
-                              <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
-                                is required.</span>
-                            </div>
-                            <div class="error pull-left" *ngIf="!registerForm.controls['contactno'].valid ">
-                              <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
-                                10 digits of mobile number.</span>
-
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    </fieldset>
-
-
-
-                  </div>
-
-                  <!-- captcha -->
-                  <div class="input-group mb-3">
-                    <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
-                      [(ngModel)]="formData.recaptcha" name="recaptcha">
-                    </ngx-recaptcha2>
-                    <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
-                      <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
-                    </div>
-                  </div>
-                  <!-- captcha -->
-
-
-                  <div class="input-group mb-3">
-                    <div class="custome-checkbox">
-                      <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"
-                        [required]>
-                      </p-checkbox>
-
-                      <label for="signing-agree">By signing up you agree to our
-                        <a href="privacypolicy" target="_blank">privacy policy</a>
-                        and
-                        <a href="termsandcondition" target="_blank">terms of use</a>
-                        <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
-                          <span *ngIf="registerForm.controls['isChecked'].errors['required']">
-                            Accept terms and conditions.</span>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="step-form-btn">
-                  <!-- <p *ngIf="!form.valid"></p> -->
-                  <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
-                    (click)="onSubmit(registerForm.valid)">Submit <i *ngIf="show_spinner"
-                      class="fa fa-spinner fa-spin"></i></button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- </div> -->
+      <div class="login-signup">
+        <a href="http://hirecommit.com/login">Login</a>
+        <span>-</span>
+        <a href="http://hirecommit.com/emp_register">Sign up</a>
       </div>
     </div>
+  </div>
+</header>
 
-    <!-- </div> -->
+<section class="header-bluepart-01 new-signup">
+  <h2><strong>EMPLOYER</strong> <small>Register</small></h2>
+  <form>
 
-  </main>
-</div>
+    <div id="stepper1" class="bs-stepper">
+      <div class="bs-stepper-header">
+        <div class="step" data-target="#test-l-1">
+          <button class="step-trigger">
+            <span class="bs-stepper-circle">1</span>
+            <span class="bs-stepper-label">Step</span>
+          </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#test-l-2">
+          <button class="step-trigger" [disabled]="!step2">
+            <span class="bs-stepper-circle">2</span>
+            <span class="bs-stepper-label">Step</span>
+          </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#test-l-3">
+          <button class="step-trigger" [disabled]="!step3">
+            <span class="bs-stepper-circle">3</span>
+            <span class="bs-stepper-label">Step</span>
+          </button>
+        </div>
+      </div>
+      <div class="bs-stepper-content">
+        <form [formGroup]="registerForm">
+          <div id="test-l-1" class="content">
+            <div class="form-inner row step-one">
+              <fieldset class="form-group col-md-6 mb-3">
+                <label for="email">Your Work Email <p class="ast"> *</p></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-envelope-letter"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control" placeholder="yourname@companyname.com"
+                    [(ngModel)]="formData.email" name="email" formControlName="email" required="required"
+                    (blur)="checkEmail()">
+                  <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
+                    <span
+                      *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
+                      field
+                      is required.</span>
+                    <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
+                      must be in valid format.</span>
+                    <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
+                      This Email address is already registered.
+                    </span>
+                  </div>
+                  <div class="error" *ngIf="!registerForm.controls['email'].valid">
+                    <span *ngIf="registerForm.controls['email'].errors['pattern']  && !isFormSubmitted ">Email
+                      must be in valid format.</span>
+                    <span *ngIf="registerForm.controls['email'].errors['isExist']  && !isFormSubmitted ">
+                      This Email address is already registered.
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="form-group col-md-6 mb-3">
+                <label for="password"> Password <p class="ast"> *</p></label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-lock"></i>
+                    </span>
+                  </div>
+                  <input type="password" [(ngModel)]="formData.password" name="password" class="form-control"
+                    placeholder="Min 8 char,1 letter & 1 number" formControlName="password" required="required">
+                  <div class="error mb-2 mt-1" *ngIf="!registerForm.controls['password'].valid && isFormSubmitted">
+                    <span
+                      *ngIf="registerForm.controls['password'].errors['required'] || registerForm.controls['password'].errors['whitespace']">This
+                      field
+                      is required.</span>
+                    <span
+                      *ngIf="registerForm.controls['password'].errors['minlength']  || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
+                      Password should be 8 character long , 1 small letter and 1 number is required.</span>
+                  </div>
+                </div>
+              </fieldset>
+              <!-- <div class="input-group">
+                <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
+                  [(ngModel)]="formData.recaptcha" name="recaptcha">
+                </ngx-recaptcha2>
+                <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
+                  <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
+                </div>
+              </div> -->
+
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <button (click)="next1()" class="btn btn-primary">Next</button>
+              </div>
+              <div class="col-6 text-right back-div">
+                <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
+                  Back to Login</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="test-l-2" class="content">
+            <div class="form-inner">
+              <div class="row">
+                <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" for="country">Country <p class="ast"> *</p></label>
+                  <p-dropdown [options]="Country" placeholder="Select Country" formControlName="country" id="country"
+                    (onChange)="getCode($event)">
+                  </p-dropdown>
+                  <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmitted">
+                    <span *ngIf="registerForm.controls['country'].errors['required']">This field
+                      is required.</span>
+                  </div>
+                </fieldset>
+                <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" for="businesstype">Business Type <p class="ast"> *</p></label>
+                  <p-dropdown [options]="Business_Type" placeholder="Select Business Type"
+                    formControlName="businesstype" id="businesstype">
+                  </p-dropdown>
+                  <div class="error" *ngIf="!registerForm.controls['businesstype'].valid && isFormSubmitted">
+                    <span *ngIf="registerForm.controls['businesstype'].errors['required']">This field
+                      is required.</span>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="step-form-btn">
+              <button (click)="next2()" class="btn btn-primary">Next</button>
+            </div>
+          </div>
+          <div id="test-l-3" class="content text-center">
+            <div class="form-inner">
+              <h5>Need Your Business Details</h5>
+              <!-- <h4>Company Detail</h4> -->
+              <div class="row">
+
+
+
+
+
+                <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" for="companyname" style="text-align: left">Comapny Name <p class="ast">
+                      *</p></label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-calendar"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Company Name"
+                      [(ngModel)]="formData.companyname" name="companyname" formControlName="companyname"
+                      required="required">
+                    <!-- error mb-2 mt-1 -->
+                    <div class="error" *ngIf="!registerForm.controls['companyname'].valid && isFormSubmitted">
+                      <span
+                        *ngIf="registerForm.controls['companyname'].errors['required'] || registerForm.controls['companyname'].errors['whitespace']">This
+                        field
+                        is required.</span>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" for="website" style="text-align: left">Website</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-globe"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Website" formControlName="website"
+                      (blur)="checkPattern($event)">
+                    <!-- error mb-2 mt-1 -->
+                    <div class="error" *ngIf="!registerForm.controls['website'].valid">
+                      <span *ngIf="registerForm.controls['website'].errors['pattern']">Enter valid value.</span>
+                    </div>
+                  </div>
+                  <p class="msg">Leave blank if unavailable</p>
+                </fieldset>
+              </div>
+
+              <!-- <h4>Contact Details</h4> -->
+              <div class="row">
+                <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" for="username" style="text-align: left">User Name <p class="ast">
+                      *</p></label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-user"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
+                      name="username" formControlName="username" required="required">
+                    <!-- error mb-2 mt-1 -->
+                    <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
+                      <span
+                        *ngIf="registerForm.controls['username'].errors['required'] || registerForm.controls['username'].errors['whitespace']">This
+                        field
+                        is required.</span>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <!-- <div class="input-group mb-3 col-md-6">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-user"></i>
+                    </span>
+                  </div>
+                  <label class="col-form-label" for="country">Person Name <p class="ast"> *</p></label>
+                  <input type="text" class="form-control" placeholder="Your Name *" [(ngModel)]="formData.username"
+                    name="username" formControlName="username" required="required">
+                  <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
+                    <span
+                      *ngIf="registerForm.controls['username'].errors['required'] || registerForm.controls['username'].errors['whitespace']">This
+                      field
+                      is required.</span>
+                  </div>
+                </div> -->
+
+
+
+
+
+                <!-- <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" for="contactno" style="text-align: left">Comapny Name <p
+                      class="ast">
+                      *</p></label>
+                  <div class="input-group mb-3 col-md-6 country-code-box-wrap">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-phone"></i>
+                      </span>
+                    </div>
+                    <div class="country-code">
+                      <label class="col-form-label" for="country">Contact Number <p class="ast"> *</p></label>
+                      <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
+                        formControlName="countrycode" name="countrycode" disabled>
+                    </div>
+                    <div class="contact-number">
+                      <input type="number" class="form-control" placeholder="10-digit number *"
+                        [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
+                        required="required">
+                      <div class="error pull-left"
+                        *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
+                        <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
+                          is required.</span>
+                      </div>
+                      <div class="error pull-left" *ngIf="!registerForm.controls['contactno'].valid ">
+
+                        <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
+                          10 digits of mobile number.</span>
+
+                      </div>
+                    </div>
+                  </div>
+                </fieldset> -->
+
+                <fieldset class="form-group col-md-6 mb-3">
+                  <label class="col-form-label" style="text-align: left;">Contact Number <p class="ast">*</p>
+                  </label>
+                  <div class="input-group  country-code-box-wrap">
+                    <div class="d-flex">
+                      <div class="country-code">
+                        <input type="text" [(ngModel)]="formData.countrycode" class="form-control" placeholder="Code"
+                          formControlName="countrycode" name="countrycode" disabled>
+                      </div>
+                      <div class="contact-number">
+                        <input type="number" class="form-control" placeholder="10-digit number"
+                          [(ngModel)]="formData.contactno" name="contactno" formControlName="contactno"
+                          required="required">
+                        <div class="error pull-left"
+                          *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
+                          <span *ngIf="registerForm.controls['contactno'].errors['required']">This field
+                            is required.</span>
+                        </div>
+                        <div class="error pull-left" *ngIf="!registerForm.controls['contactno'].valid ">
+                          <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
+                            10 digits of mobile number.</span>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </fieldset>
+
+
+
+              </div>
+
+              <!-- captcha -->
+              <div class="input-group mb-3">
+                <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
+                  [(ngModel)]="formData.recaptcha" name="recaptcha">
+                </ngx-recaptcha2>
+                <div class="error" *ngIf="!registerForm.controls['recaptcha'].valid && isFormSubmitted">
+                  <span *ngIf="registerForm.controls['recaptcha'].errors['required']">This Field is required.</span>
+                </div>
+              </div>
+              <!-- captcha -->
+
+
+              <div class="input-group mb-3">
+                <div class="custome-checkbox">
+                  <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"
+                    [required]>
+                  </p-checkbox>
+
+                  <label for="signing-agree">By signing up you agree to our
+                    <a href="privacypolicy" target="_blank">privacy policy</a>
+                    and
+                    <a href="termsandcondition" target="_blank">terms of use</a>
+                    <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
+                      <span *ngIf="registerForm.controls['isChecked'].errors['required']">
+                        Accept terms and conditions.</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="step-form-btn">
+              <!-- <p *ngIf="!form.valid"></p> -->
+              <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
+                (click)="onSubmit(registerForm.valid)">Submit <i *ngIf="show_spinner"
+                  class="fa fa-spinner fa-spin"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </form>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="d-flex">
+      <div class="copyright">
+        <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
+      </div>
+      <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div>
+    </div>
+  </div>
+</footer>

@@ -81,9 +81,6 @@ export class RegisterComponent implements OnInit {
 
   }
 
-
-
-
   checkEmail() {
     this.service.check_candidate_email({ 'email': this.registerForm.value.email }).subscribe(res => {
     }, (err) => {

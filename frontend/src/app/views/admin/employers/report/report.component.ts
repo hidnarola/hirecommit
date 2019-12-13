@@ -32,7 +32,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.router.params.subscribe((params: Params) => {
       this.id = params['id'];
 
-      this.getCustomField(this.id);
+      // this.getCustomField(this.id);
     });
   }
 
@@ -73,32 +73,32 @@ export class ReportComponent implements OnInit, OnDestroy {
         });
 
       },
-      columnDefs: [{ orderable: false, targets: 11 }],
+      columnDefs: [{ orderable: false, targets: 10 }],
       columns: [
         {
           data: 'createdAt'
         },
         {
+          data: 'candidate.user.email'
+        },
+        {
+          data: 'candidate.firstname'
+        },
+        {
           data: 'title'
         },
         {
-          data: 'salarytype'
-        },
-        {
-          data: 'salarybracket.from'
+          data: 'location.city'
         },
         {
           data: 'expirydate'
         },
+
         {
           data: 'joiningdate'
         },
-
         {
-          data: 'offertype'
-        },
-        {
-          data: 'group.name'
+          data: 'acceptedAt'
         },
         {
           data: 'status'
@@ -106,9 +106,7 @@ export class ReportComponent implements OnInit, OnDestroy {
         {
           data: 'commitstatus'
         },
-        {
-          data: 'customfeild[0].key'
-        },
+
         {
           data: 'actions'
         }
@@ -116,17 +114,17 @@ export class ReportComponent implements OnInit, OnDestroy {
     };
   }
 
-  getCustomField(id) {
-    this.service.get_customfield(id).subscribe(res => {
-      if (res['data']) {
-        console.log('res\=>', res['data'][0]['key']);
+  // getCustomField(id) {
+  //   this.service.get_customfield(id).subscribe(res => {
+  //     if (res['data']) {
+  //       // console.log('res\=>', res['data'][0]['key']);
 
-        this.first_custom_field = res['data'][0]['key'];
-      } else {
-        this.first_custom_field = 'Custom Field';
-      }
-    });
-  }
+  //       this.first_custom_field = res['data'][0]['key'];
+  //     } else {
+  //       this.first_custom_field = 'Custom Field';
+  //     }
+  //   });
+  // }
 
 
   onFrom(e) {

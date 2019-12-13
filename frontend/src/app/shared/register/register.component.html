@@ -1,306 +1,318 @@
-<div class="app-body">
-  <main class="main d-flex align-items-center">
-    <div class="candidate-signup">
-      <div class="card-group ">
-        <div class="card mx-4">
-          <div class="card-body p-4">
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
-              <h1>Sign Up</h1>
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="firstname">First Name<p class="ast"> *</p></label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
-                    </div>
+<header class="header static-page-header">
+  <div class="container">
+    <div class="d-flex">
+      <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
+      <div class="candidate-employer">
+        <a class="active">Candidate</a>
+        <a href="http://employer.hirecommit.com">Employer</a>
+      </div>
+      <div class="login-signup">
+        <a href="http://hirecommit.com/login">Login</a>
+        <span>-</span>
+        <a href="http://hirecommit.com/candidate_register">Sign up</a>
+      </div>
+    </div>
+  </div>
+</header>
 
-                    <input type="text" class="form-control" placeholder="First Name" formControlName="firstname"
-                      [(ngModel)]="registerData.firstname" name="firstname" required="required">
+<section class="header-bluepart-01 new-signup">
+  <h2><strong>CANDIDATE</strong> <small>Sign Up</small></h2>
 
-                    <div class="error" *ngIf="!registerForm.controls['firstname'].valid && isFormSubmitted">
-                      <span
-                        *ngIf="registerForm.controls['firstname'].errors.required || registerForm.controls['firstname'].errors.whitespace">This
-                        field is required.</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="firstname">Last Name<p class="ast"> *</p></label>
-                  <div class="">
-                    <input type="text" class="form-control" placeholder="Last Name" formControlName="lastname"
-                      [(ngModel)]="registerData.lastname" name="lastname" required="required">
-                    <div class="error" *ngIf="!registerForm.controls['lastname'].valid && isFormSubmitted">
-                      <span
-                        *ngIf="registerForm.controls['lastname'].errors.required || registerForm.controls['lastname'].errors.whitespace">This
-                        field is required.</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="email"> Email<p class="ast"> *</p></label>
-                  <!-- <label for="email">Your Work Email<p class="ast"> *</p></label> -->
-                  <div class="input-group ">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-envelope-letter"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Your Email ID" formControlName="email"
-                      [(ngModel)]="registerData.email" name="email" email required="required" (blur)="checkEmail()">
-                    <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
-                      <span
-                        *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
-                        field is required.</span>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.valid)">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="firstname">First Name<p class="ast"> *</p></label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-user"></i>
+            </span>
+          </div>
 
-                    </div>
-                    <div class="error" *ngIf="!registerForm.controls['email'].valid">
-                      <span *ngIf="registerForm.controls['email'].errors.pattern">Email
-                        must be in valid format.</span>
-                      <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
-                        This Email address is already registered.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="country">Country<p class="ast"> *</p></label>
-                  <p-dropdown [options]="countryList" placeholder="Select Country" formControlName="country" #country
-                    id="country" (onChange)="getCode($event)" [(ngModel)]="registerData.country" [required]>
-                  </p-dropdown>
-                  <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmitted">
-                    <span *ngIf="registerForm.controls['country'].errors['required']">This field is required.</span>
-                  </div>
-                </div>
+          <input type="text" class="form-control" placeholder="First Name" formControlName="firstname"
+            [(ngModel)]="registerData.firstname" name="firstname" required="required">
 
-              </div>
-
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="contactno">Contact Number <p class="ast"> *</p></label>
-
-                  <div class="input-group">
-                    <div class="d-flex w-100">
-                      <div class="country-code">
-                        <div class="input-group-prepend">
-
-                          <input type="text" class="form-control" placeholder="Code" formControlName="countrycode"
-                            name="countrycode" [(ngModel)]="registerData.countrycode" required="required" disabled>
-
-
-                          <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmitted">
-                            <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country
-                              code.</span> -->
-                          <!-- </div> -->
-                        </div>
-                      </div>
-
-                      <div class="contact-number">
-                        <div class="input-group-prepend">
-                          <input type="number" class="form-control" placeholder="10-digit number"
-                            formControlName="contactno" [(ngModel)]="registerData.contactno" name="contactno"
-                            required="required">
-                          <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
-                            <span *ngIf="registerForm.controls['contactno'].errors['required']">This field is required.
-                            </span>
-                            <!-- <span
-                              *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
-                              10 digits of mobile number.</span> -->
-
-                          </div>
-                          <div class="error" *ngIf="!registerForm.controls['contactno'].valid">
-
-                            <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
-                              10 digits of mobile number.</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-group col-md-6">
-                  <label for="documenttype">Document Type <p class="ast"> *</p></label>
-                  <p-dropdown [options]="Document_optoins" placeholder="Select Document Types"
-                    (onChange)="DocumentType($event)" formControlName="documenttype"
-                    [(ngModel)]="registerData.documenttype" id="documenttype" [required]>
-                  </p-dropdown>
-                  <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmitted">
-                    <span *ngIf="registerForm.controls['documenttype'].errors['required']">This field is required.
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="documentimage">Document Image (PNG,JPEG,JPG) </label>
-
-                  <p>*select file till 5mb</p>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-doc"></i>
-                      </span>
-                    </div>
-                    <input type="file" class="form-control" placeholder="Select any image file"
-                      (change)="onFileChange($event)">
-                    <br>
-                    <br>
-
-                    <!-- <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
-                      <span>This field is required.</span>
-                    </div> -->
-
-
-                    <!-- for file size validation -->
-                    <div class="error" *ngIf="!documentImage.controls['documentimage'].valid ">
-                      <span *ngIf="documentImage.controls['documentimage'].errors['fileSizeValidation']">
-                        Please select file less than 5mb.
-                      </span>
-                      <span *ngIf="documentImage.controls['documentimage'].errors['fileTypeValidation']">
-                        Please select valid image.
-                      </span>
-                    </div>
-                    <!-- for file size validation -->
-                  </div>
-                  <div class="files-type">
-
-                  </div>
-                </div>
-                <div class="form-group col-md-6" *ngIf="isDocumentType">
-                  <label for="documentNumber">{{labelName}} <p class="ast"> *</p></label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="fa fa-id-card"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Document Number"
-                      formControlName="documentNumber" [(ngModel)]="registerData.documentNumber" name="documentNumber"
-                      required="required" id="documentNumber">
-                    <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid && isFormSubmitted">
-                      <span *ngIf="registerForm.controls['documentNumber'].errors['required']">
-                        This field is required.
-                      </span>
-                    </div>
-                    <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid">
-                      <span *ngIf="registerForm.controls['documentNumber'].errors['invalid'] ">
-                        Please enter valid number</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row" *ngIf="isDocumentType && isDrivingLicense">
-                <div class="form-group col-md-6">
-                  <label for="drivingLicenseState">Driving License State <p class="ast"> *</p></label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="fa fa-flag"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Driving License State"
-                      formControlName="drivingLicenseState" [(ngModel)]="registerData.drivingLicenseState"
-                      name="drivingLicenseState" required="required" id="drivingLicenseState">
-                    <div class="error" *ngIf="!registerForm.controls['drivingLicenseState'].valid && isFormSubmitted">
-                      <span
-                        *ngIf="registerForm.controls['drivingLicenseState'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
-                        This field is required.
-                      </span>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="password">Password <p class="ast"> *</p></label>
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-lock"></i>
-                      </span>
-                    </div>
-                    <input type="password" class="form-control" placeholder="Min 8 char,1 letter & 1 number"
-                      formControlName="password" [(ngModel)]="registerData.password" name="password"
-                      required="required">
-                    <div class="error" *ngIf="!registerForm.controls['password'].valid && isFormSubmitted">
-                      <span
-                        *ngIf="registerForm.controls['password'].errors['required'] || registerForm.controls['password'].errors['whitespace']">This
-                        field is required.</span>
-                      <!-- <span
-                        *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
-                        Password should be 8 character long , 1 small letter and 1 number is required.</span> -->
-                    </div>
-                    <div class="error" *ngIf="!registerForm.controls['password'].valid">
-                      <span
-                        *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
-                        Password should be 8 character long , 1 small letter and 1 number is required.</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="confirmpassword">Confirm Password <p class="ast"> *</p></label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-lock"></i>
-                      </span>
-                    </div>
-                    <input type="password" class="form-control" placeholder="Same as password"
-                      formControlName="confirmpassword" [(ngModel)]="registerData.confirmpassword"
-                      name="confirmpassword" required="required">
-                    <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid && isFormSubmitted">
-                      <span
-                        *ngIf="registerForm.controls['confirmpassword'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
-                        This field is required.
-                      </span>
-                      <!-- <span
-                        *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">
-                        Password and Confirm password should be same.
-                      </span> -->
-                    </div>
-                    <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid">
-                      <span
-                        *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">
-                        Password and Confirm password should be same.</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="custome-checkbox">
-                <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"
-                  [required]>
-                </p-checkbox>
-
-                <label for="signing-agree">By signing up you agree to our
-                  <a href="privacypolicy" target="_blank">privacy policy</a>
-                  and
-                  <a href="termsandcondition" target="_blank">terms of use</a>
-                  <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
-                    <span *ngIf="registerForm.controls['isChecked'].errors['required']">
-                      Accept terms and conditions.</span>
-                  </div>
-                </label>
-              </div>
-              <div class="btm-btn">
-
-
-                <button type="submit" [disabled]="show_spinner" class="btn btn-block btn-primary">Create Account <i
-                    *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-              </div>
-              <div class="col-10">
-                <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
-                  Back to Login</button>
-              </div>
-            </form>
+          <div class="error" *ngIf="!registerForm.controls['firstname'].valid && isFormSubmitted">
+            <span
+              *ngIf="registerForm.controls['firstname'].errors.required || registerForm.controls['firstname'].errors.whitespace">This
+              field is required.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="firstname">Last Name<p class="ast"> *</p></label>
+        <div class="">
+          <input type="text" class="form-control" placeholder="Last Name" formControlName="lastname"
+            [(ngModel)]="registerData.lastname" name="lastname" required="required">
+          <div class="error" *ngIf="!registerForm.controls['lastname'].valid && isFormSubmitted">
+            <span
+              *ngIf="registerForm.controls['lastname'].errors.required || registerForm.controls['lastname'].errors.whitespace">This
+              field is required.</span>
           </div>
         </div>
       </div>
     </div>
-  </main>
-</div>
+    <div class="row">
+      <div class="form-group col-md-6 email-id-div">
+        <label for="email"> Email<p class="ast"> *</p></label>
+        <!-- <label for="email">Your Work Email<p class="ast"> *</p></label> -->
+        <div class="input-group ">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-envelope-letter"></i>
+            </span>
+          </div>
+          <input type="text" class="form-control" placeholder="Your Email ID" formControlName="email"
+            [(ngModel)]="registerData.email" name="email" email required="required" (blur)="checkEmail()">
+          <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
+            <span
+              *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
+              field is required.</span>
+
+          </div>
+          <div class="error" *ngIf="!registerForm.controls['email'].valid">
+            <span *ngIf="registerForm.controls['email'].errors.pattern">Email
+              must be in valid format.</span>
+            <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
+              This Email address is already registered.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="country">Country<p class="ast"> *</p></label>
+        <p-dropdown [options]="countryList" placeholder="Select Country" formControlName="country" #country id="country"
+          (onChange)="getCode($event)" [(ngModel)]="registerData.country" [required]>
+        </p-dropdown>
+        <div class="error" *ngIf="!registerForm.controls['country'].valid && isFormSubmitted">
+          <span *ngIf="registerForm.controls['country'].errors['required']">This field is required.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="contactno">Contact Number <p class="ast"> *</p></label>
+
+        <div class="input-group">
+          <div class="d-flex w-100">
+            <div class="country-code">
+              <div class="input-group-prepend">
+
+                <input type="text" class="form-control" placeholder="Code" formControlName="countrycode"
+                  name="countrycode" [(ngModel)]="registerData.countrycode" required="required" disabled>
+
+
+                <!-- <div class="error" *ngIf="!registerForm.controls['countrycode'].valid && isFormSubmitted">
+                              <span *ngIf="registerForm.controls['countrycode'].errors['required']">Please select country
+                                code.</span> -->
+                <!-- </div> -->
+              </div>
+            </div>
+
+            <div class="contact-number">
+              <div class="input-group-prepend">
+                <input type="number" class="form-control" placeholder="10-digit number" formControlName="contactno"
+                  [(ngModel)]="registerData.contactno" name="contactno" required="required">
+                <div class="error" *ngIf="!registerForm.controls['contactno'].valid && isFormSubmitted">
+                  <span *ngIf="registerForm.controls['contactno'].errors['required']">This field is required.
+                  </span>
+                  <!-- <span
+                                *ngIf="(registerForm.controls['contactno'].errors['minlength'] || registerForm.controls['contactno'].errors['maxlength']) && !registerForm.controls['contactno'].errors['pattern']">Enter
+                                10 digits of mobile number.</span> -->
+
+                </div>
+                <div class="error" *ngIf="!registerForm.controls['contactno'].valid">
+
+                  <span *ngIf="registerForm.controls['contactno'].errors['pattern']">Enter
+                    10 digits of mobile number.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="documenttype">Document Type <p class="ast"> *</p></label>
+        <p-dropdown [options]="Document_optoins" placeholder="Select Document Types" (onChange)="DocumentType($event)"
+          formControlName="documenttype" [(ngModel)]="registerData.documenttype" id="documenttype" [required]>
+        </p-dropdown>
+        <div class="error" *ngIf="!registerForm.controls['documenttype'].valid && isFormSubmitted">
+          <span *ngIf="registerForm.controls['documenttype'].errors['required']">This field is required.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-6 documentimage">
+        <label for="documentimage">Document Image (PNG,JPEG,JPG) </label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-doc"></i>
+            </span>
+          </div>
+          <input type="file" class="form-control" placeholder="Select any image file" (change)="onFileChange($event)">
+          <br>
+          <br>
+
+          <!-- <div class="error" *ngIf="!documentImage.controls['documentimage'].valid && isFormSubmitted">
+                        <span>This field is required.</span>
+                      </div> -->
+
+
+          <!-- for file size validation -->
+          <div class="error" *ngIf="!documentImage.controls['documentimage'].valid ">
+            <span *ngIf="documentImage.controls['documentimage'].errors['fileSizeValidation']">
+              Please select file less than 5mb.
+            </span>
+            <span *ngIf="documentImage.controls['documentimage'].errors['fileTypeValidation']">
+              Please select valid image.
+            </span>
+          </div>
+          <!-- for file size validation -->
+        </div>
+        <p>*select file till 5mb</p>
+        <div class="files-type">
+
+        </div>
+      </div>
+      <div class="form-group col-md-6" *ngIf="isDocumentType">
+        <label for="documentNumber">{{labelName}} <p class="ast"> *</p></label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-id-card"></i>
+            </span>
+          </div>
+          <input type="text" class="form-control" placeholder="Document Number" formControlName="documentNumber"
+            [(ngModel)]="registerData.documentNumber" name="documentNumber" required="required" id="documentNumber">
+          <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid && isFormSubmitted">
+            <span *ngIf="registerForm.controls['documentNumber'].errors['required']">
+              This field is required.
+            </span>
+          </div>
+          <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid">
+            <span *ngIf="registerForm.controls['documentNumber'].errors['invalid'] ">
+              Please enter valid number</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="isDocumentType && isDrivingLicense">
+      <div class="form-group col-md-6">
+        <label for="drivingLicenseState">Driving License State <p class="ast"> *</p></label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-flag"></i>
+            </span>
+          </div>
+          <input type="text" class="form-control" placeholder="Driving License State"
+            formControlName="drivingLicenseState" [(ngModel)]="registerData.drivingLicenseState"
+            name="drivingLicenseState" required="required" id="drivingLicenseState">
+          <div class="error" *ngIf="!registerForm.controls['drivingLicenseState'].valid && isFormSubmitted">
+            <span
+              *ngIf="registerForm.controls['drivingLicenseState'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
+              This field is required.
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="password">Password <p class="ast"> *</p></label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-lock"></i>
+            </span>
+          </div>
+          <input type="password" class="form-control" placeholder="Min 8 char,1 letter & 1 number"
+            formControlName="password" [(ngModel)]="registerData.password" name="password" required="required">
+          <div class="error" *ngIf="!registerForm.controls['password'].valid && isFormSubmitted">
+            <span
+              *ngIf="registerForm.controls['password'].errors['required'] || registerForm.controls['password'].errors['whitespace']">This
+              field is required.</span>
+            <!-- <span
+                          *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
+                          Password should be 8 character long , 1 small letter and 1 number is required.</span> -->
+          </div>
+          <div class="error" *ngIf="!registerForm.controls['password'].valid">
+            <span
+              *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
+              Password should be 8 character long , 1 small letter and 1 number is required.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="confirmpassword">Confirm Password <p class="ast"> *</p></label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="icon-lock"></i>
+            </span>
+          </div>
+          <input type="password" class="form-control" placeholder="Same as password" formControlName="confirmpassword"
+            [(ngModel)]="registerData.confirmpassword" name="confirmpassword" required="required">
+          <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid && isFormSubmitted">
+            <span
+              *ngIf="registerForm.controls['confirmpassword'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
+              This field is required.
+            </span>
+            <!-- <span
+                          *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">
+                          Password and Confirm password should be same.
+                        </span> -->
+          </div>
+          <div class="error" *ngIf="!registerForm.controls['confirmpassword'].valid">
+            <span
+              *ngIf="registerForm.controls['confirmpassword'].errors['mismatch'] && !registerForm.controls['confirmpassword'].errors['whitespace']">
+              Password and Confirm password should be same.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="custome-checkbox">
+      <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked" [required]>
+      </p-checkbox>
+
+      <label for="signing-agree">By signing up you agree to our
+        <a href="privacypolicy" target="_blank">privacy policy</a>
+        and
+        <a href="termsandcondition" target="_blank">terms of use</a>
+        <div class="error" *ngIf="!registerForm.controls['isChecked'].valid && isFormSubmitted">
+          <span *ngIf="registerForm.controls['isChecked'].errors['required']">
+            Accept terms and conditions.</span>
+        </div>
+      </label>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <button type="submit" [disabled]="show_spinner" class="btn btn-block btn-primary">Create Account <i
+            *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+      </div>
+      <div class="col-6 text-right back-div">
+        <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
+          Back to Login</button>
+      </div>
+    </div>
+
+  </form>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="d-flex">
+      <div class="copyright">
+        <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
+      </div>
+      <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div>
+    </div>
+  </div>
+</footer>

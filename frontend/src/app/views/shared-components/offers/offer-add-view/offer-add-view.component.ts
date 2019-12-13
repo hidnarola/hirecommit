@@ -59,6 +59,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'Select Location', value: '' }
   ];
 
+
+
   from: any;
   to: any;
   customfield: any = [];
@@ -480,6 +482,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail(this.id).subscribe(
         res => {
           this.spinner.hide();
+          // console.log('res[.high_notreplied=>', res['data'].high_unopened);
+
           if (this.is_View && res[`data`][`AdHoc`].length > 0) {
             res[`data`][`AdHoc`].forEach(element => {
               element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
@@ -496,9 +500,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             // res[`data`][`communication`][0].trigger =
             //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
           }
-
-
-
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
               this.isAccepted = true;
@@ -688,7 +689,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.adminService.offer_detail_admin(this.id).subscribe(
         res => {
           this.spinner.hide();
-          this.getGroupDetails = true;
+
           // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
           if (res[`data`][`AdHoc`].length > 0) {
 
@@ -711,6 +712,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           this.spinner.hide();
           this.is_View = true;
           this.resData.groupName = res['data']['groups']['name'];
+          this.groupDetail(res[`data`].groups);
         });
     }
   }
@@ -802,7 +804,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       const groupById = this.group_optoins.find(x => x.value === id);
       if (groupById) {
         this.form.controls.group.setValue(groupById.value);
-        this.getGroupDetails = true;
+        if (this.is_View && !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
+          this.getGroupDetails = false;
+        }
+        else {
+          this.getGroupDetails = true;
+        }
         this.setGroupFormControl();
         this.groupData.high_unopened = this.resData.high_unopened;
         this.groupData.high_notreplied = this.resData.high_notreplied;
@@ -811,6 +818,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
       if (groupById && this.is_View) {
         this.resData.groupName = groupById.label;
+      }
+    }
+    else {
+      if (this.is_View && !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
+        this.getGroupDetails = false;
+      }
+      else {
+        this.getGroupDetails = true;
       }
     }
 
