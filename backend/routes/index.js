@@ -1336,7 +1336,7 @@ router.post('/get_email', async (req, res) => {
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     console.log(": id ===> ", id);
 
-    var update_offer_reply = await common_helper.findOneAndUpdate(Offer, { "_id": id, "reply": true });
+    var update_offer_reply = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true });
 
     console.log(update_offer_reply);
 
