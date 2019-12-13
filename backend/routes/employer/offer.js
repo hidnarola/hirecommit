@@ -467,16 +467,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
                             high_unopened = moment(high_unopened)
                             medium_unopened = moment(medium_unopened)
-                            var last_mail_time = moment(resp.createdAt).startOf('day')
-
-                            if (newresp.opens_count == 0 && (moment(last_mail_time).isSame(high_unopened) === true || moment(last_mail_time).isSame(medium_unopened) === true)) {
+                            // var last_mail_time = moment(resp.createdAt).startOf('day')
+                            // if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true)
+                            if (newresp.opens_count == 0 && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
 
                                 const total_days = moment(last_mail_time).isSame(high_unopened) == true ? resp.high_unopened :
                                     moment(last_mail_time).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
 
                                 content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-
 
                                 let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                                     // "to": newresp.to_email,
@@ -492,7 +490,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
                 } catch (error) {
                     console.log('error=> ', error.message);
                 }
-
             });
 
         }, index * 15000, index)

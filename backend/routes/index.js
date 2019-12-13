@@ -1328,7 +1328,7 @@ router.get('/country/:id', getCountry);
 
 router.post('/get_email', async (req, res) => {
   try {
-    console.log('==> getmail : req.body ==> ', req.body);
+    console.log('==> getmail : req.body ==> ', JSON.parse(req.body));
     res.status(200).send('success');
   } catch (error) {
     res.status(500).send(error.message);
