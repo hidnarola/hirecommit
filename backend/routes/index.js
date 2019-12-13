@@ -33,6 +33,7 @@ var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
 var Offer = require('./../models/offer');
+var RepliedMail = require('./../models/replied_mail');
 var MailType = require('./../models/mail_content');
 var new_mail_helper = require('./../helpers/new_mail_helper');
 var testmail_helper = require('./../helpers/testmail_helper');
@@ -1336,11 +1337,11 @@ router.post('/get_email', async (req, res) => {
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     console.log(": id ===> ", id);
 
+    var insert_reply_mail_resp = await common_helper.insert(RepliedMail, { "offerid": id, "message": req.body });
+    console.log("insert_reply_mail_resp", insert_reply_mail_resp);
+
     var update_offer_reply = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true });
-
-    console.log(update_offer_reply);
-
-
+    console.log("update_offer_reply", update_offer_reply);
 
     res.status(200).send('success');
   } catch (error) {
