@@ -18,6 +18,9 @@ export class LoginComponent implements OnInit {
   show_spinner = false;
   userData: any = {};
   role: any;
+  isEmployer: Boolean = false;
+  isCandidate: Boolean = false;
+  isAdmin: Boolean = false;
   constructor(
     public router: Router,
     private service: CommonService,
@@ -30,6 +33,34 @@ export class LoginComponent implements OnInit {
       Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
     });
+
+
+    const prev_loc = document.referrer;
+    if (prev_loc) {
+      const prev_loc_arr = prev_loc.split('//');
+      console.log('prev_loc_arr=>', prev_loc_arr);
+
+      console.log('(prev_loc_arr[1].indexOf(`employer.hirecommit.com`)) >= 0=>', (prev_loc_arr[1].indexOf('employer.hirecommit.com')) >= 0);
+
+      console.log('prev_loc_arr[1].indexOf(`candidate.hirecommit.com`)) >= 0=>', (prev_loc_arr[1].indexOf('candidate.hirecommit.com')) >= 0);
+
+      if (prev_loc_arr && prev_loc_arr.length > 1) {
+        if ((prev_loc_arr[1].indexOf('employer.hirecommit.com')) >= 0) {
+          this.isEmployer = true;
+        } else if ((prev_loc_arr[1].indexOf('candidate.hirecommit.com')) >= 0) {
+          this.isCandidate = true;
+        } else {
+          this.isAdmin = true;
+        }
+      } else {
+        console.log('else=======>');
+        this.isAdmin = true;
+      }
+
+    } else {
+      this.isAdmin = true;
+    }
+    console.log('login =======>', document.referrer);
 
 
   }

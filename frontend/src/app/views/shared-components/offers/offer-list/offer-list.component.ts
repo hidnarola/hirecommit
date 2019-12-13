@@ -266,7 +266,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             data: 'joiningdate'
           },
           {
-            data: 'title'
+            data: 'acceptedAt'
           },
           // {
           //   data: 'status'
@@ -477,7 +477,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   onAccept(id, type) {
     console.log('this.offerData[0].offertype=>', this.offerData[0].offertype);
 
-    type = (this.offer_type_optoins.find(o => o.label === this.offerData[0].offertype).value);
+    // type = (this.offer_type_optoins.find(o => o.label === this.offerData[0].offertype).value);
     console.log('type=>', type);
     this.accept_btn = true;
     this.service.type_message({ 'type': type }).subscribe(res => {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing-layout',
@@ -10,13 +11,15 @@ export class LandingLayoutComponent implements OnInit {
   isCandidate: Boolean = false;
   hostName: any = '';
 
-  constructor() {
+  constructor(private route: Router, ) {
     console.log('window.location.hostname => ', window.location.hostname);
     this.hostName = window.location.hostname;
     if (this.hostName === 'employer.hirecommit.com') {
       this.isEmployer = true;
-    } else {
+    } else if (this.hostName === 'candidate.hirecommit.com') {
       this.isCandidate = true;
+    } else {
+      window.location.href = 'http://candidate.hirecommit.com/';
     }
     // else if (this.hostName === 'candidate.hirecommit.com') {
     //   this.isCandidate = true;

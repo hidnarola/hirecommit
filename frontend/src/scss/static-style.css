@@ -26,11 +26,12 @@
 /***** Header css *****/
 header.header {padding:36px 0 0; z-index:10; position: relative;}
 .hirecommit-logo { margin:-25px 0 -25px -32px;}
-header .d-flex {background: #fff;max-height:70px;border-radius:4px;margin:25px 0 25px 30px; align-items:center; position:relative;}
+.hirecommit-logo a img {max-width: 200px;}
+header .d-flex {background: #fff;max-height:60px;border-radius:4px;margin:25px 0 25px 30px; align-items:center; position:relative;}
 .login-signup {margin: 0 0 0 auto; max-width:256px; background:#bf7a68; border-radius:0 4px 4px 0;  width: 100%; text-align:center;}
-.login-signup a{ color: #fff; font-weight:400; font-size: 18px; line-height: normal; padding:23px 5px; text-transform: uppercase; display: inline-block;}
+.login-signup a{ color: #fff; font-weight:400; font-size: 18px; line-height: normal; padding:18px 5px; text-transform: uppercase; display: inline-block;}
 .login-signup a:hover{ text-decoration:underline; color:#fff;}
-.login-signup span{ color:#fff; padding: 22px 15px 24px 15px; line-height: 24px; vertical-align: top; display: inline-block;}
+.login-signup span{ color:#fff; padding:17px 15px 19px 15px; line-height: 24px; vertical-align: top; display: inline-block;}
 .candidate-employer{ position: absolute; top: -40px; right: 0; max-width: 256px; width: 100%; text-align: center;}
 .candidate-employer a{ color: #fff !important; font-size: 16px; font-weight: 500; text-decoration: none; text-transform: uppercase; margin: 0 15px;  display: inline-block; vertical-align: top; letter-spacing: .04em; position:relative;}
 .candidate-employer a:hover,
@@ -122,6 +123,51 @@ section.header-bluepart .d-flex{align-items: flex-end;}
 .mobile-view{ display:none !important;}
 .boxes-section ul li:nth-child(2n+2) .boxes-section-div h3{ color:#bf7a68;}
 
+.header-bluepart-01{ position:relative; padding:50px 0 100px;}
+.header-bluepart-01 h2 {display: block; text-align: center; font-size:36px; color:#fff; margin:0 0 40px;}
+.header-bluepart-01 h2 strong{ color:#bf7a68;}
+.header-bluepart-01 h2 small{ display:block; font-size:16px; text-transform: uppercase;}
+.header-bluepart-01 form{ background:#fff; border-radius:4px; padding:40px; max-width:450px; margin:0 auto;}
+.header-bluepart-01:before {background: #162741; margin:-156px auto 0; padding: 180px 0 0; position: absolute; top: 0;
+left: 0; content: ''; height:435px; width: 100%; z-index:-1; border-bottom:8px solid #bf7a68;}
+.header-bluepart-01 form{ position:relative;}
+.header-bluepart-01 form:before {content:''; width:0; height:0; border-left:16px solid transparent; border-right:16px solid transparent;
+border-bottom:16px solid #fff; position:absolute; top:-15px; left:50%; transform:translateX(-50%); }
+.header-bluepart-01 .btn.btn-link{ color:#666; text-decoration:underline;}
+.header-bluepart-01 .btn.btn-link:hover{ color: #bf7a68; text-decoration:none;}
+.header-bluepart-01  .btn-primary {background-color: #162741; border-color: #162741;}
+.header-bluepart-01  .btn-primary:hover{ background-color: #bf7a68; border-color: #bf7a68;}
+.header-bluepart-01 input:-webkit-autofill,
+.header-bluepart-01 input:-webkit-autofill:hover, 
+.header-bluepart-01 input:-webkit-autofill:focus,
+.header-bluepart-01 textarea:-webkit-autofill,
+.header-bluepart-01 textarea:-webkit-autofill:hover,
+.header-bluepart-01 textarea:-webkit-autofill:focus,
+.header-bluepart-01 select:-webkit-autofill,
+.header-bluepart-01 select:-webkit-autofill:hover,
+.header-bluepart-01 select:-webkit-autofill:focus { -webkit-box-shadow: 0 0 0px 1000px #fff inset; transition: background-color 5000s ease-in-out 0s;}
+
+.new-signup.header-bluepart-01 form{ max-width:700px;}
+.new-signup.header-bluepart-01 .country-code {width: 25%;}
+.new-signup.header-bluepart-01 .contact-number {width:75%;}
+.new-signup.header-bluepart-01 .ui-dropdown{ width:100%;}
+body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;margin: 0; vertical-align:top; padding:0 0 0 6px;}
+.new-signup.header-bluepart-01 .input-group-prepend .input-group-text{ height:35px;}
+.header-bluepart-01 .form-group label {display: block;color: #666; margin:0 0 4px; padding:0; font-size: 13px;}
+.header-bluepart-01 .back-div button{color:#666; text-decoration:none;}
+.header-bluepart-01 .back-div button:hover{ color:#bf7a68;}
+.header-bluepart-01.new-signup .documentimage input.form-control {padding:3px; border-radius:0 4px 4px 0;}
+.header-bluepart-01.new-signup .email-id-div input.form-control {border-radius:0 4px 4px 0;}
+.header-bluepart-01.new-signup  button.step-trigger{ padding:0;}
+.header-bluepart-01.new-signup .bs-stepper-content form{ padding:20px 0 0;}
+.header-bluepart-01.new-signup .bs-stepper-content{ padding:0 20px;}
+.header-bluepart-01.new-signup  .step-form-btn {margin:10px 0 0;}
+.header-bluepart-01.new-signup .msg{ color:#a7a7a7; font-size: 100%; display: inline;margin: 0;font-family: inherit;}
+.header-bluepart-01.new-signup .country-code-box-wrap .d-flex {width: 100%;}
+.ui-dropdown-label-container label.ui-dropdown-label{padding:0.429em;}
+.forgot-password .btn-primary{ max-width:110px;}
+.communication-fills .card-header button {padding: 2px 20px; font-size: 14px;line-height: 24px;}
+
 /***** Media start *****/
 @media(min-width:768px) and (max-width:1099px){
     .boxes-section-div { position:relative;}
@@ -132,8 +178,8 @@ section.header-bluepart .d-flex{align-items: flex-end;}
     
 } 
 @media(max-width:1099px){
-    .header-bluepart-l h1 {margin: 0 0 30px; font-size: 34px;}
-    .header-bluepart-l h1 small {font-size: 34px;}
+    .header-bluepart-l h1 {margin: 0 0 30px; font-size: 32px;}
+    .header-bluepart-l h1 small {font-size: 32px;}
     .header-bluepart-l h4 {line-height: 26px;  font-size:18px; }
     section.header-bluepart { padding: 180px 0 30px;}
     .structured-automated-r {width: 54%;padding-left: 40px;}
@@ -230,14 +276,18 @@ section.header-bluepart .d-flex{align-items: flex-end;}
     .support-identity-l h2 small{ display:block; margin:0;}
     .copyright p {font-size:13px; line-height:normal;}
     .advance-alerts-bg  h2{ max-width:296px;}
+    
+    
 }    
 
 @media(max-width:499px){
     .header-bluepart-l h1 strong {display: block;}
+    .header-bluepart-l h1 br{ display:none;}
 }
 @media(max-width:399px){
     .hirecommit-logo a { width:76px; overflow:hidden; display:block; position:relative;}
     .hirecommit-logo a img{ width:auto; max-width:150px;}
     .hirecommit-logo a:before {content: '';width: 20px;height: 20px;background: #fff;position: absolute;right: 0;top: 50%;transform: translateY(-50%);}
-    .header-bluepart-l h1 strong { font-size:22px;}
+    .header-bluepart-l h1 strong,
+    .header-bluepart-l h1 small { font-size:22px;}
 }
