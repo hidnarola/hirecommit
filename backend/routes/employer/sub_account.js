@@ -12,13 +12,13 @@ var _ = require('underscore');
 var btoa = require('btoa');
 const saltRounds = 10;
 
-
 var logger = config.logger;
 var User = require('../../models/user');
 
 var async = require('async');
 var mail_helper = require('../../helpers/mail_helper');
 var Sub_Employer_Detail = require('../../models/sub-employer-detail');
+var Employer_Detail = require('../../models/employer-detail');
 const random_pass_word = require('secure-random-password');
 
 
@@ -44,11 +44,10 @@ router.post("/", async (req, res) => {
             "admin_rights": req.body.admin_rights,
             "is_del": false,
             // "emp_id": req.userInfo.id,
-            "email_verified": true,
+            "email_verified": false,
             "is_register": true,
             "isAllow": true,
             "role_id": "5d9d99003a0c78039c6dd00f"
-
         };
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
         if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
@@ -74,14 +73,35 @@ router.post("/", async (req, res) => {
                 let content = message.data.content;
                 content = content.replace("{sub_emp_name}", `${req.body.username}`);
 
-                let mail_resp = await mail_helper.send("sub_emp", {
+                var name = req.body.username;
+                var subemployerfirstname = name.substring(0, name.lastIndexOf(" "));
+
+                console.log("emp_id", interest_resp.data.emp_id);
+
+                var employername = await common_helper.findOne(Employer_Detail, { "user_id": interest_resp.data.emp_id });
+                console.log("employername", employername);
+
+                var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id },
+                    config.ACCESS_TOKEN_SECRET_KEY, {
+                    expiresIn: 60 * 60 * 24 * 3
+                }
+                )).toString('base64');
+
+                var time = new Date();
+                time.setMinutes(time.getMinutes() + 20);
+                time = btoa(time);
+
+                let mail_resp = await mail_helper.send("sub_employer_login_detail", {
                     "to": req.body.email,
-                    "subject": "Invited to be Sub employee"
+                    "subject": "Welcome to the HireCommit | Verify Email"
                 }, {
                     "msg": content,
+                    "subemployerfirstname": subemployerfirstname,
+                    "employername": employername.data.username,
                     "email": req.body.email,
                     "password": passwords,
-                    "url": config.WEBSITE_URL + '/login'
+                    "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                    // "url": config.WEBSITE_URL + '/login'
                 });
 
                 // console.log("HIII", mail_resp);
