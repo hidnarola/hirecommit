@@ -21,7 +21,6 @@ export class CandidateLoginComponent implements OnInit {
   userData: any = {};
   role: any;
 
-
   constructor(
     public router: Router,
     private service: CommonService,

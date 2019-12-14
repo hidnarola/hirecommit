@@ -43,6 +43,8 @@ import { EmployerLandingComponent } from './views/static/employer-landing/employ
 import { CandidateLoginComponent } from './shared/candidate-login/candidate-login.component';
 import { AdminLoginComponent } from './shared/admin-login/admin-login.component';
 import { EmployerLoginComponent } from './shared/employer-login/employer-login.component';
+import { AboutUsComponent } from './shared/about-us/about-us.component';
+import { ContactUSComponent } from './shared/contact-us/contact-us.component';
 // import { HeaderComponent } from './views/static/header/header.component';
 // import { FooterComponent } from './views/static/footer/footer.component';
 
@@ -98,6 +100,8 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     CandidateLoginComponent,
     EmployerLoginComponent,
     AdminLoginComponent,
+    AboutUsComponent,
+    ContactUSComponent
     // HeaderComponent,
     // FooterComponent,
   ],

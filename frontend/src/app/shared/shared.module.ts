@@ -8,8 +8,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+
 @NgModule({
-  declarations: [ChangepasswordComponent, ProfileComponent,],
+  declarations: [ChangepasswordComponent, ProfileComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

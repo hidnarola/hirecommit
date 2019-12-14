@@ -1,167 +1,231 @@
-<h2 style="text-align: center;">
-    <b>Privacy Policy</b>
-</h2>
+<header class="header static-page-header">
+    <div class="container">
+        <div class="d-flex">
+            <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
+            <div class="candidate-employer">
+                <a [class.active]="isCandidate" href="http://candidate.hirecommit.com">Candidate</a>
+                <a [class.active]="isEmployer" href="http://employer.hirecommit.com">Employer</a>
+            </div>
+            <div class="login-signup">
+                <a href="http://hirecommit.com/login">Login</a>
+                <span>-</span>
+                <a *ngIf="isCandidate" href="http://hirecommit.com/candidate_register">Sign up</a>
+                <a *ngIf="isEmployer" href="http://hirecommit.com/emp_register">Sign up</a>
+                <a *ngIf="isAdmin" href="javascript:void(0)">Sign up</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="Inner-title">
+    <div class="container">
+        <h2>Privacy Policy</h2>
+        <small>Last updated on November 28<sup>th</sup>, 2019</small>
+    </div>
+</section>
+<section class="privay-policy">
+    <div class="container">
+        <div class="privaypolicy-body">
+            <h3>Introduction to Privacy Policy</h3>
+            <p>This privacy policy (the “PRIVACY POLICY”) applies to your use of the website of HireCommit hosted at
+                hirecommit.com  (“Hirecommit” or “WEBSITE”), and HireCommit applications on mobile platforms (Android,
+                Blackberry, Windows Phone, iOS etc), but does not apply to any third party websites that may be linked
+                to them, or any relationships you may have with the businesses listed on HireCommit.</p>
+            <p>The terms "WE", “OUR” and "US" refer to HireCommit and the terms "YOU", "YOUR" and “USER” refer to you,
+                as a user of HireCommit. The term "PERSONAL INFORMATION" means information that you provide to us which
+                personally identifies you to be contacted or identified, such as your name, phone number, email address,
+                and any other data that is tied to such information. Our practices and procedures in relation to the
+                collection and use of Personal Information have been set-out below in order to ensure safe usage of the
+                Website for you.</p>
+            <p>We have implemented reasonable security practices and procedures that are commensurate with the
+                information assets being protected and with the nature of our business. While we try our best to provide
+                security that is better than the industry standards, because of the inherent vulnerabilities of the
+                internet, we cannot ensure or warrant complete security of all information that is being transmitted to
+                us by you. By visiting this Website, you agree and acknowledge to be bound by this Privacy Policy and
+                you hereby consent that we will collect, use, process and share your Personal Information in the manner
+                set out herein below. If you do not agree with these terms, do not use the Website.</p>
+            <p>It is clarified that the terms and conditions that are provided separately, form an integral part of your
+                use of this Website and should be read in conjunction with this Privacy Policy.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Information we collect and how we use it</h3>
+            <p>We collect, receive and store your Personal Information. If you provide your third-party account
+                credentials (“THIRD PARTY ACCOUNT INFORMATION”) to us, you understand that some content and information
+                in those accounts may be transmitted to your account with us if you authorise such transmissions and
+                that Third Party Account Information transmitted to us shall be covered by this Privacy Policy. You may
+                opt to not provide us with certain information, however that will restrict you from registering with us
+                or availing some of our features and services.</p>
+            <p>We use commercially reasonable efforts to ensure that the collection of Personal Information is limited
+                to that which is necessary to fulfill the purposes identified below. If we use or plan to use your
+                information in a manner different than the purpose for which it is collected, then we will ask you for
+                your consent prior to such use.</p>
+            <p>The Personal Information collected will be used only for the purpose of enabling you to use the services
+                provided by us, to help promote a safe service, calibrate consumer interest in our products and
+                services, inform you about online offers and updates, troubleshoot problems, customize User experience,
+                detect and protect us against error, fraud and other criminal activity; collect money; enforce our terms
+                and conditions; and as otherwise described to you at the time of collection of such information.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Account information</h3>
+            <p>If you create an account to take advantage of the full range of services offered on HireCommit, we ask
+                for and record Personal Information such as your name, email address and mobile number. We may collect
+                and store your Sensitive Personal Data or Information (such as any financial information including inter
+                alia credit card, debit card details, bank account and know your customer (“KYC”) documents as per RBI
+                regulations and any other information as may be applicable) that the User may opt to save in the User
+                account created with HireCommit]. We use your email address to send you updates, news, and newsletters
+                (if you willingly subscribe to the newsletter during signup, or anytime after signup) and contact you on
+                behalf of other Users (such other Users who send you friend requests, personal messages, or other social
+                collaboration based events). [If you do not want to receive communications from us that are not relevant
+                to you or your use of our services, please click on the unsubscribe link provided at the bottom of such
+                e-mails sent to you by us. We use your mobile numbers to send you transaction alerts and SMS alerts
+                based on your preferences. If you do not wish to receive such SMSes from us, please email us at <a
+                    href="mailto:support@hirecommit.com">support@hirecommit.com</a> and stop receiving SMSes from us.
+                HireCommit assures that your Personal Information will not be made public or sold to any third party.
+            </p>
+            <p>The User shall have an option to erase any information provided by the User including Personal
+                Information. If a User opts for the said option of erasure, HireCommit shall delete all stored
+                information of the User from its servers barring any offers related history.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Feedback</h3>
+            <p>If you contact us to provide feedback, register a complaint, or ask a question, we will record any
+                Personal Information and other content that you provide in your communication so that we can effectively
+                respond to your communication.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Activity</h3>
+            <p>We record information relating to your use of HireCommit, such as the searches you undertake, the pages
+                you view, your browser type, IP address, location, requested URL, referring URL, and timestamp
+                information. We use this type of information to administer HireCommit and provide the highest possible
+                level of security and service to you. We also use this information in the aggregate to perform
+                statistical analyses of User behavior and characteristics in order to measure interest in and use of the
+                various areas of HireCommit. However, you cannot be identified from this aggregate information.</p>
+            <p>We own all the intellectual property rights associated with the Website and its contents. No right, title
+                or interest in any downloaded material is transferred to you as a result of any such downloading or
+                copying. The Website is protected by copyright as a collective work and/ or compilation (meaning the
+                collection, arrangement, and assembly) of all the content on this Website, pursuant to applicable law.
+            </p>
+            <p>Our logos, product and service marks and/ or names, trademarks, copyrights and other intellectual
+                property, whether registered or not (“Our IP”) are exclusively owned by us. Without our prior written
+                permission, you agree to not display and/ or use Our IP in any manner. Nothing contained in this Website
+                or the content, should be construed as granting, in any way to the User, any license or right or
+                interest whatsoever, in and/ or to Our IP, without our express written permission.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Cookies</h3>
+            <p>We may use the information we collect in connection with your use of HireCommit (including your personal
+                information) in order to investigate, enforce, and apply our Terms of Use and Privacy Policy. We send
+                cookies to your computer in order to uniquely identify your browser and improve the quality of our
+                service. The term "cookies" refers to small pieces of information that a website sends to your
+                computer's hard drive while you are viewing the site. We may use both session cookies (which expire once
+                you close your browser) and persistent cookies (which stay on your computer until you delete them).
+                Persistent cookies can be removed by following your browser help file directions. If you choose to
+                disable cookies, some areas of HireCommit may not work properly or at all. HireCommit uses third party
+                tools, who may collect anonymous information about your visits to HireCommit using cookies, and
+                interaction with HireCommit products and services. Such third parties may also use information about
+                your visits to HireCommit products and services and other web sites to target advertisements for
+                HireCommit's products and services. No Personal Information is collected or used in this process. These
+                third parties do not know or have access to the name, phone number, address, email address, or any
+                Personal Information about HireCommit's Users. HireCommit Users can opt-out of sharing this information
+                with third parties by deactivating cookies, the process of which varies from browser to browser. Please
+                refer to the help file of your browser to understand the process of deactivating cookies on your
+                browser.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Enforcement</h3>
+            <p>We may use the information we collect in connection with your use of HireCommit (including your Personal
+                Information) in order to investigate, enforce, and apply our terms and conditions and Privacy Policy.
+            </p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Transfer of information</h3>
+            <p>We do not share your Personal Information with any third party apart from financial institutions such as
+                banks, RBI or other regulatory agencies (as may be required) and to provide you with services that we
+                offer through HireCommit, conduct quality assurance testing, facilitate creation of accounts, provide
+                technical and customer support, or provide specific services, such as synchronization of your contacts
+                with other software applications, in accordance with your instructions. These third parties are required
+                not to use your Personal Information other than to provide the services requested by you.</p>
+            <p>We may share your Personal Information with our parent company, subsidiaries, joint ventures, or other
+                companies under a common control (collectively, the "AFFILIATES") that we may have now or in the future,
+                in which case we will require them to honor this Privacy Policy. If another company acquires our company
+                or our assets, that company will possess your Personal Information, and will assume the rights and
+                obligations with respect to that information as described in this Privacy Policy. We may disclose your
+                Personal Information to third parties in a good faith belief that such disclosure is reasonably
+                necessary to (a) take action regarding suspected illegal activities; (b) enforce or apply our terms and
+                conditions and Privacy Policy; (c) comply with legal process, such as a search warrant, subpoena,
+                statute, or court order; or (d) protect our rights, reputation, and property, or that of our Users,
+                Affiliates, or the public. Please note that we are not required to question or contest the validity of
+                any search warrant, subpoena or other similar governmental request that we receive.</p>
+            <p>We may disclose information in the aggregate to third parties relating to User behavior in connection
+                with actual or prospective business relationship with those third parties, such as advertisers and
+                content distributors. For example, we may disclose the number of Users that have been exposed to, or
+                clicked on, advertising banners.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Links</h3>
+            <p>References on this Website to any names, marks, products or services of third parties or hyperlinks to
+                third party websites or information are provided solely for your convenience and do not in any way
+                constitute or imply our endorsement, sponsorship or recommendation of the third party, information,
+                product or service. Except as set forth herein, we do not share your Personal Information with those
+                third parties, and are not responsible for their privacy practices. We suggest you read the privacy
+                policies on all such third party websites.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>User access of Personal Information</h3>
+            <p>As a registered HireCommit User, you can modify some of your Personal Information and your privacy
+                preferences by accessing the "Account" section of this Website.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Security</h3>
+            <p>Your account is password protected. We use industry standard measures to protect the Personal Information
+                that is stored in our database. We limit the access to your Personal Information to those employees and
+                contractors who need access to perform their job function, such as our customer service personnel. If
+                you have any questions about the security on HireCommit, please contact us at support@hirecommit.com.
+            </p>
+            <p>You hereby acknowledge that HireCommit is not responsible for any intercepted information sent via the
+                internet, and you hereby release us from any and all claims arising out of or related to the use of
+                intercepted information in any unauthorized manner.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Terms and modifications to this Privacy Policy</h3>
+            <p>Our Privacy Policy is subject to change at any time without notice. To make sure you are aware of any
+                changes, please review this policy periodically. These changes will be effective immediately on the
+                Users of HireCommit. Please note that at all times you are responsible for updating your Personal
+                Information, including to provide us with your most current e-mail address.</p>
+            <p>If you do not wish to permit changes in our use of your Personal Information, you must notify us promptly
+                that you wish to deactivate your account with us. Continued use of HireCommit after any change/
+                amendment to this Privacy Policy shall indicate your acknowledgement of such changes and agreement to be
+                bound by the terms and conditions of such changes.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Applicable law</h3>
+            <p>Your use of this Website will be governed by and construed in accordance with the laws of India. The
+                Users agree that any legal action or proceedings arising out of your use may be brought exclusively in
+                the competent courts/ tribunals having jurisdiction in Mumbai in India and irrevocably submit themselves
+                to the jurisdiction of such courts/ tribunals.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Complaints and Grievance Redressal</h3>
+            <p>Any complaints or concerns in relation to your Personal Information or content of this Website or comment
+                or breach of use of the Website or any intellectual property of any User shall be immediately informed
+                to us at the co-ordinates mentioned below.</p>
+            <p><a href="mailto:support@hirecommit.com">support@hirecommit.com </a></p>
+        </div>
+    </div>
+</section>
 
 
-<h6>Effective: February 12, 2019</h6>
-
-<h6>Review Consent Preferences (EU user only)</h6>
-
-<p>John Wiley & and its subsidiary and affiliate companies (collectively, “Wiley,” “we,” “us” or “our”) recognize
-    the
-    importance of protecting the personal information collected from users in the operation of its services and
-    taking
-    reasonable steps to maintain the security, integrity and privacy of any information in accordance with this
-    Privacy
-    Policy. By submitting your information to Wiley you consent to the practices described in this policy. If you
-    are less
-    than 18 years of age, then you must first seek the consent of your parent or guardian prior to submitting any
-    personal
-    information.</p>
-
-<p>This Privacy Policy describes how Wiley collects and uses the personal information you provide to Wiley. It also
-    describes the choices available to you regarding our use of your personal information and how you can access and
-    update
-    this information.</p>
-
-<h6>How We Collect Information</h6>
-<h6>Information You Provide</h6>
-<h6>Information We Receive from Other Sources</h6>
-<h6>Use of Your Information</h6>
-<h6>Disclosure in Chat Rooms or Forums</h6>
-<h6>Disclosure and Sharing of Your Information</h6>
-<h6>Cross Border Transfers</h6>
-<h6>Security</h6>
-<h6>Cookies</h6>
-<h6>Third-Parties</h6>
-<h6>Your Rights</h6>
-<h6>FERPA (US Only)</h6>
-<h6>Recourse</h6>
-<h6>Updates to This Privacy Policy</h6>
-<h6>Additional Information Regarding Children’s Privacy</h6>
-<h5>HOW WE COLLECT INFORMATION</h5>
-<p>Wiley may collect personal information about you in the following ways: (1) directly from your verbal or written
-    input
-    (such as by consenting to receiving marketing emails); (2) automatically through Wiley’s website technologies
-    including
-    tracking online, such as by Web cookies (which are small text files created by websites that are stored on your
-    computer), by smart devices, by combining data sets, by collecting data from a browser or device for use on a
-    different
-    computer or device, or by using algorithms to analyze a variety of data such as records of purchases, online
-    behavioral
-    data, or location data; or (3) by closed-circuit television (if visiting our premises).</p>
-
-<h5>INFORMATION YOU PROVIDE</h5>
-<p>The types of personal information that Wiley collects directly from you or through your use of our websites and
-    services
-    may include:
-</p>
-<p>The types of personal information that Wiley collects directly from you or through your use of our websites and
-    services
-    may include:
-</p>>
-<p>Internet Protocol (“IP”) addresses used to connect your computer to the Internet;</p>
-<p>Educational and professional interests;</p>
-Tracking codes such as cookies;
-<p>Usernames and passwords;</p>
-<p>Payment information, such as a credit or debit card number;</p>
-<p>Comments, feedback, posts and other content you provide to Wiley (including through a Wiley website);
-    Communication preferences;</p>
-<p>Purchase and search history;</p>
-<p>Location-aware services, the physical location of your device in order to provide you with more relevant content for
-    your location;</p>
-<p>Information about your personal preferences, and interests;</p>
-<p>Communications with other users of Wiley’s services.</p>
-
-
-<p>In order to access certain content and to make use of additional functionality and features of Wiley’s websites and
-    services, we may ask you to register for an account by completing and submitting a registration form, which may
-    request
-    additional information.</p>
-
-<p>If you choose to register and sign in by using a third-party account (such as your Facebook account), the
-    authentication
-    of your login is handled by the third party, and any personal information collected during that third-party login is
-    not
-    covered by this policy. Wiley will collect your name, email address and any other information about your third-party
-    account that you agree to share with us at the time you give permission for your Wiley account to be linked to your
-    third-party account.</p>
-
-<h5>INFORMATION WE RECEIVE FROM OTHER SOURCES</h5>
-<p>Wiley may receive information about you if you use any of the websites we operate or the other services we provide.
-    We
-    also work closely with third parties (including, for example, business partners and sub-contractors in technical,
-    payment and delivery services; advertising networks; data and analytics providers; academic institutions; journal
-    owners, societies and similar organizations; search information providers, and credit reference agencies) from whom
-    Wiley may receive information about you.</p>
-
-<h5>USE OF YOUR INFORMATION</h5>
-<p>Wiley may use your personal information in the performance of any contract we enter into with you, to comply with
-    legal
-    obligations, or where Wiley has a legitimate business interest in using your information to enhance the services and
-    products we provide. Legitimate business purposes include but are not limited to one or all of the following:
-    providing
-    direct marketing and assessing the effectiveness of promotions and advertising; modifying, improving or
-    personalizing
-    our services, products and communications; detecting fraud; investigating suspicious activity (e.g., violations of
-    our
-    Terms of Service, which can be found here) and otherwise keeping our site safe and secure; and conducting data
-    analytics.</p>
-
-<h5>DISCLOSURE AND SHARING OF YOUR INFORMATION</h5>
-<p>Wiley will not disclose to or share your personal information with any unaffiliated third party except as follows</p>
-
-<h5>CROSS BORDER TRANSFERS</h5>
-<p>Wiley may transfer your personal information outside of your country of residence for the following reasons:</p>
-
-<h5>SECURITY</h5>
-<p>We will use appropriate physical, technical and administrative safeguards to protect your data. Access to your
-    personal
-    data will be restricted to only those who need to know that information and required to perform their job function.
-    In
-    addition, we train our employees about the importance of maintaining the confidentiality and security of your
-    information.
-</p>
-<h5>DISCLOSURE IN CHAT ROOMS OR FORUMS</h5>
-<p>You should be aware that identifiable personal information — such as your name or e-mail address — that you
-    voluntarily
-    disclose and that is accessible to other users (e.g. on social media, forums, bulletin boards or in chat areas)
-    could be
-    collected and disclosed by others. Wiley cannot take any responsibility for such collection and disclosure.</p>
-
-<h5>COOKIES</h5>
-<p>As is true of most websites, we gather certain information automatically. This information may include IP addresses,
-    browser type, Internet service provider (“ISP”), referring/exit pages, the files viewed on our site (e.g., HTML
-    pages,
-    graphics, etc.), operating system, date/time stamp, and/or clickstream data to analyze trends in the aggregate and
-    administer the site.</p>
-
-<h5>YOUR RIGHTS</h5>
-<p>You have the right to make a written request to be informed whether or not we hold or process any of your personal
-    information (by emailing privacy@wiley.com). In your written request</p>
-
-<h5>THIRD-PARTIES</h5>
-<p>Wiley’s websites or services may include links to third-party websites. In using such links, please be aware that
-    each
-    third-party website is subject to its own privacy and data protection policies and is not covered by our Privacy
-    Policy.
-    In addition, we allow third-party companies to serve ads and/or collect certain anonymous information when you visit
-    our
-    websites. These companies may be placing and reading cookies in the cookie file of the browser on your computer’s
-    hard
-    disk or using web beacons or other technologies to collect information in the course of ads being served on this
-    website. These companies may use information other than personal information (e.g., click stream information,
-    browser
-    type, time and date, subject of advertisements clicked or scrolled over) during your visits to these and other
-    websites
-    in order to provide advertisements about goods and services likely to be of greater interest to you.</p>
-
-<h5>FERPA</h5>
-<p>Please see Wiley’s policy regarding FERPA here.</p>
-
-<h5>RECOURSE</h5>
-<p>Any comments, complaints or questions concerning this policy or complaints or objections about our use of your
-    personal
-    information should be addressed by directing your comments to Wiley’s Data Protection Officers, whose contact
-    information is found here.
-</p>
+<footer class="footer">
+    <div class="container">
+        <div class="d-flex">
+            <div class="copyright">
+                <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
+            </div>
+            <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
+            <div class="contact-link">
+                <a [routerLink]="['aboutus']" target="_blank">About us</a>
+                <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -17,12 +17,16 @@ import { LandingLayoutComponent } from './views/static/landing-layout/landing-la
 import { CandidateLoginComponent } from './shared/candidate-login/candidate-login.component';
 import { EmployerLoginComponent } from './shared/employer-login/employer-login.component';
 import { AdminLoginComponent } from './shared/admin-login/admin-login.component';
+import { AboutUsComponent } from './shared/about-us/about-us.component';
+import { ContactUSComponent } from './shared/contact-us/contact-us.component';
 export const routes: Routes = [
   // { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
   { path: '', component: LandingLayoutComponent },
   // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'privacypolicy', component: PrivacyPolicyComponent },
   { path: 'termsandcondition', component: TermsConditionComponent },
+  { path: 'aboutus', component: AboutUsComponent },
+  { path: 'contactus', component: ContactUSComponent },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'forgot_password', component: ForgotPasswordComponent },
   { path: 'emp_register', component: SignUpComponent },
