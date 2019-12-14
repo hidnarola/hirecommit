@@ -130,30 +130,30 @@ export class LoginComponent implements OnInit {
 
 
   //       this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-  //       if (this.role === 'admin') {
-  //         console.log('login>>', this.profile);
-  //         this.router.navigate(['admin']);
+  // if (this.role === 'admin') {
+  //   console.log('login>>', this.profile);
+  //   this.router.navigate(['admin']);
+  // }
+  // if (res['role'] !== 'admin') {
+  //   this.service.profileData().then(resp => {
+  //     this.profile = resp[0];
+  //     if (this.role === 'employer') {
+  //       //   if (this.profile.user_id.isAllow === false) {
+  //       //     this.router.navigate(['employer/account_verification']);
+  //       //   } else {
+  //       this.router.navigate(['employer']);
+  //       // }
+  //     } else if (this.role === 'sub-employer') {
+  //       this.router.navigate(['sub_employer']);
+  //     } else if (this.role === 'candidate') {
+  //       if (this.profile.user_id.email_verified) {
+  //         this.router.navigate(['candidate']);
+  //       } else if (!this.profile.user_id.email_verified) {
+  //         this.router.navigate(['candidate/account_verification']);
   //       }
-  //       if (res['role'] !== 'admin') {
-  //         this.service.profileData().then(resp => {
-  //           this.profile = resp[0];
-  //           if (this.role === 'employer') {
-  //             //   if (this.profile.user_id.isAllow === false) {
-  //             //     this.router.navigate(['employer/account_verification']);
-  //             //   } else {
-  //             this.router.navigate(['employer']);
-  //             // }
-  //           } else if (this.role === 'sub-employer') {
-  //             this.router.navigate(['sub_employer']);
-  //           } else if (this.role === 'candidate') {
-  //             if (this.profile.user_id.email_verified) {
-  //               this.router.navigate(['candidate']);
-  //             } else if (!this.profile.user_id.email_verified) {
-  //               this.router.navigate(['candidate/account_verification']);
-  //             }
-  //           }
-  //         });
-  //       }
+  //     }
+  //   });
+  // }
 
   //     }, (err) => {
   //       this.show_spinner = false;
@@ -193,13 +193,8 @@ export class LoginComponent implements OnInit {
       this.isCandidate = true;
     } else {
       console.log('else=======>');
-
       this.isAdmin = true;
-      // window.location.href = 'http://candidate.hirecommit.com/';
     }
-    // else if (this.hostName === 'candidate.hirecommit.com') {
-    //   this.isCandidate = true;
-    // }
   }
 
   ngOnInit() {

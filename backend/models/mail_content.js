@@ -9,6 +9,14 @@ const MailTypeSchema = new Schema({
     },
     content: {
         type: String,
+        // required: true
+    },
+    upper_content: {
+        type: String,
+        required: true
+    },
+    lower_content: {
+        type: String,
         required: true
     },
     del: {

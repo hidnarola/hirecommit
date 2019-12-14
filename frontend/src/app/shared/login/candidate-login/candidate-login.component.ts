@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { CommonService } from '../../services/common.service';
+import { CommonService } from '../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
-import { AnimationQueryMetadata } from '@angular/animations';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-candidate-login',
@@ -64,29 +62,44 @@ export class CandidateLoginComponent implements OnInit {
     if (valid) {
       this.show_spinner = true;
       this.service.login(this.loginForm.value).subscribe(res => {
+        console.log('res for login => ', res);
         this.isFormSubmitted = false;
         this.formData = {};
         const token = res['token'];
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', res['role']);
-        localStorage.setItem('userid', res['id']);
+        // localStorage.setItem('token', token);
+        // localStorage.setItem('user', res['role']);
+        // localStorage.setItem('userid', res['id']);
         this.role = res['role'];
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
 
-        this.service.profileData().then(resp => {
-          this.profile = resp[0];
-          if (this.role === 'candidate') {
-            if (this.profile.user_id.email_verified) {
-              // this.router.navigate(['candidate']);
-              window.location.href = 'http://hirecommit.com/candidate/offers/list';
-            } else if (!this.profile.user_id.email_verified) {
-              // this.router.navigate(['candidate/account_verification']);
-              window.location.href = 'http://hirecommit.com/candidate/account_verification';
-            }
-          }
+        window.location.href = `http://hirecommit.com/authorize?role=${this.role}&token=${token}`;
 
+        // if (this.role === 'admin') {
+        //   // this.router.navigate(['admin']);
+        //   window.location.href = 'http://hirecommit.com/admin/employers/approved_employer';
+        // }
+        // if (res['role'] !== 'admin') {
+        //   this.service.profileData().then(resp => {
+        //     console.log('resp => ', resp);
+        //     this.profile = resp[0];
+        //     if (this.role === 'employer') {
+        //       // this.router.navigate(['employer']);
+        //       window.location.href = 'http://hirecommit.com/employer/offers/list';
+        //     } else if (this.role === 'sub-employer') {
+        //       // this.router.navigate(['sub_employer']);
+        //       window.location.href = 'http://hirecommit.com/sub_employer/offers/list';
+        //     } else if (this.role === 'candidate') {
+        //       if (this.profile.user_id.email_verified) {
+        //         // this.router.navigate(['candidate']);
+        //         window.location.href = 'http://hirecommit.com/candidate/offers/list';
+        //       } else if (!this.profile.user_id.email_verified) {
+        //         // this.router.navigate(['candidate/account_verification']);
+        //         window.location.href = 'http://hirecommit.com/candidate/account_verification';
+        //       }
+        //     }
+        //   });
+        // }
 
-        });
       }, (err) => {
         this.show_spinner = false;
         console.log('err => ', err);

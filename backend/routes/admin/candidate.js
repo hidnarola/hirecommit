@@ -433,16 +433,24 @@ router.put('/', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
     }
     else if (sub_account_upadate.status == 1) {
+
+
+        var candidate = await common_helper.findOne(Candidate, { "user_id": req.body.id })
+        var name = candidate.data.firstname;
         var message = await common_helper.findOne(MailType, { 'mail_type': 'approve-candidate' });
-        let content = message.data.content;
+        var upper_content = message.data.upper_content;
+        var middel_content = message.data.middel_content;
+        var lower_content = message.data.lower_content;
 
         logger.trace("sending mail");
         let mail_resp = await mail_helper.send("candidate_approval_email", {
             "to": sub_account_upadate.data.email,
-            "subject": "Approved"
+            "subject": "Your HireCommit account has been approved!!"
         }, {
-            "msg": content,
-            // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
+            "name": name,
+            "upper_content": upper_content,
+            "middel_content": middel_content,
+            "lower_content": lower_content,
             "confirm_url": config.WEBSITE_URL + '/login'
         });
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate is Approved successfully", "data": sub_account_upadate });

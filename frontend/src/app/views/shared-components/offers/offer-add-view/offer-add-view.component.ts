@@ -67,7 +67,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     editable: true,
     spellcheck: true,
     height: 'auto',
-    minHeight: '0',
+    minHeight: '150px',
     maxHeight: 'auto',
     width: 'auto',
     minWidth: '0',
@@ -207,6 +207,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
       AdHocCommunication: this.fb.array([]),
+      // summerNotes
       // editor: new FormControl(''),
       offerStatus: new FormControl(''),
       acceptanceDate: new FormControl('')
@@ -247,7 +248,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     return this.form.get('communicationFieldItems') as FormArray;
   }
 
-  //AdHoc Communication 
+  // AdHoc Communication 
   get AdHocCommunication() {
     return this.form.get('AdHocCommunication') as FormArray;
   }
@@ -306,15 +307,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // email blur pattern check
   checkEmail(value) {
-
     const email = value.target.value;
-
     if (this.form['controls'].email.valid) {
-
       this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
       }, (err) => {
         console.log('err=>', err);
-
         this.form.controls['email'].setErrors({ 'isExist': true });
       });
 
@@ -324,15 +321,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         if (this.pastDetails.ReleasedOffer.data.length > 0) {
           this.modalService.open(this.content1, ModalOptions);
           this.err_msg = this.pastDetails.ReleasedOffer.displayMessage;
-
         } else {
           if (this.pastDetails.data.data.length > 0 && this.pastDetails.previousOffer.data.length == 0) {
             this.details = res['data']['data'];
             this.isShow = true;
             this.modalService.open(this.content, ModalOptions);
             this.msg = this.pastDetails.data.displayMessage;
-          }
-          else if (this.pastDetails.data.data.length == 0 && this.pastDetails.previousOffer.data.length > 0) {
+          } else if (this.pastDetails.data.data.length == 0 && this.pastDetails.previousOffer.data.length > 0) {
             this.details = res['data']['data'];
             this.isShow = true;
             this.modalService.open(this.content1, ModalOptions);
@@ -368,7 +363,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           //   this.msg = this.pastDetails.data.displayMessage;
           // };
         }
-
       });
 
     } else {
@@ -421,18 +415,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.modalService.dismissAll(this.content1);
         this.router.navigate(['/sub_employer/offers/list']);
       }
-    }
-    else {
+    } else {
       this.modalService.dismissAll(this.content1);
     }
-
-
   }
 
   // key up event for email
   findEmail(value) {
     console.log('find email=======>');
-
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value.toLowerCase() === element.user.email) {
@@ -524,7 +514,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.getDetail();
     }
   }
-  // getDetail-
+  // getDetail
   getDetail() {
     this.spinner.show();
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
@@ -532,7 +522,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         res => {
           this.spinner.hide();
           // console.log('res[.high_notreplied=>', res['data'].high_unopened);
-
           if (this.is_View && res[`data`][`AdHoc`].length > 0) {
             res[`data`][`AdHoc`].forEach(element => {
               element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
@@ -560,7 +549,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.disabled = true;
               this.form.controls['offertype'].disable();
               this.form.controls['notes'].disable();
-
               // this.form.controls['high_unopened'].disable();
               // this.form.controls['high_notreplied'].disable();
               // this.form.controls['medium_unopened'].disable();
@@ -568,10 +556,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               // this.form.controls['status'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
-
             }
           }
-
           this.resData = res[`data`];
           this.candidateData = res['candidate_data']['data'];
           this.grpId = this.resData.user_id;
@@ -579,7 +565,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           this.service.status(this.resData.status).subscribe(resp => {
             this.offerStatus = resp['status'];
           });
-
           this.spinner.hide();
           this.groupDetail(res[`data`].groups);
 
@@ -609,7 +594,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             }
             // set communication
 
-            //set AdHoc
+            // set AdHoc
             if (res['data']['AdHoc'] && res['data']['AdHoc'].length > 0) {
               this.AdHocCommunicationData = res['data']['AdHoc'];
               const _Adhoc_communication_array = [];
@@ -632,7 +617,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               });
               this.AdHocCommunicationData = _Adhoc_communication_array;
             }
-            //set AdHoc
+            // set AdHoc
             this.form.controls['email'].setValue(res[`data`].user_id.email);
             this.form.controls['candidate_name'].setValue(
               res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname
@@ -646,11 +631,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             // this.form.controls['status'].setValue(res['data'].status);
             this.form.controls['offertype'].setValue(res[`data`].offertype);
             if (res['data'].acceptedAt) {
-
               this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
-            }
-            else {
-
+            } else {
               this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
             }
             // this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
@@ -835,7 +817,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   async groupList() {
     this.service.get_groups().subscribe(res => {
       console.log('res=>', res);
-
       if (res[`data`].data) {
         res[`data`].data.forEach(element => {
           this.group_optoins.push({ label: element.name, value: element._id });
@@ -853,10 +834,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       const groupById = this.group_optoins.find(x => x.value === id);
       if (groupById) {
         this.form.controls.group.setValue(groupById.value);
-        if (this.is_View && !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
+        if (this.is_View &&
+          !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
           this.getGroupDetails = false;
-        }
-        else {
+        } else {
           this.getGroupDetails = true;
         }
         this.setGroupFormControl();
@@ -868,12 +849,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       if (groupById && this.is_View) {
         this.resData.groupName = groupById.label;
       }
-    }
-    else {
-      if (this.is_View && !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
+    } else {
+      if (this.is_View &&
+        !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
         this.getGroupDetails = false;
-      }
-      else {
+      } else {
         this.getGroupDetails = true;
       }
     }
@@ -929,8 +909,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.communicationData = _array;
 
         // this.form.updateValueAndValidity();
-      }
-      else {
+      } else {
         console.log('no communicaiondata found => ');
         // if (this.Comm_Flag) {
 
@@ -939,9 +918,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
       // set communication
     });
-
-
-
   }
 
   Accept(id, type) {
@@ -952,17 +928,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.isNoCommit = true;
         this.Info_msg = res[`data`][`message`];
         this.modalService.open(this.content2, ModalOptions);
-
-      }
-      else {
+      } else {
         this.isNoCommit = false;
-        this.Info_msg = res[`data`][`message`]
+        this.Info_msg = res[`data`][`message`];
         console.log('this.Info_msg=>', this.Info_msg);
         this.modalService.open(this.content2, ModalOptions);
 
       }
       this.OfferID = id;
-    })
+    });
     // this.service.offer_accept(obj).subscribe(res => {
     //   if (res['data'].status === 1) {
     //     this.spinner.show();
@@ -1063,7 +1037,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.updateValidation();
   }
 
-  //Add AdHoc Communication
+  // Add AdHoc Communication
   add_new_AdHoc_communication(data_index = null) {
     let index = 0;
     if (data_index == null) {
@@ -1109,7 +1083,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.communicationData = array;
   }
 
-  //Remove AdHOC
+  // Remove AdHOC
   remove_AdHoc_communication(index: number) {
     delete this.AdHocCommunicationData[index];
     this.AdHocCommunication.removeAt(index);
@@ -1243,12 +1217,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   append(value) {
+    console.log('valueForEditor => ', this.valueForEditor);
     if (!this.valueForEditor) {
+      console.log('if value  => ');
       this.valueForEditor = value;
     } else {
+      console.log('else function=> ', value);
       this.valueForEditor += value;
     }
-  };
+  }
 
 
   // submit offers

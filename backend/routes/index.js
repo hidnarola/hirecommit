@@ -138,7 +138,7 @@ router.post("/admin_register", async (req, res) => {
 
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
-  console.log(' : req.body ==> ', req.body);
+  // console.log(' : req.body ==> ', req.body);
   var schema = {
     "firstname": {
       notEmpty: true,
@@ -374,21 +374,23 @@ router.post("/candidate_register", async (req, res) => {
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
                 time = btoa(time);
-                var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate_email_confirmation' });
 
                 logger.trace("sending mail");
-                console.log("1312");
+                // console.log("1312");
 
-                let mail_resp = await mail_helper.send("candidate_email_confirmation", {
+                let mail_resp = await mail_helper.send("email_confirmation_template", {
                   "to": interest_user_resp.email,
                   "subject": "Welcome to the HireCommit | Verify Email"
                 }, {
                   // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
                   "msg": message.data.content,
-                  "candidatename": interest_resp.firstname,
+                  "name": interest_resp.firstname,
+                  "upper_content": message.data.upper_content,
+                  "lower_content": message.data.lower_content,
                   "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                 });
-                console.log(' : mail_resp ==> ', mail_resp);
+                // console.log(' : mail_resp ==> ', mail_resp);
 
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -564,18 +566,23 @@ router.post("/employer_register", async (req, res) => {
               var time = new Date();
               time.setMinutes(time.getMinutes() + 20);
               time = btoa(time);
-              var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
+              var message = await common_helper.findOne(MailType, { 'mail_type': 'employer_email_confirmation' });
+              var upper_content = message.data.upper_content;
+              var lower_content = message.data.lower_content;
+
+              upper_content = upper_content.replace("{employername}", `${interest_resp.data.username} `);
+
               var name = interest_resp.data.username;
               var employerfirstname = name.substring(0, name.lastIndexOf(" "));
               logger.trace("sending mail");
-              let mail_resp = await mail_helper.send("employer_email_confirmation", {
+              let mail_resp = await mail_helper.send("email_confirmation_template", {
                 "to": interest_user_resp.data.email,
-                "subject": "HireCommit - Email Confirmation"
+                "subject": "Welcome to HireCommit | Verify Email"
               }, {
                 "msg": message.data.content,
-                "employerfirstname": employerfirstname,
-                "employername": interest_resp.data.username,
-                // config.website_url + "/email_confirm/" + interest_resp.data._id
+                "name": employerfirstname,
+                "upper_content": upper_content,
+                "lower_content": lower_content,
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
               });
               if (mail_resp.status === 0) {
@@ -775,115 +782,119 @@ router.post('/login', async (req, res) => {
             res.status(config.UNAUTHORIZED).json({ "status": 0, "message": message.data.content });
           }
         } else if (user_resp.role_id.role === "employer") {
-          if (user_resp.email_verified == true) {
-            var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-            let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+          if (user_resp.isAllow == true) {
+            if (user_resp.email_verified == true) {
+              var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+              let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
 
-            var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
-            var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-              expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-            });
-            delete user_resp.status;
-            delete user_resp.password;
-            delete user_resp.refresh_token;
-            delete user_resp.last_login_date;
-            delete user_resp.created_at;
-            logger.info("Token generated");
+              var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
+              var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
+                expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
+              });
+              delete user_resp.status;
+              delete user_resp.password;
+              delete user_resp.refresh_token;
+              delete user_resp.last_login_date;
+              delete user_resp.created_at;
+              logger.info("Token generated");
 
-            var userDetails = await User.aggregate([
-              {
-                $match: {
-                  "email": req.body.email
-                }
-              },
-              {
-                $lookup:
+              var userDetails = await User.aggregate([
                 {
-                  from: "employerDetail",
-                  localField: "_id",
-                  foreignField: "user_id",
-                  as: "employee"
-                }
-              },
-              {
-                $lookup:
+                  $match: {
+                    "email": req.body.email
+                  }
+                },
                 {
-                  from: "candidateDetail",
-                  localField: "_id",
-                  foreignField: "user_id",
-                  as: "candidate"
-                }
-              },
-              {
-                $addFields: {
-                  userDetail: {
-                    $concatArrays: ["$candidate", "$employee"]
+                  $lookup:
+                  {
+                    from: "employerDetail",
+                    localField: "_id",
+                    foreignField: "user_id",
+                    as: "employee"
+                  }
+                },
+                {
+                  $lookup:
+                  {
+                    from: "candidateDetail",
+                    localField: "_id",
+                    foreignField: "user_id",
+                    as: "candidate"
+                  }
+                },
+                {
+                  $addFields: {
+                    userDetail: {
+                      $concatArrays: ["$candidate", "$employee"]
+                    }
+                  }
+                },
+                {
+                  $unwind: {
+                    path: "$userDetail"
+                  }
+                },
+                {
+                  $project: {
+                    "userDetail": "$userDetail"
+                  }
+                },
+                {
+                  $lookup:
+                  {
+                    from: "country_datas",
+                    localField: "userDetail.country",
+                    foreignField: "_id",
+                    as: "country"
+                  }
+                },
+
+                {
+                  $unwind: {
+                    path: "$country",
+                    preserveNullAndEmptyArrays: true
+                  },
+                },
+                {
+                  $lookup:
+                  {
+                    from: "document_type",
+                    localField: "userDetail.documenttype",
+                    foreignField: "_id",
+                    as: "document"
+                  }
+                },
+                {
+                  $unwind:
+                  {
+                    path: "$document",
+                    preserveNullAndEmptyArrays: true
+                  }
+                },
+                {
+                  $lookup:
+                  {
+                    from: "business_type",
+                    localField: "userDetail.businesstype",
+                    foreignField: "_id",
+                    as: "business"
+                  }
+                },
+                {
+                  $unwind:
+                  {
+                    path: "$business",
+                    preserveNullAndEmptyArrays: true
                   }
                 }
-              },
-              {
-                $unwind: {
-                  path: "$userDetail"
-                }
-              },
-              {
-                $project: {
-                  "userDetail": "$userDetail"
-                }
-              },
-              {
-                $lookup:
-                {
-                  from: "country_datas",
-                  localField: "userDetail.country",
-                  foreignField: "_id",
-                  as: "country"
-                }
-              },
 
-              {
-                $unwind: {
-                  path: "$country",
-                  preserveNullAndEmptyArrays: true
-                },
-              },
-              {
-                $lookup:
-                {
-                  from: "document_type",
-                  localField: "userDetail.documenttype",
-                  foreignField: "_id",
-                  as: "document"
-                }
-              },
-              {
-                $unwind:
-                {
-                  path: "$document",
-                  preserveNullAndEmptyArrays: true
-                }
-              },
-              {
-                $lookup:
-                {
-                  from: "business_type",
-                  localField: "userDetail.businesstype",
-                  foreignField: "_id",
-                  as: "business"
-                }
-              },
-              {
-                $unwind:
-                {
-                  path: "$business",
-                  preserveNullAndEmptyArrays: true
-                }
-              }
-
-            ])
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
+              ])
+              res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
+            } else {
+              res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+            }
           } else {
-            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
           }
         } else {
           if (user_resp.isAllow == true) {
