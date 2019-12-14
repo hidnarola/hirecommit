@@ -69,17 +69,15 @@ router.post("/", async (req, res) => {
                 logger.debug("Error = ", interest_resp.error);
                 res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
             } else {
-                var message = await common_helper.findOne(MailType, { 'mail_type': 'sub-employer-created' });
-                let content = message.data.content;
-                content = content.replace("{sub_emp_name}", `${req.body.username}`);
+
+                var employername = await common_helper.findOne(Employer_Detail, { "user_id": interest_resp.data.emp_id });
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'sub_employer_email_confirmation' });
+                let upper_content = message.data.upper_content;
+                let lower_content = message.data.lower_content;
+                upper_content = upper_content.replace("{employername}", `${employername.data.username}`);
 
                 var name = req.body.username;
                 var subemployerfirstname = name.substring(0, name.lastIndexOf(" "));
-
-                console.log("emp_id", interest_resp.data.emp_id);
-
-                var employername = await common_helper.findOne(Employer_Detail, { "user_id": interest_resp.data.emp_id });
-                console.log("employername", employername);
 
                 var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id },
                     config.ACCESS_TOKEN_SECRET_KEY, {
@@ -95,17 +93,13 @@ router.post("/", async (req, res) => {
                     "to": req.body.email,
                     "subject": "Welcome to the HireCommit | Verify Email"
                 }, {
-                    "msg": content,
                     "subemployerfirstname": subemployerfirstname,
-                    "employername": employername.data.username,
+                    "upper_content": upper_content,
+                    "lower_content": lower_content,
                     "email": req.body.email,
                     "password": passwords,
                     "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
-                    // "url": config.WEBSITE_URL + '/login'
                 });
-
-                // console.log("HIII", mail_resp);
-
                 res.status(config.OK_STATUS).json({ "message": "Sub Account is Added successfully", "data": interest_resps })
             }
         }

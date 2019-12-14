@@ -97,6 +97,10 @@ app.use('/employer', employer);
 app.use('/candidate', candidate);
 //app.use('/customer', customer);
 
+app.get('/', (req, res) => {
+  res.send('<h3>HireCommit API Server</h3>');
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   var err = new Error('Not Found');
