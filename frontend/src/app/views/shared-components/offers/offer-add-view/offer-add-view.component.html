@@ -741,24 +741,40 @@
 
                                             </div>
                                             <div class="form row">
-                                                <label class="col-md-12 col-form-label"
-                                                    for="AdHoc_message">Message</label>
-                                                <!-- [(ngModel)]="customfield.AdHoc_message"  -->
-                                                <div class="col-md-12">
-                                                    <ckeditor [editor]="Editor" formControlName="AdHoc_message"
-                                                        (ready)="onReady($event)"
-                                                        [(ngModel)]="customfield.AdHoc_message">
-                                                    </ckeditor>
-                                                    <div class="cust_err_msg"
-                                                        *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].valid">
-                                                        <span
-                                                            *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].errors['required'] ||
-                                                                                                                                form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].errors['whitespace']"
-                                                            class="text-danger">
-                                                            This field is required.
-                                                        </span>
+                                                <div class="col-md-8">
+                                                    <label class="col-form-label" for="AdHoc_message">Message</label>
+                                                    <!-- [(ngModel)]="customfield.AdHoc_message"  -->
+                                                    <div>
+                                                        <ckeditor [editor]="Editor" formControlName="AdHoc_message"
+                                                            (ready)="onReady($event)"
+                                                            [(ngModel)]="customfield.AdHoc_message">
+                                                        </ckeditor>
+                                                        <!-- <angular-editor formControlName="AdHoc_message"
+                                                            [config]="editorConfig" [(ngModel)]="valueForEditor">
+                                                        </angular-editor> -->
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].errors['required'] ||
+                                                                                                                                    form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].errors['whitespace']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <!-- <div class="col-md-4 bunch-list">
+                                                    <label class="col-form-label">Title here</label>
+                                                    <ul>
+                                                        <li (click)="append('Offer Date')">Offer Date</li>
+                                                        <li (click)="append('Candidate Name')">Candidate Name</li>
+                                                        <li (click)="append('Title')">Title</li>
+                                                        <li (click)="append('Location')">Location</li>
+                                                        <li (click)="append('Joining Date')">Joining Date</li>
+                                                        <li (click)="append('Expiry Date')">Expiry Date</li>
+                                                        <li (click)="append('Acceptance Date')">Acceptance Date</li>
+                                                    </ul>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -770,6 +786,19 @@
                         <!-- //summernote -->
 
                     </div>
+                    <!-- <div class="text-editor-wrap" style="width: 70%;">
+                        <angular-editor formControlName="editor" [config]="editorConfig" [(ngModel)]="valueForEditor">
+                        </angular-editor>
+                        <div class="col-md-4 bunch-list">
+                            <label class="col-form-label">Title here</label>
+                            <ul>
+                                <li id="Candidate" #Candidate (click)="append('candidate_name')">Candidate_Name</li>
+                                <li (click)="append('location')">Location</li>
+                            </ul>
+                        </div>
+
+                    </div> -->
+
                     <!-- <div [ngxSummernote]="config"></div> -->
                     <div class="card-footer text-right">
                         <p *ngIf="!form.valid && is_submitted" class="text-danger">

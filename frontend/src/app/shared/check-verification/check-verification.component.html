@@ -3,8 +3,9 @@
 
         <div class="card" *ngIf="userDetail.role === 'candidate'">
             <div class="card-body not_verified_block">
-                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
-                <h1>{{Canididate_message}}</h1>
+                <div class="alert alert-danger">
+                    <i class="fa fa-times-circle-o" aria-hidden="true"></i> {{Canididate_message}}
+                </div>
             </div>
         </div>
 

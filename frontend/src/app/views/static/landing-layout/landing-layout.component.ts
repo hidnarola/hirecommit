@@ -11,7 +11,7 @@ export class LandingLayoutComponent implements OnInit {
   isCandidate: Boolean = false;
   hostName: any = '';
 
-  constructor(private route: Router, ) {
+  constructor() {
     console.log('window.location.hostname => ', window.location.hostname);
     this.hostName = window.location.hostname;
     if (this.hostName === 'employer.hirecommit.com') {

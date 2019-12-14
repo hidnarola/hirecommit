@@ -1,5 +1,5 @@
 <!-- login -->
-<header class="header static-page-header">
+<!-- <header class="header static-page-header">
   <div class="container">
     <div class="d-flex">
       <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
@@ -35,9 +35,6 @@
         <span
           *ngIf="this.loginForm.controls['email'].errors.required || loginForm.controls['email'].errors['whitespace']">Email
           is required.</span>
-        <!-- <span
-          *ngIf="loginForm.controls['email'].errors.email && !loginForm.controls['email'].errors['whitespace']">Email
-          must be in valid format.</span> -->
       </div>
       <div class="error" *ngIf="!loginForm.controls['email'].valid">
         <span *ngIf="loginForm.controls['email'].errors['pattern'] ">Email
@@ -81,7 +78,7 @@
       <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div>
     </div>
   </div>
-</footer>
+</footer> -->
 <!-- login Design  -->
 
 
@@ -123,3 +120,8 @@
 
   </div>
 </div> -->
+
+
+<app-employer-login *ngIf="isEmployer"></app-employer-login>
+<app-candidate-login *ngIf="isCandidate"></app-candidate-login>
+<app-admin-login *ngIf="isAdmin"></app-admin-login>

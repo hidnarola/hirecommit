@@ -296,6 +296,10 @@ html body .ui-radiobutton div.ui-radiobutton-box.ui-state-active { border-color:
 .form-control-50{ width:50%;}
 .logo-div-01{ display:block; text-align: left; margin:-30px 0 5px -15px;}
 .logo-div-01 img{ max-width:170px;}
+.bunch-list ul{ list-style:disc; margin:0; padding:0; background:#eee; padding:15px 20px 15px 40px;}
+.bunch-list ul li + li {padding-top: 10px;}
+.not_verified_block .alert.alert-danger{ display:inline-block; font-size: 24px; vertical-align:top;}
+.not_verified_block i { font-size: 40px; color: red; vertical-align: middle; margin: 0 20px 0 0;}
 
 /***** Media start it *****/
 @media(min-width:992px){

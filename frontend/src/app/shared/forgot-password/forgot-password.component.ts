@@ -14,6 +14,12 @@ export class ForgotPasswordComponent implements OnInit {
   public isFormSubmitted;
   public formData: any;
   show_spinner = false;
+
+  isEmployer: Boolean = false;
+  isCandidate: Boolean = false;
+  isAdmin: Boolean = false;
+  hostName: any = '';
+
   constructor(
     private router: Router,
     private service: CommonService,
@@ -23,11 +29,19 @@ export class ForgotPasswordComponent implements OnInit {
     this.form = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email])
     });
+
+    this.hostName = window.location.hostname;
+    if (this.hostName === 'employer.hirecommit.com') {
+      this.isEmployer = true;
+    } else if (this.hostName === 'candidate.hirecommit.com') {
+      this.isCandidate = true;
+    } else {
+      this.isAdmin = true;
+      // window.location.href = 'http://candidate.hirecommit.com/';
+    }
   }
 
   ngOnInit() { }
-
-
 
   sendMail(valid) {
     this.isFormSubmitted = true;

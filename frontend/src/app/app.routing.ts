@@ -14,6 +14,9 @@ import { TermsConditionComponent } from './shared/terms-condition/terms-conditio
 import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
 import { EmployerLandingComponent } from './views/static/employer-landing/employer-landing.component';
 import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
+import { CandidateLoginComponent } from './shared/candidate-login/candidate-login.component';
+import { EmployerLoginComponent } from './shared/employer-login/employer-login.component';
+import { AdminLoginComponent } from './shared/admin-login/admin-login.component';
 export const routes: Routes = [
   // { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
   { path: '', component: LandingLayoutComponent },
@@ -26,6 +29,9 @@ export const routes: Routes = [
   { path: 'candidate_register', component: RegisterComponent, canActivate: [LoginGuard] },
   { path: 'confirmation/:token', component: EmailconfermationComponent, canActivate: [LoginGuard] },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
+  { path: 'candidate_login', component: CandidateLoginComponent },
+  { path: 'employer_login', component: EmployerLoginComponent },
+  { path: 'admin_login', component: AdminLoginComponent },
   // { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
   // {
   //   path: 'candidate-landing',

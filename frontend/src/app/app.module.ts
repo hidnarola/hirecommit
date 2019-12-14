@@ -40,6 +40,9 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
 import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
 import { EmployerLandingComponent } from './views/static/employer-landing/employer-landing.component';
+import { CandidateLoginComponent } from './shared/candidate-login/candidate-login.component';
+import { AdminLoginComponent } from './shared/admin-login/admin-login.component';
+import { EmployerLoginComponent } from './shared/employer-login/employer-login.component';
 // import { HeaderComponent } from './views/static/header/header.component';
 // import { FooterComponent } from './views/static/footer/footer.component';
 
@@ -92,6 +95,9 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     LandingLayoutComponent,
     CandidateLandingComponent,
     EmployerLandingComponent,
+    CandidateLoginComponent,
+    EmployerLoginComponent,
+    AdminLoginComponent,
     // HeaderComponent,
     // FooterComponent,
   ],

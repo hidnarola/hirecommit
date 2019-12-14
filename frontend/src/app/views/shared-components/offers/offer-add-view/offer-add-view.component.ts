@@ -15,6 +15,8 @@ import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalOptions } from '../../../../shared/modal_options';
 import * as moment from 'moment';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
@@ -51,14 +53,60 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   msg: any;
   err_msg: any;
   isShow = false;
+  valueForEditor: any;
   details: any;
   groupData: any = {};
   selectedValue: string;
+  Candidate: HTMLElement;
   is_communication_added = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
 
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: 'auto',
+    minHeight: '0',
+    maxHeight: 'auto',
+    width: 'auto',
+    minWidth: '0',
+    translate: 'yes',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Enter text here...',
+    defaultParagraphSeparator: '',
+    defaultFontName: '',
+    defaultFontSize: '',
+    toolbarHiddenButtons: [
+      ['insertImage']
+    ],
+    fonts: [
+      { class: 'arial', name: 'Arial' },
+      { class: 'times-new-roman', name: 'Times New Roman' },
+      { class: 'calibri', name: 'Calibri' },
+      { class: 'comic-sans-ms', name: 'Comic Sans MS' }
+    ],
+    customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    uploadUrl: environment.imageUrl,
+    sanitize: true,
+    toolbarPosition: 'top',
+
+  };
 
 
   from: any;
@@ -159,6 +207,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       customfieldItem: this.fb.array([]),
       communicationFieldItems: this.fb.array([]),
       AdHocCommunication: this.fb.array([]),
+      // editor: new FormControl(''),
       offerStatus: new FormControl(''),
       acceptanceDate: new FormControl('')
     });
@@ -1193,6 +1242,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  append(value) {
+    if (!this.valueForEditor) {
+      this.valueForEditor = value;
+    } else {
+      this.valueForEditor += value;
+    }
+  };
+
+
   // submit offers
   onSubmit(flag) {
     this.is_submitted = true;
@@ -1223,6 +1281,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     //AdHoc Communication 
     const AdHOc_communication_array = [];
     if (this.AdHocCommunicationData.length > 0) {
+      console.log('AdHoc_message=>', this.AdHocCommunicationData);
+
       this.AdHocCommunicationData.forEach(element => {
         AdHOc_communication_array.push({
           AdHoc_communicationname: element.AdHoc_communicationname,

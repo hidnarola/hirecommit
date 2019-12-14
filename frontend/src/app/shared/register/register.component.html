@@ -7,9 +7,12 @@
         <a href="http://employer.hirecommit.com">Employer</a>
       </div>
       <div class="login-signup">
-        <a href="http://hirecommit.com/login">Login</a>
+        <!-- <a href="http://hirecommit.com/login">Login</a> -->
+        <a [routerLink]="['/login']">Login</a>
         <span>-</span>
-        <a href="http://hirecommit.com/candidate_register">Sign up</a>
+        <!-- <a href="http://hirecommit.com/candidate_register">Sign up</a> -->
+        <!-- <a [routerLink]="['/candidate_register']">Sign up</a> -->
+        <a href="javascript:void(0)">Sign up</a>
       </div>
     </div>
   </div>
@@ -62,7 +65,7 @@
               <i class="icon-envelope-letter"></i>
             </span>
           </div>
-          <input type="text" class="form-control" placeholder="Your Email ID" formControlName="email"
+          <input type="text" class="form-control" placeholder="Your personal email" formControlName="email"
             [(ngModel)]="registerData.email" name="email" email required="required" (blur)="checkEmail()">
           <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
             <span
@@ -175,7 +178,7 @@
           </div>
           <!-- for file size validation -->
         </div>
-        <p>*select file till 5mb</p>
+        <p>*Less than 5 MB</p>
         <div class="files-type">
 
         </div>
