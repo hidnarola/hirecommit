@@ -447,6 +447,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
     for (let index = 0; index < resp_data.length; index++) {
         const resp = resp_data[index];
+        // console.log(' : resp ==> ', resp); return false
         setTimeout(function (index) {
             let element = resp;
             var options = {
@@ -463,25 +464,54 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         console.log(new_resp.error);
                     } else if (new_resp && new_resp.messages) {
                         for (const newresp of new_resp.messages) {
+                            // console.log(newresp);
                             var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
                             var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
+                            var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
+                            var medium_notreplied = moment(resp.createdAt).startOf('day').add(resp.medium_notreplied, 'day')
                             high_unopened = moment(high_unopened)
                             medium_unopened = moment(medium_unopened)
-                            // var last_mail_time = moment(resp.createdAt).startOf('day')
-                            // if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true)
-                            if (newresp.opens_count == 0 && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
-
-                                const total_days = moment(last_mail_time).isSame(high_unopened) == true ? resp.high_unopened :
-                                    moment(last_mail_time).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
+                            high_notreplied = moment(high_notreplied)
+                            medium_notreplied = moment(medium_notreplied)
+                            // console.log(' : newresp.opens_count === 0 ==> ', newresp.opens_count === 0);
+                            if ((newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
+                                // console.log("Not Opened", newresp);
+                                const total_days = moment(current_date).isSame(high_unopened) == true ? resp.high_unopened : moment(current_date).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
 
                                 content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
-                                let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                    // "to": newresp.to_email,
+                                let mail_resp = mail_helper.send("notification_email", {
                                     "to": resp.created_by.email,
-                                    "subject": "Notification Mail",
-                                    "trackid": element._id + 'high_unopened'
-                                }, content);
+                                    "subject": "Notification Mail(Not Opened)"
+                                }, {
+                                    "msg": content,
+                                });
+                                // let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                //     // "to": newresp.to_email,
+                                //     "to": resp.created_by.email,
+                                //     "subject": "Notification Mail(Not Opened)",
+                                //     "trackid": element._id + 'unopened'
+                                // }, content);
+                            } else if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
+                                // console.log(newresp.to_email);
+                                // console.log(' : not replied ==> ', " not replied");
+                                const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
+
+                                content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+                                let mail_resp = mail_helper.send("notification_email", {
+                                    "to": resp.created_by.email,
+                                    "subject": "Notification Mail(Not Replied)"
+                                }, {
+                                    "msg": content,
+                                });
+
+                                // let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                                //     // "to": newresp.to_email,
+                                //     "to": resp.created_by.email,
+                                //     "subject": "Notification Mail(Not Replied)",
+                                //     "trackid": element._id + 'notreplied'
+                                // }, content);
                             } else {
                                 console.log("end");
                             }
@@ -491,7 +521,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     console.log('error=> ', error.message);
                 }
             });
-
         }, index * 15000, index)
     }
 })
@@ -779,712 +808,712 @@ cron.schedule('00 00 * * *', async (req, res) => {
     }
 });
 
-cron.schedule('00 00 * * *', async (req, res) => {
-    var resp_data = await Offer.aggregate(
-        [
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "created_by",
-                    foreignField: "_id",
-                    as: "created_by"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$created_by",
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-            {
-                $lookup:
-                {
-                    from: "group",
-                    localField: "groups",
-                    foreignField: "_id",
-                    as: "group"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "group_detail",
-            //         localField: "group._id",
-            //         foreignField: "group_id",
-            //         as: "communication"
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         path: "$communication",
-            //         preserveNullAndEmptyArrays: true
-            //     },
-            // },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user_id"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$user_id",
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-            {
-                $lookup:
-                {
-                    from: "candidateDetail",
-                    localField: "user_id._id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate",
-                    preserveNullAndEmptyArrays: true
-                },
-            }
-
-        ]
-    )
-
-    var current_date = moment().startOf('day')
-
-    for (let index = 0; index < resp_data.length; index++) {
-        const resp = resp_data[index];
-        setTimeout(function (index) {
-            if (resp.communication !== undefined && resp.communication > 0) {
-                for (const comm of resp.communication) {
-                    if (comm.trigger == "afterOffer") {
-                        // console.log(' : comm.trigger ==> ', comm.trigger);
-                        var days = comm.day
-                        var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterOffer" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                // "to": newresp.to_email,
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'communication_afterOffer_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.trigger == "beforeJoining") {
-                        var days = comm.day
-                        var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_beforeJoining" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'communication_beforeJoining_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.trigger == "afterJoining") {
-                        var days = comm.day
-                        var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterJoining" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'communication_afterJoining_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.trigger == "beforeExpiry") {
-                        var days = comm.day
-                        var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_beforeExpiry" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'communication_beforeExpiry_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.trigger == "afterExpiry") {
-                        var days = comm.day
-                        var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterExpiry" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'communication_afterExpiry_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.trigger == "afterAcceptance") {
-                        var days = comm.day
-                        var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterAcceptance" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'communication_afterAcceptance_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-            if (resp.AdHoc !== undefined && resp.AdHoc > 0) {
-                for (const comm of resp.AdHoc) {
-                    if (comm.AdHoc_trigger == "afterOffer") {
-                        // console.log(' : comm.trigger ==> ', comm.trigger);
-                        var days = comm.AdHoc_day;
-                        var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterOffer" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                // "to": newresp.to_email,
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'adhoc_afterOffer_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.AdHoc_trigger == "beforeJoining") {
-                        var days = comm.AdHoc_day;
-                        var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_beforeJoining" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'adhoc_beforeJoining_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.AdHoc_trigger == "afterJoining") {
-                        var days = comm.AdHoc_day
-                        var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterJoining" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'adhoc_afterJoining_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.AdHoc_trigger == "beforeExpiry") {
-                        var days = comm.AdHoc_day
-                        var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_beforeExpiry" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'adhoc_beforeExpiry_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.AdHoc_trigger == "afterExpiry") {
-                        var days = comm.AdHoc_day
-                        var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterExpiry" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'adhoc_afterExpiry_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-                    else if (comm.AdHoc_trigger == "afterAcceptance") {
-                        var days = comm.AdHoc_day
-                        var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
-                        offer_date = moment(offer_date)
-
-                        let element = resp;
-                        var options = {
-                            method: 'GET',
-                            url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterAcceptance" + "%22)",
-                            headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            var new_resp = JSON.parse(response.body);
-                            if (new_resp && new_resp.error) {
-                                console.log(new_resp.error);
-                            } else if (new_resp && new_resp.messages) {
-                                // console.log(' : new_resp.message ==> ', new_resp.messages);
-                                for (const newresp of new_resp.messages) {
-                                    var last_mail_time = moment(newresp.last_event_time).startOf('day')
-                                    if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-                                        // console.log('new_resp ==> ', newresp);
-                                        var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-                                        var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-                                        if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-                                            var total_days;
-                                            if (moment(current_date).isSame(resend_mail_date) == true) {
-                                                total_days = resp.high_unopened
-                                            } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-                                                total_days = resp.medium_unopened
-                                            }
-
-                                            content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-                                            let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                                "to": resp.created_by.email,
-                                                "subject": "Notification Mail",
-                                                "trackid": element._id + 'adhoc_afterAcceptance_resend'
-                                            }, content);
-                                        }
-                                    } else {
-                                        console.log("end");
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        }, index * 15000, index)
-    }
-})
+// cron.schedule('00 00 * * *', async (req, res) => {
+//     var resp_data = await Offer.aggregate(
+//         [
+//             {
+//                 $lookup:
+//                 {
+//                     from: "user",
+//                     localField: "created_by",
+//                     foreignField: "_id",
+//                     as: "created_by"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: "$created_by",
+//                     preserveNullAndEmptyArrays: true
+//                 },
+//             },
+//             {
+//                 $lookup:
+//                 {
+//                     from: "group",
+//                     localField: "groups",
+//                     foreignField: "_id",
+//                     as: "group"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: "$group",
+//                     preserveNullAndEmptyArrays: true
+//                 },
+//             },
+//             // {
+//             //     $lookup:
+//             //     {
+//             //         from: "group_detail",
+//             //         localField: "group._id",
+//             //         foreignField: "group_id",
+//             //         as: "communication"
+//             //     }
+//             // },
+//             // {
+//             //     $unwind: {
+//             //         path: "$communication",
+//             //         preserveNullAndEmptyArrays: true
+//             //     },
+//             // },
+//             {
+//                 $lookup:
+//                 {
+//                     from: "user",
+//                     localField: "user_id",
+//                     foreignField: "_id",
+//                     as: "user_id"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: "$user_id",
+//                     preserveNullAndEmptyArrays: true
+//                 },
+//             },
+//             {
+//                 $lookup:
+//                 {
+//                     from: "candidateDetail",
+//                     localField: "user_id._id",
+//                     foreignField: "user_id",
+//                     as: "candidate"
+//                 }
+//             },
+//             {
+//                 $unwind: {
+//                     path: "$candidate",
+//                     preserveNullAndEmptyArrays: true
+//                 },
+//             }
+
+//         ]
+//     )
+
+//     var current_date = moment().startOf('day')
+
+//     for (let index = 0; index < resp_data.length; index++) {
+//         const resp = resp_data[index];
+//         setTimeout(function (index) {
+//             if (resp.communication !== undefined && resp.communication > 0) {
+//                 for (const comm of resp.communication) {
+//                     if (comm.trigger == "afterOffer") {
+//                         // console.log(' : comm.trigger ==> ', comm.trigger);
+//                         var days = comm.day
+//                         var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterOffer" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 // "to": newresp.to_email,
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'communication_afterOffer_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.trigger == "beforeJoining") {
+//                         var days = comm.day
+//                         var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_beforeJoining" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'communication_beforeJoining_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.trigger == "afterJoining") {
+//                         var days = comm.day
+//                         var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterJoining" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'communication_afterJoining_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.trigger == "beforeExpiry") {
+//                         var days = comm.day
+//                         var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_beforeExpiry" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'communication_beforeExpiry_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.trigger == "afterExpiry") {
+//                         var days = comm.day
+//                         var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterExpiry" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'communication_afterExpiry_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.trigger == "afterAcceptance") {
+//                         var days = comm.day
+//                         var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterAcceptance" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'communication_afterAcceptance_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+//                     }
+//                 }
+//             }
+//             if (resp.AdHoc !== undefined && resp.AdHoc > 0) {
+//                 for (const comm of resp.AdHoc) {
+//                     if (comm.AdHoc_trigger == "afterOffer") {
+//                         // console.log(' : comm.trigger ==> ', comm.trigger);
+//                         var days = comm.AdHoc_day;
+//                         var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterOffer" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 // "to": newresp.to_email,
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'adhoc_afterOffer_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.AdHoc_trigger == "beforeJoining") {
+//                         var days = comm.AdHoc_day;
+//                         var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_beforeJoining" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'adhoc_beforeJoining_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.AdHoc_trigger == "afterJoining") {
+//                         var days = comm.AdHoc_day
+//                         var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterJoining" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'adhoc_afterJoining_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.AdHoc_trigger == "beforeExpiry") {
+//                         var days = comm.AdHoc_day
+//                         var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_beforeExpiry" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'adhoc_beforeExpiry_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.AdHoc_trigger == "afterExpiry") {
+//                         var days = comm.AdHoc_day
+//                         var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterExpiry" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'adhoc_afterExpiry_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+
+//                     }
+//                     else if (comm.AdHoc_trigger == "afterAcceptance") {
+//                         var days = comm.AdHoc_day
+//                         var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+//                         offer_date = moment(offer_date)
+
+//                         let element = resp;
+//                         var options = {
+//                             method: 'GET',
+//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterAcceptance" + "%22)",
+//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//                         };
+
+//                         request(options, function (error, response, body) {
+//                             if (error) throw new Error(error);
+//                             var new_resp = JSON.parse(response.body);
+//                             if (new_resp && new_resp.error) {
+//                                 console.log(new_resp.error);
+//                             } else if (new_resp && new_resp.messages) {
+//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
+//                                 for (const newresp of new_resp.messages) {
+//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
+//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
+//                                         // console.log('new_resp ==> ', newresp);
+//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
+
+//                                             var total_days;
+//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
+//                                                 total_days = resp.high_unopened
+//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
+//                                                 total_days = resp.medium_unopened
+//                                             }
+
+//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+//                                                 "to": resp.created_by.email,
+//                                                 "subject": "Notification Mail",
+//                                                 "trackid": element._id + 'adhoc_afterAcceptance_resend'
+//                                             }, content);
+//                                         }
+//                                     } else {
+//                                         console.log("end");
+//                                     }
+//                                 }
+//                             }
+//                         });
+//                     }
+//                 }
+//             }
+//         }, index * 15000, index)
+//     }
+// })
 
 router.post('/get', async (req, res) => {
     var schema = {

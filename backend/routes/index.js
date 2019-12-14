@@ -46,10 +46,10 @@ router.use("/profile", auth, userpProfile);
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
-var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+// var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
 //
 //local
-//var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -377,14 +377,18 @@ router.post("/candidate_register", async (req, res) => {
                 var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
 
                 logger.trace("sending mail");
-                let mail_resp = await mail_helper.send("email_confirmation", {
+                console.log("1312");
+
+                let mail_resp = await mail_helper.send("candidate_email_confirmation", {
                   "to": interest_user_resp.email,
-                  "subject": "HC - Email Confirmation"
+                  "subject": "Welcome to the HireCommit | Verify Email"
                 }, {
                   // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
                   "msg": message.data.content,
+                  "candidatename": interest_resp.firstname,
                   "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                 });
+                console.log(' : mail_resp ==> ', mail_resp);
 
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -561,13 +565,16 @@ router.post("/employer_register", async (req, res) => {
               time.setMinutes(time.getMinutes() + 20);
               time = btoa(time);
               var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
-
+              var name = interest_resp.data.username;
+              var employerfirstname = name.substring(0, name.lastIndexOf(" "));
               logger.trace("sending mail");
-              let mail_resp = await mail_helper.send("email_confirmation", {
+              let mail_resp = await mail_helper.send("employer_email_confirmation", {
                 "to": interest_user_resp.data.email,
                 "subject": "HireCommit - Email Confirmation"
               }, {
                 "msg": message.data.content,
+                "employerfirstname": employerfirstname,
+                "employername": interest_resp.data.username,
                 // config.website_url + "/email_confirm/" + interest_resp.data._id
                 "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
               });
@@ -1278,12 +1285,20 @@ router.post('/test_mail', async (req, res) => {
   var content = req.body.content;
   var trackid = req.body.trackid;
 
-  let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+  // let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+  //   "to": req.body.email,
+  //   "reply_to": req.body.reply_to,
+  //   "subject": "Offer",
+  //   "trackid": trackid
+  // }, content);
+
+  let mail_resp = mail_helper.send("candidate_email_confirmation", {
     "to": req.body.email,
-    "reply_to": req.body.reply_to,
-    "subject": "Offer",
-    "trackid": trackid
-  }, content);
+    "subject": "Welcome to the HireCommit | Verify Email"
+  }, {
+    "msg": content,
+    "url": ""
+  });
 
   // if (mail_resp)
   res.json({ "message": "success" })
@@ -1330,18 +1345,18 @@ router.get('/country/:id', getCountry);
 router.post('/get_email', async (req, res) => {
   try {
     console.log('==> getmail : req.body ==> ', req.body);
-    console.log(' : from ==> ', req.body.from);
-    console.log(' : cc ==> ', req.body.cc);
-    console.log(": to =>", req.body.to)
+    // console.log(' : from ==> ', req.body.from);
+    // console.log(' : cc ==> ', req.body.cc);
+    // console.log(": to =>", req.body.to)
     var receive_id = req.body.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
-    console.log(": id ===> ", id);
+    // console.log(": id ===> ", id);
 
     var insert_reply_mail_resp = await common_helper.insert(RepliedMail, { "offerid": id, "message": req.body });
-    console.log("insert_reply_mail_resp", insert_reply_mail_resp);
+    // console.log("insert_reply_mail_resp", insert_reply_mail_resp);
 
     var update_offer_reply = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true });
-    console.log("update_offer_reply", update_offer_reply);
+    // console.log("update_offer_reply", update_offer_reply);
 
     res.status(200).send('success');
   } catch (error) {
