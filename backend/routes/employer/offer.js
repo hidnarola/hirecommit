@@ -230,10 +230,22 @@ router.post("/", async (req, res) => {
                     { user_id: new ObjectId(interest_resp.data.user_id) });
                 var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
                 var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'offer_mail' });
-                let content = mailcontent.data.content;
 
+                var upper_content = mailcontent.data.upper_content;
+                var middel_content = mailcontent.data.middel_content;
+                var lower_content = mailcontent.data.lower_content;
+                var name = candidate.data.firstname;
+
+                upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${interest_resp.data.expirydate}`);
+
+                var obj = {
+                    "name": name,
+                    "upper_content": upper_content,
+                    "middel_content": middel_content,
+                    "lower_content": lower_content,
+                }
                 // if (candidate.data.firstname != "" && candidate.data.lastname != "") {
-                content = content.replace("{companyname}", `${company}`).replace('{title}', interest_resp.data.title);
+                // content = content.replace("{companyname}", `${company}`).replace('{title}', interest_resp.data.title);
                 // } else {
                 //     content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', ' you.');
                 // }
@@ -246,7 +258,7 @@ router.post("/", async (req, res) => {
                     "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
                     "subject": "Offer",
                     "trackid": interest_resp.data._id
-                }, content);
+                }, obj);
 
                 // {
                 //     "msg": content,
