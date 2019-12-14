@@ -14,15 +14,22 @@ import { TermsConditionComponent } from './shared/terms-condition/terms-conditio
 import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
 import { EmployerLandingComponent } from './views/static/employer-landing/employer-landing.component';
 import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
-import { CandidateLoginComponent } from './shared/candidate-login/candidate-login.component';
-import { EmployerLoginComponent } from './shared/employer-login/employer-login.component';
-import { AdminLoginComponent } from './shared/admin-login/admin-login.component';
+
+import { AboutUsComponent } from './shared/about-us/about-us.component';
+import { ContactUSComponent } from './shared/contact-us/contact-us.component';
+import { CandidateLoginComponent } from './shared/login/candidate-login/candidate-login.component';
+import { EmployerLoginComponent } from './shared/login/employer-login/employer-login.component';
+import { AdminLoginComponent } from './shared/login/admin-login/admin-login.component';
+import { AuthorizationComponent } from './shared/login/authorization/authorization.component';
 export const routes: Routes = [
   // { path: '', loadChildren: () => import('./views/static/landing-layout/landing-layout.module').then(m => m.LandingLayoutModule), },
   { path: '', component: LandingLayoutComponent },
   // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'privacypolicy', component: PrivacyPolicyComponent },
   { path: 'termsandcondition', component: TermsConditionComponent },
+  { path: 'aboutus', component: AboutUsComponent },
+  { path: 'contactus', component: ContactUSComponent },
+  { path: 'authorize', component: AuthorizationComponent },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'forgot_password', component: ForgotPasswordComponent },
   { path: 'emp_register', component: SignUpComponent },
@@ -73,7 +80,7 @@ export const routes: Routes = [
       expectedRole: 'sub-employer',
     }
   },
-  { path: '**', component: P404Component }
+  { path: '**', component: P404Component },
 ];
 
 @NgModule({

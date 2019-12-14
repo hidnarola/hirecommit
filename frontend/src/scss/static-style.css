@@ -6,13 +6,13 @@
 .header-bluepart-l h1, .static-page h2, .static-page h3, .static-page h4, .static-page h5, .static-page h6, .static-page p{font-family:'Raleway';}
 .static-page input, .static-page select, .static-page textarea, .static-page button{font-family:'Raleway';}
 
-.header-bluepart-l h1{margin:0 0 40px; padding:0; font-size:34px; text-transform:uppercase; display:block;}
+.header-bluepart-l h1{margin:0 0 40px; padding:0; font-size:32px; text-transform:uppercase; display:block;}
 .header-bluepart-l h1 strong{ font-weight:800; color:#bf7a68;}
-.header-bluepart-l h1 small{ font-weight:400; color:#fff; font-size:34px;}
+.header-bluepart-l h1 small{ font-weight:400; color:#fff; font-size:32px;}
 
-.static-page h2{margin:0 0 40px; padding:0; font-size:28px; text-transform:uppercase; display:block;}
+.static-page h2{margin:0 0 40px; padding:0; font-size:26px; text-transform:uppercase; display:block;}
 .static-page h2 strong{ font-weight:800; color:#bf7a68;}
-.static-page h2 small{ font-weight:400; color:#666; font-size:28px;}
+.static-page h2 small{ font-weight:400; color:#666; font-size:26px;}
 
 .static-page p{ color:#000; font-weight:400; line-height:28px; display:block; font-size:18px; margin:0; padding:0;}
 .static-page p + p{ margin-top:40px;}
@@ -118,7 +118,7 @@ section.header-bluepart .d-flex{align-items: flex-end;}
 .copyright p a:hover{ text-decoration:none;}
 
 .contact-link{ margin:0 0 0 auto;}
-.contact-link a{ font-size:14px; line-height:normal; color:#666; font-size:14px; font-weight:600; line-height:20px;}
+.contact-link a{ font-size:14px; line-height:normal; color:#666; font-size:14px; font-weight:600; line-height:20px; margin:0 0 0 10px;}
 .contact-link a:hover{ text-decoration:none; color:#bf7a68;}
 .mobile-view{ display:none !important;}
 .boxes-section ul li:nth-child(2n+2) .boxes-section-div h3{ color:#bf7a68;}
@@ -167,6 +167,43 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
 .ui-dropdown-label-container label.ui-dropdown-label{padding:0.429em;}
 .forgot-password .btn-primary{ max-width:110px;}
 .communication-fills .card-header button {padding: 2px 20px; font-size: 14px;line-height: 24px;}
+
+.privaypolicy-body{ display:block;}
+.privaypolicy-body + .privaypolicy-body{ margin-top:30px; border-top:1px dashed #999; padding-top:30px;}
+.privaypolicy-body h3{ font-family:'Raleway'; font-size:22px; line-height:normal; display:block; margin:0 0 15px; padding:0; color:#bf7a68; text-transform:uppercase; font-weight:800;}
+.privaypolicy-body h3 small{ font-size:18px; display:block; color:#162741; margin:10px 0 0;font-weight:500;}
+.privaypolicy-body p{ font-size:14px; color:#000; line-height:22px; margin:0; padding:0; display:block; font-family:'Raleway'; font-weight:500;}
+.privaypolicy-body p + p{ margin-top:14px;}
+.privaypolicy-body p a{ color:#bf7a68; text-decoration:underline;}
+.privaypolicy-body p a:hover{ text-decoration:none;}
+.privaypolicy-body ul li{font-size:14px; color:#000; line-height:22px; margin:0; padding:0; font-family:'Raleway'; font-weight:500;}
+.privaypolicy-body ul li + li{ margin-top:10px;}
+.hereby-confirm{ margin:25px 0;}
+.hereby-confirm h4{ font-family:'Raleway'; font-size:20px; line-height:normal; display:block; margin:0; padding:0; color:#bf7a68; text-transform:uppercase; font-weight:800; text-decoration:underline;}
+
+.map-div{ position:relative; margin:30px 0;}
+.map-div iframe{ width:100%; border:14px solid #fff; box-shadow:0 0 30px 0 rgba(0,0,0,.05); box-sizing:border-box;}
+.workspace{ background:#fff; padding:30px; position:absolute; top:30px; right:30px; max-width:270px;}
+.workspace h3{ font-family:'Raleway'; font-size:22px; line-height:normal; display: block; margin:0 0 10px; padding: 0; color: #bf7a68; text-transform:uppercase; font-weight:800;}
+.workspace h4{ font-family:'Raleway'; margin:0 0 10px; padding:0; font-size:18px; display:block; color:#162741;}
+.workspace h4 small{ display:block;}
+.workspace p{ font-size:14px; color:#000; line-height:22px; margin:0; padding:0; display:block; font-family:'Raleway'; font-weight:500;}
+.workspace p strong{color: #bf7a68; font-weight:500;}
+.workspace p + p{ padding-top:14px;}
+.need-assistance{ display:block;}
+.need-assistance{ margin:0 0 30px;}
+.need-assistance p{ font-size:14px; color:#000; line-height:22px; margin:0; padding:0; display:block; font-family:'Raleway'; font-weight:500;}
+.need-assistance p a{ color:#bf7a68; text-decoration:underline;}
+.need-assistance p a:hover{ text-decoration:none;}
+.privaypolicy-body ul.disc {margin:26px 0 25px 30px;}
+
+.Inner-title{ background:#162741; margin:-156px auto 40px; padding:200px 0 0; height:300px; width: 100%; z-index: -1; border-bottom:8px solid #bf7a68;}
+.Inner-title h2{ margin:0; padding:0; display:block; font-size:30px; text-transform:uppercase; color:#fff; line-height:100%;}
+.Inner-title small{ font-size: 14px; color:#e2e4e6; display:block; margin:4px 0 0 3px;}
+
+
+
+
 
 /***** Media start *****/
 @media(min-width:768px) and (max-width:1099px){
@@ -276,7 +313,25 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .support-identity-l h2 small{ display:block; margin:0;}
     .copyright p {font-size:13px; line-height:normal;}
     .advance-alerts-bg  h2{ max-width:296px;}
-    
+    .Inner-title {margin: -156px auto 40px; padding: 180px 0 0; height: 270px;}
+    .Inner-title h2 {font-size:25px;}
+    .privaypolicy-body h3 {font-size: 20px;}
+    .privaypolicy-body ul li, .need-assistance p,
+    .privaypolicy-body p {font-size: 13px; line-height: 20px;}
+    .privaypolicy-body h3 small {font-size: 16px; margin:5px 0 0;}
+    .privaypolicy-body + .privaypolicy-body {margin-top:15px; padding-top:15px;}
+    .workspace {padding: 20px; position: relative; top: 0; right: 0; max-width: 100%; margin: 0 0 20px;}
+    .header-bluepart-01 form,
+    .new-signup.header-bluepart-01 form {padding: 20px; width: 94%;}
+    .custome-checkbox{ display:flex;}
+    .header-bluepart-01 {padding:50px 0;}
+    .header-bluepart-01 { padding:20px 0 0;}
+    .header-bluepart-01 h2 {font-size: 26px; margin: 0 0 30px;}
+    .header-bluepart-01:before{ height:350px;}
+    .header-bluepart-01.new-signup .bs-stepper-content {padding:0;}
+    .recaptcha-div iframe{transform: scale(0.8); margin:0 0 0 -30px;}
+    .recaptcha-div ngx-recaptcha2{max-width:280px;}
+    .recaptcha-div div{ width: 100% !important; text-align: left; display: inline-block; vertical-align: top; max-width:280px;}
     
 }    
 
@@ -290,4 +345,5 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .hirecommit-logo a:before {content: '';width: 20px;height: 20px;background: #fff;position: absolute;right: 0;top: 50%;transform: translateY(-50%);}
     .header-bluepart-l h1 strong,
     .header-bluepart-l h1 small { font-size:22px;}
+    .new-signup .btn {padding: 0.375rem 0.25rem;}
 }

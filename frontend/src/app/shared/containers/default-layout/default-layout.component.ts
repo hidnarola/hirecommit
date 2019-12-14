@@ -6,6 +6,7 @@ import { CommonService } from '../../../services/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployerService } from '../../../views/employer/employer.service';
 import { ModalOptions } from '../../modal_options';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,6 +31,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private modalService: NgbModal,
     private empServise: EmployerService,
+    private confirmationService: ConfirmationService,
     // public activeModal: NgbActiveModal,
     @Inject(DOCUMENT) _document?: any,
   ) {
@@ -113,6 +115,47 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  // logouttoLanding() {
+  //   console.log('working=>');
+  //   if (this.userDetail.role === 'employer') {
+  //     this.confirmationService.confirm({
+  //       message: 'Are you sure you want to Logout?',
+  //       accept: () => {
+  //         localStorage.removeItem('token');
+  //         localStorage.removeItem('user');
+  //         localStorage.removeItem('userid');
+  //         localStorage.clear();
+  //         window.location.href = 'http://employer.hirecommit.com/';
+  //       }
+  //     });
+  //   }
+  //   else if (this.userDetail.role === 'candidate') {
+  //     console.log('candidate=======>');
+  //     this.confirmationService.confirm({
+  //       message: 'Are you sure you want to Logout?',
+  //       accept: () => {
+  //         localStorage.removeItem('token');
+  //         localStorage.removeItem('user');
+  //         localStorage.removeItem('userid');
+  //         localStorage.clear();
+  //         window.location.href = 'http://candidate.hirecommit.com/';
+  //       }
+  //     });
+  //   }
+  //   else if (this.userDetail.role === 'admin') {
+  //     console.log('admin=======>');
+  //     this.confirmationService.confirm({
+  //       message: 'Are you sure you want to Logout?',
+  //       accept: () => {
+  //         localStorage.removeItem('token');
+  //         localStorage.removeItem('user');
+  //         localStorage.removeItem('userid');
+  //         localStorage.clear();
+  //         window.location.href = 'http://hirecommit.com/login';
+  //       }
+  //     });
+  //   }
+  // }
   changepassword() {
     // console.log(this.userDetail.role);
     if (this.userDetail.role === 'admin') {
@@ -135,11 +178,16 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    // this.confirmationService.confirm({
+    //   message: 'Are you sure you want to Logout?',
+    //   accept: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('userid');
     localStorage.clear();
     this.router.navigate(['/login']);
+    //   }
+    // });
   }
 
   setup(id) {

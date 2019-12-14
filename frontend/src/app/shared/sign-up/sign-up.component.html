@@ -314,7 +314,7 @@
               </div>
 
               <!-- captcha -->
-              <div class="input-group mb-3">
+              <div class="input-group mb-3 recaptcha-div">
                 <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
                   [(ngModel)]="formData.recaptcha" name="recaptcha">
                 </ngx-recaptcha2>
@@ -362,7 +362,11 @@
       <div class="copyright">
         <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
       </div>
-      <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div>
+      <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
+      <div class="contact-link">
+        <a [routerLink]="['aboutus']" target="_blank">About us</a>
+        <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+      </div>
     </div>
   </div>
 </footer>
