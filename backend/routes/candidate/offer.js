@@ -15,9 +15,10 @@ var User = require('../../models/user');
 var Candidate = require('../../models/candidate-detail');
 var History = require('../../models/offer_history');
 var Employer = require('../../models/employer-detail');
+var SubEmployer = require('../../models/sub-employer-detail');
 var Status = require('../../models/status');
 var OfferTypeMessage = require('../../models/offer_type_message');
-
+var MailType = require('../../models/mail_content');
 var mail_helper = require('../../helpers/mail_helper');
 
 
@@ -362,15 +363,27 @@ router.put('/', async (req, res) => {
         else if (sub_account_upadate.status == 1) {
             var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
             var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
-            var status = await common_helper.findOne(Status, { 'status': 'Accepted' });
 
-            let content = status.data.MessageContent;
-            content = content.replace('{title}', offer.data.title).replace("{candidate}", candidate.data.firstname + " " + candidate.data.lastname);
+            var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate-accept-offer' });
+            let upper_content = message.data.upper_content;
+            let lower_content = message.data.lower_content;
+            var employername = await common_helper.findOne(SubEmployer, { user_id: new ObjectId(offer.data.created_by) })
+            var employername1 = await common_helper.findOne(Employer, { user_id: new ObjectId(offer.data.created_by) })
+
+            if (employername.status === 1) {
+                var emp_name = employername.data.username;
+            } else if (employername1.status === 1) {
+                var emp_name = employername1.data.username;
+            }
+
+            upper_content = upper_content.replace('{employername}', emp_name).replace("{joiningdate}", offer.data.joiningdate);
             let mail_resp = await mail_helper.send("offer", {
                 "to": candidates.data.email,
-                "subject": "Offer Accepted"
+                "subject": "You have accepted offer from "
             }, {
-                "msg": "You have accepted offer."
+                "name": candidate.data.firstname,
+                "upper_content": upper_content,
+                "lower_content": lower_content
             });
 
 
