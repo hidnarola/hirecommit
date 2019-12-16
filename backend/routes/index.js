@@ -1069,10 +1069,11 @@ router.post('/email_verify', async (req, res) => {
           if (user_resp && user_resp.status == 1) {
             var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
           }
+
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
 
-          if (user_update_resp.data.role_id == "5d9d98a93a0c78039c6dd00d") {
-            var user_name = await common_helper.findOne(Employer_Detail, { 'user_id': user_update_resp.data._id });
+          if (user_resp.data.role_id == "5d9d98a93a0c78039c6dd00d") {
+            var user_name = await common_helper.findOne(Employer_Detail, { 'user_id': user_resp.data._id });
             var name = user_name.data.username;
             name_split = name.substring(0, name.lastIndexOf(" "));
             if (name_split === "") {
@@ -1083,8 +1084,8 @@ router.post('/email_verify', async (req, res) => {
             var upper_content = message.data.upper_content;
             var lower_content = message.data.lower_content;
 
-          } else if (user_update_resp.data.role_id == "5d9d99003a0c78039c6dd00f") {
-            var user_name = await common_helper.findOne(SubEmployer_Detail, { 'user_id': user_update_resp.data._id });
+          } else if (user_resp.data.role_id == "5d9d99003a0c78039c6dd00f") {
+            var user_name = await common_helper.findOne(SubEmployer_Detail, { 'user_id': user_resp.data._id });
             name = user_name.data.username;
             var name = user_name.data.username;
             name_split = name.substring(0, name.lastIndexOf(" "));
@@ -1095,8 +1096,8 @@ router.post('/email_verify', async (req, res) => {
             var upper_content = message.data.upper_content;
             var lower_content = message.data.lower_content;
 
-          } else if (user_update_resp.data.role_id == "5d9d98e13a0c78039c6dd00e") {
-            var user_name = await common_helper.findOne(Candidate_Detail, { 'user_id': user_update_resp.data._id });
+          } else if (user_resp.data.role_id == "5d9d98e13a0c78039c6dd00e") {
+            var user_name = await common_helper.findOne(Candidate_Detail, { 'user_id': user_resp.data._id });
             name = user_name.data.firstname;
             var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate-email-verified' });
             var upper_content = message.data.upper_content;
