@@ -18,9 +18,9 @@ var Employer = require('../../models/employer-detail');
 var SubEmployer = require('../../models/sub-employer-detail');
 var Status = require('../../models/status');
 var OfferTypeMessage = require('../../models/offer_type_message');
+var Location = require('../../models/location');
 var MailType = require('../../models/mail_content');
 var mail_helper = require('../../helpers/mail_helper');
-
 
 
 router.post('/get', async (req, res) => {
@@ -409,11 +409,13 @@ router.put('/', async (req, res) => {
                     var name = email.substring(0, email.lastIndexOf(" "));
                 }
 
+                var location = await common_helper.findOne(Location, { '_id': offer.data.location });
+
                 var message = await common_helper.findOne(MailType, { 'mail_type': 'notification-accept-offer' });
                 let upper_content = message.data.upper_content;
                 let middel_content = message.data.middel_content;
                 let lower_content = message.data.lower_content;
-                upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname} ${candidate.data.lastname}`).replace("{title}", offer.data.title).replace("{location}", offer.data.location);
+                upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname} ${candidate.data.lastname}`).replace("{title}", offer.data.title).replace("{location}", location.data.city);
 
                 let mail_resp = await mail_helper.send("notification_accept_offer", {
                     "to": element.email,
