@@ -1,159 +1,600 @@
-<h2 style="text-align: center;">
-    <b>Terms and Conditions</b>
-</h2>
+<header class="header static-page-header">
+    <div class="container">
+        <div class="d-flex">
+            <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
+            <div class="candidate-employer">
+                <a [class.active]="isCandidate" href="http://candidate.hirecommit.com">Candidate</a>
+                <a [class.active]="isEmployer" href="http://employer.hirecommit.com">Employer</a>
+            </div>
+            <div class="login-signup">
+                <a href="http://hirecommit.com/login">Login</a>
+                <span>-</span>
+                <a *ngIf="isCandidate" href="http://hirecommit.com/candidate_register">Sign up</a>
+                <a *ngIf="isEmployer" href="http://hirecommit.com/emp_register">Sign up</a>
+                <a *ngIf="isAdmin" href="javascript:void(0)">Sign up</a>
+            </div>
+        </div>
+    </div>
+</header>
 
-<p>
-    Welcome to HireCommit This site is provided as a service to our visitors and may be used for
-    informational
-    purposes only. Because the Terms and Conditions contain legal obligations, please read them carefully.</p>
 
-<h6>1. YOUR AGREEMENT</h6>
-<p>By using this Site, you agree to be bound by, and to comply with, these Terms and Conditions. If you do not agree to
-    these Terms and Conditions, please do not use this site.
 
-    PLEASE NOTE: We reserve the right, at our sole discretion, to change, modify or otherwise alter these Terms and
-    Conditions at any time. Unless otherwise indicated, amendments will become effective immediately. Please review
-    these
-    Terms and Conditions periodically. Your continued use of the Site following the posting of changes and/or
-    modifications
-    will constitute your acceptance of the revised Terms and Conditions and the reasonableness of these standards for
-    notice
-    of changes. For your information, this page was last updated as of the date at the top of these terms and
-    conditions.</p>
-<h6>2. PRIVACY</h6>
-<p>Please review our Privacy Policy, which also governs your visit to this Site, to understand our practices.</p>
+<section class="Inner-title">
+    <div class="container">
+        <h2>Terms & Conditions</h2>
+        <small>Last updated on November 28<sup>th</sup>, 2019</small>
+    </div>
+</section>
 
-<h6>3. LINKED SITES</h6>
-<p>This Site may contain links to other independent third-party Web sites ("Linked Sites”). These Linked Sites are
-    provided
-    solely as a convenience to our visitors. Such Linked Sites are not under our control, and we are not responsible for
-    and
-    does not endorse the content of such Linked Sites, including any information or materials contained on such Linked
-    Sites. You will need to make your own independent judgment regarding your interaction with these Linked Sites.</p>
+<section class="privay-policy">
+    <div class="container">
+        <div class="privaypolicy-body">
+            <h3>Introduction and Terms of Use</h3>
+            <p>The terms and conditions contained hereinafter (“TERMS OF USE”) shall apply to the use of the website <a
+                    href="">www.hirecommit.com</a> and any other linked pages, products, software(s), API keys,
+                features,
+                content or application services (including but without limitation to any mobile application services) in
+                connection therewith, offered from time to time by Amidos Technologies Pvt. Limited
+                (“Hirecommit” or “WE” or “OUR” or “US”) (collectively, "WEBSITE").</p>
+            <p>Any person logging on to or using the Website (even when such person does not avail of any services
+                provided
+                in the Website (“SERVICES”)) (hereinafter referred to as a “USER”, “YOU”, or CLIENT) shall be presumed
+                to
+                have read these Terms of Use (which includes the Privacy Policy, separately provided on the Website) and
+                unconditionally accepted the terms and conditions set out herein. These Terms of Use constitute a
+                binding
+                and enforceable agreement between the User and HireCommit. These Terms of Use do not alter in any way
+                the
+                terms or conditions of any other written agreement you may have with HireCommit for other services.</p>
+            <p>Please read the terms set out hereunder carefully before agreeing to the same. If you do not agree to
+                these
+                Terms of Use (including any referenced policies or guidelines), please immediately terminate your use of
+                the
+                Website. You can accept the Terms of Use by:</p>
+            <ul class="disc">
+                <li>Clicking to accept or agree to the Terms of Use, where this option is made available to you by
+                    HireCommit in the User interface for any particular Service; or</li>
+                <li>Accessing, testing or actually using the Services. In this case, you understand and agree that
+                    HireCommit will treat your use of the Services as acceptance of the Terms of Use from that point
+                    onwards.</li>
+            </ul>
+            <p>For the purpose of these Terms of Use, wherever the context so requires, the term “User” shall mean and
+                include any natural or legal person who has agreed to these Terms of Use on behalf of itself or any
+                other
+                legal entity.</p>
+            <p>It is clarified that the Privacy Policy (that is provided separately), form an integral part of these
+                Terms
+                of Use and should be read contemporaneously with the Terms of Use. Illegality or unenforceability of one
+                or
+                more provisions of these Terms of Use shall not affect the legality and enforceability of the other
+                terms of
+                the Terms of Use. For avoidance of doubt, if any of the provisions becomes void or unenforceable, the
+                rest
+                of the provisions of these Terms of Use shall be binding upon the User.</p>
+            <p>The Terms of Use may be revised or altered by us at our sole discretion at any time without any prior
+                intimation to the User. The latest Terms of Use will be posted here. Any such changes by HireCommit will
+                be
+                effective immediately. By continuing to use this Website or to access the Services / usage of our
+                Services
+                after changes are made, you agree to be bound by the revised/ amended Terms of Use and such amendments
+                shall
+                supersede all other terms of use previously accepted by the User. You are solely responsible for
+                understanding and complying with all applicable laws of your specific jurisdiction that may be
+                applicable to
+                you in connection with your business and use of our Services.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Provision of the Services being offered by HireCommit</h3>
+            <p>Subject to these Terms of Use, HireCommit offers the Services set forth in Schedule I herein.</p>
+            <p>Schedule I also contains descriptions and process flows of all Services that are offered to Users. These
+                descriptions and process flows are set out in Part A to Part G in Schedule I.</p>
+            <p>HireCommit is constantly evolving in order to provide the best possible experience and information to its
+                Users. You acknowledge and agree that the form and nature of the Services which HireCommit provides may
+                change from time to time without any prior notice to you.</p>
+            <p>As part of this continuing process, you acknowledge and agree that HireCommit may stop (permanently or
+                temporarily) providing the Services (or any features within the Services) to you or to Users generally
+                at
+                HireCommit's sole discretion, without any prior notice. You may stop using the Services at any point of
+                time. You do not need to specifically inform HireCommit when you stop using the Services.</p>
+            <p>You acknowledge and agree that if HireCommit disables access to your account, you may be prevented from
+                accessing the Services, your account details or any files or other content which is contained in your
+                account, and HireCommit shall intimate you regarding the same.</p>
+            <p>HireCommit reserves the right to delete your User information stored in your account including but not
+                limited to all or any personal information or any sensitive personal data or information (“SPDI”) stored
+                in
+                your User account. Alternately, a User may notify us if they do not wish that we retain or use the
+                personal
+                information or SPDI by contacting the Grievance Officer (as provided below). However, in such a case, we
+                may
+                not be able to provide you some or all of our Services.</p>
+            <p>You acknowledge and agree that while HireCommit may not currently have set a fixed upper limit on the
+                number
+                of transmissions you may send or receive through the Services, such fixed upper limits may be set by
+                HireCommit at any time, solely at HireCommit's discretion.</p>
+            <p>By using our Services you agree that HireCommit disclaims any liability or authenticity of any
+                information
+                that may have become outdated since the last time that particular piece of information was updated.
+                HireCommit reserves the right to make changes and corrections to any part of the content of this Website
+                at
+                any time without any prior notice to you. Unless stated otherwise, all pictures and information
+                contained on
+                this Website are believed to be in the public domain as either promotional materials, publicity photos,
+                photoshoot rejects or press media stock. Please contact the Grievance Officer by an e-mail if you are
+                the
+                copyright owner of any content on this Website and you think the use of the above material violates the
+                terms of the applicable Copyright law in any manner. In your request, please indicate the exact URL of
+                the
+                webpage to enable us to locate the same. We will endeavour to address your concerns and take necessary
+                steps, if required. Please note that all images displayed in the Website have been digitised by
+                HireCommit.
+                No other party is authorised to reproduce or republish these digital versions in any format whatsoever
+                without the prior written permission of HireCommit.</p>
+            <p>HireCommit acknowledges and represents that it will follow best practices of ISO 27000 or other
+                comparable
+                industry standards governing physical/logical data across HireCommit environment and ensure that the
+                employer and candidate data is secured in accordance with the standards.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Use of the Services by User</h3>
+            <p>In order to access certain Services, you may be required to open a User account with HireCommit by
+                providing
+                information about yourself (such as identification or contact details) as part of the registration
+                process
+                (“REGISTRATION DATA”) for the Services, or as part of your continued use of the Services. You agree that
+                any
+                Registration Data you give to HireCo mmit will always be accurate, correct, complete and up to date. If
+                you
+                provide any information that is untrue, inaccurate, incomplete, or not current or if we have reasonable
+                grounds to suspect that such information is in violation of applicable law or not in accordance with the
+                Terms of Use (whether wholly or in part), we reserve the right to reject your registration and/ or
+                indefinitely suspend or terminate your User account and refuse to provide you access to the Website.
+                Further, you agree to indemnify and keep us indemnified from and against all claims resulting from the
+                use
+                of any detail/ information/ Registration Data that you post and/ or supply to us. We shall be entitled
+                to
+                remove any such detail/ information/ Registration Data posted by you without any prior intimation to
+                you.
+            </p>
+            <p>In order to ensure that we are not violating any right that you might have in your Registration Data, you
+                hereby grant to us a non-exclusive, worldwide, perpetual, irrevocable, royalty-free, sub-licensable
+                right to
+                exercise the copyright, publicity, and database rights (but no other rights) that you have in the
+                Registration Data, in any media now or in future known, with respect to your Registration Data solely to
+                enable us to use such Registration Data that you have supplied to us.</p>
+            <p>Any amendment or rectification of your Registration Data in the User account can be carried out by
+                accessing
+                the “User account” section on the Website. You may delete your User content or User account at any time.
+                Processing the deletion may take some time, but the same shall be done by HireCommit. We may maintain
+                backup
+                of all User content for such time as may be required under applicable laws and for operational purposes
+                of
+                HireCommit. You are solely responsible for maintaining the confidentiality of your account and password
+                and
+                for any activity that occurs in or through your account. We will not be liable to any person for any
+                loss or
+                damage which may arise as a result of any failure by you to protect your password or account. You should
+                take all necessary steps to ensure that the password is kept confidential and secure. In case you have
+                any
+                reason to believe that your password has become known to anyone else, or if the password is being, or is
+                likely to be, used in an unauthorised manner, you should inform us immediately at <a
+                    href="mailto:support@hirecommit.com">support@hirecommit.com</a> In the event of any dispute between
+                two
+                or more parties as to ownership of any particular account with HireCommit, you agree that HireCommit
+                shall
+                be the sole arbitrator for such dispute and that HireCommit’s decision in this regard will be final and
+                binding on you.</p>
+            <p>You understand and undertake that you shall be solely responsible for the Registration Data and the User
+                content and undertake neither by yourself nor by permitting any third party to host, display, upload,
+                modify, publish, transmit, update or share any information that:</p>
+            <ul class="disc">
+                <li>Belongs to another person and to which you do not have any right to;</li>
+                <li>Is grossly harmful, harassing, blasphemous, defamatory, obscene, pornographic, pedophilic,
+                    seditious,
+                    libelous, invasive of another's privacy, hateful, or racially, ethnically objectionable,
+                    disparaging,
+                    relating or encouraging money laundering or gambling, or otherwise unlawful in any manner
+                    whatsoever;
+                </li>
+                <li>Harms minors in any way;</li>
+                <li>Infringes any patent, trademark, copyright or other proprietary rights of any person or entity
+                    anywhere
+                    in the world;</li>
+                <li>Violates any law for the time being in force;</li>
+                <li>Deceives or misleads the addressee about the origin of such messages or communicates any information
+                    which is grossly offensive or menacing in nature;</li>
+                <li>Impersonates another person;</li>
+                <li>Contains software viruses or any other computer code, files or programs designed to interrupt,
+                    destroy
+                    or limit the functionality of any computer resource;</li>
+                <li>Threatens the unity, integrity, defense, security or sovereignty of India, friendly relations with
+                    foreign states, or public order or causes incitement to the commission of any cognizable offence or
+                    prevents investigation of any offence or is insulting to any other nation; or</li>
+                <li>Is illegal in any other way.</li>
+            </ul>
+            <p>You agree and understand that HireCommit reserves the right to remove and/ or edit such detail /
+                information.
+                If you come across any information as mentioned above on the Website, you are requested to immediately
+                contact our Grievance officer.</p>
+            <p>You agree to use the Services only for purposes that are permitted by (a) these Terms of Use and (b) any
+                applicable law, regulation or generally accepted practices or guidelines in the relevant jurisdictions.
+            </p>
+            <p>You agree to use the data owned by HireCommit (as available on the Website or through any other means
+                like
+                API(s) etc.) only for personal purposes and not for any commercial use unless agreed to by HireCommit in
+                writing.</p>
+            <p>You agree not to access (or attempt to access) any of the Services by any means other than through the
+                interface that is provided by HireCommit, unless you have been specifically allowed to do so in a
+                separate
+                agreement with HireCommit. You specifically agree not to access (or attempt to access) any of the
+                Services
+                through any automated means (including use of scripts or web crawlers) and shall ensure that you comply
+                with
+                the instructions set out in any robots.txt file present on the Services.</p>
+            <p>You agree that you will not engage in any activity that interferes with or disrupts the Services (or the
+                servers and networks which are connected to the Services) on this Website.</p>
+            <p>Unless you have been specifically permitted to do so in a separate agreement with HireCommit, you agree
+                that
+                you will not reproduce, duplicate, copy, sell, trade or resell the Services for any purpose.</p>
+            <p>You agree that you are solely responsible for (and that HireCommit has no responsibility to you or to any
+                third party for) any breach of your obligations under the Terms of Use and for the consequences
+                (including
+                any loss or damage which HireCommit may suffer) of any such breach. You further agree to the use of your
+                data by us in accordance with the Privacy Policy.</p>
+            <p>HireCommit may share any Content (defined hereinafter) generated by the User or their Registration Data
+                with
+                governmental agencies who are lawfully authorised for investigative, protective and cyber security
+                activities. Such information may be transferred for the purposes of verification of identity, or for
+                prevention, detection, investigation, prosecution pertaining to cyber security incidents and punishment
+                of
+                offences under any law for the time being in force.</p>
+            <p>If you, the candidate, accept HireLock offer you consent that if you don’t join the company which made
+                the
+                offer, that information will be shared with any company looking to hire you in the future. You agree
+                that
+                HireCommit shall continue to use this information even after you delete the account from HireCommit.</p>
+            <p>In the event of any dispute between two or more parties as to joining or not joining of any accepted
+                offer,
+                you agree that HireCommit shall be the sole arbitrator for such dispute and that HireCommit’s decision
+                in
+                this regard will be final and binding on you.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Eligibility</h3>
+            <p>Any person who is above eighteen (18) years of age and competent to contract under the applicable laws is
+                eligible to access or visit the Website or avail the Services displayed therein. Your use or access of
+                the
+                Website shall be treated as your representation that you are competent to contract and if you are
+                registering as a business entity, then you represent and warrant that you have the authority to bind
+                such
+                business entity to the Terms of Use. Without generality of the foregoing, use of the Website is
+                available
+                only to persons who can form a legally binding contract under the Indian Contract Act, 1872 and any
+                amendments thereto.</p>
+            <p>The User represents and warrants that it will be financially responsible for all of User's usage
+                (including
+                the purchase of any Service) and access of the Website. The User shall also be responsible for use of
+                User's
+                account by others. The Terms of Use shall be void where prohibited by applicable laws, and the right to
+                access the Website shall automatically stand revoked in such cases.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Content in the Services</h3>
+            <p>For purposes of these Terms of Use, the term “CONTENT” includes, without limitation, information, data,
+                text,
+                logos, photographs, videos, audio clips, animations, written posts, articles, comments, software,
+                scripts,
+                graphics, themes and interactive features generated, provided or otherwise made accessible on or through
+                the
+                Services.</p>
+            <p>You should be aware that Content presented to you as part of the Services, including but not limited to
+                advertisements in the Services and sponsored Content within the Services may be protected by
+                intellectual
+                property rights which are owned by the sponsors or advertisers who provide that Content to HireCommit
+                (or by
+                other persons or companies on their behalf). You may not modify, rent, lease, loan, sell, distribute or
+                create derivative works based on this Content (either in whole or in part) unless you have been
+                specifically
+                told that you may do so by HireCommit or by the owners of that Content, in writing and in a separate
+                agreement.</p>
+            <p>HireCommit reserves the right (but shall have no obligation) to pre-screen, review, flag, filter, modify,
+                refuse or remove any or all Content from any Service.</p>
+            <p>HireCommit reserves the right to moderate, publish, re-publish, and use all User generated contributions
+                and
+                comments (including but not limited to reviews, profile pictures, comments, likes, favorites, votes)
+                posted
+                on the Website as it deems appropriate (whether in whole or in part) for its product(s), whether owned
+                or
+                affiliated. HireCommit is not liable to pay royalty to any User for re-publishing any content across any
+                of
+                its platforms.</p>
+            <p>If you submit any material on the Website, you agree thereby to grant HireCommit the right to use,
+                moderate,
+                publish any such work worldwide for any of its product(s), whether owned or affiliated.</p>
+            <p>You understand that by using the Services you may be exposed to Content that you may find offensive,
+                indecent
+                or objectionable and that, in this respect, your use of the Services will be at your own risk.</p>
+            <p>You agree that you are solely responsible for (and that HireCommit has no responsibility to you or to any
+                third party for) any Content that you create, transmit or display while using the Services and for the
+                consequences of your actions (including any loss or damage which HireCommit may suffer) by doing so.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Proprietary Rights</h3>
+            <p>You acknowledge and agree that HireCommit (or HireCommit 's licensors) owns all legal and proprietary
+                right,
+                title and interest in and to the Services, including any intellectual property rights which subsist in
+                the
+                Services (whether those rights happen to be registered or not, and wherever in the world those rights
+                may
+                exist). You further acknowledge that the Services may contain information which is designated
+                confidential
+                by HireCommit and that you shall not disclose such information without HireCommit 's prior written
+                consent.
+            </p>
+            <p>Unless you have agreed otherwise in writing with HireCommit, nothing in the Terms of Use gives you a
+                right to
+                use any of HireCommit 's trade names, trademarks, service marks, logos, domain names, and other
+                distinctive
+                brand features.</p>
+            <p>Unless you have been expressly authorized to do so in writing by HireCommit, you agree that in using the
+                Services, you will not use any trade mark, service mark, trade name, logo of any company or organization
+                in
+                a way that is likely or intended to cause confusion about the owner or authorized User of such marks,
+                names
+                or logos.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>7. Exclusion of Warranties</h3>
+            <p>Nothing in these Terms of Use, including this paragraph 8, shall exclude or limit your warranty or
+                liability
+                for losses which may not be lawfully excluded or limited by applicable law. Some jurisdictions do not
+                allow
+                the exclusion of certain warranties or conditions or the limitation or exclusion of liability for loss
+                or
+                damage caused by negligence, breach of contract or breach of implied terms, or incidental or
+                consequential
+                damages. Accordingly, only the limitations which are lawful in your jurisdiction will apply to you and
+                our
+                liability will be limited to the maximum extent permitted by law. HireCommit disclaims any implied
+                warranty
+                for Services and any use thereof.</p>
+            <p>You expressly understand and agree that your use of the Services is at your sole risk and that the
+                Services
+                are provided on an "as is" and "as available" basis.</p>
+            <p>In particular, HireCommit, its subsidiaries and affiliates, and its licensors do not represent or warrant
+                to
+                you that:</p>
+            <ul class="disc">
+                <li>The information or Contents provided on the Website are accurate, complete and updated;</li>
+                <li>Your use of the Services will meet your requirements;</li>
+                <li>Your use of the Services will be uninterrupted, timely, secure or free from error;</li>
+                <li>Any information obtained by you as a result of your use of the Services will be accurate or
+                    reliable;
+                    and</li>
+                <li>That defects in the operation or functionality of any software provided to you as part of the
+                    Services
+                    will be corrected.</li>
+            </ul>
+            <p>Any material downloaded or otherwise obtained through the use of the Services is done at your own
+                discretion
+                and risk and that you will be solely responsible for any damage to your computer system or other device
+                or
+                loss of data that results from the download of any such material.</p>
+            <p>No advice or information, whether oral or written, obtained by you from HireCommit or from the use of
+                Services shall create any warranty not expressly stated in these Terms of Use.</p>
+            <p>HireCommit further expressly disclaims all warranties and conditions of any kind, whether express or
+                implied,
+                including, but not limited to the implied warranties and conditions of merchantability, fitness for a
+                particular purpose and non-infringement.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Indemnity</h3>
+            <p>The User shall indemnify and hold HireCommit, its subsidiaries, affiliates, directors, employees,
+                contractors, licensors and agents harmless from and against all losses arising from claims, demands,
+                actions
+                or other proceedings as a result of:</p>
+            <ul class="disc">
+                <li>Fraud, negligence and willful misconduct by the User in the use of the Services;</li>
+                <li>Violation of applicable laws in the use of the Services and/ or in the conduct of the business of
+                    the
+                    User;</li>
+                <li>Breach of the User’s confidentiality obligations under these Terms of Use;</li>
+                <li>Disputes raised by a User’s customer in relation to a transaction where such dispute is not
+                    attributable
+                    to the Services; and</li>
+                <li>Fines, penalties and charges imposed by Authority on account of transactions on the User’s website
+                    or
+                    platform that are in violation of applicable law.</li>
+            </ul>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Limitation of Liability</h3>
+            <p>Subject to the overall provisions stated above, you expressly understand and agree that HireCommit, its
+                subsidiaries, affiliates, directors, employees, agents and licensors shall not be liable to you for:</p>
+            <ul class="disc">
+                <li>Any direct, indirect, incidental, special, consequential, punitive or exemplary damages which may be
+                    incurred by you, however caused and under any theory of liability. This shall include, but not be
+                    limited to, any loss of profit (whether incurred directly or indirectly), any loss of goodwill or
+                    business reputation, any loss of data suffered, cost of procurement of substitute goods or Services,
+                    or
+                    other intangible loss;</li>
+                <li>Any loss or damage which may be incurred by you, including but not limited to loss or damage as a
+                    result
+                    of any reliance placed by you on the completeness, accuracy or existence of any advertising, or as a
+                    result of any relationship or transaction between you and any advertiser or sponsor whose
+                    advertisement
+                    appears on the Services;</li>
+                <li>The deletion of, corruption of, or failure to store, any content and other communications data
+                    maintained or transmitted by or through your use of the Services;</li>
+                <li>Your failure to provide HireCommit with accurate Registration Data; or</li>
+                <li>Your failure to keep your password or account details secure and confidential.</li>
+            </ul>
+            <p>The limitations on HireCommit’s liability to you shall apply whether or not HireCommit has/ had been
+                advised
+                of or should have been aware of the possibility of any losses to you.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Confidentiality</h3>
+            <p>The User may receive or have access to certain confidential and proprietary information, including
+                without
+                limitation, information belonging and/ or relating to HireCommit and its affiliates, marketing
+                prospects,
+                contractors, officers, directors or shareholders, personal data of customers of the User, financial and
+                operational information, billing records, business model and reports, computer systems and modules,
+                secure
+                websites, reporting systems, marketing strategies, operational plans, proprietary systems and
+                procedures,
+                trade secrets and other similar proprietary information, including technical “know-how”, methods of
+                operation, business methodologies, software, software and technology architecture, networks, any other
+                information not generally available to the public, and any items in any form in writing or oral, clearly
+                identified as confidential (“CONFIDENTIAL INFORMATION”).</p>
+            <p>The User shall keep Confidential Information in confidence. The User shall use commercial reasonable and
+                necessary safety measures and steps to maintain the confidentiality and secrecy of the Confidential
+                Information from public disclosure, and the User shall at all times maintain appropriate measures to
+                protect
+                the security and integrity of the Confidential Information. The User shall not, without HireCommit’s
+                prior
+                written consent, divulge any of the Confidential Information to any third party other than the User’s
+                officers, employees, agents or representatives who have a need to know for the purposes of these Terms
+                of
+                Use. The User shall take all reasonable steps to ensure that all of its directors, managers, officers,
+                employees, agents, independent contractors or other representatives comply with this paragraph 12
+                whenever
+                they are in possession of Confidential Information as part of this Agreement. The User shall use the
+                Confidential Information solely in furtherance of and in connection with the Services contemplated under
+                these Terms of Use. The User further agrees that the Confidential Information will not be used by him/
+                her
+                and his/ her representatives, in any way detrimental to the interests of HireCommit.</p>
+            <p>Exceptions: The aforesaid confidentiality obligations shall impose no obligation on the User with respect
+                to
+                any portion of Confidential Information which:</p>
+            <ul class="disc">
+                <li>Was at the time received or which thereafter becomes, through no act or failure on the part of the
+                    User,
+                    generally known or available to the public;</li>
+                <li>Was at the time of receipt, known to the User as evidenced by written documentation then rightfully
+                    in
+                    the possession of the User or HireCommit;</li>
+                <li>Was already acquired by the User from a third party who does not thereby breach an obligation of
+                    confidentiality to HireCommit and who discloses it to the User in good faith;</li>
+                <li>Is developed by the User without use of the HireCommit’s Confidential Information in such
+                    development;
+                    or</li>
+                <li>Has been disclosed pursuant to the requirements of applicable law, any governmental authority,
+                    provided
+                    however, that HireCommit shall have been given a reasonable opportunity to resist disclosure and/ or
+                    to
+                    obtain a suitable protective order.</li>
+            </ul>
+            <p>The User shall notify HireCommit immediately upon discovery of any unauthorized use or disclosure of
+                Confidential Information or any other breach of this paragraph 12. The User will cooperate with
+                HireCommit
+                in every reasonable way to help HireCommit regain possession of such Confidential Information and
+                prevent
+                its further unauthorized use.</p>
+            <p>Remedies: Parties acknowledge that irreparable damage may occur on breach of the terms and provisions set
+                out
+                in this paragraph 12. Accordingly, if the User breaches or threatens to breach any of the provisions set
+                out
+                in this paragraph 12, then HireCommit shall be entitled, without prejudice, to seek all the rights and
+                remedies available to it under applicable law, including a temporary restraining order and an injunction
+                restraining any breach of the provisions set out in this paragraph 12. Such remedies shall not be deemed
+                to
+                be exclusive but shall be in addition to all other remedies available under applicable law or in equity.
+            </p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Advertising</h3>
+            <p>Some of the Services are supported by advertising revenue and may display advertisements and promotions.
+                These advertisements may be targeted to the content of information stored on the Services, queries made
+                through the Services or other information.</p>
+            <p>The manner, mode and extent of advertising by HireCommit on the Services are subject to change without
+                any
+                specific notice to you.</p>
+            <p>In consideration for HireCommit granting you access to and use of the Services, you agree that HireCommit
+                may
+                place such advertising on the Services.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Technical Issues & Delivery Policy</h3>
+            <p>In case of any technical issues, please raise a support ticket from your service dashboard or by emailing
+                us
+                at <a href="mailto:support@hirecommit.com">support@hirecommit.com</a> to let us know of the same. We
+                endeavor to deliver Service to you within 15 (fifteen) working days of bank approval, failing which you
+                can
+                terminate a transaction related to Service at any time.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Governing Law, Settlement of Disputes and Jurisdiction</h3>
+            <p>These Terms of Use and any dispute or claim arising under it will be governed by and construed in
+                accordance
+                with the laws of India. The Users agree that any legal action or proceedings arising out of these Terms
+                of
+                Use or in connection with these Terms of Use may be brought exclusively in the competent courts/
+                tribunals
+                having jurisdiction in Mumbai, India and the Users irrevocably submit themselves to the jurisdiction of
+                such
+                courts/ tribunals.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Privacy</h3>
+            <p>Your privacy is extremely important to us. Upon acceptance of these Terms of Use you confirm that you
+                have
+                read, understood and unequivocally accepted our Privacy Policy.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>Complaints and Grievance Redressal</h3>
+            <p>Any complaints or concerns with regards to content of this Website or comment or breach of these Terms of
+                Use
+                or any intellectual property of any User shall be immediately informed to us at <a
+                    href="mailto:support@hirecommit.com">support@hirecommit.com</a></p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>SCHEDULE I - PART A <small>HireLock</small></h3>
+            <p>The HireLock feature empowers companies to enhance joining rates and reduce no of back-outs after
+                candidate
+                accepts offer. HireLock offer can be designed to suit candidate profile. Choose from a one-way option
+                for
+                candidates to commit, or A two-way option enables both the company and candidate to commit. HireLock can
+                be
+                turned off or set for individual offers.</p>
+            <p>Candidates who accept HireLock offer commit to join when they accept offer and give consent that if they
+                back
+                out their information made available to future prospective employers.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>SCHEDULE I - PART B <small>Structured and Automated Communication</small></h3>
+            <p>Companies can streamline communication strategy to enhance the candidate experience, and automated
+                communications remove the burden of unstructured tasks. Companies can configure organization-specific
+                communication for groups/ individuals and set emails to be fired on a fixed date/no. of days before or
+                after
+                a milestone.</p>
+            <p>Post offer engagement builds company, candidate rapport, and encourages result-oriented engagement.</p>
+        </div>
+        <div class="privaypolicy-body">
+            <h3>PART C <small>Advance Alerts</small></h3>
+            <p>Companies can get advance alerts to warm them of potential drop-outs. With AI-assisted candidate
+                communication analysis, email alerts are sent to warn about the candidates who are at risk of not
+                joining.
+                Alert conditions fully customizable based on business needs.</p>
+        </div>
+        <div class="need-assistance">
+            <br /> <br />
+            <p>I HEREBY CONFIRM THAT I HAVE READ THESE TERMS OF USE AND ACCEPT THEM.</p>
+        </div>
+    </div>
+</section>
 
-<h6>4. FORWARD LOOKING STATEMENTS</h6>
-<p>All materials reproduced on this site speak as of the original date of publication or filing. The fact that a
-    document
-    is available on this site does not mean that the information contained in such document has not been modified or
-    superseded by events or by a subsequent document or filing. We have no duty or policy to update any information or
-    statements contained on this site and, therefore, such information or statements should not be relied upon as being
-    current as of the date you access this site.</p>
-
-<h6>5. DISCLAIMER OF WARRANTIES AND LIMITATION OF LIABILITY</h6>
-<p><b>A.</b> THIS SITE MAY CONTAIN INACCURACIES AND TYPOGRAPHICAL ERRORS. WE DOES NOT WARRANT THE ACCURACY OR
-    COMPLETENESS OF
-    THE
-    MATERIALS OR THE RELIABILITY OF ANY ADVICE, OPINION, STATEMENT OR OTHER INFORMATION DISPLAYED OR DISTRIBUTED THROUGH
-    THE
-    SITE. YOU EXPRESSLY UNDERSTAND AND AGREE THAT: (i) YOUR USE OF THE SITE, INCLUDING ANY RELIANCE ON ANY SUCH OPINION,
-    ADVICE, STATEMENT, MEMORANDUM, OR INFORMATION CONTAINED HEREIN, SHALL BE AT YOUR SOLE RISK; (ii) THE SITE IS
-    PROVIDED ON
-    AN "AS IS" AND "AS AVAILABLE" BASIS; (iii) EXCEPT AS EXPRESSLY PROVIDED HEREIN WE DISCLAIM ALL WARRANTIES OF ANY
-    KIND,
-    WHETHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-    PARTICULAR PURPOSE, WORKMANLIKE EFFORT, TITLE AND NON-INFRINGEMENT; (iv) WE MAKE NO WARRANTY WITH RESPECT TO THE
-    RESULTS
-    THAT MAY BE OBTAINED FROM THIS SITE, THE PRODUCTS OR SERVICES ADVERTISED OR OFFERED OR MERCHANTS INVOLVED; (v) ANY
-    MATERIAL DOWNLOADED OR OTHERWISE OBTAINED THROUGH THE USE OF THE SITE IS DONE AT YOUR OWN DISCRETION AND RISK; and
-    (vi)
-    YOU WILL BE SOLELY RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER SYSTEM OR FOR ANY LOSS OF DATA THAT RESULTS FROM THE
-    DOWNLOAD OF ANY SUCH MATERIAL.</p>
-
-<p><b>B.</b> YOU UNDERSTAND AND AGREE THAT UNDER NO CIRCUMSTANCES, INCLUDING, BUT NOT LIMITED TO, NEGLIGENCE, SHALL WE
-    BE
-    LIABLE
-    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE OR CONSEQUENTIAL DAMAGES THAT RESULT FROM THE USE OF, OR THE
-    INABILITY TO USE, ANY OF OUR SITES OR MATERIALS OR FUNCTIONS ON ANY SUCH SITE, EVEN IF WE HAVE BEEN ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGES. THE FOREGOING LIMITATIONS SHALL APPLY NOTWITHSTANDING ANY FAILURE OF ESSENTIAL PURPOSE
-    OF
-    ANY LIMITED REMEDY.</p>
-
-<h6>6. EXCLUSIONS AND LIMITATIONS</h6>
-<p>SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR
-    INCIDENTAL OR CONSEQUENTIAL DAMAGES. ACCORDINGLY, OUR LIABILITY IN SUCH JURISDICTION SHALL BE LIMITED TO THE MAXIMUM
-    EXTENT PERMITTED BY LAW.</p>
-
-<h6>7. OUR PROPRIETARY RIGHTS</h6>
-<p>This Site and all its Contents are intended solely for personal, non-commercial use. Except as expressly provided,
-    nothing within the Site shall be construed as conferring any license under our or any third party's intellectual
-    property rights, whether by estoppel, implication, waiver, or otherwise. Without limiting the generality of the
-    foregoing, you acknowledge and agree that all content available through and used to operate the Site and its
-    services is
-    protected by copyright, trademark, patent, or other proprietary rights. You agree not to: (a) modify, alter, or
-    deface
-    any of the trademarks, service marks, trade dress (collectively "Trademarks") or other intellectual property made
-    available by us in connection with the Site; (b) hold yourself out as in any way sponsored by, affiliated with, or
-    endorsed by us, or any of our affiliates or service providers; (c) use any of the Trademarks or other content
-    accessible
-    through the Site for any purpose other than the purpose for which we have made it available to you; (d) defame or
-    disparage us, our Trademarks, or any aspect of the Site; and (e) adapt, translate, modify, decompile, disassemble,
-    or
-    reverse engineer the Site or any software or programs used in connection with it or its products and services.
-
-    The framing, mirroring, scraping or data mining of the Site or any of its content in any form and by any method is
-    expressly prohibited.
-</p>
-
-<h6>8. INDEMNITY</h6>
-<p>By using the Site web sites you agree to indemnify us and affiliated entities (collectively "Indemnities") and hold
-    them
-    harmless from any and all claims and expenses, including (without limitation) attorney's fees, arising from your use
-    of
-    the Site web sites, your use of the Products and Services, or your submission of ideas and/or related materials to
-    us or
-    from any person's use of any ID, membership or password you maintain with any portion of the Site, regardless of
-    whether
-    such use is authorized by you.</p>
-
-<h6>9. COPYRIGHT AND TRADEMARK NOTICE</h6>
-<p>Except our generated dummy copy, which is free to use for private and commercial use, all other text is copyrighted.
-    generator.lorem-ipsum.info © 2013, all rights reserved</p>
-
-<h6>10. INTELLECTUAL PROPERTY INFRINGEMENT CLAIMS</h6>
-<p>It is our policy to respond expeditiously to claims of intellectual property infringement. We will promptly process
-    and
-    investigate notices of alleged infringement and will take appropriate actions under the Digital Millennium Copyright
-    Act
-    ("DMCA") and other applicable intellectual property laws. Notices of claimed infringement should be directed to:
-
-    generator.lorem-ipsum.info
-
-    126 Electricov St.
-
-    Kiev, Kiev 04176
-
-    Ukraine
-
-    contact@lorem-ipsum.info</p>
-
-<h6>11. PLACE OF PERFORMANCE</h6>
-<p>This Site is controlled, operated and administered by us from our office in Kiev, Ukraine. We make no representation
-    that materials at this site are appropriate or available for use at other locations outside of the Ukraine and
-    access to
-    them from territories where their contents are illegal is prohibited. If you access this Site from a location
-    outside of
-    the Ukraine, you are responsible for compliance with all local laws.</p>
-
-<h6>12. GENERAL</h6>
-<p>A. If any provision of these Terms and Conditions is held to be invalid or unenforceable, the provision shall be
-    removed
-    (or interpreted, if possible, in a manner as to be enforceable), and the remaining provisions shall be enforced.
-    Headings are for reference purposes only and in no way define, limit, construe or describe the scope or extent of
-    such
-    section. Our failure to act with respect to a breach by you or others does not waive our right to act with respect
-    to
-    subsequent or similar breaches. These Terms and Conditions set forth the entire understanding and agreement between
-    us
-    with respect to the subject matter contained herein and supersede any other agreement, proposals and communications,
-    written or oral, between our representatives and you with respect to the subject matter hereof, including any terms
-    and
-    conditions on any of customer's documents or purchase orders.
-
-    B. No Joint Venture, No Derogation of Rights. You agree that no joint venture, partnership, employment, or agency
-    relationship exists between you and us as a result of these Terms and Conditions or your use of the Site. Our
-    performance of these Terms and Conditions is subject to existing laws and legal process, and nothing contained
-    herein is
-    in derogation of our right to comply with governmental, court and law enforcement requests or requirements relating
-    to
-    your use of the Site or information provided to or gathered by us with respect to such use.
-</p>
+<footer class="footer">
+    <div class="container">
+        <div class="d-flex">
+            <div class="copyright">
+                <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
+            </div>
+            <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
+            <div class="contact-link">
+                <a [routerLink]="['aboutus']" target="_blank">About us</a>
+                <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -14,6 +14,9 @@ import { TermsConditionComponent } from './shared/terms-condition/terms-conditio
 import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
 import { EmployerLandingComponent } from './views/static/employer-landing/employer-landing.component';
 import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
+
+import { AboutUsComponent } from './shared/about-us/about-us.component';
+import { ContactUSComponent } from './shared/contact-us/contact-us.component';
 import { CandidateLoginComponent } from './shared/login/candidate-login/candidate-login.component';
 import { EmployerLoginComponent } from './shared/login/employer-login/employer-login.component';
 import { AdminLoginComponent } from './shared/login/admin-login/admin-login.component';
@@ -24,6 +27,8 @@ export const routes: Routes = [
   // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'privacypolicy', component: PrivacyPolicyComponent },
   { path: 'termsandcondition', component: TermsConditionComponent },
+  { path: 'aboutus', component: AboutUsComponent },
+  { path: 'contactus', component: ContactUSComponent },
   { path: 'authorize', component: AuthorizationComponent },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'forgot_password', component: ForgotPasswordComponent },

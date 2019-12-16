@@ -215,7 +215,11 @@
             <div class="copyright">
                 <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
             </div>
-            <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div>
+            <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
+            <div class="contact-link">
+                <a [routerLink]="['aboutus']" target="_blank">About us</a>
+                <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+            </div>
         </div>
     </div>
 </footer>

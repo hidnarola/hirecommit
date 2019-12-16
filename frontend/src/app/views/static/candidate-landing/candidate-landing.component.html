@@ -74,7 +74,7 @@
                         <h3>Accept offer</h3>
                         <p>Review your offer(s) from companies and select one. Once you are ready to accept, you will
                             have
-                            to onsent to the terms if it's a HireLock offer. HireLock only comes into effect after you
+                            to consent to the terms if it's a HireLock offer. HireLock only comes into effect after you
                             accept an offer. There is no restriction on no. of offers you can receive.</p>
                     </div>
                 </li>
@@ -156,7 +156,11 @@
             <div class="copyright">
                 <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
             </div>
-            <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div>
+            <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
+            <div class="contact-link">
+                <a [routerLink]="['aboutus']" target="_blank">About us</a>
+                <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+            </div>
         </div>
     </div>
 </footer>

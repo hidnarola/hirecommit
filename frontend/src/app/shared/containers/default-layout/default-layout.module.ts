@@ -29,6 +29,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { DataTablesModule } from 'angular-datatables';
 import { SharedModule } from '../../shared.module';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [...APP_CONTAINERS],
@@ -47,6 +49,8 @@ import { SharedModule } from '../../shared.module';
     DataTablesModule,
     SharedModule,
     // NgbModule
-  ]
+    ConfirmDialogModule
+  ], providers: [ConfirmationService]
+
 })
 export class DefaultLayoutModule { }
