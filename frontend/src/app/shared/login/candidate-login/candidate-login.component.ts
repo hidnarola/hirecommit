@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-candidate-login',
   templateUrl: './candidate-login.component.html',
@@ -102,8 +102,18 @@ export class CandidateLoginComponent implements OnInit {
 
       }, (err) => {
         this.show_spinner = false;
-        console.log('err => ', err);
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        console.log('err here => ', err['error']['isApproved']);
+        if (err['error']['isApproved'] === false) {
+          Swal.fire(
+            {
+              type: 'error',
+              text: err['error']['message']
+            }
+          );
+        }
+        else {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        }
       });
     }
   }

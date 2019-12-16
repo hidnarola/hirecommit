@@ -17,6 +17,8 @@ import * as moment from 'moment';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { environment } from '../../../../../environments/environment';
 import { NgxSummernoteDirective } from 'ngx-summernote';
+
+declare const $: any;
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
@@ -61,9 +63,26 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   selectedValue: string;
   Candidate: HTMLElement;
   is_communication_added = false;
+  cursorPos: any;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
+
+  config: any = {
+    height: '200px',
+    uploadImagePath: '/api/upload',
+    toolbar: [
+      ['misc', ['codeview', 'undo', 'redo', 'codeBlock']],
+      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+      ['fontsize', ['fontname', 'fontsize', 'color']],
+      ['para', ['style0', 'ul', 'ol', 'paragraph', 'height']],
+      ['insert', ['table', 'picture', 'link', 'video', 'hr']],
+      ['customButtons', ['testBtn']]
+    ],
+    buttons: {
+      'testBtn': this.customButton()
+    }
+  };
 
   editorConfig: AngularEditorConfig = {
     editable: true,
@@ -252,6 +271,20 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // AdHoc Communication 
   get AdHocCommunication() {
     return this.form.get('AdHocCommunication') as FormArray;
+  }
+
+  customButton() {
+    return (context) => {
+      const ui = $.summernote.ui;
+      const button = ui.button({
+        contents: 'Test btn',
+        tooltip: 'Test',
+        click: function () {
+          context.invoke('editor.insertText', '<div>Hello from test btn!!!!</div>');
+        }
+      });
+      return button.render();
+    };
   }
 
   // Update form validation
@@ -1002,7 +1035,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // add more communication
   addMoreCommunication() {
     // this.is_disabled_btn = true;
+
     this.add_new_AdHoc_communication();
+    //  $('#summernote').summernote();
+
+
   }
   // add new communication
   add_new_communication(data_index = null) {
@@ -1214,21 +1251,41 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCursor = (i, e) => {
-    console.log('event=>', i, e, e.selectionStart);
+  getCursor = (e) => {
+    const selection = document.getSelection();
+    this.cursorPos = selection.anchorOffset;
+    console.log('pos=>', e, this.cursorPos, this.editor.nativeElement.selectionStart);
     // console.log('values=>', this.form.value);
     // console.log('this.form.controls[`AdHoc_message`].value=>',
     //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
   }
 
   append(value) {
+    let oldContent = '';
+
+    if (value === 'AdHoc_message') {
+      value = null;
+      const selection = document.getSelection();
+      this.cursorPos = selection.anchorOffset;
+      oldContent = this.valueForEditor;
+      const toInsert = value == null ? '' : value;
+      const newContent = oldContent.substring(0, this.cursorPos) + toInsert + oldContent.substring(this.cursorPos);
+      this.valueForEditor = newContent;
+    } else {
+      const toInsert = value == null ? '' : value;
+      const newContent = this.valueForEditor.substring(0, this.cursorPos) + toInsert + this.valueForEditor.substring(this.cursorPos);
+      this.valueForEditor = newContent;
+    }
+    // const element = document.getElementById('editor');
 
     // this.editorDir.writeValue('<p>Bello</p>');
-
+    //  $('#editor').summernote('insertText', 'This text should appear at the cursor');
     // console.log('editor=>', this.editor.nativeElement.writeValue('XXXXXXXXXXXX'));
     console.log('editor=>', this.editor);
 
     console.log('valueForEditor => ', this.valueForEditor);
+
+
     // if (!this.valueForEditor) {
     //   console.log('if value  => ');
     //   this.valueForEditor = value;

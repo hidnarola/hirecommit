@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-admin-login',
   templateUrl: './admin-login.component.html',
@@ -133,9 +133,21 @@ export class AdminLoginComponent implements OnInit {
 
       }, (err) => {
         this.show_spinner = false;
-        console.log('err => ', err);
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        console.log('err => ', err['error']['isApproved']);
+        if (err['error']['isApproved'] === false) {
+          Swal.fire(
+            {
+              type: 'error',
+              text: err['error']['message']
+            }
+          );
+        }
+        else {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        }
       });
+      //   this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+      // });
     }
   }
 

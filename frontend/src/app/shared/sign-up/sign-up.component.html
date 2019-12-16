@@ -65,22 +65,22 @@
                       *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
                       field
                       is required.</span>
-                    <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
+                    <!-- <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
+                      must be in valid format.</span>
+                    <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
+                      This Email address is already registered.
+                    </span> -->
+                  </div>
+                  <div class="error" *ngIf="!registerForm.controls['email'].valid">
+                    <span *ngIf="registerForm.controls['email'].errors.pattern">Email
                       must be in valid format.</span>
                     <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
                       This Email address is already registered.
                     </span>
-                  </div>
-                  <div class="error" *ngIf="!registerForm.controls['email'].valid">
-                    <span *ngIf="registerForm.controls['email'].errors['pattern']  && !isFormSubmitted ">Email
-                      must be in valid format.</span>
-                    <span *ngIf="registerForm.controls['email'].errors['isExist']  && !isFormSubmitted ">
-                      This Email address is already registered.
-                    </span>
-                    <span
-                      *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
+                    <!-- <span
+                      *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace  && !isFormSubmitted ">This
                       field
-                      is required.</span>
+                      is required.</span> -->
                   </div>
                 </div>
               </fieldset>
