@@ -29,6 +29,8 @@ var Role = require('./../models/role');
 var User = require('./../models/user');
 var Candidate_Detail = require('./../models/candidate-detail');
 var Employer_Detail = require('./../models/employer-detail');
+var SubEmployer_Detail = require('./../models/employer-detail');
+
 var CountryData = require('./../models/country_data');
 var BusinessType = require('./../models/business_type');
 var DocumentType = require('./../models/document_type');
@@ -47,9 +49,10 @@ const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
 // var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
+var captcha_secret = '6Ld35scUAAAAAMLfUgpqVna1Kw743xN7NkldjpGk';
 //
 //local
-var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+// var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -1102,14 +1105,33 @@ router.post('/forgot_password', async (req, res) => {
         var up = {
           "flag": 0
         }
+        if (user.data.role_id === "5d9d98a93a0c78039c6dd00d") {
+          var user_name = await common_helper.update(Employer_Detail, { "user_id": user.data._id });
+          var name = user_name.data.username;
+          name = name.substring(0, name.lastIndexOf(" "));
+        } else if (user.data.role_id === "5d9d99003a0c78039c6dd00f") {
+          var user_name = await common_helper.update(SubEmployer_Detail, { "user_id": user.data._id });
+          var name = user_name.data.username;
+          name = name.substring(0, name.lastIndexOf(" "));
+        } else if (user.data.role_id === "5d9d98e13a0c78039c6dd00e") {
+          var user_name = await common_helper.update(Candidate_Detail, { "user_id": user.data._id }, up);
+          var name = user_name.data.firstname;
+        }
         var resp_data = await common_helper.update(User, { "_id": user.data._id }, up);
         var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-mail' });
+        let upper_content = message.data.upper_content;
+        let lower_content = message.data.lower_content;
+
+
+        upper_content = upper_content.replace('{email}', req.body.email.toLowerCase());
 
         let mail_resp = await mail_helper.send("reset_password", {
           "to": user.data.email,
           "subject": "HireCommit - Reset Password"
         }, {
-          "msg": message.data.content,
+          "name": name,
+          "upper_content": upper_content,
+          "lower_content": lower_content,
           "reset_link": config.WEBSITE_URL + "reset-password/" + reset_token
         });
         if (mail_resp.status === 0) {
