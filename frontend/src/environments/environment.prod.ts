@@ -15,7 +15,8 @@ export const environment = {
   // API_URL: str + host + ':' + port + '/',
   API_URL: 'http://13.235.235.178:3000/',
   // captcha_site_key: '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc',
-  captcha_site_key: '6Ld35scUAAAAAPIB9rbf4ti5ELsampcdqwNeCgKc',
+  // captcha_site_key: '6Ld35scUAAAAAPIB9rbf4ti5ELsampcdqwNeCgKc',
+  captcha_site_key: '6Lem7ccUAAAAABRIlRSa6Nil1yC9m-uLVZTEdR3g',
 
   imageUrl: 'http://13.235.235.178:3000/upload/'
 };

@@ -49,7 +49,8 @@ const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
 // var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
-var captcha_secret = '6Ld35scUAAAAAMLfUgpqVna1Kw743xN7NkldjpGk';
+// var captcha_secret = '6Ld35scUAAAAAMLfUgpqVna1Kw743xN7NkldjpGk';
+var captcha_secret = '6Lem7ccUAAAAACnFxvyLx-3dNoH6ZVJEdshAsbON';
 //
 //local
 // var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
@@ -779,7 +780,7 @@ router.post('/login', async (req, res) => {
             ])
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
           } else {
-            var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'candidate_not_approve' });
+            var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'Your document is under process.' });
             // console.log(message);
 
             res.status(config.UNAUTHORIZED).json({ "status": 0, "message": message.data.content });
@@ -897,7 +898,7 @@ router.post('/login', async (req, res) => {
               res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
             }
           } else {
-            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
+            res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Your document is under process." });
           }
         } else {
           if (user_resp.isAllow == true) {
@@ -1204,6 +1205,30 @@ router.post('/reset_password', async (req, res) => {
                 } else {
                   logger.trace("Password has been changed - ", decoded._id);
 
+                  if (update_resp.data.role_id == "5d9d98a93a0c78039c6dd00d") {
+                    var user_name = await common_helper.findOne(Employer_Detail, { "user_id": update_resp.data._id });
+                    name = user_name.data.username;
+                    name = name.substring(0, name.lastIndexOf(" "));
+                  } else if (update_resp.data.role_id == "5d9d99003a0c78039c6dd00f") {
+                    var user_name = await common_helper.findOne(SubEmployer_Detail, { "user_id": update_resp.data._id });
+                    name = user_name.data.username;
+                    name = name.substring(0, name.lastIndexOf(" "));
+                  } else if (update_resp.data.role_id == "5d9d98e13a0c78039c6dd00e") {
+                    var user_name = await common_helper.findOne(Candidate_Detail, { "user_id": update_resp.data._id });
+                    name = user_name.data.firstname;
+                  }
+                  var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-success-mail' });
+                  let upper_content = message.data.upper_content;
+                  let lower_content = message.data.lower_content;
+                  let mail_resp = await mail_helper.send("reset_password_success", {
+                    "to": update_resp.data.email,
+                    "subject": "Password Reset Successful"
+                  }, {
+                    "name": name,
+                    "upper_content": upper_content,
+                    "lower_content": lower_content,
+                    // "reset_link": config.WEBSITE_URL + "reset-password/" + reset_token
+                  });
 
                   res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
                 }
