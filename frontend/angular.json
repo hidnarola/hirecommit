@@ -31,6 +31,7 @@
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/nova-light/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/summernote/dist/summernote-lite.css",
               "src/scss/static-style.css",
               "src/scss/style.scss"
             ],
@@ -42,7 +43,8 @@
             "scripts": [
               "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/datatables.net/js/jquery.dataTables.js"
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "node_modules/summernote/dist/summernote-lite.js"
             ]
           },
           "configurations": {

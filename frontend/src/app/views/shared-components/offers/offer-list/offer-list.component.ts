@@ -231,7 +231,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('err => ', err);
           });
         },
-        columnDefs: [{ orderable: false, targets: 10 },
+        columnDefs: [{ orderable: false, targets: 9 },
         { targets: 1, width: '100%' },
           // { targets: 3, width: '40%' },
           // { targets: 6, width: '100%' },
@@ -277,9 +277,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           // {
           //   data: 'group.name'
           // },
-          {
-            data: 'status'
-          },
+          // {
+          //   data: 'status'
+          // },
           {
             data: 'status'
           },

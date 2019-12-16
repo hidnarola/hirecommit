@@ -97,8 +97,8 @@
                                     Type</th>
                                 <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Group
                                 </th> -->
-                                <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
-                                    Status</th>
+                                <!-- <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
+                                    Status</th> -->
                                 <th>Offer
                                     Status</th>
                                 <!-- <th *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">Commit
@@ -148,9 +148,9 @@
                                     {{offer.offertype}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{ offer.group!=undefined && offer.group!='null'  ? offer.group.name : '-' }}</td> -->
-                                <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
+                                <!-- <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     -
-                                </td>
+                                </td> -->
                                 <td>
                                     {{offer.status|titlecase}}</td>
                                 <!-- <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">

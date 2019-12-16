@@ -73,7 +73,7 @@ export class ReportComponent implements OnInit, OnDestroy {
         });
 
       },
-      columnDefs: [{ orderable: false, targets: 10 }],
+      columnDefs: [{ orderable: false, targets: 9 }],
       columns: [
         {
           data: 'createdAt'
@@ -103,9 +103,9 @@ export class ReportComponent implements OnInit, OnDestroy {
         {
           data: 'status'
         },
-        {
-          data: 'commitstatus'
-        },
+        // {
+        //   data: 'commitstatus'
+        // },
 
         {
           data: 'actions'
