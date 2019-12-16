@@ -845,7 +845,6 @@ router.put('/sub_account/details', async (req, res) => {
             "subject": "Attention Mail"
         }, {
             'msg': content,
-
         });
         console.log('mail_resp', mail_resp);
 

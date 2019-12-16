@@ -1064,7 +1064,8 @@ router.post('/email_verify', async (req, res) => {
           }
           res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
           var message = await common_helper.findOne(MailType, { 'mail_type': 'welcome_mail' });
-          // console.log("----->", message);
+          console.log("----->", message);
+          console.log(' : user_resp.data.email ==> ', user_resp.data.email);
           logger.trace("sending mail");
           let mail_resp = await mail_helper.send("welcome_email", {
             "to": user_resp.data.email,
@@ -1073,6 +1074,7 @@ router.post('/email_verify', async (req, res) => {
             'msg': message.data.content,
             // "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
           });
+          console.log(' : mail_resp ==> ', mail_resp);
         }
       }
     }
