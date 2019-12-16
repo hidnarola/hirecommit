@@ -3,15 +3,15 @@
         <div class="d-flex">
             <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
             <div class="candidate-employer">
-                <a [class.active]="isCandidate" href="http://candidate.hirecommit.com">Candidate</a>
-                <a [class.active]="isEmployer" href="http://employer.hirecommit.com">Employer</a>
+                <a href="http://candidate.hirecommit.com">Candidate</a>
+                <a href="http://employer.hirecommit.com">Employer</a>
             </div>
             <div class="login-signup">
                 <a href="http://hirecommit.com/login">Login</a>
                 <span>-</span>
-                <a *ngIf="isCandidate" href="http://hirecommit.com/candidate_register">Sign up</a>
-                <a *ngIf="isEmployer" href="http://hirecommit.com/emp_register">Sign up</a>
-                <a *ngIf="isAdmin" href="javascript:void(0)">Sign up</a>
+                <!-- <a *ngIf="isCandidate" href="http://hirecommit.com/candidate_register">Sign up</a>
+                <a *ngIf="isEmployer" href="http://hirecommit.com/emp_register">Sign up</a> -->
+                <a href="javascript:void(0)">Sign up</a>
             </div>
         </div>
     </div>
