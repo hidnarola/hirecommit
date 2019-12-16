@@ -11,12 +11,12 @@ import { ConfirmationService } from 'primeng/api';
 import { EmployerService } from '../../../admin/employers/employer.service';
 import Swal from 'sweetalert2';
 import { SocketService } from '../../../../services/socket.service';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalOptions } from '../../../../shared/modal_options';
 import * as moment from 'moment';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { environment } from '../../../../../environments/environment';
+import { NgxSummernoteDirective } from 'ngx-summernote';
 @Component({
   selector: 'app-offer-add-view',
   templateUrl: './offer-add-view.component.html',
@@ -26,6 +26,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
   @ViewChild('content1', { static: false }) content1: ElementRef;
   @ViewChild('content2', { static: false }) content2: ElementRef;
+  @ViewChild('editor', { static: false }) editor: ElementRef;
+  @ViewChild('editor', { static: false }) editorDir: NgxSummernoteDirective;
   userName: any;
   public Editor = ClassicEditor;
   resData: any;
@@ -310,7 +312,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.form['controls'].email.valid) {
       this.service.email_exists({ 'email': this.form.value.email }).subscribe(res => {
       }, (err) => {
-        console.log('err=>', err);
         this.form.controls['email'].setErrors({ 'isExist': true });
       });
 
@@ -1213,15 +1214,30 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  getCursor = (i, e) => {
+    console.log('event=>', i, e, e.selectionStart);
+    // console.log('values=>', this.form.value);
+    // console.log('this.form.controls[`AdHoc_message`].value=>',
+    //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
+  }
+
   append(value) {
+
+    // this.editorDir.writeValue('<p>Bello</p>');
+
+    // console.log('editor=>', this.editor.nativeElement.writeValue('XXXXXXXXXXXX'));
+    console.log('editor=>', this.editor);
+
     console.log('valueForEditor => ', this.valueForEditor);
-    if (!this.valueForEditor) {
-      console.log('if value  => ');
-      this.valueForEditor = value;
-    } else {
-      console.log('else function=> ', value);
-      this.valueForEditor += value;
-    }
+    // if (!this.valueForEditor) {
+    //   console.log('if value  => ');
+    //   this.valueForEditor = value;
+    // } else {
+    //   console.log('else function=> ', value);
+    //   this.valueForEditor += value;
+    // }
+
+
   }
 
 

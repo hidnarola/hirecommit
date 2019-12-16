@@ -77,6 +77,10 @@
                     <span *ngIf="registerForm.controls['email'].errors['isExist']  && !isFormSubmitted ">
                       This Email address is already registered.
                     </span>
+                    <span
+                      *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
+                      field
+                      is required.</span>
                   </div>
                 </div>
               </fieldset>

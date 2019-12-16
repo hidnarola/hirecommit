@@ -14,7 +14,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TimelineComponent } from '../../employer/timeline/timeline.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { AngularEditorModule } from '@kolkov/angular-editor';
+import { NgxSummernoteModule } from 'ngx-summernote';
+// import { AngularEditorModule } from '@kolkov/angular-editor';
 @NgModule({
   declarations: [
     OfferListComponent,
@@ -32,7 +33,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     CalendarModule,
     InputSwitchModule,
     CKEditorModule,
-    AngularEditorModule,
+    // AngularEditorModule,
+    NgxSummernoteModule,
     ConfirmDialogModule,
     RadioButtonModule
   ], providers: [ConfirmationService]
