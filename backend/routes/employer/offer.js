@@ -212,7 +212,7 @@ router.post("/", async (req, res) => {
                 // obj.data = pastOffer.data
             }
             var interest_resp = await common_helper.insert(Offer, obj);
-            console.log(interest_resp);
+            // console.log(interest_resp);
 
             obj.offer_id = interest_resp.data._id
             obj.employer_id = req.userInfo.id;
@@ -236,7 +236,7 @@ router.post("/", async (req, res) => {
                 var lower_content = mailcontent.data.lower_content;
                 var name = candidate.data.firstname;
 
-                upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${interest_resp.data.expirydate}`);
+                upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
                 var obj = {
                     "name": name,
