@@ -1294,7 +1294,13 @@ router.post('/test_mail', async (req, res) => {
 
   // console.log('req.body ==> ', req.body);
   var content = req.body.content;
+
   var trackid = req.body.trackid;
+
+  var obj = {
+    "trackid": content,
+    "content": trackid
+  }
 
   // let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
   //   "to": req.body.email,
@@ -1303,13 +1309,21 @@ router.post('/test_mail', async (req, res) => {
   //   "trackid": trackid
   // }, content);
 
-  let mail_resp = mail_helper.send("candidate_email_confirmation", {
+  let mail_resp = await new_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
     "to": req.body.email,
-    "subject": "Welcome to the HireCommit | Verify Email"
-  }, {
-    "msg": content,
-    "url": ""
-  });
+    "reply_to": req.body.reply_to,
+    "subject": "Offer",
+    "trackid": trackid
+  }, obj);
+
+
+  // let mail_resp = mail_helper.send("candidate_email_confirmation", {
+  //   "to": req.body.email,
+  //   "subject": "Welcome to the HireCommit | Verify Email"
+  // }, {
+  //   "msg": content,
+  //   "url": ""
+  // });
 
   // if (mail_resp)
   res.json({ "message": "success" })

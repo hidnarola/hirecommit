@@ -75,7 +75,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     enableToolbar: true,
     showToolbar: true,
     placeholder: 'Enter text here...',
-    defaultParagraphSeparator: '',
+    defaultParagraphSeparator: 'p',
     defaultFontName: '',
     defaultFontSize: '',
     toolbarHiddenButtons: [
@@ -105,7 +105,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     uploadUrl: environment.imageUrl,
     sanitize: true,
     toolbarPosition: 'top',
-
   };
 
 
@@ -208,7 +207,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       communicationFieldItems: this.fb.array([]),
       AdHocCommunication: this.fb.array([]),
       // summerNotes
-      // editor: new FormControl(''),
+      editor: new FormControl(''),
       offerStatus: new FormControl(''),
       acceptanceDate: new FormControl('')
     });
@@ -1103,8 +1102,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     );
   }
 
-
-
   // blur event for salary input
   onSalaryBlur() {
     if (this.form.value.salarybracket > 0) {
@@ -1255,7 +1252,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       communication_array.push();
     }
 
-    //AdHoc Communication 
+    // AdHoc Communication 
     const AdHOc_communication_array = [];
     if (this.AdHocCommunicationData.length > 0) {
       console.log('AdHoc_message=>', this.AdHocCommunicationData);
@@ -1267,10 +1264,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           AdHoc_priority: element.AdHoc_priority,
           AdHoc_day: element.AdHoc_day,
           AdHoc_message: element.AdHoc_message
+          // AdHoc_message: element.AdHoc_message
         });
       });
-    }
-    else {
+    } else {
       AdHOc_communication_array.push();
     }
     this.formData = new FormData();

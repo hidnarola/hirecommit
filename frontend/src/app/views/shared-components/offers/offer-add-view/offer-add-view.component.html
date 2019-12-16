@@ -747,16 +747,16 @@
                                                     <div>
 
                                                         <!-- ck-editor -->
-                                                        <ckeditor [editor]="Editor" formControlName="AdHoc_message"
+                                                        <!-- <ckeditor [editor]="Editor" formControlName="AdHoc_message"
                                                             (ready)="onReady($event)"
                                                             [(ngModel)]="customfield.AdHoc_message">
-                                                        </ckeditor>
+                                                        </ckeditor> -->
                                                         <!-- ck-editor -->
 
                                                         <!-- angular-editor -->
-                                                        <!-- <angular-editor formControlName="AdHoc_message"
+                                                        <angular-editor formControlName="AdHoc_message"
                                                             [config]="editorConfig" [(ngModel)]="valueForEditor">
-                                                        </angular-editor> -->
+                                                        </angular-editor>
                                                         <!-- angular-editor -->
 
                                                         <div class="cust_err_msg"
@@ -769,18 +769,18 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- <div class="col-md-4 bunch-list">
+                                                <div class="col-md-4 bunch-list">
                                                     <label class="col-form-label">Title here</label>
                                                     <ul>
-                                                        <li (click)="append('offer_date')">offer_date</li>
-                                                        <li (click)="append('candidate_name')">candidate_name</li>
-                                                        <li (click)="append('title')">title</li>
-                                                        <li (click)="append('location')">location</li>
-                                                        <li (click)="append('joining_date')">joining_date</li>
-                                                        <li (click)="append('expiry_date')">expiry_date</li>
-                                                        <li (click)="append('acceptance_date')">acceptance_date</li>
+                                                        <li (click)="append('{offer_date}')">offer_date</li>
+                                                        <li (click)="append('{candidate_name}')">candidate_name</li>
+                                                        <li (click)="append('{title}')">title</li>
+                                                        <li (click)="append('{location}')">location</li>
+                                                        <li (click)="append('{joining_date}')">joining_date</li>
+                                                        <li (click)="append('{expiry_date}')">expiry_date</li>
+                                                        <li (click)="append('{acceptance_date}')">acceptance_date</li>
                                                     </ul>
-                                                    <ul>
+                                                    <!-- <ul>
                                                         <li (click)="append('Offer Date')">Offer Date</li>
                                                         <li (click)="append('Candidate Name')">Candidate Name</li>
                                                         <li (click)="append('Title')">Title</li>
@@ -788,8 +788,8 @@
                                                         <li (click)="append('Joining Date')">Joining Date</li>
                                                         <li (click)="append('Expiry Date')">Expiry Date</li>
                                                         <li (click)="append('Acceptance Date')">Acceptance Date</li>
-                                                    </ul>
-                                                </div> -->
+                                                    </ul> -->
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -21,7 +21,6 @@ const transporter = nodemailer.createTransport(
 new_mail_helper.send = async (template_id, options, data) => {
     // offer  : d-4e82d6fcf94e4acdb8b94d71e4c32455
     // console.log(options);
-
     sgMail.setApiKey(mail_api_key);
     const msg = {
         // to: options.to,
@@ -46,7 +45,11 @@ new_mail_helper.send = async (template_id, options, data) => {
                 ],
                 "cc": [{ "email": options.to }],
                 "dynamic_template_data": {
-                    "message": data,
+                    "message": "",
+                    "name": data.name,
+                    "upper_content": data.upper_content,
+                    "middel_content": data.middel_content,
+                    "lower_content": data.lower_content,
                 },
                 "subject": options.subject
             }
