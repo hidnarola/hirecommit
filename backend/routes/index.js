@@ -1105,17 +1105,18 @@ router.post('/forgot_password', async (req, res) => {
         var up = {
           "flag": 0
         }
-        if (user.data.role_id === "5d9d98a93a0c78039c6dd00d") {
-          var user_name = await common_helper.update(Employer_Detail, { "user_id": user.data._id });
-          var name = user_name.data.username;
+        var name;
+        if (user.data.role_id == "5d9d98a93a0c78039c6dd00d") {
+          var user_name = await common_helper.findOne(Employer_Detail, { "user_id": user.data._id });
+          name = user_name.data.username;
           name = name.substring(0, name.lastIndexOf(" "));
-        } else if (user.data.role_id === "5d9d99003a0c78039c6dd00f") {
-          var user_name = await common_helper.update(SubEmployer_Detail, { "user_id": user.data._id });
-          var name = user_name.data.username;
+        } else if (user.data.role_id == "5d9d99003a0c78039c6dd00f") {
+          var user_name = await common_helper.findOne(SubEmployer_Detail, { "user_id": user.data._id });
+          name = user_name.data.username;
           name = name.substring(0, name.lastIndexOf(" "));
-        } else if (user.data.role_id === "5d9d98e13a0c78039c6dd00e") {
-          var user_name = await common_helper.update(Candidate_Detail, { "user_id": user.data._id }, up);
-          var name = user_name.data.firstname;
+        } else if (user.data.role_id == "5d9d98e13a0c78039c6dd00e") {
+          var user_name = await common_helper.findOne(Candidate_Detail, { "user_id": user.data._id });
+          name = user_name.data.firstname;
         }
         var resp_data = await common_helper.update(User, { "_id": user.data._id }, up);
         var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-mail' });
@@ -1127,7 +1128,7 @@ router.post('/forgot_password', async (req, res) => {
 
         let mail_resp = await mail_helper.send("reset_password", {
           "to": user.data.email,
-          "subject": "HireCommit - Reset Password"
+          "subject": "Password Reset"
         }, {
           "name": name,
           "upper_content": upper_content,
@@ -1202,6 +1203,8 @@ router.post('/reset_password', async (req, res) => {
                   res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Error occured while reseting password of user" });
                 } else {
                   logger.trace("Password has been changed - ", decoded._id);
+
+
                   res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
                 }
               }
