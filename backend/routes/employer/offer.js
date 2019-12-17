@@ -1885,7 +1885,7 @@ router.put('/', async (req, res) => {
     }
     else if (offer_upadate.status == 1) {
 
-        if (offer_upadate.data.status === "Released") {
+        if (offer.data.status === "Released" && offer_upadate.data.status === "Released") {
             var message = await common_helper.findOne(MailContent, { 'mail_type': "update_offer" });
 
             let upper_content = message.data.upper_content;
@@ -1905,22 +1905,68 @@ router.put('/', async (req, res) => {
                 "middel_content": middel_content,
                 "lower_content": lower_content
             });
-        }
+        } else if (offer.data.status === "Accepted" && offer_upadate.data.status === "Not Joined") {
+            var message = await common_helper.findOne(MailContent, { 'mail_type': "not_join_offer" });
 
+            let upper_content = message.data.upper_content;
+            // let middel_content = message.data.middel_content;
+            let lower_content = message.data.lower_content;
 
-        if (offer.data.status !== offer_upadate.data.status) {
-            var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
+            upper_content = upper_content.replace('{employername}', employer.data.username);
+            var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
+            var name = user_name.data.firstname;
 
-            let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username} `).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
-
-            let mail_resp = await mail_helper.send("status_change", {
+            let mail_resp = await mail_helper.send("not_joined_offer", {
                 "to": user_email.data.email,
-                "subject": "Change Status of offer."
+                "subject": employer.data.username + " has marked that you have Not Joined after accepting an offer"
             }, {
-                "msg": content,
+                "name": name,
+                "upper_content": upper_content,
+                "lower_content": lower_content
             });
+        } else if (offer.data.status === "On Hold" && offer_upadate.data.status === "Released") {
+            var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
+            var name = user_name.data.firstname;
+
+            var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'offer_mail' });
+            var upper_content = mailcontent.data.upper_content;
+            var middel_content = mailcontent.data.middel_content;
+            var lower_content = mailcontent.data.lower_content;
+
+            upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
+
+            var obj = {
+                "name": name,
+                "upper_content": upper_content,
+                "middel_content": middel_content,
+                "lower_content": lower_content,
+            }
+
+            var reply_to = await common_helper.findOne(User, { "_id": offer_upadate.data.created_by });
+
+            let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                "to": user_email.data.email,
+                "reply_to1": `${reply_to.data.email}`,
+                "reply_to2": `${offer_upadate.data._id}@em7977.hirecommit.com`,
+                "subject": "You have received job offer from " + `${employer.data.username}`,
+                "trackid": offer_upadate.data._id
+            }, obj);
         }
+
+
+        // else if (offer.data.status !== offer_upadate.data.status) {
+        //     var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
+
+        //     let content = status.data.MessageContent;
+        //     content = content.replace("{employer}", `${employer.data.username} `).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
+
+        //     let mail_resp = await mail_helper.send("status_change", {
+        //         "to": user_email.data.email,
+        //         "subject": "Change Status of offer."
+        //     }, {
+        //         "msg": content,
+        //     });
+        // }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
     }
     else {

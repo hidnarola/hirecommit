@@ -46,15 +46,14 @@ var userpProfile = require('./profile');
 router.use("/profile", auth, userpProfile);
 
 const saltRounds = 10;
-var common_helper = require('./../helpers/common_helper')
+var common_helper = require('./../helpers/common_helper');
+
 // live
-var captcha_secret = '6Lem7ccUAAAAACnFxvyLx-3dNoH6ZVJEdshAsbON';
-//
-//local
-//var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+var captcha_secret = config.captcha_secret
 
 //get user
 router.get("/user", async (req, res) => {
+
   var response = await common_helper.find(User);
   res.status(config.OK_STATUS).send(response);
 });
@@ -86,6 +85,7 @@ router.post("/add_role", async (req, res) => {
     if (response.status === 0) {
       throw new Error('Error occured while inserting data');
     }
+
     res.status(config.OK_STATUS).json(response);
   } catch (error) {
     const response = {
@@ -1467,19 +1467,32 @@ router.post('/get_email', async (req, res) => {
     // console.log(' : from ==> ', req.body.from);
     // console.log(' : cc ==> ', req.body.cc);
     // console.log(": to =>", req.body.to)
-    var receive_id = req.body.to;
+    const reqBody = req.body;
+    var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     // console.log(": id ===> ", id);
 
-    var insert_reply_mail_resp = await common_helper.insert(RepliedMail, { "offerid": id, "message": req.body });
-
-    if (insert_reply_mail_resp.status == 1) {
-
-    }
+    var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
     // console.log("insert_reply_mail_resp", insert_reply_mail_resp);
 
-    var update_offer_reply = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true });
+    var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true }).populate('created_by', { email: 1 }).lean();
     // console.log("update_offer_reply", update_offer_reply);
+
+    mail_helper.forwardRepliedMail({
+      to: offer.created_by.email,
+      from: reqBody.from,
+      subject: reqBody.subject,
+      content: reqBody.email,
+      filename: 'repliedMail.eml',
+      html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+    }, (err, info) => {
+      if (err) {
+        console.log(error);
+      }
+      else {
+        console.log('Message forwarded: ' + info.response);
+      }
+    });
 
     res.status(200).send('success');
   } catch (error) {
