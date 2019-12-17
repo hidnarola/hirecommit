@@ -46,15 +46,19 @@ var userpProfile = require('./profile');
 router.use("/profile", auth, userpProfile);
 
 const saltRounds = 10;
-var common_helper = require('./../helpers/common_helper')
+var common_helper = require('./../helpers/common_helper');
+
 // live
-var captcha_secret = '6Lem7ccUAAAAACnFxvyLx-3dNoH6ZVJEdshAsbON';
+var captcha_secret = config.captcha_secret
+console.log('captcha_secret', captcha_secret);
+
 //
 //local
 //var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
+
   var response = await common_helper.find(User);
   res.status(config.OK_STATUS).send(response);
 });
@@ -86,6 +90,7 @@ router.post("/add_role", async (req, res) => {
     if (response.status === 0) {
       throw new Error('Error occured while inserting data');
     }
+
     res.status(config.OK_STATUS).json(response);
   } catch (error) {
     const response = {
