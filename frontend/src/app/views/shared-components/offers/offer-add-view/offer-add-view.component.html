@@ -99,9 +99,9 @@
                                         <!-- This Email address is already registered. -->
                                         You can not sent offer to this user.
                                     </span>
-                                    <span *ngIf="form.controls['email'].errors['required'] " class="text-danger">
+                                    <!-- <span *ngIf="form.controls['email'].errors['required'] " class="text-danger">
                                         This field is required.
-                                    </span>
+                                    </span> -->
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -744,7 +744,7 @@
                                                 <div class="col-md-8">
                                                     <label class="col-form-label" for="AdHoc_message">Message</label>
                                                     <!-- [(ngModel)]="customfield.AdHoc_message"  -->
-                                                    <div>
+                                                    <div (click)="append('AdHoc_message')">
 
                                                         <!-- ck-editor -->
                                                         <ckeditor [editor]="Editor" formControlName="AdHoc_message"
@@ -766,14 +766,14 @@
 
 </textarea> -->
 
-                                                        <!-- <textarea [ngxSummernote] #editor
-                                                            [(summernoteModel)]="valueForEditor" id="editor"
-                                                            formControlName="AdHoc_message"
-                                                            (click)="getCursor(i, editor)"
-                                                            (blur)="getCursor(i, editor)">
-                                                        </textarea> -->
+                                                        <!-- <div (click)="getCursor($event)" (keyup)="getCursor($event)">
+                                                            <textarea [ngxSummernote]="config" #editor
+                                                                [(summernoteModel)]="valueForEditor" id="editor"
+                                                                formControlName="AdHoc_message">
+                                                            </textarea>
+                                                        </div> -->
 
-                                                        <!-- <textarea class="summernote">
+                                                        <!-- <textarea id="summernote" class="summernote">
                                                         </textarea> -->
 
                                                         <div class="cust_err_msg"

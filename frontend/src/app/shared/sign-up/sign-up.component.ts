@@ -138,14 +138,11 @@ export class SignUpComponent implements OnInit {
   }
 
   checkEmail() {
-    console.log('in function=======>');
-
     this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
     }, (err) => {
       this.registerForm.controls['email'].setErrors({ 'isExist': true });
       this.registerForm.updateValueAndValidity();
     });
-
   }
 
 
