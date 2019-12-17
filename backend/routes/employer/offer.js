@@ -1885,21 +1885,34 @@ router.put('/', async (req, res) => {
     }
     else if (offer_upadate.status == 1) {
 
+        if (offer_upadate.data.status === "Released") {
+            var message = await common_helper.findOne(MailContent, { 'mail_type': "update_offer" });
+
+            let upper_content = message.data.upper_content;
+            let middel_content = message.data.middel_content;
+            let lower_content = message.data.lower_content;
+
+            upper_content = upper_content.replace('{employername}', employer.data.username).replace("{expirydate}", moment(offer.data.expirydate).startOf('day').format('DD/MM/YYYY'));
+            var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
+            var name = user_name.data.firstname;
+
+            let mail_resp = await mail_helper.send("update_offer", {
+                "to": user_email.data.email,
+                "subject": "Offer from " + `${employer.data.username}` + " has been updated"
+            }, {
+                "name": name,
+                "upper_content": upper_content,
+                "middel_content": middel_content,
+                "lower_content": lower_content
+            });
+        }
+
+
         if (offer.data.status !== offer_upadate.data.status) {
-            // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
 
             let content = status.data.MessageContent;
             content = content.replace("{employer}", `${employer.data.username} `).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
-
-            // console.log("@@@", offer_upadate.data.email);
-
-            // let mail_resp = await mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
-            //     "to": offer_upadate.data.email,
-            //     "subject": "Change Status of offer.",
-            //     // "trackid": ''
-            // }, content);
-            console.log('offer_upadate.data.email', user_email.data.email);
 
             let mail_resp = await mail_helper.send("status_change", {
                 "to": user_email.data.email,
@@ -1907,8 +1920,6 @@ router.put('/', async (req, res) => {
             }, {
                 "msg": content,
             });
-            console.log('mailmmmm _resp', mail_resp);
-
         }
         res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
     }
@@ -1919,7 +1930,7 @@ router.put('/', async (req, res) => {
 
 router.get('/details/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(req.params.id);
+    // console.log(req.params.id);
     try {
         const offer_detail = await Offer.findOne({ '_id': id })
             .populate([
@@ -1931,7 +1942,7 @@ router.get('/details/:id', async (req, res) => {
             ])
             .lean();
 
-        console.log(offer_detail);
+        // console.log(offer_detail);
 
         var candidate_detail = await common_helper.findOne(CandidateDetail, { 'user_id': offer_detail.user_id._id });
         return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail, 'candidate_data': candidate_detail });
