@@ -216,6 +216,8 @@ export class SignUpComponent implements OnInit {
         this.registerForm.controls['countrycode'].setValue('+1');
       }
 
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
 
     // this.code.forEach(element => {

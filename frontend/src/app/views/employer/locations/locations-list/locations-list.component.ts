@@ -75,6 +75,7 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         },
@@ -158,6 +159,8 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'locations' }).subscribe(res => {
       this.msg = res['message'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 

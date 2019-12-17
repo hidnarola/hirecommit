@@ -81,6 +81,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         } else if (this.router.snapshot.data.type === 'new' && this.userDetail.role === 'admin') {
@@ -91,6 +92,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         }
@@ -132,11 +134,11 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
       message: 'Are you sure that you want to  Approve this candidate this action?',
       accept: () => {
         this.service.approved(obj).subscribe(res => {
-          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.rrerender();
         }, (err) => {
           console.log(err);
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });
@@ -147,11 +149,11 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
       message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.deactivate_candidate(id).subscribe(res => {
-          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.rrerender();
         }, (err) => {
           console.log(err);
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });

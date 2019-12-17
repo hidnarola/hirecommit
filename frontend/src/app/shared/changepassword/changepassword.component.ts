@@ -45,17 +45,14 @@ export class ChangepasswordComponent implements OnInit {
       'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('this.userDetail=>', this.userDetail);
 
     this.commonService.profileData().then(res => {
       this._profile_data = res[0];
-      console.log('this._profile_data == check here ==>', this._profile_data);
       if (this._profile_data.user_id.is_login_first === false) {
         this.isDisabled = true;
       } else {
         this.isDisabled = false;
       }
-
     });
 
   }
@@ -91,9 +88,6 @@ export class ChangepasswordComponent implements OnInit {
 
   ngOnInit() {
     this.token = localStorage.getItem('token');
-    console.log('this._profile_data === on init =>', this._profile_data);
-
-
   }
 
   // Remove white spaces
@@ -104,7 +98,6 @@ export class ChangepasswordComponent implements OnInit {
       return isValid ? null : { 'whitespace': true };
     }
   }
-
 
   submit(valid) {
     this.isFormSubmitted = true;
@@ -139,6 +132,7 @@ export class ChangepasswordComponent implements OnInit {
               }
             }
           }, (err) => {
+            console.log('err => ', err);
             this.show_spinner = false;
             this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
           });
