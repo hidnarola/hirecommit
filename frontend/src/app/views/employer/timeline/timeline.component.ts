@@ -4,6 +4,7 @@ import { OfferService } from '../../shared-components/offers/offer.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as  moment from 'moment';
 import { CommonService } from '../../../services/common.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-timeline',
@@ -21,6 +22,7 @@ export class TimelineComponent implements OnInit {
   constructor(private service: OfferService,
     private route: ActivatedRoute,
     private commonservice: CommonService,
+    private toastr: ToastrService,
     private router: Router) {
 
     this.userDetail = this.commonservice.getLoggedUserDetail();
@@ -37,6 +39,8 @@ export class TimelineComponent implements OnInit {
       this.history = history;
       this.candidate = history['candidate'];
       this.employer = history['employer'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
 
   }
