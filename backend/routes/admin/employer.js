@@ -27,194 +27,208 @@ var Offer = require('../../models/offer');
 var History = require('../../models/offer_history');
 
 router.post('/get_new', async (req, res) => {
+    try {
+        var schema = {};
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    var schema = {};
-    req.checkBody(schema);
-    var errors = req.validationErrors();
-
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        var aggregate = [
-            {
-                $match: {
-                    "is_del": false,
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "country_datas",
-                    localField: "userDetail.country",
-                    foreignField: "_id",
-                    as: "country"
-                }
-            },
-
-            {
-                $unwind: {
-                    path: "$country",
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            {
-                $unwind: "$user"
-            },
-            {
-                $match: { "user.isAllow": false }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
             }
-        ]
+            var aggregate = [
+                {
+                    $match: {
+                        "is_del": false,
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "country_datas",
+                        localField: "userDetail.country",
+                        foreignField: "_id",
+                        as: "country"
+                    }
+                },
 
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        if (req.body.search && req.body.search != "") {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
-            });
-        }
+                {
+                    $unwind: {
+                        path: "$country",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                },
+                {
+                    $unwind: "$user"
+                },
+                {
+                    $match: { "user.isAllow": false }
+                }
+            ]
 
-        let totalMatchingCountRecords = await Employer.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+            if (req.body.search && req.body.search != "") {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+                });
+            }
 
-        var resp_data = await user_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            let totalMatchingCountRecords = await Employer.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
+
+            var resp_data = await user_helper.get_all_new_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 
 router.post('/get_approved', async (req, res) => {
+    try {
+        var schema = {};
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    var schema = {};
-    req.checkBody(schema);
-    var errors = req.validationErrors();
-
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        var aggregate = [
-            {
-                $match: {
-                    "is_del": false
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "country_datas",
-                    localField: "userDetail.country",
-                    foreignField: "_id",
-                    as: "country"
-                }
-            },
-
-            {
-                $unwind: {
-                    path: "$country",
-                    preserveNullAndEmptyArrays: true
-                },
-            },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$user",
-                    // preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $match: { "user.isAllow": true }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
             }
-        ]
+            var aggregate = [
+                {
+                    $match: {
+                        "is_del": false
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "country_datas",
+                        localField: "userDetail.country",
+                        foreignField: "_id",
+                        as: "country"
+                    }
+                },
 
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        if (req.body.search && req.body.search != "") {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "firstname": RE }, { "business.country": RE }, { "user.email": RE }, { "companyname": RE }] }
-            });
-        }
+                {
+                    $unwind: {
+                        path: "$country",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$user",
+                        // preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $match: { "user.isAllow": true }
+                }
+            ]
+
+            const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+            if (req.body.search && req.body.search != "") {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "firstname": RE }, { "business.country": RE }, { "user.email": RE }, { "companyname": RE }] }
+                });
+            }
 
 
-        let totalMatchingCountRecords = await Employer.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            let totalMatchingCountRecords = await Employer.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await user_helper.get_all_approved_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            var resp_data = await user_helper.get_all_approved_employer(Employer, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 router.put("/deactive_candidate/:id", async (req, res) => {
-    var obj = {
-        is_del: true
-    }
-    var resp_data = await common_helper.update(Employer, { "_id": req.params.id }, obj);
-    var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else if (resp_data.status == 1) {
-        logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json(resp_data);
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+    try {
+        var obj = {
+            is_del: true
+        }
+        var resp_data = await common_helper.update(Employer, { "_id": req.params.id }, obj);
+        var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
+        if (resp_data.status == 0) {
+            logger.error("Error occured while fetching User = ", resp_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        } else if (resp_data.status == 1) {
+            logger.trace("User got successfully = ", resp_data);
+            res.status(config.OK_STATUS).json(resp_data);
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 router.put("/deactive_employer/:id", async (req, res) => {
-    var obj = {
-        is_del: true
-    }
-    // console.log(' : req.params.id ==> ', req.params.id);
-    var resp_data = await common_helper.update(Employer, { "user_id": req.params.id }, obj);
-    var resp_data = await common_helper.update(User, { "_id": req.params.id }, obj);
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else if (resp_data.status == 1) {
-        logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+    try {
+        var obj = {
+            is_del: true
+        }
+        // console.log(' : req.params.id ==> ', req.params.id);
+        var resp_data = await common_helper.update(Employer, { "user_id": req.params.id }, obj);
+        var resp_data = await common_helper.update(User, { "_id": req.params.id }, obj);
+        if (resp_data.status == 0) {
+            logger.error("Error occured while fetching User = ", resp_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        } else if (resp_data.status == 1) {
+            logger.trace("User got successfully = ", resp_data);
+            res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
@@ -360,198 +374,206 @@ router.put("/deactive_employer/:id", async (req, res) => {
 
 // offer report
 router.post('/get_report/:id', async (req, res) => {
-    var schema = {};
-    req.checkBody(schema);
-    var errors = req.validationErrors();
+    try {
+        var schema = {};
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        let id = req.params.id;
-
-        var user = await common_helper.findOne(User, { _id: new ObjectId(id) })
-
-        if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-            var user_id = user.data.emp_id
-        }
-        else {
-            var user_id = id
-        }
-        var aggregate = [
-            { $match: { $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
-            {
-                $lookup:
-                {
-                    from: "group",
-                    localField: "groups",
-                    foreignField: "_id",
-                    as: "group"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "employer_id",
-                    foreignField: "_id",
-                    as: "employer_id"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$employer_id",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "location",
-                    localField: "location",
-                    foreignField: "_id",
-                    as: "location"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$location",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "salary_bracket",
-                    localField: "salarybracket",
-                    foreignField: "_id",
-                    as: "salarybracket"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$salarybracket",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "candidateDetail",
-                    localField: "user_id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup: {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "candidate.user",
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate.user",
-                    preserveNullAndEmptyArrays: true
-                }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
             }
-        ]
+            let id = req.params.id;
 
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        if (req.body.search && req.body.search.value != '') {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
-            });
-        }
-        if (req.body.startdate != undefined && req.body.startdate != "" && req.body.enddate != undefined && req.body.enddate != "") {
-            // let start_date = moment(req.body.startdate).utc().startOf('day').add(1, 'days');
-            // let end_date = moment(req.body.enddate).utc().endOf('day').add(1, 'days');
-            let start_date = moment(req.body.startdate).utc().startOf('day');
-            let end_date = moment(req.body.enddate).utc().endOf('day');
-            // console.log(' : I m here ==> ', 1, moment(start_date).toDate(), moment(end_date).toDate());
-            aggregate.push({
-                $match: {
-                    "createdAt": { $gte: moment(start_date).toDate(), $lte: moment(end_date).toDate() }
+            var user = await common_helper.findOne(User, { _id: new ObjectId(id) })
+
+            if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                var user_id = user.data.emp_id
+            }
+            else {
+                var user_id = id
+            }
+            var aggregate = [
+                { $match: { $or: [{ "employer_id": new ObjectId(id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
+                {
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "employer_id",
+                        foreignField: "_id",
+                        as: "employer_id"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$employer_id",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "location",
+                        localField: "location",
+                        foreignField: "_id",
+                        as: "location"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$location",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "salary_bracket",
+                        localField: "salarybracket",
+                        foreignField: "_id",
+                        as: "salarybracket"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$salarybracket",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "candidateDetail",
+                        localField: "user_id",
+                        foreignField: "user_id",
+                        as: "candidate"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "candidate.user",
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate.user",
+                        preserveNullAndEmptyArrays: true
+                    }
                 }
-            });
-        }
+            ]
 
-        let totalMatchingCountRecords = await Offer.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+            if (req.body.search && req.body.search.value != '') {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }] }
+                });
+            }
+            if (req.body.startdate != undefined && req.body.startdate != "" && req.body.enddate != undefined && req.body.enddate != "") {
+                // let start_date = moment(req.body.startdate).utc().startOf('day').add(1, 'days');
+                // let end_date = moment(req.body.enddate).utc().endOf('day').add(1, 'days');
+                let start_date = moment(req.body.startdate).utc().startOf('day');
+                let end_date = moment(req.body.enddate).utc().endOf('day');
+                // console.log(' : I m here ==> ', 1, moment(start_date).toDate(), moment(end_date).toDate());
+                aggregate.push({
+                    $match: {
+                        "createdAt": { $gte: moment(start_date).toDate(), $lte: moment(end_date).toDate() }
+                    }
+                });
+            }
 
-        var resp_data = await offer_helper.get_all_created_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, req.body.startdate, req.body.enddate);
+            let totalMatchingCountRecords = await Offer.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            var resp_data = await offer_helper.get_all_created_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject, req.body.startdate, req.body.enddate);
+
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 router.post('/sub_account/get', async (req, res) => {
-    var schema = {};
-    req.checkBody(schema);
-    var errors = req.validationErrors();
+    try {
+        var schema = {};
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        var aggregate = [
-            {
-                $match: {
-                    "is_del": false,
-                    "emp_id": new ObjectId(req.body.id)
-                }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
             }
-        ]
+            var aggregate = [
+                {
+                    $match: {
+                        "is_del": false,
+                        "emp_id": new ObjectId(req.body.id)
+                    }
+                }
+            ]
 
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        if (req.body.search && req.body.search != "") {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "username": RE }, { "user.email": RE }] }
-            });
-        }
+            const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+            if (req.body.search && req.body.search != "") {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "username": RE }, { "user.email": RE }] }
+                });
+            }
 
 
-        let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            let totalMatchingCountRecords = await Sub_Employer_Detail.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await user_helper.get_all_subs_users(Sub_Employer_Detail, req.body.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            var resp_data = await user_helper.get_all_subs_users(Sub_Employer_Detail, req.body.id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
@@ -733,241 +755,145 @@ router.get('/details/:id', async (req, res) => {
 
 
 router.get('/sub_account/:id', async (req, res) => {
-    var id = req.params.id;
-    var sub_account_detail = await Sub_Employer_Detail.findOne({ "user_id": new ObjectId(id) }).populate('user_id')
-    if (sub_account_detail) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+    try {
+        var id = req.params.id;
+        var sub_account_detail = await Sub_Employer_Detail.findOne({ "user_id": new ObjectId(id) }).populate('user_id')
+        if (sub_account_detail) {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
+        }
+        // if (sub_account_detail.status == 0) {
+        //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        // }
+        // else
+        // else {
+        //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
+        // }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    // if (sub_account_detail.status == 0) {
-    //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-    // }
-    // else
-    // else {
-    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
-    // }
 });
 
 router.get('/:id', async (req, res) => {
-    var id = req.params.id;
-    var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id").populate("country").populate("businesstype");
-    if (candidate_detail) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
+    try {
+        var id = req.params.id;
+        var candidate_detail = await Employer.findOne({ "_id": id }).populate("user_id").populate("country").populate("businesstype");
+        if (candidate_detail) {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 router.get('/', async (req, res) => {
-
-    var aggregate = [
-        {
-            $match: {
-                "is_del": false,
-            }
-        },
-        {
-            $lookup:
+    try {
+        var aggregate = [
             {
-                from: "country_datas",
-                localField: "userDetail.country",
-                foreignField: "_id",
-                as: "country"
-            }
-        },
-
-        {
-            $unwind: {
-                path: "$country",
-                preserveNullAndEmptyArrays: true
+                $match: {
+                    "is_del": false,
+                }
             },
-        },
-        {
-            $lookup:
             {
-                from: "user",
-                localField: "user_id",
-                foreignField: "_id",
-                as: "user"
-            }
-        },
-        {
-            $unwind: {
-                path: "$user",
-                preserveNullAndEmptyArrays: true
+                $lookup:
+                {
+                    from: "country_datas",
+                    localField: "userDetail.country",
+                    foreignField: "_id",
+                    as: "country"
+                }
             },
-        },
-        {
-            $match: {
-                "user.isAllow": true
+
+            {
+                $unwind: {
+                    path: "$country",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+            {
+                $match: {
+                    "user.isAllow": true
+                }
             }
+        ]
+        let candidate_list = await Candidate.aggregate(aggregate);
+
+        if (candidate_list) {
+            return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
         }
-    ]
-    let candidate_list = await Candidate.aggregate(aggregate);
-
-    if (candidate_list) {
-        return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
-    }
-
 });
 
 router.put('/sub_account/details', async (req, res) => {
-    var obj = {}
+    try {
+        var obj = {}
 
-    if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
-        obj.admin_rights = req.body.data.admin_rights
-    }
-    if (req.body.data.email && req.body.data.email !== "") {
-        obj.email = req.body.data.email
-        obj.is_email_change = true
-    }
-    if (req.body.data.username && req.body.data.username !== "") {
-        obj.username = req.body.data.username;
-    }
-    var id = req.body.id;
+        if (req.body.data.admin_rights && req.body.data.admin_rights !== "") {
+            obj.admin_rights = req.body.data.admin_rights
+        }
+        if (req.body.data.email && req.body.data.email !== "") {
+            obj.email = req.body.data.email
+            obj.is_email_change = true
+        }
+        if (req.body.data.username && req.body.data.username !== "") {
+            obj.username = req.body.data.username;
+        }
+        var id = req.body.id;
 
-    var user_detail = await common_helper.findOne(User, { '_id': ObjectId(id) });
-    console.log('user_detail', user_detail);
+        var user_detail = await common_helper.findOne(User, { '_id': ObjectId(id) });
+        // console.log('user_detail', user_detail);
 
-    var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
-    // if (user_detail.data.email !== req.body.email) {
-    var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
-    let content = message.data.content;
-    if (req.body.data.email && req.body.data.email != "") {
-        content = content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email}`);
-        obj.email_verified = false;
-        logger.trace("sending mail");
-        let mail_resp = await mail_helper.send("welcome_email", {
-            "to": user_detail.data.email,
-            "subject": "Attention Mail"
-        }, {
-            'msg': content,
-        });
-        console.log('mail_resp', mail_resp);
-
-    }
-
-
-    // if (mail_resp.status === 0) {
-    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-    // } else {
-    var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
-    console.log('resp_user_data', resp_user_data);
-
-    var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
-    // console.log("==>", resp_user_data.data.email);
-
-    var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
-        config.ACCESS_TOKEN_SECRET_KEY, {
-        expiresIn: 60 * 60 * 24 * 3
-    }
-    )).toString('base64');
-
-    var time = new Date();
-    time.setMinutes(time.getMinutes() + 20);
-    time = btoa(time);
-    if (req.body.data.email && req.body.data.email != "") {
-        let mail_response = await mail_helper.send("email_confirmation", {
-            "to": resp_user_data.data.email,
-            "subject": "HireCommit - Email Confirmation"
-        }, {
-            "msg": message.data.content,
-            // config.website_url + "/email_confirm/" + interest_resp.data._id
-            "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
-        });
-        console.log('mail_response', mail_response);
-
-    }
-    // }
-    // }
-
-    if (resp_Detail_data.status == 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-    }
-    else if (resp_Detail_data.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": resp_Detail_data, "user": resp_user_data });
-    }
-    else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
-    }
-})
-
-router.put('/', async (req, res) => {
-    var reg_obj = {
-        "isAllow": true
-    }
-    var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
-    if (sub_account_upadate.status == 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-    }
-    else if (sub_account_upadate.status == 1) {
-        var employername = await common_helper.findOne(Employer, { "user_id": req.body.id })
-        var name = employername.data.username;
-        var employerfirstname = name.substring(0, name.lastIndexOf(" "));
-        var message = await common_helper.findOne(MailType, { 'mail_type': 'approve-employer' });
-        var upper_content = message.data.upper_content;
-        var lower_content = message.data.lower_content;
-
-        upper_content = upper_content.replace("{employername}", `${employername.data.username} `);
-
-        logger.trace("sending mail");
-        let mail_resp = await mail_helper.send("employer_approval_email", {
-            "to": sub_account_upadate.data.email,
-            "subject": "Your HireCommit employer account has been approved!!"
-        }, {
-            "name": employerfirstname,
-            "upper_content": upper_content,
-            "lower_content": lower_content,
-            "confirm_url": config.WEBSITE_URL + '/login'
-        });
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer is Approved successfully", "data": sub_account_upadate });
-    }
-    else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
-    }
-})
-
-
-router.put('/update', async (req, res) => {
-    // console.log(req.body); return false;
-    var obj = {}
-    if (req.body.username && req.body.username != "") {
-        obj.username = req.body.username
-    }
-    if (req.body.email && req.body.email != "") {
-        obj.email = req.body.email
-        obj.is_email_change = true
-    }
-    if (req.body.contactno && req.body.contactno != "") {
-        obj.contactno = req.body.contactno
-    }
-
-    var user_detail = await common_helper.findOne(User, { '_id': req.body.user_id });
-    var employer_detail_upadate = await common_helper.update(Employer, { "user_id": req.body.user_id }, obj)
-    if (user_detail.data.email !== req.body.email) {
+        var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
+        // if (user_detail.data.email !== req.body.email) {
         var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
         let content = message.data.content;
-        content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
-        obj.email_verified = false;
-        logger.trace("sending mail");
-        if (req.body.email && req.body.email != "") {
+        if (req.body.data.email && req.body.data.email != "") {
+            content = content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email}`);
+            obj.email_verified = false;
+            logger.trace("sending mail");
             let mail_resp = await mail_helper.send("welcome_email", {
                 "to": user_detail.data.email,
                 "subject": "Attention Mail"
             }, {
-                'msg': content
+                'msg': content,
             });
-            console.log('mail_resp===============>>>', mail_resp);
+            console.log('mail_resp', mail_resp);
+
         }
+
 
         // if (mail_resp.status === 0) {
         //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
         // } else {
-        var employer_upadate = await common_helper.update(User, { "_id": req.body.user_id }, obj)
-        var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
+        var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
+        // console.log('resp_user_data', resp_user_data);
+
+        var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
+        // console.log("==>", resp_user_data.data.email);
+
+        var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
             config.ACCESS_TOKEN_SECRET_KEY, {
             expiresIn: 60 * 60 * 24 * 3
         }
@@ -976,31 +902,147 @@ router.put('/update', async (req, res) => {
         var time = new Date();
         time.setMinutes(time.getMinutes() + 20);
         time = btoa(time);
+        if (req.body.data.email && req.body.data.email != "") {
+            let mail_response = await mail_helper.send("email_confirmation", {
+                "to": resp_user_data.data.email,
+                "subject": "HireCommit - Email Confirmation"
+            }, {
+                "msg": message.data.content,
+                // config.website_url + "/email_confirm/" + interest_resp.data._id
+                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+            });
+            // console.log('mail_response', mail_response);
 
-        let mail_response = await mail_helper.send("email_confirmation", {
-            "to": employer_upadate.data.email,
-            "subject": "HireCommit - Email Confirmation"
-        }, {
-            // config.website_url + "/email_confirm/" + interest_resp.data._id
-            "msg": "",
-            "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
-        });
-        console.log('>>>>>>>mail_response', mail_response);
-
+        }
         // }
-    }
+        // }
 
-    if (employer_detail_upadate.status == 0) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        if (resp_Detail_data.status == 0) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        }
+        else if (resp_Detail_data.status == 1) {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": resp_Detail_data, "user": resp_user_data });
+        }
+        else {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    else if (employer_detail_upadate.status == 1) {
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": employer_detail_upadate, "user": employer_upadate });
-    }
-    else {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+})
+
+router.put('/', async (req, res) => {
+    try {
+        var reg_obj = {
+            "isAllow": true
+        }
+        var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
+        if (sub_account_upadate.status == 0) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        }
+        else if (sub_account_upadate.status == 1) {
+            var employername = await common_helper.findOne(Employer, { "user_id": req.body.id })
+            var name = employername.data.username;
+            var employerfirstname = name.substring(0, name.lastIndexOf(" "));
+            var message = await common_helper.findOne(MailType, { 'mail_type': 'approve-employer' });
+            var upper_content = message.data.upper_content;
+            var lower_content = message.data.lower_content;
+
+            upper_content = upper_content.replace("{employername}", `${employername.data.username} `);
+
+            logger.trace("sending mail");
+            let mail_resp = await mail_helper.send("employer_approval_email", {
+                "to": sub_account_upadate.data.email,
+                "subject": "Your HireCommit employer account has been approved!!"
+            }, {
+                "name": employerfirstname,
+                "upper_content": upper_content,
+                "lower_content": lower_content,
+                "confirm_url": config.WEBSITE_URL + '/login'
+            });
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer is Approved successfully", "data": sub_account_upadate });
+        }
+        else {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 })
 
 
+router.put('/update', async (req, res) => {
+    try {
+        // console.log(req.body); return false;
+        var obj = {}
+        if (req.body.username && req.body.username != "") {
+            obj.username = req.body.username
+        }
+        if (req.body.email && req.body.email != "") {
+            obj.email = req.body.email
+            obj.is_email_change = true
+        }
+        if (req.body.contactno && req.body.contactno != "") {
+            obj.contactno = req.body.contactno
+        }
+
+        var user_detail = await common_helper.findOne(User, { '_id': req.body.user_id });
+        var employer_detail_upadate = await common_helper.update(Employer, { "user_id": req.body.user_id }, obj)
+        if (user_detail.data.email !== req.body.email) {
+            var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
+            let content = message.data.content;
+            content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
+            obj.email_verified = false;
+            logger.trace("sending mail");
+            if (req.body.email && req.body.email != "") {
+                let mail_resp = await mail_helper.send("welcome_email", {
+                    "to": user_detail.data.email,
+                    "subject": "Attention Mail"
+                }, {
+                    'msg': content
+                });
+                console.log('mail_resp===============>>>', mail_resp);
+            }
+
+            // if (mail_resp.status === 0) {
+            //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+            // } else {
+            var employer_upadate = await common_helper.update(User, { "_id": req.body.user_id }, obj)
+            var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
+                config.ACCESS_TOKEN_SECRET_KEY, {
+                expiresIn: 60 * 60 * 24 * 3
+            }
+            )).toString('base64');
+
+            var time = new Date();
+            time.setMinutes(time.getMinutes() + 20);
+            time = btoa(time);
+
+            let mail_response = await mail_helper.send("email_confirmation", {
+                "to": employer_upadate.data.email,
+                "subject": "HireCommit - Email Confirmation"
+            }, {
+                // config.website_url + "/email_confirm/" + interest_resp.data._id
+                "msg": "",
+                "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+            });
+            console.log('>>>>>>>mail_response', mail_response);
+
+            // }
+        }
+
+        if (employer_detail_upadate.status == 0) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        }
+        else if (employer_detail_upadate.status == 1) {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": employer_detail_upadate, "user": employer_upadate });
+        }
+        else {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
+})
 
 module.exports = router;

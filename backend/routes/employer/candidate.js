@@ -10,164 +10,179 @@ var User = require('../../models/user');
 
 
 router.post('/get_new', async (req, res) => {
-    var schema = {};
-    req.checkBody(schema);
-    var errors = req.validationErrors();
+    try {
+        var schema = {};
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        var aggregate = [
-            {
-                $match: {
-                    "is_del": false,
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            {
-                $unwind:
-                {
-                    path: "$user",
-                    preserveNullAndEmptyArrays: true
-                }
-
-            },
-            {
-                $match: { "user.isAllow": false }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
             }
-        ]
+            var aggregate = [
+                {
+                    $match: {
+                        "is_del": false,
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                },
+                {
+                    $unwind:
+                    {
+                        path: "$user",
+                        preserveNullAndEmptyArrays: true
+                    }
 
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        if (req.body.search && req.body.search != "") {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
-            });
-        }
+                },
+                {
+                    $match: { "user.isAllow": false }
+                }
+            ]
+
+            const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+            if (req.body.search && req.body.search != "") {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+                });
+            }
 
 
-        let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+            var resp_data = await candidate_helper.get_all_new_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
 
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 
 router.post('/get_approved', async (req, res) => {
+    try {
+        var schema = {};
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    var schema = {};
-    req.checkBody(schema);
-    var errors = req.validationErrors();
-
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
-        var aggregate = [
-            {
-                $match: {
-                    "is_del": false,
-
-                }
-            },
-            {
-                $lookup:
-                {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            {
-                $unwind: "$user"
-            },
-            {
-                $match: { "user.isAllow": true }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
             }
-        ]
+            var aggregate = [
+                {
+                    $match: {
+                        "is_del": false,
 
-        const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
-        if (req.body.search && req.body.search != "") {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
-            });
-        }
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                },
+                {
+                    $unwind: "$user"
+                },
+                {
+                    $match: { "user.isAllow": true }
+                }
+            ]
+
+            const RE = { $regex: new RegExp(`${req.body.search.value}`, 'gi') };
+            if (req.body.search && req.body.search != "") {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "contactno": RE }, { "firstname": RE }, { "documenttype": RE }, { "createdAt": RE }, { "status": RE }, { "user.email": RE }] }
+                });
+            }
 
 
-        let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            let totalMatchingCountRecords = await Candidate.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await candidate_helper.get_all_approved_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            var resp_data = await candidate_helper.get_all_approved_candidate(Candidate, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 
 router.get('/:id', async (req, res) => {
-    var id = req.params.id;
-    var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id")
+    try {
+        var id = req.params.id;
+        var candidate_detail = await Candidate.findOne({ "_id": id }).populate("user_id")
 
-    // if (candidate_detail.status == 0) {
-    //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
-    // }
-    // else if (candidate_detail.status == 1) {
-    res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
-    // }
-    // else {
-    //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
-    // }
+        // if (candidate_detail.status == 0) {
+        //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+        // }
+        // else if (candidate_detail.status == 1) {
+        res.status(config.OK_STATUS).json({ "status": 1, "message": "Candidate fetched successfully", "data": candidate_detail });
+        // }
+        // else {
+        //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while fetching data." });
+        // }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
 });
 
 
 router.put("/deactive_candidate/:id", async (req, res) => {
-    var obj = {
-        is_del: true
-    }
-    var resp_data = await common_helper.update(Candidate, { "_id": req.params.id }, obj);
-    var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else if (resp_data.status == 1) {
-        logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+    try {
+        var obj = {
+            is_del: true
+        }
+        var resp_data = await common_helper.update(Candidate, { "_id": req.params.id }, obj);
+        var resp_data = await common_helper.update(User, { "user_id": req.params.id }, obj);
+        if (resp_data.status == 0) {
+            logger.error("Error occured while fetching User = ", resp_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        } else if (resp_data.status == 1) {
+            logger.trace("User got successfully = ", resp_data);
+            res.status(config.OK_STATUS).json({ "message": "Deleted successfully", resp_data });
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error while deleting data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
@@ -314,43 +329,45 @@ router.put("/deactive_candidate/:id", async (req, res) => {
 // })
 
 router.get('/', async (req, res) => {
-
-    var aggregate = [
-        {
-            $match: {
-                "is_del": false,
-            }
-        },
-        {
-            $lookup:
+    try {
+        var aggregate = [
             {
-                from: "user",
-                localField: "user_id",
-                foreignField: "_id",
-                as: "user"
-            }
-        },
-        {
-            $unwind: {
-                path: "$user",
-                // preserveNullAndEmptyArrays: true
+                $match: {
+                    "is_del": false,
+                }
             },
-        },
-        // {
-        //     $match: {
-        //         "user.isAllow": true
-        //     }
-        // }
-    ]
-    let candidate_list = await Candidate.aggregate(aggregate);
+            {
+                $lookup:
+                {
+                    from: "user",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    // preserveNullAndEmptyArrays: true
+                },
+            },
+            // {
+            //     $match: {
+            //         "user.isAllow": true
+            //     }
+            // }
+        ]
+        let candidate_list = await Candidate.aggregate(aggregate);
 
-    if (candidate_list) {
-        return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
+        if (candidate_list) {
+            return res.status(config.OK_STATUS).json({ 'message': "Candidate List", "status": 1, data: candidate_list });
+        }
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    else {
-        return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
-    }
-
 });
 
 module.exports = router;
