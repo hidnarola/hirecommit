@@ -48,12 +48,10 @@ router.use("/profile", auth, userpProfile);
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper')
 // live
-// var captcha_secret = '6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK';
-// var captcha_secret = '6Ld35scUAAAAAMLfUgpqVna1Kw743xN7NkldjpGk';
-// var captcha_secret = '6Lem7ccUAAAAACnFxvyLx-3dNoH6ZVJEdshAsbON';
+var captcha_secret = '6Lem7ccUAAAAACnFxvyLx-3dNoH6ZVJEdshAsbON';
 //
 //local
-var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
+//var captcha_secret = '6LeZgbkUAAAAANtRy1aiNa83I5Dmv90Xk2xOdyIH';
 
 //get user
 router.get("/user", async (req, res) => {
@@ -615,11 +613,11 @@ router.post("/employer_register", async (req, res) => {
 });
 
 router.post("/check_employer_email", async (req, res) => {
-  re = new RegExp(req.body.email, "i");
-  value = {
-    $regex: re
-  };
-  let user_resp = await common_helper.findOne(User, { "email": value, "is_del": false })
+  // re = new RegExp(req.body.email.toLowerCase(), "i");
+  // value = {
+  //   $regex: re
+  // };
+  let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false })
   if (user_resp.status === 1) {
     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
   } else {
