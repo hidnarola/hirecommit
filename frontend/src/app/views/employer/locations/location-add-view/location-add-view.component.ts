@@ -103,9 +103,9 @@ export class LocationAddViewComponent implements OnInit {
         this.detail = res['data']['data'];
         this.spinner.hide();
         // this.cnt = res['data']['data'].country;
-
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
-
     } else {
       this.detail = {
         _id: null,

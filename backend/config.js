@@ -44,7 +44,7 @@ module.exports = {
   "INTERNAL_SERVER_ERROR": 500,
   "Host": process.env.host,
   // Other configuration
-  "captcha_secret": process.env.captcha_secret,
+  "captcha_secret": process.env.CAPTCHA_SECRET_KEY,
   "WEBSITE_URL": process.env.WEBSITE_URL,
   "ASSETS_PATH": process.env.ASSETS_PATH,
   "base_url": process.env.BASE + ':' + process.env.NODE_PORT,

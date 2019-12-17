@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { EmployerService } from '../employer.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, from } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { OfferService } from '../../../shared-components/offers/offer.service';
 import { SocketService } from '../../../../services/socket.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { SocketService } from '../../../../services/socket.service';
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss']
 })
-export class ReportComponent implements OnInit, OnDestroy {
+export class ReportComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
@@ -28,7 +29,8 @@ export class ReportComponent implements OnInit, OnDestroy {
     private service: EmployerService,
     private router: ActivatedRoute,
     private offerService: OfferService,
-    private socketService: SocketService) {
+    private socketService: SocketService,
+    private toastr: ToastrService) {
     this.router.params.subscribe((params: Params) => {
       this.id = params['id'];
 
@@ -69,6 +71,7 @@ export class ReportComponent implements OnInit, OnDestroy {
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
 

@@ -163,10 +163,8 @@ export class RegisterComponent implements OnInit {
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
       console.log('this.file => ', this.file.name);
-      let fileName = this.file.name.split('.');
+      const fileName = this.file.name.split('.');
       console.log('fileName[1]=>', fileName[1]);
-
-
       if (this.file.size < 5000000) {
         this.fileFormData.append('filename', this.file);
 
@@ -231,6 +229,8 @@ export class RegisterComponent implements OnInit {
 
       this.registerForm.updateValueAndValidity();
 
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 
@@ -253,14 +253,9 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
-    console.log('form=>', this.registerForm);
-
-    console.log('=>', valid, this.marked);
-
     if (valid && this.marked) {
       this.show_spinner = true;
       this.formData = new FormData();
-      // tslint:disable-next-line: forin
       for (const key in this.registerData) {
         const value = this.registerData[key];
         this.formData.append(key, value);

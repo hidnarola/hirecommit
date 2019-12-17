@@ -115,6 +115,8 @@ export class EmployerViewComponent implements OnInit {
       } else {
         this.buttonValue1 = 'Cancel';
       }
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
   // aprrove(id) {
@@ -124,11 +126,11 @@ export class EmployerViewComponent implements OnInit {
   //     'id': id
   //   };
   //   this.service.approved(obj).subscribe(res => {
-  //     this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+  //     this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
   //     this.cancel_link1;
   //   }, (err) => {
   //     console.log(err);
-  //     this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+  //     this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
   //   });
   // }
 
@@ -177,11 +179,11 @@ export class EmployerViewComponent implements OnInit {
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         this.service.aprroved_employer(obj).subscribe(res => {
-          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.router.navigate([this.cancel_link1]);
         }, (err) => {
           console.log(err);
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });
@@ -190,6 +192,8 @@ export class EmployerViewComponent implements OnInit {
   onUnapproved(id) {
     this.service.deactivate_employer(id).subscribe(res => {
       this.router.navigate([this.cancel_link1]);
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 

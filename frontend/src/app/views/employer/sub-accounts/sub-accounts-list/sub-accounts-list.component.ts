@@ -100,6 +100,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         },
@@ -165,6 +166,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         },
@@ -199,6 +201,8 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'sub_accounts' }).subscribe(res => {
       this.msg = res['message'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 
@@ -225,7 +229,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         'admin_rights': 'no'
       };
       this.service.admin_rigth(this.obj).subscribe(res => {
-        this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 1000 });
+        this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
       }, (err) => {
         this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
@@ -235,7 +239,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         'admin_rights': 'yes'
       };
       this.service.admin_rigth(this.obj).subscribe(res => {
-        this.toastr.success('Admin Rights Granted.', 'Success!', { timeOut: 1000 });
+        this.toastr.success('Admin Rights Granted.', 'Success!', { timeOut: 3000 });
       }, (err) => {
         this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });

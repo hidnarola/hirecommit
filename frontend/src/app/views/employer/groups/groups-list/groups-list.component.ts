@@ -60,6 +60,8 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'groups' }).subscribe(res => {
       this.msg = res['message'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 
@@ -110,6 +112,7 @@ export class GroupsListComponent implements OnInit, AfterViewInit, OnDestroy {
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         }, columnDefs: [{ orderable: false, targets: 5 }, { targets: 0, width: '25%' }],

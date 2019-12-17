@@ -85,11 +85,10 @@ export class SalaryBracketListComponent implements OnInit, AfterViewInit, OnDest
               this._country.push(this.unique[0]);
             });
             this._country = this._country.filter(this.onlyUnique);
-
-
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
         });
       },

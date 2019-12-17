@@ -24,9 +24,7 @@ export class CandidateService {
     }
 
     get_Profile_Candidate(data): Observable<any[]> {
-        console.log('data=>', data);
         return this.http.post<any[]>(`${this.url_candidate}`, data);
-
     }
 
     // emoployer services

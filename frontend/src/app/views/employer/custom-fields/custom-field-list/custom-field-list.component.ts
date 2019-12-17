@@ -63,6 +63,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
               callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         }, columnDefs: [{ orderable: false, targets: 0 },
@@ -142,6 +143,8 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
     this.EmpService.information({ 'msg_type': 'custom_field' }).subscribe(res => {
       console.log('res=>', res);
       this.msg = res['message'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 

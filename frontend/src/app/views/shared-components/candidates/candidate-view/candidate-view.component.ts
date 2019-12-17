@@ -64,6 +64,7 @@ export class CandidateViewComponent implements OnInit {
       // console.log(this.candidate_detail, this.email);
     }, (err) => {
       console.log(err);
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 
@@ -78,12 +79,12 @@ export class CandidateViewComponent implements OnInit {
       accept: () => {
 
         this.service.approved(obj).subscribe(res => {
-          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           // this.rrerender();
           this.router.navigate([this.cancel_link1]);
         }, (err) => {
           console.log(err);
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });

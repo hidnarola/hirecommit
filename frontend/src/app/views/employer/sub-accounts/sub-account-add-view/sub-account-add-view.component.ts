@@ -109,6 +109,8 @@ export class SubAccountAddViewComponent implements OnInit {
         //   admin_rights: res['data']['user_id']['admin_rights']
         // };
         this.update_data_id = res['data']['user_id']['_id'];
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     } else if (this.id && this.userDetail.role === 'admin') {
       this.panelTitle = 'Edit';
@@ -133,6 +135,8 @@ export class SubAccountAddViewComponent implements OnInit {
         //   admin_rights: res['data']['user_id']['admin_rights']
         // };
         this.update_data_id = res['data']['user_id']['_id'];
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     } else {
       this.detail = {
