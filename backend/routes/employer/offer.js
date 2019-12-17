@@ -1907,7 +1907,6 @@ router.put('/', async (req, res) => {
             });
         }
 
-
         if (offer.data.status !== offer_upadate.data.status) {
             var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
 
