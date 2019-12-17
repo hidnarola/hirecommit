@@ -41,4 +41,31 @@ mail_helper.send = async (template_name, options, data) => {
     });
 };
 
+mail_helper.forwardRepliedMail = async (data, cb) => {
+    const msg = {
+        to: data.to,
+        from: data.from,
+        subject: data.subject,
+        html: data.html || '<p>Here’s an attachment of replied mail of candidate for you!</p>',
+        attachments: [
+            {
+                content: data.content,
+                filename: data.filename,
+                type: 'message/rfc822',
+                disposition: 'attachment'
+            },
+        ],
+    };
+    transporter.sendMail(msg, function (err, info) {
+        if (err) {
+            console.log(error);
+        }
+        else {
+            console.log('Message sent: ' + info.response);
+        }
+        cb(err, info);
+    })
+
+}
+
 module.exports = mail_helper;

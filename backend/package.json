@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "dev": "cp dev.env .env && nodemon ./bin/www",
+    "prod": "cp prod.env .env",
+    "start": "npm run prod && node ./bin/www"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",

@@ -42,8 +42,9 @@ module.exports = {
   "VALIDATION_FAILURE_STATUS": 417,
   "DATABASE_ERROR_STATUS": 422,
   "INTERNAL_SERVER_ERROR": 500,
-
+  "Host": process.env.host,
   // Other configuration
+  "captcha_secret": process.env.captcha_secret,
   "WEBSITE_URL": process.env.WEBSITE_URL,
   "ASSETS_PATH": process.env.ASSETS_PATH,
   "base_url": process.env.BASE + ':' + process.env.NODE_PORT,
