@@ -19,18 +19,8 @@ const transporter = nodemailer.createTransport(
 
 
 new_mail_helper.send = async (template_id, options, data) => {
-    // offer  : d-4e82d6fcf94e4acdb8b94d71e4c32455
-    // console.log(options);
     sgMail.setApiKey(mail_api_key);
     const msg = {
-        // to: options.to,
-        // from: 'support@hirecommit.com',
-        // subject: options.subject,
-        // templateId: template_id,
-        // dynamic_template_data: {
-        //     "message": data,
-        // },
-        // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
         "customArgs": {
             "trackid": options.trackid
         },

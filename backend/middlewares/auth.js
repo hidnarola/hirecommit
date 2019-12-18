@@ -1,12 +1,6 @@
 var jwt = require('jsonwebtoken');
 var config = require('../config');
 module.exports = function (req, res, next) {
-    // // console.log("\n=================================================================");
-    // // console.log("Request Headers", req.headers);
-    // // console.log("-----------------------------------------------------------------");
-    // // console.log("Request Body", req.body);
-    // // console.log("-----------------------------------------------------------------");
-    // console.log(req.headers['authorization'])
     req.headers['x-access-token'];
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
     if (token) {

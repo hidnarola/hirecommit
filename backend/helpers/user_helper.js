@@ -31,7 +31,7 @@ user_helper.get_all_sub_user = async (collection, id, user_id, search, start, le
       }
     ]
 
-    // if (search && search.value !='') {
+
     aggregate.push({
       "$match":
       {
@@ -39,7 +39,7 @@ user_helper.get_all_sub_user = async (collection, id, user_id, search, start, le
         { "user.email": RE }]
       }
     });
-    // }
+
     if (sort) {
       aggregate.push({
         "$sort": sort
@@ -77,7 +77,6 @@ user_helper.get_all_subs_users = async (collection, id, search, start, length, r
         $match: {
           "is_del": false,
           "emp_id": new ObjectId(id),
-          // "user_id": { $ne: new ObjectId(user_id) }
         }
       },
       {
@@ -97,7 +96,6 @@ user_helper.get_all_subs_users = async (collection, id, search, start, length, r
       }
     ]
 
-    // if (search && search.value !='') {
     aggregate.push({
       "$match":
       {
@@ -105,7 +103,7 @@ user_helper.get_all_subs_users = async (collection, id, search, start, length, r
         { "user.email": RE }]
       }
     });
-    // }
+
     if (sort) {
       aggregate.push({
         "$sort": sort
@@ -210,13 +208,6 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
     if (sort) {
       aggregate.push({
         "$sort": sort
-        // {
-        //   "$project": {
-        //     "username": 1,
-        //     "username": { "$toLower": "$username" }
-        //   }
-        // },
-        // { "$sort": { "username": sort } }
       });
     }
 
@@ -231,7 +222,6 @@ user_helper.get_all_approved_employer = async (collection, search, start, length
       });
     }
     let user = await collection.aggregate(aggregate);
-    // console.log(user);
 
     if (user) {
       return { "status": 1, "message": "user details found", "user": user, "recordsTotal": recordsTotal };

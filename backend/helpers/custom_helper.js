@@ -13,23 +13,7 @@ custom_helper.get_all_custom_field = async (collection, id, search, start, lengt
           "is_del": false,
           "emp_id": new ObjectId(id)
         }
-      },
-
-      // {
-      //   $lookup:
-      //   {
-      //     from: "country_datas",
-      //     localField: "country",
-      //     foreignField: "_id",
-      //     as: "country"
-      //   }
-      // },
-      // {
-      //   $unwind: {
-      //     path: "$country",
-      //     preserveNullAndEmptyArrays: false
-      //   },
-      // }
+      }
     ]
 
     if (search && search != "") {

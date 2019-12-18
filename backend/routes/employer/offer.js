@@ -18,6 +18,7 @@ const User = require('../../models/user');
 const CandidateDetail = require("../../models/candidate-detail");
 const SubEmployerDetail = require("../../models/sub-employer-detail");
 const EmployerDetail = require("../../models/employer-detail");
+const Location = require("../../models/location");
 const Role = require('../../models/role');
 const Status = require("../../models/status");
 const History = require('../../models/offer_history');
@@ -211,8 +212,6 @@ router.post("/", async (req, res) => {
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
                     if (interest_resp.data.status === "On Hold") {
-                        console.log("===> On hold");
-
                         var all_employer = await common_helper.find(User, {
                             "isAllow": true,
                             "is_del": false,
@@ -222,18 +221,19 @@ router.post("/", async (req, res) => {
                             ]
                         })
 
-                        for (let index = 0; index < all_employer.length; index++) {
 
-                            const element = all_employer[index];
+                        for (let index = 0; index < all_employer.data.length; index++) {
+                            const element = all_employer.data[index];
+
                             if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
-                                var emp_name = await common_helper.findOne(SubEmployer, { "user_id": new ObjectId(element._id) })
+                                var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
                                 var email = emp_name.data.username;
                                 var name = email.substring(0, email.lastIndexOf(" "));
                                 if (name === "") {
                                     name = email;
                                 }
                             } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
-                                var emp_name = await common_helper.findOne(Employer, { "user_id": new ObjectId(element._id) })
+                                var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
                                 var email = emp_name.data.username;
                                 var name = email.substring(0, email.lastIndexOf(" "));
                                 if (name === "") {
@@ -242,7 +242,6 @@ router.post("/", async (req, res) => {
                             }
 
                             var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'on_hold_offer' });
-
                             var upper_content = mailcontent.data.upper_content;
                             var middel_content = mailcontent.data.middel_content;
                             var lower_content = mailcontent.data.lower_content;
@@ -250,14 +249,13 @@ router.post("/", async (req, res) => {
                             upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname + " " + candidate.data.lastname}`);
                             let mail_resp = await mail_helper.send("on_hold_offer", {
                                 "to": element.email,
-                                "subject": `${candidate.data.firstname + " " + candidate.data.lastname}` + "offer created in On Hold status"
+                                "subject": `${candidate.data.firstname + " " + candidate.data.lastname}` + " offer created in On Hold status"
                             }, {
                                 "name": name,
                                 "upper_content": upper_content,
                                 "middel_content": middel_content,
                                 "lower_content": lower_content,
                             });
-                            console.log('mail_resp ==> ');
                         }
 
                     } else {
@@ -507,6 +505,130 @@ cron.schedule('00 00 * * *', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 })
+
+cron.schedule('00 00 * * *', async (req, res) => {
+    try {
+        var resp_data = await Offer.aggregate(
+            [
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "created_by",
+                        foreignField: "_id",
+                        as: "created_by"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$created_by",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user_id"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$user_id",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "candidateDetail",
+                        localField: "user_id._id",
+                        foreignField: "user_id",
+                        as: "candidate"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate",
+                        preserveNullAndEmptyArrays: true
+                    },
+                }
+
+            ]
+        )
+
+        var current_date = moment().startOf('day')
+
+        for (const resp of resp_data) {
+            if (resp.status === "Accepted" && moment(resp.joiningdate).startOf('day').add(1, 'day').isSame(current_date)) {
+                var all_employer = await common_helper.find(User, {
+                    "isAllow": true,
+                    "is_del": false,
+                    $or: [
+                        { "_id": new ObjectId(resp.employer_id) },
+                        { "emp_id": new ObjectId(resp.employer_id) },
+                    ]
+                })
+
+                for (const element of all_employer.data) {
+                    if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                        var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+                        var fullname = emp_name.data.username;
+                        var name = fullname.substring(0, fullname.lastIndexOf(" "));
+                        if (name === "") {
+                            name = fullname;
+                        }
+                    } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                        var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+                        var fullname = emp_name.data.username;
+                        var name = fullname.substring(0, fullname.lastIndexOf(" "));
+                        if (name === "") {
+                            name = fullname;
+                        }
+                    }
+
+                    var message = await common_helper.findOne(MailContent, { 'mail_type': "candidate_has_joined" });
+                    var upper_content = message.data.upper_content;
+                    var middel_content = message.data.middel_content;
+                    var lower_content = message.data.lower_content;
+
+                    var location = await common_helper.findOne(Location, { '_id': resp.location });
+
+                    upper_content = upper_content.replace('{candidatename}', `${resp.candidate.firstname + " " + resp.candidate.lastname}`).replace("{title}", resp.title).replace("{location}", location.data.city);
+
+                    let mail_resp = await mail_helper.send("candidate_has_joined", {
+                        "to": element.email,
+                        "subject": `${resp.candidate.firstname + " " + resp.candidate.lastname}` + " has joined"
+                    }, {
+                        "name": name,
+                        "upper_content": upper_content,
+                        "middel_content": middel_content,
+                        "lower_content": lower_content,
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
+});
 
 cron.schedule('00 00 * * *', async (req, res) => {
     try {
@@ -1134,8 +1256,6 @@ router.put('/', async (req, res) => {
         var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
         var user_email = await common_helper.findOne(User, { "_id": offer_upadate.data.user_id })
         obj.status = offer_upadate.data.status;
-
-        // console.log("========>", obj);
 
         if (offer.data.status !== req.body.status) {
             obj.offer_id = offer_upadate.data._id;

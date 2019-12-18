@@ -9,10 +9,6 @@ const EmployerDetailSchema = new Schema({
     ref: 'country_datas'
     //required: true
   },
-  // businesstype: {
-  //   type: String,
-  //    ref: 'business_type'
-  // },
   businesstype: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'business_type'
