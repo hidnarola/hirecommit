@@ -407,11 +407,16 @@ router.put('/', async (req, res) => {
                         var emp_name = await common_helper.findOne(SubEmployer, { "user_id": new ObjectId(element._id) })
                         var email = emp_name.data.username;
                         var name = email.substring(0, email.lastIndexOf(" "));
-
+                        if (name === "") {
+                            name = email;
+                        }
                     } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
                         var emp_name = await common_helper.findOne(Employer, { "user_id": new ObjectId(element._id) })
                         var email = emp_name.data.username;
                         var name = email.substring(0, email.lastIndexOf(" "));
+                        if (name === "") {
+                            name = email;
+                        }
                     }
 
                     var location = await common_helper.findOne(Location, { '_id': offer.data.location });

@@ -252,16 +252,65 @@ router.post("/", async (req, res) => {
                     // }
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
+                    if (interest_resp.data.status === "On Hold") {
+                        console.log("===> On hold");
 
-                    let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                        "to": user.data.email,
-                        "reply_to1": `${reply_to.data.email}`,
-                        "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
-                        "subject": "Offer",
-                        "trackid": interest_resp.data._id
-                    }, obj);
+                        var all_employer = await common_helper.find(User, {
+                            "isAllow": true,
+                            "is_del": false,
+                            $or: [
+                                { "_id": new ObjectId(interest_resp.data.employer_id) },
+                                { "emp_id": new ObjectId(interest_resp.data.employer_id) },
+                            ]
+                        })
 
+                        for (let index = 0; index < all_employer.length; index++) {
 
+                            const element = all_employer[index];
+                            if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                                var emp_name = await common_helper.findOne(SubEmployer, { "user_id": new ObjectId(element._id) })
+                                var email = emp_name.data.username;
+                                var name = email.substring(0, email.lastIndexOf(" "));
+                                if (name === "") {
+                                    name = email;
+                                }
+                            } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                                var emp_name = await common_helper.findOne(Employer, { "user_id": new ObjectId(element._id) })
+                                var email = emp_name.data.username;
+                                var name = email.substring(0, email.lastIndexOf(" "));
+                                if (name === "") {
+                                    name = email;
+                                }
+                            }
+
+                            var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'on_hold_offer' });
+
+                            var upper_content = mailcontent.data.upper_content;
+                            var middel_content = mailcontent.data.middel_content;
+                            var lower_content = mailcontent.data.lower_content;
+
+                            upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname + " " + candidate.data.lastname}`);
+                            let mail_resp = await mail_helper.send("on_hold_offer", {
+                                "to": element.email,
+                                "subject": `${candidate.data.firstname + " " + candidate.data.lastname}` + "offer created in On Hold status"
+                            }, {
+                                "name": name,
+                                "upper_content": upper_content,
+                                "middel_content": middel_content,
+                                "lower_content": lower_content,
+                            });
+                            console.log('mail_resp ==> ');
+                        }
+
+                    } else {
+                        let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                            "to": user.data.email,
+                            "reply_to1": `${reply_to.data.email}`,
+                            "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
+                            "subject": "Offer",
+                            "trackid": interest_resp.data._id
+                        }, obj);
+                    }
 
                     // {
                     //     "msg": content,
