@@ -506,7 +506,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
     }
 })
 
-cron.schedule('* * * * *', async (req, res) => {
+cron.schedule('00 00 * * *', async (req, res) => {
     try {
         var resp_data = await Offer.aggregate(
             [
@@ -577,7 +577,6 @@ cron.schedule('* * * * *', async (req, res) => {
         var current_date = moment().startOf('day')
 
         for (const resp of resp_data) {
-            console.log(' : resp ==> ', resp); return false;
             if (resp.status === "Accepted" && moment(resp.joiningdate).startOf('day').add(1, 'day').isSame(current_date)) {
                 var all_employer = await common_helper.find(User, {
                     "isAllow": true,
@@ -625,25 +624,87 @@ cron.schedule('* * * * *', async (req, res) => {
                     });
                 }
             } else if (resp.status === "Released" && moment(resp.expirydate).startOf('day').subtract(1, 'day').isSame(current_date)) {
+                var employer_name = await common_helper.findOne(EmployerDetail, { "user_id": resp.created_by._id });
+                var employer_name1 = await common_helper.findOne(SubEmployerDetail, { "user_id": resp.created_by._id });
 
-                // var employer = await common_helper.find(User, {
-                //     "isAllow": true,
-                //     "is_del": false,
-                //     $or: [
-                //         { "_id": new ObjectId(resp.employer_id) },
-                //         { "emp_id": new ObjectId(resp.employer_id) },
-                //     ]
-                // })
+                if (employer_name.status == 1) {
+                    var employername = employer_name.data.username;
+                } else {
+                    var employername = employer_name1.data.username;
+                }
 
-                // let mail_resp = await mail_helper.send("candidate_has_joined", {
-                //     "to": resp.user_id.email,
-                //     "subject": "Your offer from " + + " is expiring soon!!"
-                // }, {
-                //     "name": name,
-                //     "upper_content": upper_content,
-                //     "middel_content": middel_content,
-                //     "lower_content": lower_content,
-                // });
+                var message = await common_helper.findOne(MailContent, { 'mail_type': "offer_expiring" });
+
+                var upper_content = message.data.upper_content;
+                var middel_content = message.data.middel_content;
+                var lower_content = message.data.lower_content;
+
+                upper_content = upper_content.replace('{employername}', employername);
+
+                let mail_resp = await mail_helper.send("offer_expiring", {
+                    "to": resp.user_id.email,
+                    "subject": "Your offer from " + `${employername}` + " is expiring soon!!"
+                }, {
+                    "name": resp.candidate.firstname,
+                    "upper_content": upper_content,
+                    "middel_content": middel_content,
+                    "lower_content": lower_content,
+                });
+
+                // console.log(' : mail_resp ==> ', mail_resp);
+                if (mail_resp.status == 1) {
+                    var all_employer = await common_helper.find(User, {
+                        "isAllow": true,
+                        "is_del": false,
+                        $or: [
+                            { "_id": new ObjectId(resp.employer_id) },
+                            { "emp_id": new ObjectId(resp.employer_id) },
+                        ]
+                    })
+
+                    for (const element of all_employer.data) {
+                        if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                            var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+                            var fullname = emp_name.data.username;
+                            var name = fullname.substring(0, fullname.lastIndexOf(" "));
+                            if (name === "") {
+                                name = fullname;
+                            }
+                        } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                            var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+                            var fullname = emp_name.data.username;
+                            var name = fullname.substring(0, fullname.lastIndexOf(" "));
+                            if (name === "") {
+                                name = fullname;
+                            }
+                        }
+
+                        var message = await common_helper.findOne(MailContent, { 'mail_type': "offer_expiring_employer" });
+                        var upper_content = message.data.upper_content;
+                        var middel_content = message.data.middel_content;
+                        var lower_content = message.data.lower_content;
+
+                        var location = await common_helper.findOne(Location, { '_id': resp.location });
+
+                        upper_content = upper_content.replace('{candidatename}', `${resp.candidate.firstname + " " + resp.candidate.lastname}`).replace("{title}", resp.title).replace("{location}", location.data.city);
+
+                        let mail_resp = await mail_helper.send("offer_expiring", {
+                            "to": element.email,
+                            "subject": `${resp.candidate.firstname + " " + resp.candidate.lastname}` + " offer expired"
+                        }, {
+                            "name": name,
+                            "upper_content": upper_content,
+                            "middel_content": middel_content,
+                            "lower_content": lower_content,
+                        });
+
+                    }
+
+
+
+                }
+
+
             }
         }
     } catch (error) {
