@@ -506,7 +506,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
     }
 })
 
-cron.schedule('00 00 * * *', async (req, res) => {
+cron.schedule('* * * * *', async (req, res) => {
     try {
         var resp_data = await Offer.aggregate(
             [
@@ -577,6 +577,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
         var current_date = moment().startOf('day')
 
         for (const resp of resp_data) {
+            console.log(' : resp ==> ', resp); return false;
             if (resp.status === "Accepted" && moment(resp.joiningdate).startOf('day').add(1, 'day').isSame(current_date)) {
                 var all_employer = await common_helper.find(User, {
                     "isAllow": true,
@@ -623,6 +624,26 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         "lower_content": lower_content,
                     });
                 }
+            } else if (resp.status === "Released" && moment(resp.expirydate).startOf('day').subtract(1, 'day').isSame(current_date)) {
+
+                // var employer = await common_helper.find(User, {
+                //     "isAllow": true,
+                //     "is_del": false,
+                //     $or: [
+                //         { "_id": new ObjectId(resp.employer_id) },
+                //         { "emp_id": new ObjectId(resp.employer_id) },
+                //     ]
+                // })
+
+                // let mail_resp = await mail_helper.send("candidate_has_joined", {
+                //     "to": resp.user_id.email,
+                //     "subject": "Your offer from " + + " is expiring soon!!"
+                // }, {
+                //     "name": name,
+                //     "upper_content": upper_content,
+                //     "middel_content": middel_content,
+                //     "lower_content": lower_content,
+                // });
             }
         }
     } catch (error) {
