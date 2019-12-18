@@ -28,7 +28,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: false }) content: ElementRef;
   @ViewChild('content1', { static: false }) content1: ElementRef;
   @ViewChild('content2', { static: false }) content2: ElementRef;
-  @ViewChild('editor', { static: false }) editor: ElementRef;
+  @ViewChild('editor', { static: false }) summernote: ElementRef;
   @ViewChild('editor', { static: false }) editorDir: NgxSummernoteDirective;
   userName: any;
   public Editor = ClassicEditor;
@@ -43,6 +43,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   groupForm: FormGroup;
   date: any;
   country: any = [];
+  isSetCommunication = false;
   countryList: any = [];
   candidateData: any;
   salary_bracket: any = [];
@@ -57,6 +58,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   msg: any;
   err_msg: any;
   isShow = false;
+  isValue = false;
+  isValueSalary = false;
   valueForEditor: any;
   details: any;
   groupData: any = {};
@@ -72,16 +75,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     height: '200px',
     uploadImagePath: '/api/upload',
     toolbar: [
-      ['misc', ['codeview', 'undo', 'redo', 'codeBlock']],
+      ['misc', ['codeview', 'undo', 'redo', 'codeBlock', 'paste']],
       ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
       ['fontsize', ['fontname', 'fontsize', 'color']],
       ['para', ['style0', 'ul', 'ol', 'paragraph', 'height']],
-      ['insert', ['table', 'picture', 'link', 'video', 'hr']],
-      ['customButtons', ['testBtn']]
-    ],
-    buttons: {
-      'testBtn': this.customButton()
-    }
+      ['insert', ['table', 'picture', 'link', 'video', 'hr']]
+    ]
   };
 
   editorConfig: AngularEditorConfig = {
@@ -99,6 +98,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     defaultParagraphSeparator: 'p',
     defaultFontName: '',
     defaultFontSize: '',
+
     toolbarHiddenButtons: [
       ['insertImage']
     ],
@@ -214,9 +214,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
       location: new FormControl('', [Validators.required]),
-      salarybracket: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
-      salarybracket_from: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
-      salarybracket_to: new FormControl('', [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]),
+      salarybracket: new FormControl(''),
+      salarybracket_from: new FormControl(''),
+      salarybracket_to: new FormControl(''),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
       status: new FormControl(),
@@ -268,7 +268,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     return this.form.get('communicationFieldItems') as FormArray;
   }
 
-  // AdHoc Communication 
+  // AdHoc Communication
   get AdHocCommunication() {
     return this.form.get('AdHocCommunication') as FormArray;
   }
@@ -280,7 +280,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         contents: 'Test btn',
         tooltip: 'Test',
         click: function () {
-          context.invoke('editor.insertText', '<div>Hello from test btn!!!!</div>');
+          context.invoke('editor.insertText', 'Hello from test btn!!!!');
         }
       });
       return button.render();
@@ -560,16 +560,20 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
             });
           }
+
           // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
 
 
           if (this.is_View && res[`data`][`communication`].length > 0) {
+            this.isSetCommunication = true;
             res[`data`][`communication`].forEach(element => {
               element.trigger =
                 (this.Trigger_Option.find(o => o.value === element.trigger).label);
             });
             // res[`data`][`communication`][0].trigger =
             //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+        } else {
+            this.isSetCommunication = false;
           }
           if (this.is_Edit) {
             if (res['data'].status === 'Accepted') {
@@ -604,6 +608,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           if (res[`data`] && this.is_Edit) {
             // set communication
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
+              this.isSetCommunication = true;
               this.communicationData = res['data']['communication'];
               const _communication_array = [];
               this.communicationData.forEach((element, index) => {
@@ -624,6 +629,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 _communication_array.push(new_communication);
               });
               this.communicationData = _communication_array;
+            } else {
+              this.isSetCommunication = false;
             }
             // set communication
 
@@ -870,14 +877,19 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         if (this.is_View &&
           !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
           this.getGroupDetails = false;
-        } else {
+        } else if (this.group_optoins.value === '') {
+          this.getGroupDetails = false;
+        }
+        else {
           this.getGroupDetails = true;
         }
         this.setGroupFormControl();
+
         this.groupData.high_unopened = this.resData.high_unopened;
         this.groupData.high_notreplied = this.resData.high_notreplied;
         this.groupData.medium_unopened = this.resData.medium_unopened;
         this.groupData.medium_notreplied = this.resData.medium_notreplied;
+
       }
       if (groupById && this.is_View) {
         this.resData.groupName = groupById.label;
@@ -895,62 +907,85 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   //  set controls for group form
   setGroupFormControl() {
-    this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
-    this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
-    this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
-    this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]));
+    this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]));
+    this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]));
+    this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]));
     this.form.updateValueAndValidity();
   }
 
   // On change of group
   groupChange(e) {
-    this.Groupservice.get_detail(e.value).subscribe(res => {
-      this.getGroupDetails = true;
-      this.setGroupFormControl();
-      // this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
-      // this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
-      // this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
-      // this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+    console.log('e.value=>', e.value);
+    console.log('this.form=>', this.form.controls.communicationFieldItems['controls']);
+    if (e.value) {
+      this.Groupservice.get_detail(e.value).subscribe(res => {
+        this.getGroupDetails = true;
+        this.isSetCommunication = true;
+        this.setGroupFormControl();
+        // this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+        // this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+        // this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
+        // this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]));
 
-      this.groupData = res['data']['data'][0];
-      if (res['communication']['data'] && res['communication']['data'].length > 0) {
-        this.communicationData = res['communication']['data'][0]['communication'];
-      }
+        this.groupData = res['data']['data'][0];
+        if (res['communication']['data'] && res['communication']['data'].length > 0) {
+          this.communicationData = res['communication']['data'][0]['communication'];
+        }
 
-      // set communication
-      if (this.communicationData && this.communicationData.length > 0) {
-        this.is_communication_added = true;
-        const _array = [];
-        this.communicationData.forEach((element, index) => {
-          const new_communication = {
-            'communicationname': element.communicationname,
-            'trigger': element.trigger,
-            'priority': element.priority,
-            'day': element.day,
-            'message': element.message,
-          };
-          this.communicationFieldItems.setControl(index, this.fb.group({
-            communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
-            trigger: ['', Validators.required],
-            priority: ['', Validators.required],
-            day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
-            message: ['', [Validators.required, this.noWhitespaceValidator]]
-            // message: ['', Validators.required]
-          }));
-          _array.push(new_communication);
-        });
-        this.communicationData = _array;
+        // set communication
+        if (this.communicationData && this.communicationData.length > 0) {
+          this.is_communication_added = true;
+          const _array = [];
+          this.communicationData.forEach((element, index) => {
+            const new_communication = {
+              'communicationname': element.communicationname,
+              'trigger': element.trigger,
+              'priority': element.priority,
+              'day': element.day,
+              'message': element.message,
+            };
+            this.communicationFieldItems.setControl(index, this.fb.group({
+              communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+              trigger: ['', Validators.required],
+              priority: ['', Validators.required],
+              day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+              message: ['', [Validators.required, this.noWhitespaceValidator]]
+              // message: ['', Validators.required]
+            }));
+            _array.push(new_communication);
+          });
+          this.communicationData = _array;
 
-        // this.form.updateValueAndValidity();
-      } else {
-        console.log('no communicaiondata found => ');
-        // if (this.Comm_Flag) {
+          // this.form.updateValueAndValidity();
+        } else {
+          console.log('no communicaiondata found => ');
+          // if (this.Comm_Flag) {
 
-        this.add_new_communication();
-        // }
-      }
-      // set communication
-    });
+          this.add_new_communication();
+          // }
+        }
+        // set communication
+        // this.getGroupDetails = false;
+      }, (err) => {
+        this.getGroupDetails = false;
+        this.isSetCommunication = false;
+      });
+      console.log('if value ===>this.form=>', this.form.controls);
+
+    } else {
+      this.getGroupDetails = false;
+      this.isSetCommunication = false;
+      console.log('else => no value => this.form=>', this.form.controls);
+      console.log(' this.communicationFieldItems=>',  this.communicationFieldItems['controls']);
+      // this.communicationFieldItems['controls'].forEach(element => {
+      //   console.log('element=>', element);
+      //   element['controls'].setValidators(null);
+      // });
+      // this.updateValidation();
+      // this.form.controls.communicationFieldItems.reset();
+// this.communicationFieldItems.removeAt
+    }
   }
 
   Accept(id, type) {
@@ -1143,25 +1178,46 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // blur event for salary input
   onSalaryBlur() {
     if (this.form.value.salarybracket > 0) {
+      // this.isValue = true;
+      // this.isValueSalary = false;
+      this.form.controls['salarybracket'].setValidators([Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
+      this.form.controls['salarybracket'].setValue(parseFloat(this.form.value.salarybracket));
       document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
       document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
       this.form.controls['salarybracket_from'].setErrors(null);
       this.form.controls['salarybracket_to'].setErrors(null);
       this.updateValidation();
     } else {
+      // this.isValue = false;
+      // this.isValueSalary = true;
       document.getElementById('salarybracket_to').removeAttribute('disabled');
       document.getElementById('salarybracket_from').removeAttribute('disabled');
+      // this.form.controls['salarybracket_to'].setErrors(Validators.required);
+      // this.form.controls['salarybracket_from'].setErrors(Validators.required);
     }
   }
 
   // blur event of salary range
   onSalaryRangeBlur() {
+    // this.isValue = false;
+    // this.isValueSalary = true;
     if ((this.form.value.salarybracket_from > 0) && this.form.value.salarybracket_to > 0) {
+      this.form.controls['salarybracket_from'].setValidators(
+        [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
+      );
+      this.form.controls['salarybracket_to'].setValidators(
+        [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
+      );
+      this.form.controls['salarybracket_from'].setValue(parseFloat(this.form.value.salarybracket_from));
+      this.form.controls['salarybracket_to'].setValue(parseFloat(this.form.value.salarybracket_to));
       document.getElementById('salarybracket').setAttribute('disabled', 'true');
       this.form.controls['salarybracket'].setErrors(null);
       this.updateValidation();
     } else {
+      // this.isValue = true;
+      // this.isValueSalary = false;
       document.getElementById('salarybracket').removeAttribute('disabled');
+      this.form.controls['salarybracket'].setErrors(Validators.required);
     }
   }
 
@@ -1175,8 +1231,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.router.navigate([this.cancel_link]);
           }
         });
-      }
-      else {
+      }      else {
         this.router.navigate([this.cancel_link]);
       }
 
@@ -1189,12 +1244,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.router.navigate([this.cancel_link1]);
           }
         });
-      }
-      else {
+      }      else {
         this.router.navigate([this.cancel_link1]);
       }
-    }
-    else if (this.userDetail.role === 'candidate') {
+    }    else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['/candidate/offers/list']);
     } else if (this.userDetail.role === 'admin') {
       const backID = this.route.snapshot.params.report_id;
@@ -1254,34 +1307,47 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   getCursor = (e) => {
     const selection = document.getSelection();
     this.cursorPos = selection.anchorOffset;
-    console.log('pos=>', e, this.cursorPos, this.editor.nativeElement.selectionStart);
+    console.log('pos=>', e, this.cursorPos, this.summernote.nativeElement.selectionStart);
     // console.log('values=>', this.form.value);
     // console.log('this.form.controls[`AdHoc_message`].value=>',
     //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
   }
 
   append(value) {
-    let oldContent = '';
 
-    if (value === 'AdHoc_message') {
-      value = null;
-      const selection = document.getSelection();
-      this.cursorPos = selection.anchorOffset;
-      oldContent = this.valueForEditor;
-      const toInsert = value == null ? '' : value;
-      const newContent = oldContent.substring(0, this.cursorPos) + toInsert + oldContent.substring(this.cursorPos);
-      this.valueForEditor = newContent;
-    } else {
-      const toInsert = value == null ? '' : value;
-      const newContent = this.valueForEditor.substring(0, this.cursorPos) + toInsert + this.valueForEditor.substring(this.cursorPos);
-      this.valueForEditor = newContent;
-    }
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = value;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+
+    // let oldContent = '';
+
+    // if (value === 'AdHoc_message') {
+    //   value = null;
+    //   const selection = document.getSelection();
+    //   this.cursorPos = selection.anchorOffset;
+    //   oldContent = this.valueForEditor;
+    //   const toInsert = value == null ? '' : value;
+    //   const newContent = oldContent.substring(0, this.cursorPos) + toInsert + oldContent.substring(this.cursorPos);
+    //   this.valueForEditor = newContent;
+    // } else {
+    //   const toInsert = value == null ? '' : value;
+    //   const newContent = this.valueForEditor.substring(0, this.cursorPos) + toInsert + this.valueForEditor.substring(this.cursorPos);
+    //   this.valueForEditor = newContent;
+    // }
     // const element = document.getElementById('editor');
 
     // this.editorDir.writeValue('<p>Bello</p>');
     //  $('#editor').summernote('insertText', 'This text should appear at the cursor');
     // console.log('editor=>', this.editor.nativeElement.writeValue('XXXXXXXXXXXX'));
-    console.log('editor=>', this.editor);
+    console.log('editor=>', this.summernote);
 
     console.log('valueForEditor => ', this.valueForEditor);
 
@@ -1300,6 +1366,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
+    console.log('this.form.value.group=>', this.form);
     this.is_submitted = true;
     // customised fields
     const _coustomisedFieldsArray = [];
@@ -1328,8 +1395,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     // AdHoc Communication 
     const AdHOc_communication_array = [];
     if (this.AdHocCommunicationData.length > 0) {
-      console.log('AdHoc_message=>', this.AdHocCommunicationData);
-
       this.AdHocCommunicationData.forEach(element => {
         AdHOc_communication_array.push({
           AdHoc_communicationname: element.AdHoc_communicationname,
@@ -1369,10 +1434,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       customfeild: JSON.stringify(_coustomisedFieldsArray),
       data: JSON.stringify(communication_array),
       AdHoc: JSON.stringify(AdHOc_communication_array),
-      medium_notreplied: this.form.value.medium_notreplied ? this.form.value.medium_notreplied : '',
-      medium_unopened: this.form.value.medium_unopened ? this.form.value.medium_unopened : '',
-      high_notreplied: this.form.value.high_notreplied ? this.form.value.high_notreplied : '',
-      high_unopened: this.form.value.high_unopened ? this.form.value.high_unopened : '',
+      medium_notreplied: this.form.value.medium_notreplied || this.form.value.medium_notreplied == 0 ? this.form.value.medium_notreplied : '',
+      medium_unopened: this.form.value.medium_unopened || this.form.value.medium_unopened == 0 ? this.form.value.medium_unopened : '',
+      high_notreplied: this.form.value.high_notreplied || this.form.value.high_notreplied == 0 ? this.form.value.high_notreplied : '',
+      high_unopened: this.form.value.high_unopened || this.form.value.high_unopened == 0 ? this.form.value.high_unopened : '',
     };
     Object.keys(form_data).map(key => {
       if (unwantedFields.includes(key)) {
@@ -1387,16 +1452,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
     if (this.form.value.group && this.route.snapshot.data.title === 'Add') {
-      console.log('this.form.value.group=>', this.form.value.group);
+      console.log('this.form.value.group=>', this.form.value);
       this.formData.append('groups', this.form.value.group);
     } else if (this.route.snapshot.data.title === 'Edit') {
-
       this.formData.append('groups', this.form.value.group !== undefined && this.form.value.group !== null &&
         this.form.value.group !== '' ? this.form.value.group : '');
     }
 
     if (flag) {
       if (this.route.snapshot.data.title === 'Edit') {
+
         this.formData.append('id', this.id);
         this.formData.append('status', this.form.value.offerStatus.value);
         this.confirmationService.confirm({

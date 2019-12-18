@@ -34,8 +34,9 @@ export class ChangepasswordComponent implements OnInit {
         Validators.compose([
           Validators.required,
           this.noWhitespaceValidator,
-          Validators.minLength(8),
-          Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
+          // Validators.minLength(8),
+          // Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)
+        ])),
       'newpassword': new FormControl('',
         Validators.compose([
           Validators.required,
@@ -142,6 +143,9 @@ export class ChangepasswordComponent implements OnInit {
             this.show_spinner = false;
             this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
           });
+        },
+        reject: () => {
+          this.show_spinner = false;
         }
       });
     }

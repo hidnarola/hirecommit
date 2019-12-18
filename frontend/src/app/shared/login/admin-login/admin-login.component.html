@@ -53,6 +53,16 @@
                     characters.</span>
             </div>
         </div>
+        <!-- captcha -->
+        <div class="input-group mb-3 recaptcha-div">
+            <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" class="mt-2" formControlName="recaptcha"
+                [(ngModel)]="formData.recaptcha" name="recaptcha">
+            </ngx-recaptcha2>
+            <div class="error" *ngIf="!loginForm.controls['recaptcha'].valid && isFormSubmitted">
+                <span *ngIf="loginForm.controls['recaptcha'].errors['required']">This Field is required.</span>
+            </div>
+        </div>
+        <!-- captcha -->
         <div class="row">
             <div class="col-6">
                 <button type="submit" class="btn btn-primary px-4" [disabled]="show_spinner">Login <i
@@ -71,10 +81,15 @@
         <div class="d-flex">
             <div class="copyright">
                 <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
+                <a [routerLink]="['/aboutus']" target="_blank">About us</a>
+                <a [routerLink]="['/termsandcondition']" target="_blank">Terms & Condition</a>
+                <a [routerLink]="['/privacypolicy']" target="_blank">Privacy policy</a>
             </div>
-            <div class="contact-link">
-                <a [routerLink]="['aboutus']" target="_blank">About us</a>
-                <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+            <div class="footer-media d-flex">
+                <a href="https://www.facebook.com/HireCommit/"><img src="assets/img/facebook.svg" alt="" /></a>
+                <a href="https://twitter.com/hirecommit"><img src="assets/img/twitter.svg" alt="" /></a>
+                <a href="https://www.linkedin.com/company/hirecommit/?viewAsMember=true"><img
+                        src="assets/img/linkedin.svg" alt="" /></a>
             </div>
         </div>
     </div>

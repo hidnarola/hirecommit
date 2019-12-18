@@ -18,6 +18,7 @@ export class AdminLoginComponent implements OnInit {
   show_spinner = false;
   userData: any = {};
   role: any;
+  siteKey = environment.captcha_site_key;
   isProd: Boolean = false;
 
   constructor(
@@ -30,7 +31,8 @@ export class AdminLoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required,
       Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
-      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      recaptcha: new FormControl('', [Validators.required]),
     });
 
     this.isProd = environment.production;
@@ -99,8 +101,6 @@ export class AdminLoginComponent implements OnInit {
           // }
 
         } else {
-          console.log('Local=======>');
-
           localStorage.setItem('token', token);
           localStorage.setItem('user', res['role']);
           localStorage.setItem('userid', res['id']);
@@ -109,7 +109,6 @@ export class AdminLoginComponent implements OnInit {
           // this.router.navigate(['authorize'], { queryParams: { role: this.role, token: token } });
 
           if (this.role === 'admin') {
-            console.log('login>>', this.profile);
             this.router.navigate(['admin']);
           }
           if (res['role'] !== 'admin') {
@@ -143,6 +142,7 @@ export class AdminLoginComponent implements OnInit {
           );
         }
         else {
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         }
       });

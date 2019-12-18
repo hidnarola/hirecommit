@@ -44,7 +44,7 @@
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['high_unopened'].valid">
 
                                     <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']"
-                                        class="text-danger">Only Month Days</span>
+                                        class="text-danger">Enter valid data.</span>
                                 </div>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="high_notreplied">High - NotReplied</label>
                             <div class="input-group col-md-2">
-                                <input type="number" min="1" class="form-control" autocomplete="high_notreplied"
+                                <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                     formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
                                     id="high_notreplied">
                                 <div class="input-group-append">
@@ -61,7 +61,7 @@
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['high_notreplied'].valid ">
 
                                     <span *ngIf="addGroup.controls['high_notreplied'].errors['pattern']"
-                                        class="text-danger">Only Month Days</span>
+                                        class="text-danger">Enter valid data.</span>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="medium_unopened">Medium - UnOpened</label>
                             <div class="input-group col-md-2">
-                                <input type="number" min="1" class="form-control" autocomplete="medium_unopened"
+                                <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                     formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
                                     id="medium_unopened">
                                 <div class="input-group-append">
@@ -78,7 +78,7 @@
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_unopened'].valid">
 
                                     <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']"
-                                        class="text-danger">Only Month Days</span>
+                                        class="text-danger">Enter valid data.</span>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="medium_notreplied">Medium - NotReplied</label>
                             <div class="input-group col-md-2">
-                                <input type="number" min="1" class="form-control" autocomplete="medium_notreplied"
+                                <input type="number" min="0" class="form-control" autocomplete="medium_notreplied"
                                     formControlName="medium_notreplied" [(ngModel)]="groupData.medium_notreplied"
                                     id="medium_notreplied">
                                 <div class="input-group-append">
@@ -95,7 +95,7 @@
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_notreplied'].valid">
 
                                     <span *ngIf="addGroup.controls['medium_notreplied'].errors['pattern']"
-                                        class="text-danger">Only Month Days</span>
+                                        class="text-danger">Enter valid data.</span>
                                 </div>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                         <!-- <div class="form-group row">
                             <label class="ml-4 col-md-3" for="low_unopened">Low - UnOpened</label>
                             <div class="input-group col-md-2">
-                                <input type="number" min="1" class="form-control" autocomplete="low_unopened"
+                                <input type="number" min="0" class="form-control" autocomplete="low_unopened"
                                     formControlName="low_unopened" [(ngModel)]="groupData.low_unopened"
                                     id="low_unopened">
                                 <div class="input-group-append">
@@ -123,7 +123,7 @@
                         <div class="form-group row">
                             <label class="ml-4 col-md-3" for="low_notreplied">Low - NotReplied</label>
                             <div class="input-group col-md-2">
-                                <input type="number" min="1" class="form-control" autocomplete="low_notreplied"
+                                <input type="number" min="0" class="form-control" autocomplete="low_notreplied"
                                     formControlName="low_notreplied" [(ngModel)]="groupData.low_notreplied"
                                     id="low_notreplied">
                                 <div class="input-group-append">
@@ -256,7 +256,7 @@
                                                     <label class="col-md-5 col-form-label" for="day">-</label>
                                                     <div class="input-group col-md-7">
                                                         <input type="number" id="day" name="day" class="form-control"
-                                                            placeholder="Enter Days" formControlName="day" min="1"
+                                                            placeholder="Enter Days" formControlName="day" min="0"
                                                             [(ngModel)]="customfield.day">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
@@ -276,20 +276,46 @@
                                                 </div>
                                             </div>
                                             <div class="form row">
-                                                <label class="col-md-12 col-form-label" for="message">Message</label>
-                                                <div class="col-md-12">
-                                                    <ckeditor [editor]="Editor" formControlName="message"
+                                                <div class="col-md-8">
+                                                    <label class="col-form-label" for="message">Message</label>
+                                                    <div>
+                                                        <!-- <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
-                                                    </ckeditor>
-                                                    <!-- [(ngModel)]="customfield.communicationname"> -->
-                                                    <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
-                                                        style="color: red;">
-                                                        <div
-                                                            *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
-                                                            This field is required.
+                                                    </ckeditor> -->
+                                                        <div>
+                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)"
+                                                                [ngxSummernote]="config" #editor
+                                                                [(summernoteModel)]="customfield.message" id="editor"
+                                                                formControlName="message">
+                                                            </div>
+                                                        </div>
+                                                        <!-- [(ngModel)]="customfield.communicationname"> -->
+                                                        <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
+                                                            style="color: red;">
+                                                            <div
+                                                                *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
+                                                                This field is required.
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4 bunch-list">
+                                                    <label class="col-form-label">Title here</label>
+                                                    <ul>
+                                                        <li (click)="append('||offer_date||')">offer_date</li>
+                                                        <li (click)="append('||candidate_name||')">candidate_name</li>
+                                                        <li (click)="append('||title||')">title</li>
+                                                        <li (click)="append('||location||')">location</li>
+                                                        <li (click)="append('||joining_date||')">joining_date</li>
+                                                        <li (click)="append('||expiry_date||')">expiry_date</li>
+                                                        <li (click)="append('||acceptance_date||')">acceptance_date</li>
+                                                    </ul>
+                                                    <p style="color: grey;">If you want to use this content click on it
+                                                        and paste it in
+                                                        editor.</p>
+
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

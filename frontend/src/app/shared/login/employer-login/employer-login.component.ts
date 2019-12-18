@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
+import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 @Component({
@@ -14,6 +15,7 @@ export class EmployerLoginComponent implements OnInit {
   loginForm: FormGroup;
   public isFormSubmitted;
   public formData: any;
+  siteKey = environment.captcha_site_key;
   show_spinner = false;
   userData: any = {};
   role: any;
@@ -28,7 +30,8 @@ export class EmployerLoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required,
       Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
-      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      recaptcha: new FormControl('', [Validators.required]),
     });
 
   }

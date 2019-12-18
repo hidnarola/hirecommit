@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-candidatelayout',
   templateUrl: './register.component.html',
@@ -13,6 +13,7 @@ export class RegisterComponent implements OnInit {
   code: any = [];
   registerForm: FormGroup;
   documentImage: FormGroup;
+
   public registerData: any;
   fileFormData = new FormData();
   file: File = null;
@@ -27,11 +28,13 @@ export class RegisterComponent implements OnInit {
   codeList: any;
   Document_optoins: any = [];
   countryID: any;
+  siteKey = environment.captcha_site_key;
   // tslint:disable-next-line: max-line-length
   labelName: any;
   isDocumentType = false;
   isDrivingLicense = false;
   constructor(
+
     public router: Router,
     private service: CommonService,
     private toastr: ToastrService,
@@ -40,11 +43,14 @@ export class RegisterComponent implements OnInit {
     private cd: ChangeDetectorRef
   ) {
     this.registerData = {};
+
     this.registerForm = this.fb.group({
       firstname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       lastname: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       // documentImage: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       country: new FormControl('', [Validators.required]),
       countrycode: new FormControl('', [Validators.required]),
       contactno: new FormControl('',
@@ -61,6 +67,7 @@ export class RegisterComponent implements OnInit {
           Validators.minLength(8),
           Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
       confirmpassword: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      recaptcha: new FormControl('', [Validators.required]),
       isChecked: new FormControl('', [Validators.required])
     }, { validator: this.checkPasswords });
 
@@ -255,8 +262,6 @@ export class RegisterComponent implements OnInit {
     this.isFormSubmitted = true;
     console.log('form=>', this.registerForm);
 
-    console.log('=>', valid, this.marked);
-
     if (valid && this.marked) {
       this.show_spinner = true;
       this.formData = new FormData();
@@ -265,14 +270,11 @@ export class RegisterComponent implements OnInit {
         const value = this.registerData[key];
         this.formData.append(key, value);
       }
-      console.log('this.formData=>', this.formData);
-
       if (this.fileFormData.get('filename')) {
         this.formData.append('documentimage', this.fileFormData.get('filename'));
       }
-
       this.service.candidate_signup(this.formData).subscribe(res => {
-        console.log(res);
+
         this.isFormSubmitted = false;
         this.registerData = {};
         if (res['status'] === 0) {
@@ -282,8 +284,6 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/login']);
         }
       }, (err) => {
-        console.log(this.show_spinner);
-
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
         this.show_spinner = false;
       });
