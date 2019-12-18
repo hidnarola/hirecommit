@@ -118,6 +118,8 @@ export class GroupEditComponent implements OnInit {
         // }
       }
       // set communication
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
 
   }

@@ -112,8 +112,7 @@ export class CandidateLoginComponent implements OnInit {
               text: err['error']['message']
             }
           );
-        }
-        else {
+        } else {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         }
       });

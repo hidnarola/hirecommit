@@ -1,18 +1,18 @@
-var express = require("express");
-var router = express.Router();
-var auth = require("../middlewares/auth");
-var authorization = require("../middlewares/authorization");
+const express = require("express");
+const router = express.Router();
+const auth = require("../middlewares/auth");
+const authorization = require("../middlewares/authorization");
 
 
-var sub_account = require('./employer/sub_account');
-var index = require('./employer/index');
+const sub_account = require('./employer/sub_account');
+const index = require('./employer/index');
 
-var customField = require('./employer/customField');
-var offer = require('./employer/offer');
-var salary_bracket = require('./employer/salary_bracket');
-var location = require('./employer/location');
-var group = require('./employer/group');
-var candidate = require('./employer/candidate');
+const customField = require('./employer/customField');
+const offer = require('./employer/offer');
+const salary_bracket = require('./employer/salary_bracket');
+const location = require('./employer/location');
+const group = require('./employer/group');
+const candidate = require('./employer/candidate');
 
 router.use("/", auth, authorization, index);
 router.use("/sub_account", auth, authorization, sub_account);

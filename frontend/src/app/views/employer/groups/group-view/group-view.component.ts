@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CommonService } from '../../../../services/common.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-group-view',
@@ -33,6 +34,7 @@ export class GroupViewComponent implements OnInit {
     private route: ActivatedRoute,
     private service: GroupService,
     private router: Router,
+    private toastr: ToastrService,
     private commonService: CommonService
   ) {
 
@@ -42,11 +44,7 @@ export class GroupViewComponent implements OnInit {
 
     this.id = this.route.snapshot.params.id;
     this.service.get_detail(this.id).subscribe(res => {
-      console.log('res=>', res);
-
-
       this.groupData = res['data']['data'][0];
-
       // hide spinner
       this.spinner.hide();
       if (res['communication']['data'] && res['communication']['data'].length > 0) {
@@ -56,12 +54,11 @@ export class GroupViewComponent implements OnInit {
           res['communication']['data'][0]['communication'].forEach(element => {
             element.trigger =
               (this.Trigger_Option.find(o => o.value === element.trigger).label);
-
           });
-
         }
       }
-
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 

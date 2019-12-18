@@ -53,6 +53,8 @@ export class SalaryBracketAddViewComponent implements OnInit {
       res['data'].forEach(element => {
         this.countryList.push({ 'label': element.country, 'value': element.country_id });
       });
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
 
     this.getDetail(this.id);
@@ -117,6 +119,8 @@ export class SalaryBracketAddViewComponent implements OnInit {
         this.detail.currency = res['data'].country.currency_code;
         this.detail.from = res['data'].from;
         this.detail.to = res['data'].to;
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     } else {
       this.detail = {
@@ -127,7 +131,6 @@ export class SalaryBracketAddViewComponent implements OnInit {
         to: null,
       };
       this.panelTitle = 'Add Salary Bracket';
-
       this.AddSalaryBracket.reset();
     }
   }

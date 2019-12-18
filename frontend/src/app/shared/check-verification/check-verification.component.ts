@@ -4,6 +4,7 @@ import { EmployerService } from '../../views/employer/employer.service';
 import { CandidateService } from '../../views/shared-components/candidates/candidate.service';
 import { routes } from '../../app.routing';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-check-verification',
@@ -18,6 +19,7 @@ export class CheckVerificationComponent implements OnInit {
     private commonService: CommonService,
     private empService: EmployerService,
     private candidateService: CandidateService,
+    private toastr: ToastrService,
     private router: Router) {
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
@@ -41,10 +43,11 @@ export class CheckVerificationComponent implements OnInit {
         if (!(res['status'] === 1)) {
           this.router.navigate(['/candidate/offers/list']);
         }
+      }, (err) => {
+        console.log('err => ', err);
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
-
-
   }
 
 }

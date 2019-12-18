@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployerService } from '../../../views/employer/employer.service';
 import { ModalOptions } from '../../modal_options';
 import { ConfirmationService } from 'primeng/api';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +33,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private empServise: EmployerService,
     private confirmationService: ConfirmationService,
+    private toastr: ToastrService,
     // public activeModal: NgbActiveModal,
     @Inject(DOCUMENT) _document?: any,
   ) {
@@ -202,6 +204,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.router.navigate(['/employer/locations/add']);
       document.getElementById('closeBtn').click();
       // this.activeModal.close();
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 

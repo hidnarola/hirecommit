@@ -192,7 +192,6 @@ export class LoginComponent implements OnInit {
     } else if (this.hostName === 'candidate.hirecommit.com') {
       this.isCandidate = true;
     } else {
-      console.log('else=======>');
       this.isAdmin = true;
     }
   }

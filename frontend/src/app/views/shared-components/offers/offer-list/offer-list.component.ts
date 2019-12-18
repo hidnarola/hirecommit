@@ -97,6 +97,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           // this.hide_list = true;
           this.Canididate_message = res['message'];
         }
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     }
 
@@ -118,6 +120,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       console.log('first_custom_field=>', this.first_custom_field);
 
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 
@@ -229,6 +233,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             // To hide spinner
             this.spinner.hide();
             console.log('err => ', err);
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         },
         columnDefs: [{ orderable: false, targets: 9 },
@@ -358,6 +363,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
             // To hide spinner
             this.spinner.hide();
             console.log('err => ', err);
+            this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         },
         columnDefs: [{ orderable: false, targets: 10 },
@@ -447,6 +453,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       }, (err) => {
         console.log('err=>', err);
         // this.hide_list = true;
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     } else if (this.userDetail.role === 'employer') {
       this.route.navigate(['/employer/offers/add']);
@@ -469,6 +476,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       accept: () => {
         this.service.deactivate_employer_offer(id).subscribe(res => {
           this.rrerender();
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });
@@ -490,7 +499,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.Info_msg = res[`data`][`message`];
         this.modalService.open(this.content1, ModalOptions);
       }
-
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
     this.offerID = id;
 
@@ -539,6 +549,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       );
       this.rrerender();
 
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
   disabledAccept() {

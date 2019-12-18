@@ -63,6 +63,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
+            this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         } else if (this.router.snapshot.data.type === 'new') {
@@ -76,6 +77,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
 
             }
           }, err => {
+            this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
             callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
         }
@@ -130,13 +132,13 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.service.aprroved_employer(obj).subscribe(res => {
           // console.log("hiii", res['data']['data']._id);
-            this.socketService.joinGrp(res['data']['data']._id);
-            this.socketService.isAllow(res['data']['data']._id);
-            this.socketService.leaveGrp(res['data']['data']._id);
-          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.socketService.joinGrp(res['data']['data']._id);
+          this.socketService.isAllow(res['data']['data']._id);
+          this.socketService.leaveGrp(res['data']['data']._id);
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.rrerender();
         }, (err) => {
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });
@@ -151,10 +153,10 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
       message: 'Are you sure that you want to Delete this record?',
       accept: () => {
         this.service.deactivate_employer(id).subscribe(res => {
-          this.toastr.success(res['message'], 'Success!', { timeOut: 1000 });
+          this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.rrerender();
         }, (err) => {
-          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 1000 });
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }
     });

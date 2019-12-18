@@ -66,6 +66,8 @@ export class GroupAddComponent implements OnInit {
       console.log('this.days=>', this.days);
       this.groupData = res[`data`];
 
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
     // add communications
     this.communicationForm = this.fb.group({

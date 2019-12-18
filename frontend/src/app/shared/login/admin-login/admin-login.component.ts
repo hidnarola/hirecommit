@@ -72,8 +72,6 @@ export class AdminLoginComponent implements OnInit {
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
 
         if (this.isProd) {
-          console.log('Live=======>');
-
           window.location.href = `http://hirecommit.com/authorize?role=${this.role}&token=${token}`;
           // if (this.role === 'admin') {
           //   // this.router.navigate(['admin']);
@@ -114,6 +112,7 @@ export class AdminLoginComponent implements OnInit {
           if (res['role'] !== 'admin') {
             this.service.profileData().then(resp => {
               this.profile = resp[0];
+              console.log('profile => ', this.profile);
               if (this.role === 'employer') {
                 this.router.navigate(['employer']);
               } else if (this.role === 'sub-employer') {
@@ -127,9 +126,7 @@ export class AdminLoginComponent implements OnInit {
               }
             });
           }
-
         }
-
       }, (err) => {
         this.show_spinner = false;
         console.log('err => ', err['error']['isApproved']);

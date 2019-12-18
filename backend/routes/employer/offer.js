@@ -1,278 +1,291 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var config = require('../../config')
-var Offer = require('../../models/offer');
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
-var cron = require('node-cron');
-var validator = require("email-validator");
-var offer_helper = require('../../helpers/offer_helper');
-var mail_helper = require('../../helpers/mail_helper');
-var new_mail_helper = require('../../helpers/new_mail_helper');
+const config = require('../../config')
+const Offer = require('../../models/offer');
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const cron = require('node-cron');
+const validator = require("email-validator");
+const offer_helper = require('../../helpers/offer_helper');
+const mail_helper = require('../../helpers/mail_helper');
+const new_mail_helper = require('../../helpers/new_mail_helper');
+const async = require('async');
 
-var logger = config.logger;
-var moment = require("moment")
-var User = require('../../models/user');
-var CandidateDetail = require("../../models/candidate-detail");
-var SubEmployerDetail = require("../../models/sub-employer-detail");
-var EmployerDetail = require("../../models/employer-detail");
-var Role = require('../../models/role');
-var Status = require("../../models/status");
-var History = require('../../models/offer_history');
-var MailRecord = require('../../models/mail_record');
-var MailContent = require('../../models/mail_content');
-var ApiLog = require('../../models/api_log');
-var request = require('request');
-var http = require("https");
+const logger = config.logger;
+const moment = require("moment")
+const User = require('../../models/user');
+const CandidateDetail = require("../../models/candidate-detail");
+const SubEmployerDetail = require("../../models/sub-employer-detail");
+const EmployerDetail = require("../../models/employer-detail");
+const Role = require('../../models/role');
+const Status = require("../../models/status");
+const History = require('../../models/offer_history');
+const MailRecord = require('../../models/mail_record');
+const MailContent = require('../../models/mail_content');
+const request = require('request');
 
 //Offer
 router.post("/", async (req, res) => {
-    var schema = {
-        "email": {
-            notEmpty: true,
-            errorMessage: "Email is required"
-        },
-        // "name": {
-        //     notEmpty: true,
-        //     errorMessage: "Name is required"
-        // },
-        "title": {
-            notEmpty: true,
-            errorMessage: "Title is required"
-        },
-        "salarytype": {
-            notEmpty: true,
-            errorMessage: "Salary Type is required"
-        },
-        // "country": {
-        //     notEmpty: true,
-        //     errorMessage: "Country is required"
-        // },
-        "location": {
-            notEmpty: true,
-            errorMessage: "Location is required"
-        },
-        // "salarybracket": {
-        //     notEmpty: true,
-        //     errorMessage: "Salary Bracket is required"
-        // },
-        "expirydate": {
-            notEmpty: true,
-            errorMessage: "Expiry Date Code is required"
-        },
-        "joiningdate": {
-            notEmpty: true,
-            errorMessage: "Joining Date is required"
-        },
-        "offertype": {
-            notEmpty: true,
-            errorMessage: "Offer Type  is required"
-        },
-        // "groups": {
-        //     notEmpty: true,
-        //     errorMessage: "Group is required"
-        // },
-        // "commitstatus": {
-        //     notEmpty: true,
-        //     errorMessage: "Commit Status is required"
-        // }
-    };
-    req.checkBody(schema);
-    // console.log(req.body);
+    try {
+        var schema = {
+            "email": {
+                notEmpty: true,
+                errorMessage: "Email is required"
+            },
+            "title": {
+                notEmpty: true,
+                errorMessage: "Title is required"
+            },
+            "salarytype": {
+                notEmpty: true,
+                errorMessage: "Salary Type is required"
+            },
+            "location": {
+                notEmpty: true,
+                errorMessage: "Location is required"
+            },
 
-    var errors = req.validationErrors();
-    if (!errors) {
-
-        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        // var candidate = await common_helper.findOne(CandidateDetail,
-        //     { user_id: new ObjectId(req.body.email) });
-
-        var employer;
-        var company;
-        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-            employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
-
-            var company_resp = await common_helper.findOne(EmployerDetail, { user_id: user.data.emp_id });
-            company = company_resp.data.companyname;
-
-            var obj = {
-                "employer_id": user.data.emp_id,
-                "created_by": req.userInfo.id,
-                "email": req.body.email.toLowerCase(),
-                "candidate_name": req.body.candidate_name,
-                "title": req.body.title,
-                "salarytype": req.body.salarytype,
-                "salaryduration": req.body.salaryduration,
-                // "country": req.body.country,
-                "location": req.body.location,
-                // "currency_type": req.body.currency_type,
-                // "salarybracket": req.body.salarybracket,
-                "expirydate": req.body.expirydate,
-                "joiningdate": req.body.joiningdate,
-                //  "status": true,
-                "offertype": req.body.offertype,
-                "groups": req.body.groups,
-                "high_unopened": req.body.high_unopened ? req.body.high_unopened : undefined,
-                "high_notreplied": req.body.high_notreplied ? req.body.high_notreplied : undefined,
-                "medium_unopened": req.body.medium_unopened ? req.body.medium_unopened : undefined,
-                "medium_notreplied": req.body.medium_notreplied ? req.body.medium_notreplied : undefined,
-                // "commitstatus": req.body.commitstatus,
-                "customfeild": JSON.parse(req.body.customfeild),
-                "notes": req.body.notes,
-                "salary_from": req.body.salary_from,
-                "salary_to": req.body.salary_to,
-                "salary": req.body.salary,
-                "communication": JSON.parse(req.body.data),
-                "AdHoc": JSON.parse(req.body.AdHoc),
-                "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
-            }
-        }
-        else {
-            employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
-            company = employer.data.companyname;
-            // console.log(' : employer ==> ', company); return false;
-            var obj = {
-                "employer_id": req.userInfo.id,
-                "created_by": req.userInfo.id,
-                "email": req.body.email.toLowerCase(),
-                "candidate_name": req.body.candidate_name,
-                "title": req.body.title,
-                "salarytype": req.body.salarytype,
-                "salaryduration": req.body.salaryduration,
-                // "country": req.body.country,
-                "location": req.body.location,
-                // "currency_type": req.body.currency_type,
-                "salarybracket": req.body.salarybracket,
-                "expirydate": req.body.expirydate,
-                "joiningdate": req.body.joiningdate,
-                //  "status": true,
-                "offertype": req.body.offertype,
-                "groups": req.body.groups,
-                "high_unopened": req.body.high_unopened ? req.body.high_unopened : undefined,
-                "high_notreplied": req.body.high_notreplied ? req.body.high_notreplied : undefined,
-                "medium_unopened": req.body.medium_unopened ? req.body.medium_unopened : undefined,
-                "medium_notreplied": req.body.medium_notreplied ? req.body.medium_notreplied : undefined,
-                // "commitstatus": req.body.commitstatus,
-                "customfeild": JSON.parse(req.body.customfeild),
-                "notes": req.body.notes,
-                "communication": JSON.parse(req.body.data),
-                "AdHoc": JSON.parse(req.body.AdHoc),
-                "salary_from": req.body.salary_from,
-                "salary_to": req.body.salary_to,
-                "salary": req.body.salary,
-                "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
-            }
-
+            "expirydate": {
+                notEmpty: true,
+                errorMessage: "Expiry Date Code is required"
+            },
+            "joiningdate": {
+                notEmpty: true,
+                errorMessage: "Joining Date is required"
+            },
+            "offertype": {
+                notEmpty: true,
+                errorMessage: "Offer Type  is required"
+            },
         };
+        req.checkBody(schema);
 
-        var candidate_user = await common_helper.find(User, { 'email': req.body.email.toLowerCase(), 'is_del': false });
-        if (candidate_user.data.length <= 0) {
-            var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
+        var errors = req.validationErrors();
+        if (!errors) {
 
-            if (req.body.candidate_name != '') {
-                let candidate_name = req.body.candidate_name.split(' ');
-                if (candidate_name.length <= 1) {
+            var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+
+            var employer;
+            var company;
+            if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
+
+                var company_resp = await common_helper.findOne(EmployerDetail, { user_id: user.data.emp_id });
+                company = company_resp.data.companyname;
+
+                var obj = {
+                    "employer_id": user.data.emp_id,
+                    "created_by": req.userInfo.id,
+                    "email": req.body.email.toLowerCase(),
+                    "candidate_name": req.body.candidate_name,
+                    "title": req.body.title,
+                    "salarytype": req.body.salarytype,
+                    "salaryduration": req.body.salaryduration,
+                    "location": req.body.location,
+                    "expirydate": req.body.expirydate,
+                    "joiningdate": req.body.joiningdate,
+                    "offertype": req.body.offertype,
+                    "groups": req.body.groups,
+                    "high_unopened": req.body.high_unopened ? req.body.high_unopened : undefined,
+                    "high_notreplied": req.body.high_notreplied ? req.body.high_notreplied : undefined,
+                    "medium_unopened": req.body.medium_unopened ? req.body.medium_unopened : undefined,
+                    "medium_notreplied": req.body.medium_notreplied ? req.body.medium_notreplied : undefined,
+                    "customfeild": JSON.parse(req.body.customfeild),
+                    "notes": req.body.notes,
+                    "salary_from": req.body.salary_from,
+                    "salary_to": req.body.salary_to,
+                    "salary": req.body.salary,
+                    "communication": JSON.parse(req.body.data),
+                    "AdHoc": JSON.parse(req.body.AdHoc),
+                    "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
+                }
+            }
+            else {
+                employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
+                company = employer.data.companyname;
+                var obj = {
+                    "employer_id": req.userInfo.id,
+                    "created_by": req.userInfo.id,
+                    "email": req.body.email.toLowerCase(),
+                    "candidate_name": req.body.candidate_name,
+                    "title": req.body.title,
+                    "salarytype": req.body.salarytype,
+                    "salaryduration": req.body.salaryduration,
+                    "location": req.body.location,
+                    "salarybracket": req.body.salarybracket,
+                    "expirydate": req.body.expirydate,
+                    "joiningdate": req.body.joiningdate,
+                    "offertype": req.body.offertype,
+                    "groups": req.body.groups,
+                    "high_unopened": req.body.high_unopened ? req.body.high_unopened : undefined,
+                    "high_notreplied": req.body.high_notreplied ? req.body.high_notreplied : undefined,
+                    "medium_unopened": req.body.medium_unopened ? req.body.medium_unopened : undefined,
+                    "medium_notreplied": req.body.medium_notreplied ? req.body.medium_notreplied : undefined,
+                    "customfeild": JSON.parse(req.body.customfeild),
+                    "notes": req.body.notes,
+                    "communication": JSON.parse(req.body.data),
+                    "AdHoc": JSON.parse(req.body.AdHoc),
+                    "salary_from": req.body.salary_from,
+                    "salary_to": req.body.salary_to,
+                    "salary": req.body.salary,
+                    "message": `<span>{employer}</span> has Created this offer for <span>{candidate}</span>`
+                }
+
+            };
+
+            var candidate_user = await common_helper.find(User, { 'email': req.body.email.toLowerCase(), 'is_del': false });
+            if (candidate_user.data.length <= 0) {
+                var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
+
+                if (req.body.candidate_name != '') {
+                    let candidate_name = req.body.candidate_name.split(' ');
+                    if (candidate_name.length <= 1) {
+                        var newcandidate = {
+                            'firstname': candidate_name[0],
+                            'lastname': '',
+                            'user_id': interest_candidate.data._id
+                        }
+                    } else if (candidate_name.length >= 1) {
+                        var newcandidate = {
+                            'firstname': candidate_name[0],
+                            'lastname': candidate_name[1],
+                            'user_id': interest_candidate.data._id
+                        }
+                    }
+                } else if (req.body.candidate_name == '') {
                     var newcandidate = {
-                        'firstname': candidate_name[0],
+                        'firstname': '',
                         'lastname': '',
                         'user_id': interest_candidate.data._id
                     }
-                } else if (candidate_name.length >= 1) {
-                    var newcandidate = {
-                        'firstname': candidate_name[0],
-                        'lastname': candidate_name[1],
-                        'user_id': interest_candidate.data._id
-                    }
                 }
-            } else if (req.body.candidate_name == '') {
-                var newcandidate = {
-                    'firstname': '',
-                    'lastname': '',
-                    'user_id': interest_candidate.data._id
-                }
-            }
 
-            var interest_candidate_detail = await common_helper.insert(CandidateDetail, newcandidate);
-            obj.user_id = interest_candidate.data._id;
-            var role = await common_helper.findOne(Role, { '_id': interest_candidate.data.role_id });
-        } else {
-            obj.user_id = candidate_user.data[0]._id;
-            var role = await common_helper.findOne(Role, { '_id': candidate_user.data[0].role_id });
-        }
-
-        if (role.data.role !== 'candidate') {
-            res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
-        } else {
-            // console.log(obj); return false;
-            var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined" })
-
-            if (pastOffer.data.length > 0) {
-                obj.status = "On Hold"
-                // obj.data = pastOffer.data
-            }
-            var interest_resp = await common_helper.insert(Offer, obj);
-            // console.log(interest_resp);
-
-            obj.offer_id = interest_resp.data._id
-            obj.employer_id = req.userInfo.id;
-            // console.log(obj.employer_id, obj.offer_id);
-
-            var interest = await common_helper.insert(History, obj);
-            // console.log(interest);
-
-            if (interest_resp.status == 0) {
-                logger.debug("Error = ", interest_resp.error);
-                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+                var interest_candidate_detail = await common_helper.insert(CandidateDetail, newcandidate);
+                obj.user_id = interest_candidate.data._id;
+                var role = await common_helper.findOne(Role, { '_id': interest_candidate.data.role_id });
             } else {
-                var user = await common_helper.findOne(User, { _id: new ObjectId(interest_resp.data.user_id) })
-                var candidate = await common_helper.findOne(CandidateDetail,
-                    { user_id: new ObjectId(interest_resp.data.user_id) });
-                var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
-                var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'offer_mail' });
+                obj.user_id = candidate_user.data[0]._id;
+                var role = await common_helper.findOne(Role, { '_id': candidate_user.data[0].role_id });
+            }
 
-                var upper_content = mailcontent.data.upper_content;
-                var middel_content = mailcontent.data.middel_content;
-                var lower_content = mailcontent.data.lower_content;
-                var name = candidate.data.firstname;
+            if (role.data.role !== 'candidate') {
+                res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
+            } else {
+                var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined" })
 
-                upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
-
-                var obj = {
-                    "name": name,
-                    "upper_content": upper_content,
-                    "middel_content": middel_content,
-                    "lower_content": lower_content,
+                if (pastOffer.data.length > 0) {
+                    obj.status = "On Hold"
                 }
-                // if (candidate.data.firstname != "" && candidate.data.lastname != "") {
-                // content = content.replace("{companyname}", `${company}`).replace('{title}', interest_resp.data.title);
-                // } else {
-                //     content = content.replace("{employer}", `${employer.data.username}`).replace('{candidate}', ' you.');
-                // }
+                var interest_resp = await common_helper.insert(Offer, obj);
 
-                var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
+                obj.offer_id = interest_resp.data._id
+                obj.employer_id = req.userInfo.id;
 
-                let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                    "to": user.data.email,
-                    "reply_to1": `${reply_to.data.email}`,
-                    "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
-                    "subject": "Offer",
-                    "trackid": interest_resp.data._id
-                }, obj);
+                var interest = await common_helper.insert(History, obj);
 
-                // {
-                //     "msg": content,
-                //     //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
-                //     // "url": "http://localhost:3000/offer/" + obj.offer_id,
-                // }
+                if (interest_resp.status == 0) {
+                    logger.debug("Error = ", interest_resp.error);
+                    res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+                } else {
+                    var user = await common_helper.findOne(User, { _id: new ObjectId(interest_resp.data.user_id) })
+                    var candidate = await common_helper.findOne(CandidateDetail,
+                        { user_id: new ObjectId(interest_resp.data.user_id) });
+                    var status = await common_helper.findOne(Status, { 'status': 'On Hold' });
+                    var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'offer_mail' });
 
-                res.json({ "message": "Offer is Added successfully", "data": interest_resp })
+                    var upper_content = mailcontent.data.upper_content;
+                    var middel_content = mailcontent.data.middel_content;
+                    var lower_content = mailcontent.data.lower_content;
+                    var name = candidate.data.firstname;
+
+                    upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
+
+                    var obj = {
+                        "name": name,
+                        "upper_content": upper_content,
+                        "middel_content": middel_content,
+                        "lower_content": lower_content,
+                    }
+
+
+                    var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
+                    if (interest_resp.data.status === "On Hold") {
+                        console.log("===> On hold");
+
+                        var all_employer = await common_helper.find(User, {
+                            "isAllow": true,
+                            "is_del": false,
+                            $or: [
+                                { "_id": new ObjectId(interest_resp.data.employer_id) },
+                                { "emp_id": new ObjectId(interest_resp.data.employer_id) },
+                            ]
+                        })
+
+                        for (let index = 0; index < all_employer.length; index++) {
+
+                            const element = all_employer[index];
+                            if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                                var emp_name = await common_helper.findOne(SubEmployer, { "user_id": new ObjectId(element._id) })
+                                var email = emp_name.data.username;
+                                var name = email.substring(0, email.lastIndexOf(" "));
+                                if (name === "") {
+                                    name = email;
+                                }
+                            } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                                var emp_name = await common_helper.findOne(Employer, { "user_id": new ObjectId(element._id) })
+                                var email = emp_name.data.username;
+                                var name = email.substring(0, email.lastIndexOf(" "));
+                                if (name === "") {
+                                    name = email;
+                                }
+                            }
+
+                            var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'on_hold_offer' });
+
+                            var upper_content = mailcontent.data.upper_content;
+                            var middel_content = mailcontent.data.middel_content;
+                            var lower_content = mailcontent.data.lower_content;
+
+                            upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname + " " + candidate.data.lastname}`);
+                            let mail_resp = await mail_helper.send("on_hold_offer", {
+                                "to": element.email,
+                                "subject": `${candidate.data.firstname + " " + candidate.data.lastname}` + "offer created in On Hold status"
+                            }, {
+                                "name": name,
+                                "upper_content": upper_content,
+                                "middel_content": middel_content,
+                                "lower_content": lower_content,
+                            });
+                            console.log('mail_resp ==> ');
+                        }
+
+                    } else {
+                        let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                            "to": user.data.email,
+                            "reply_to1": `${reply_to.data.email}`,
+                            "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
+                            "subject": "Offer",
+                            "trackid": interest_resp.data._id
+                        }, obj);
+                    }
+
+                    // {
+                    //     "msg": content,
+                    //     //"url": "http://192.168.100.23:3000/offer/" + obj.offer_id,
+                    //     // "url": "http://localhost:3000/offer/" + obj.offer_id,
+                    // }
+
+                    res.json({ "message": "Offer is Added successfully", "data": interest_resp })
+                }
             }
         }
-    }
-    else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+        else {
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
@@ -295,17 +308,7 @@ router.post('/pastOffer', async (req, res) => {
                 "created_by": req.userInfo.id,
                 $or: [
                     { status: { $eq: "Accepted" } },
-                    { status: { $eq: "On Hold" } },
-                    // {
-                    //     $and:
-                    //         [
-                    //             { status: { $eq: "Released" } }, {
-                    //                 expirydate: {
-                    //                     $lte: new Date()
-                    //                 }
-                    //             }
-                    //         ]
-                    // }
+                    { status: { $eq: "On Hold" } }
                 ]
             });
 
@@ -313,7 +316,6 @@ router.post('/pastOffer', async (req, res) => {
                 previousOffer.displayMessage = " Please check, this candidate already has offer in either Released, Accepted or On Hold status. You can use edit offer to make any changes to Released and On Hold offers.";
             }
 
-            // console.log("2019-12-08T10:20:03.000Z", new Date());
 
             var ReleasedOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
@@ -334,7 +336,6 @@ router.post('/pastOffer', async (req, res) => {
             var previousOffer = [];
             var ReleasedOffer = [];
         }
-        // , "previousOffer": previousOffer
         return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, "data": pastOffer, "previousOffer": previousOffer, "ReleasedOffer": ReleasedOffer });
 
     }
@@ -345,7 +346,6 @@ router.post('/pastOffer', async (req, res) => {
 
 router.post('/check_is_candidate', async (req, res) => {
     try {
-        // console.log(req.body.email.toLowerCase());
 
         re = new RegExp(req.body.email.toLowerCase(), "i");
         value = {
@@ -374,1564 +374,871 @@ router.post('/check_is_candidate', async (req, res) => {
 
 // unopen offer mail
 cron.schedule('00 00 * * *', async (req, res) => {
-    var resp_data = await Offer.aggregate(
-        [
-            {
-                $lookup:
+    try {
+        var resp_data = await Offer.aggregate(
+            [
                 {
-                    from: "user",
-                    localField: "created_by",
-                    foreignField: "_id",
-                    as: "created_by"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$created_by",
-                    preserveNullAndEmptyArrays: true
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "created_by",
+                        foreignField: "_id",
+                        as: "created_by"
+                    }
                 },
-            },
-            {
-                $lookup:
                 {
-                    from: "group",
-                    localField: "groups",
-                    foreignField: "_id",
-                    as: "group"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true
+                    $unwind: {
+                        path: "$created_by",
+                        preserveNullAndEmptyArrays: true
+                    },
                 },
-            },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "group_detail",
-            //         localField: "group._id",
-            //         foreignField: "group_id",
-            //         as: "communication"
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         path: "$communication",
-            //         preserveNullAndEmptyArrays: true
-            //     },
-            // },
-            {
-                $lookup:
                 {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "user_id"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$user_id",
-                    preserveNullAndEmptyArrays: true
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
                 },
-            },
-            {
-                $lookup:
                 {
-                    from: "candidateDetail",
-                    localField: "user_id._id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate",
-                    preserveNullAndEmptyArrays: true
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    },
                 },
-            }
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user_id"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$user_id",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "candidateDetail",
+                        localField: "user_id._id",
+                        foreignField: "user_id",
+                        as: "candidate"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate",
+                        preserveNullAndEmptyArrays: true
+                    },
+                }
 
-        ]
-    )
+            ]
+        )
 
-    var current_date = moment().startOf('day')
+        var current_date = moment().startOf('day')
 
-    for (let index = 0; index < resp_data.length; index++) {
-        const resp = resp_data[index];
-        // console.log(' : resp ==> ', resp); return false
-        setTimeout(function (index) {
-            let element = resp;
-            var options = {
-                method: 'GET',
-                url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-                headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-            };
+        for (let index = 0; index < resp_data.length; index++) {
+            const resp = resp_data[index];
+            setTimeout(function (index) {
+                let element = resp;
+                var options = {
+                    method: 'GET',
+                    url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+                    headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+                };
 
-            request(options, function (error, response, body) {
-                try {
-                    if (error) throw new Error(error);
-                    var new_resp = JSON.parse(response.body);
-                    if (new_resp && new_resp.error) {
-                        console.log(new_resp.error);
-                    } else if (new_resp && new_resp.messages) {
-                        for (const newresp of new_resp.messages) {
-                            // console.log(newresp);
-                            var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
-                            var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
-                            var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
-                            var medium_notreplied = moment(resp.createdAt).startOf('day').add(resp.medium_notreplied, 'day')
-                            high_unopened = moment(high_unopened)
-                            medium_unopened = moment(medium_unopened)
-                            high_notreplied = moment(high_notreplied)
-                            medium_notreplied = moment(medium_notreplied)
-                            // console.log(' : newresp.opens_count === 0 ==> ', newresp.opens_count === 0);
-                            if ((newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
-                                // console.log("Not Opened", newresp);
-                                const total_days = moment(current_date).isSame(high_unopened) == true ? resp.high_unopened : moment(current_date).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
+                request(options, function (error, response, body) {
+                    try {
+                        if (error) throw new Error(error);
+                        var new_resp = JSON.parse(response.body);
+                        if (new_resp && new_resp.error) {
+                        } else if (new_resp && new_resp.messages) {
+                            for (const newresp of new_resp.messages) {
+                                var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
+                                var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
+                                var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
+                                var medium_notreplied = moment(resp.createdAt).startOf('day').add(resp.medium_notreplied, 'day')
+                                high_unopened = moment(high_unopened)
+                                medium_unopened = moment(medium_unopened)
+                                high_notreplied = moment(high_notreplied)
+                                medium_notreplied = moment(medium_notreplied)
+                                if ((newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
+                                    const total_days = moment(current_date).isSame(high_unopened) == true ? resp.high_unopened : moment(current_date).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
 
-                                content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+                                    content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
-                                let mail_resp = mail_helper.send("notification_email", {
-                                    "to": resp.created_by.email,
-                                    "subject": "Notification Mail(Not Opened)"
-                                }, {
-                                    "msg": content,
-                                });
-                                // let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                //     // "to": newresp.to_email,
-                                //     "to": resp.created_by.email,
-                                //     "subject": "Notification Mail(Not Opened)",
-                                //     "trackid": element._id + 'unopened'
-                                // }, content);
-                            } else if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
-                                // console.log(newresp.to_email);
-                                // console.log(' : not replied ==> ', " not replied");
-                                const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
+                                    let mail_resp = mail_helper.send("notification_email", {
+                                        "to": resp.created_by.email,
+                                        "subject": "Notification Mail(Not Opened)"
+                                    }, {
+                                        "msg": content,
+                                    });
 
-                                content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+                                } else if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
 
-                                let mail_resp = mail_helper.send("notification_email", {
-                                    "to": resp.created_by.email,
-                                    "subject": "Notification Mail(Not Replied)"
-                                }, {
-                                    "msg": content,
-                                });
+                                    const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
 
-                                // let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-                                //     // "to": newresp.to_email,
-                                //     "to": resp.created_by.email,
-                                //     "subject": "Notification Mail(Not Replied)",
-                                //     "trackid": element._id + 'notreplied'
-                                // }, content);
-                            } else {
-                                console.log("end");
+                                    content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+
+                                    let mail_resp = mail_helper.send("notification_email", {
+                                        "to": resp.created_by.email,
+                                        "subject": "Notification Mail(Not Replied)"
+                                    }, {
+                                        "msg": content,
+                                    });
+
+                                } else {
+                                }
                             }
                         }
+                    } catch (error) {
+                        console.log('error=> ', error.message);
                     }
-                } catch (error) {
-                    console.log('error=> ', error.message);
-                }
-            });
-        }, index * 15000, index)
+                });
+            }, index * 15000, index)
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 })
 
 cron.schedule('00 00 * * *', async (req, res) => {
-    var resp_data = await Offer.aggregate(
-        [
-            {
-                $lookup:
+    try {
+        var resp_data = await Offer.aggregate(
+            [
                 {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "candidate"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate",
-                    // preserveNullAndEmptyArrays: true
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "candidate"
+                    }
                 },
-            },
-            {
-                $lookup:
                 {
-                    from: "group",
-                    localField: "groups",
-                    foreignField: "_id",
-                    as: "group"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true
+                    $unwind: {
+                        path: "$candidate",
+                    },
                 },
-            },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "group_detail",
-            //         localField: "group._id",
-            //         foreignField: "group_id",
-            //         as: "communication"
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         path: "$communication",
-            //         preserveNullAndEmptyArrays: true
-            //     },
-            // }
-        ]
-    )
+                {
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
 
-    var current_date = moment().startOf('day')
+            ]
+        )
 
-    for (const resp of resp_data) {
-        if (resp.communication !== undefined && resp.communication.length > 0) {
-            for (const comm of resp.communication) {
-                // console.log(' : comm ==> ', comm.trigger);
-                if (comm.trigger == "afterOffer") {
-                    var days = comm.day
-                    var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date);
-                    var message = comm.message;
-                    var email = resp.candidate.email
+        var current_date = moment().startOf('day')
 
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterOffer', "offer_id": resp._id })
-                        logger.trace("sending mail");
+        for (const resp of resp_data) {
+            if (resp.communication !== undefined && resp.communication.length > 0) {
+                for (const comm of resp.communication) {
+                    if (comm.trigger == "afterOffer") {
+                        var days = comm.day
+                        var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date);
+                        var message = comm.message;
+                        var email = resp.candidate.email
 
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'communication_afterOffer'
-                        }, message);
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterOffer', "offer_id": resp._id })
+                            logger.trace("sending mail");
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'communication_afterOffer'
+                            }, message);
+                        }
+                    }
+                    if (comm.trigger == "beforeJoining") {
+                        var days = comm.day
+                        var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+                        offer_date = moment(offer_date)
+
+                        var message = comm.message;
+                        var email = resp.candidate.email;
+
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_beforeJoining', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'communication_beforeJoining'
+                            }, message);
+                        }
+                    }
+                    if (comm.trigger == "afterJoining") {
+                        var days = comm.day
+                        var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date)
+
+                        var message = comm.message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterJoining', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'communication_afterJoining'
+                            }, message);
+                        }
+
+                    }
+                    if (comm.trigger == "beforeExpiry") {
+                        var days = comm.day
+                        var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+                        offer_date = moment(offer_date)
+
+                        var message = comm.message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_beforeExpiry', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'communication_beforeExpiry'
+                            }, message);
+                        }
+
+                    }
+                    if (comm.trigger == "afterExpiry") {
+                        var days = comm.day
+                        var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date)
+
+                        var message = comm.message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterExpiry', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'communication_afterExpiry'
+                            }, message);
+                        }
+
+                    }
+                    if (comm.trigger == "afterAcceptance") {
+                        var days = comm.day
+                        var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date)
+
+                        var message = comm.message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "mail_record": resp._id + 'communication_afterAcceptance', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'communication_afterAcceptance'
+                            }, message);
+                        }
+
                     }
                 }
-                if (comm.trigger == "beforeJoining") {
-                    var days = comm.day
-                    var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
-                    offer_date = moment(offer_date)
+            }
 
-                    var message = comm.message;
-                    var email = resp.candidate.email;
+            if (resp.AdHoc !== undefined && resp.AdHoc.length > 0) {
+                for (const comm of resp.AdHoc) {
+                    if (comm.AdHoc_trigger == "afterOffer") {
+                        var days = comm.AdHoc_day;
+                        var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date);
+                        var message = comm.AdHoc_message;
+                        var email = resp.candidate.email
 
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_beforeJoining', "offer_id": resp._id })
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_afterOffer', "offer_id": resp._id })
+                            logger.trace("sending mail");
 
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'communication_beforeJoining'
-                        }, message);
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'adhoc_afterOffer'
+                            }, message);
+                        }
                     }
-                }
-                if (comm.trigger == "afterJoining") {
-                    var days = comm.day
-                    var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date)
+                    if (comm.AdHoc_trigger == "beforeJoining") {
+                        var days = comm.AdHoc_day;
+                        var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+                        offer_date = moment(offer_date)
 
-                    var message = comm.message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterJoining', "offer_id": resp._id })
+                        var message = comm.AdHoc_message;
+                        var email = resp.candidate.email;
 
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'communication_afterJoining'
-                        }, message);
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_beforeJoining', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'adhoc_beforeJoining'
+                            }, message);
+                        }
                     }
+                    if (comm.AdHoc_trigger == "afterJoining") {
+                        var days = comm.AdHoc_day;
+                        var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date)
 
-                }
-                if (comm.trigger == "beforeExpiry") {
-                    var days = comm.day
-                    var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
-                    offer_date = moment(offer_date)
+                        var message = comm.AdHoc_message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_afterJoining', "offer_id": resp._id })
 
-                    var message = comm.message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_beforeExpiry', "offer_id": resp._id })
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'adhoc_afterJoining'
+                            }, message);
+                        }
 
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'communication_beforeExpiry'
-                        }, message);
                     }
+                    if (comm.AdHoc_trigger == "beforeExpiry") {
+                        var days = comm.AdHoc_day;
+                        var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+                        offer_date = moment(offer_date)
 
-                }
-                if (comm.trigger == "afterExpiry") {
-                    var days = comm.day
-                    var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date)
+                        var message = comm.AdHoc_message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_beforeExpiry', "offer_id": resp._id })
 
-                    var message = comm.message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterExpiry', "offer_id": resp._id })
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'adhoc_beforeExpiry'
+                            }, message);
+                        }
 
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'communication_afterExpiry'
-                        }, message);
                     }
+                    if (comm.AdHoc_trigger == "afterExpiry") {
+                        var days = comm.AdHoc_day;
+                        var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date)
 
-                }
-                if (comm.trigger == "afterAcceptance") {
-                    var days = comm.day
-                    var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date)
+                        var message = comm.AdHoc_message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_afterExpiry', "offer_id": resp._id })
 
-                    var message = comm.message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "mail_record": resp._id + 'communication_afterAcceptance', "offer_id": resp._id })
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'adhoc_afterExpiry'
+                            }, message);
+                        }
 
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'communication_afterAcceptance'
-                        }, message);
                     }
+                    if (comm.AdHoc_trigger == "afterAcceptance") {
+                        var days = comm.AdHoc_day
+                        var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+                        offer_date = moment(offer_date)
 
+                        var message = comm.AdHoc_message;
+                        var email = resp.candidate.email
+                        if (moment(current_date).isSame(offer_date) == true) {
+                            var mail_record = await common_helper.insert(MailRecord, { "mail_record": resp._id + 'adhoc_afterAcceptance', "offer_id": resp._id })
+
+                            let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                "to": resp.candidate.email,
+                                "subject": "Communication mail",
+                                "trackid": resp._id + 'adhoc_afterAcceptance'
+                            }, message);
+                        }
+
+                    }
                 }
             }
         }
-
-        if (resp.AdHoc !== undefined && resp.AdHoc.length > 0) {
-            for (const comm of resp.AdHoc) {
-                if (comm.AdHoc_trigger == "afterOffer") {
-                    var days = comm.AdHoc_day;
-                    var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date);
-                    var message = comm.AdHoc_message;
-                    var email = resp.candidate.email
-
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_afterOffer', "offer_id": resp._id })
-                        logger.trace("sending mail");
-
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'adhoc_afterOffer'
-                        }, message);
-                    }
-                }
-                if (comm.AdHoc_trigger == "beforeJoining") {
-                    var days = comm.AdHoc_day;
-                    var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
-                    offer_date = moment(offer_date)
-
-                    var message = comm.AdHoc_message;
-                    var email = resp.candidate.email;
-
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_beforeJoining', "offer_id": resp._id })
-
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'adhoc_beforeJoining'
-                        }, message);
-                    }
-                }
-                if (comm.AdHoc_trigger == "afterJoining") {
-                    var days = comm.AdHoc_day;
-                    var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date)
-
-                    var message = comm.AdHoc_message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_afterJoining', "offer_id": resp._id })
-
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'adhoc_afterJoining'
-                        }, message);
-                    }
-
-                }
-                if (comm.AdHoc_trigger == "beforeExpiry") {
-                    var days = comm.AdHoc_day;
-                    var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
-                    offer_date = moment(offer_date)
-
-                    var message = comm.AdHoc_message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_beforeExpiry', "offer_id": resp._id })
-
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'adhoc_beforeExpiry'
-                        }, message);
-                    }
-
-                }
-                if (comm.AdHoc_trigger == "afterExpiry") {
-                    var days = comm.AdHoc_day;
-                    var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date)
-
-                    var message = comm.AdHoc_message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'adhoc_afterExpiry', "offer_id": resp._id })
-
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'adhoc_afterExpiry'
-                        }, message);
-                    }
-
-                }
-                if (comm.AdHoc_trigger == "afterAcceptance") {
-                    var days = comm.AdHoc_day
-                    var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
-                    offer_date = moment(offer_date)
-
-                    var message = comm.AdHoc_message;
-                    var email = resp.candidate.email
-                    if (moment(current_date).isSame(offer_date) == true) {
-                        var mail_record = await common_helper.insert(MailRecord, { "mail_record": resp._id + 'adhoc_afterAcceptance', "offer_id": resp._id })
-
-                        let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
-                            "to": resp.candidate.email,
-                            "subject": "Communication mail",
-                            "trackid": resp._id + 'adhoc_afterAcceptance'
-                        }, message);
-                    }
-
-                }
-            }
-        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
-// cron.schedule('00 00 * * *', async (req, res) => {
-//     var resp_data = await Offer.aggregate(
-//         [
-//             {
-//                 $lookup:
-//                 {
-//                     from: "user",
-//                     localField: "created_by",
-//                     foreignField: "_id",
-//                     as: "created_by"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: "$created_by",
-//                     preserveNullAndEmptyArrays: true
-//                 },
-//             },
-//             {
-//                 $lookup:
-//                 {
-//                     from: "group",
-//                     localField: "groups",
-//                     foreignField: "_id",
-//                     as: "group"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: "$group",
-//                     preserveNullAndEmptyArrays: true
-//                 },
-//             },
-//             // {
-//             //     $lookup:
-//             //     {
-//             //         from: "group_detail",
-//             //         localField: "group._id",
-//             //         foreignField: "group_id",
-//             //         as: "communication"
-//             //     }
-//             // },
-//             // {
-//             //     $unwind: {
-//             //         path: "$communication",
-//             //         preserveNullAndEmptyArrays: true
-//             //     },
-//             // },
-//             {
-//                 $lookup:
-//                 {
-//                     from: "user",
-//                     localField: "user_id",
-//                     foreignField: "_id",
-//                     as: "user_id"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: "$user_id",
-//                     preserveNullAndEmptyArrays: true
-//                 },
-//             },
-//             {
-//                 $lookup:
-//                 {
-//                     from: "candidateDetail",
-//                     localField: "user_id._id",
-//                     foreignField: "user_id",
-//                     as: "candidate"
-//                 }
-//             },
-//             {
-//                 $unwind: {
-//                     path: "$candidate",
-//                     preserveNullAndEmptyArrays: true
-//                 },
-//             }
-
-//         ]
-//     )
-
-//     var current_date = moment().startOf('day')
-
-//     for (let index = 0; index < resp_data.length; index++) {
-//         const resp = resp_data[index];
-//         setTimeout(function (index) {
-//             if (resp.communication !== undefined && resp.communication > 0) {
-//                 for (const comm of resp.communication) {
-//                     if (comm.trigger == "afterOffer") {
-//                         // console.log(' : comm.trigger ==> ', comm.trigger);
-//                         var days = comm.day
-//                         var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterOffer" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 // "to": newresp.to_email,
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'communication_afterOffer_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.trigger == "beforeJoining") {
-//                         var days = comm.day
-//                         var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_beforeJoining" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'communication_beforeJoining_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.trigger == "afterJoining") {
-//                         var days = comm.day
-//                         var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterJoining" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'communication_afterJoining_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.trigger == "beforeExpiry") {
-//                         var days = comm.day
-//                         var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_beforeExpiry" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'communication_beforeExpiry_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.trigger == "afterExpiry") {
-//                         var days = comm.day
-//                         var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterExpiry" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'communication_afterExpiry_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.trigger == "afterAcceptance") {
-//                         var days = comm.day
-//                         var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "communication_afterAcceptance" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'communication_afterAcceptance_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-//                     }
-//                 }
-//             }
-//             if (resp.AdHoc !== undefined && resp.AdHoc > 0) {
-//                 for (const comm of resp.AdHoc) {
-//                     if (comm.AdHoc_trigger == "afterOffer") {
-//                         // console.log(' : comm.trigger ==> ', comm.trigger);
-//                         var days = comm.AdHoc_day;
-//                         var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterOffer" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 // "to": newresp.to_email,
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'adhoc_afterOffer_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.AdHoc_trigger == "beforeJoining") {
-//                         var days = comm.AdHoc_day;
-//                         var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_beforeJoining" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'adhoc_beforeJoining_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.AdHoc_trigger == "afterJoining") {
-//                         var days = comm.AdHoc_day
-//                         var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterJoining" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'adhoc_afterJoining_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.AdHoc_trigger == "beforeExpiry") {
-//                         var days = comm.AdHoc_day
-//                         var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_beforeExpiry" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'adhoc_beforeExpiry_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.AdHoc_trigger == "afterExpiry") {
-//                         var days = comm.AdHoc_day
-//                         var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterExpiry" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'adhoc_afterExpiry_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-
-//                     }
-//                     else if (comm.AdHoc_trigger == "afterAcceptance") {
-//                         var days = comm.AdHoc_day
-//                         var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
-//                         offer_date = moment(offer_date)
-
-//                         let element = resp;
-//                         var options = {
-//                             method: 'GET',
-//                             url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "adhoc_afterAcceptance" + "%22)",
-//                             headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-//                         };
-
-//                         request(options, function (error, response, body) {
-//                             if (error) throw new Error(error);
-//                             var new_resp = JSON.parse(response.body);
-//                             if (new_resp && new_resp.error) {
-//                                 console.log(new_resp.error);
-//                             } else if (new_resp && new_resp.messages) {
-//                                 // console.log(' : new_resp.message ==> ', new_resp.messages);
-//                                 for (const newresp of new_resp.messages) {
-//                                     var last_mail_time = moment(newresp.last_event_time).startOf('day')
-//                                     if (newresp.opens_count == 0 && moment(last_mail_time).isSame(offer_date) == true) {
-//                                         // console.log('new_resp ==> ', newresp);
-//                                         var resend_mail_date = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
-//                                         var resend_mail_date1 = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
-//                                         if (moment(current_date).isSame(resend_mail_date) == true || moment(current_date).isSame(resend_mail_date1) == true) {
-
-//                                             var total_days;
-//                                             if (moment(current_date).isSame(resend_mail_date) == true) {
-//                                                 total_days = resp.high_unopened
-//                                             } else if (moment(current_date).isSame(resend_mail_date1) == true) {
-//                                                 total_days = resp.medium_unopened
-//                                             }
-
-//                                             content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
-
-//                                             let mail_resp = new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
-//                                                 "to": resp.created_by.email,
-//                                                 "subject": "Notification Mail",
-//                                                 "trackid": element._id + 'adhoc_afterAcceptance_resend'
-//                                             }, content);
-//                                         }
-//                                     } else {
-//                                         console.log("end");
-//                                     }
-//                                 }
-//                             }
-//                         });
-//                     }
-//                 }
-//             }
-//         }, index * 15000, index)
-//     }
-// })
 
 router.post('/get', async (req, res) => {
-    var schema = {
+    try {
+        var schema = {
 
-    };
-    req.checkBody(schema);
-    var errors = req.validationErrors();
+        };
+        req.checkBody(schema);
+        var errors = req.validationErrors();
 
-    if (!errors) {
-        var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
-        let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
-        let sortingObject = {
-            [sortOrderColumn]: sortOrder
-        }
+        if (!errors) {
+            var sortOrderColumnIndex = req.body.order[0].column;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
+            let sortingObject = {
+                [sortOrderColumn]: sortOrder
+            }
 
-        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+            var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
-        if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-            var user_id = user.data.emp_id
-        }
-        else {
-            var user_id = req.userInfo.id
-        }
-        var aggregate = [
-            { $match: { $or: [{ "employer_id": new ObjectId(req.userInfo.id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
-            {
-                $lookup:
+            if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                var user_id = user.data.emp_id
+            }
+            else {
+                var user_id = req.userInfo.id
+            }
+            var aggregate = [
+                { $match: { $or: [{ "employer_id": new ObjectId(req.userInfo.id) }, { "employer_id": new ObjectId(user_id) }], "is_del": false } },
                 {
-                    from: "group",
-                    localField: "groups",
-                    foreignField: "_id",
-                    as: "group"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
+                },
                 {
-                    from: "user",
-                    localField: "employer_id",
-                    foreignField: "_id",
-                    as: "employer_id"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$employer_id",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
                 {
-                    from: "location",
-                    localField: "location",
-                    foreignField: "_id",
-                    as: "location"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$location",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup:
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "employer_id",
+                        foreignField: "_id",
+                        as: "employer_id"
+                    }
+                },
                 {
-                    from: "salary_bracket",
-                    localField: "salarybracket",
-                    foreignField: "_id",
-                    as: "salarybracket"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$salarybracket",
-                    preserveNullAndEmptyArrays: true
-                }
-            }, {
-                $lookup:
+                    $unwind: {
+                        path: "$employer_id",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
                 {
-                    from: "candidateDetail",
-                    localField: "user_id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $lookup: {
-                    from: "user",
-                    localField: "user_id",
-                    foreignField: "_id",
-                    as: "candidate.user",
-                }
-            },
-            {
-                $unwind: {
-                    path: "$candidate.user",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-        ]
+                    $lookup:
+                    {
+                        from: "location",
+                        localField: "location",
+                        foreignField: "_id",
+                        as: "location"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$location",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "salary_bracket",
+                        localField: "salarybracket",
+                        foreignField: "_id",
+                        as: "salarybracket"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$salarybracket",
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup:
+                    {
+                        from: "candidateDetail",
+                        localField: "user_id",
+                        foreignField: "user_id",
+                        as: "candidate"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "candidate.user",
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate.user",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+            ]
 
-        const RE = { $regex: new RegExp(`${req.body.search.value} `, 'gi') };
+            const RE = { $regex: new RegExp(`${req.body.search.value} `, 'gi') };
 
-        if (req.body.search && req.body.search.value != '') {
-            aggregate.push({
-                "$match":
-                    { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }, { "candidate.user.email": RE }, { "candidate.firstname": RE }] }
-            });
-        }
+            if (req.body.search && req.body.search.value != '') {
+                aggregate.push({
+                    "$match":
+                        { $or: [{ "createdAt": RE }, { "title": RE }, { "salarytype": RE }, { "salarybracket.from": RE }, { "expirydate": RE }, { "joiningdate": RE }, { "status": RE }, { "offertype": RE }, { "group.name": RE }, { "commitstatus": RE }, { "customfeild1": RE }, { "candidate.user.email": RE }, { "candidate.firstname": RE }] }
+                });
+            }
 
-        let totalMatchingCountRecords = await Offer.aggregate(aggregate);
-        totalMatchingCountRecords = totalMatchingCountRecords.length;
+            let totalMatchingCountRecords = await Offer.aggregate(aggregate);
+            totalMatchingCountRecords = totalMatchingCountRecords.length;
 
-        var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
+            var resp_data = await offer_helper.get_all_offer(Offer, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
 
-        if (resp_data.status == 1) {
-            res.status(config.OK_STATUS).json(resp_data);
+            if (resp_data.status == 1) {
+                res.status(config.OK_STATUS).json(resp_data);
+            } else {
+                res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            }
         } else {
-            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+            logger.error("Validation Error = ", errors);
+            res.status(config.BAD_REQUEST).json({ message: errors });
         }
-    } else {
-        logger.error("Validation Error = ", errors);
-        res.status(config.BAD_REQUEST).json({ message: errors });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 router.put("/status_change", async (req, res) => {
-    var id = req.body.id
-    var obj = {
-        "status": req.body.status,
-    }
+    try {
+        var id = req.body.id
+        var obj = {
+            "status": req.body.status,
+        }
 
-    var resp_data = await Offer.aggregate(
-        [
-            {
-                $match: {
-                    "_id": new ObjectId(id)
-                }
-            },
-            {
-                $lookup:
+        var resp_data = await Offer.aggregate(
+            [
                 {
-                    from: "group",
-                    localField: "groups",
-                    foreignField: "_id",
-                    as: "group"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true
+                    $match: {
+                        "_id": new ObjectId(id)
+                    }
                 },
-            },
-            {
-                $lookup:
                 {
-                    from: "group_detail",
-                    localField: "groups._id",
-                    foreignField: "group_id",
-                    as: "communication"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$communication",
-                    preserveNullAndEmptyArrays: true
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
                 },
-            }
-        ]
-    )
-    var obj = {};
-    if (resp_data[0].status == "On Hold") {
-        obj.status = "Released"
+                {
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "group_detail",
+                        localField: "groups._id",
+                        foreignField: "group_id",
+                        as: "communication"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$communication",
+                        preserveNullAndEmptyArrays: true
+                    },
+                }
+            ]
+        )
+        var obj = {};
+        if (resp_data[0].status == "On Hold") {
+            obj.status = "Released"
+        }
+        if (resp_data[0].status == "Released") {
+            obj.status = "Inactive"
+        }
+        if (resp_data[0].status == "Accepted") {
+            obj.status = "Not Joined"
+        }
+
+        obj.offer_id = req.body.id
+        var interest = await common_helper.insert(History, obj);
+
+        var update_status = await common_helper.update(Offer, { "_id": req.body.id }, obj)
+
+        content = update_status.data.title + "'s status has been changed to " + obj.status
+
+        let mail_resp = await mail_helper.send("status_change", {
+            "to": offer_upadate.data.email,
+            "subject": "Change Status of offer to." + " " + obj.status
+        }, {
+            "msg": content,
+        });
+
+        res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    if (resp_data[0].status == "Released") {
-        obj.status = "Inactive"
-    }
-    if (resp_data[0].status == "Accepted") {
-        obj.status = "Not Joined"
-    }
-
-    obj.offer_id = req.body.id
-    var interest = await common_helper.insert(History, obj);
-
-    var update_status = await common_helper.update(Offer, { "_id": req.body.id }, obj)
-
-    content = update_status.data.title + "'s status has been changed to " + obj.status
-
-    let mail_resp = await mail_helper.send("status_change", {
-        "to": offer_upadate.data.email,
-        "subject": "Change Status of offer to." + " " + obj.status
-    }, {
-        "msg": content,
-    });
-    console.log('<<<<mail_resp', mail_resp);
-
-    res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
-
 });
 
 router.put("/deactive_offer/:id", async (req, res) => {
-    var obj = {
-        is_del: true
-    }
-    var id = req.params.id;
-    var resp_data = await common_helper.update(Offer, { "_id": id }, obj);
-    if (resp_data.status == 0) {
-        logger.error("Error occured while fetching User = ", resp_data);
-        res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
-    } else if (resp_data.status == 1) {
-        logger.trace("User got successfully = ", resp_data);
-        res.status(config.OK_STATUS).json({ "message": "Offer is Updated successfully", resp_data });
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while fetching data." });
+    try {
+        var obj = {
+            is_del: true
+        }
+        var id = req.params.id;
+        var resp_data = await common_helper.update(Offer, { "_id": id }, obj);
+        if (resp_data.status == 0) {
+            logger.error("Error occured while fetching User = ", resp_data);
+            res.status(config.INTERNAL_SERVER_ERROR).json(resp_data);
+        } else if (resp_data.status == 1) {
+            logger.trace("User got successfully = ", resp_data);
+            res.status(config.OK_STATUS).json({ "message": "Offer is Updated successfully", resp_data });
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 router.put('/', async (req, res) => {
-    var obj = {};
+    try {
+        var obj = {};
 
-    if (req.body.groups && req.body.groups != "") {
-        obj.groups = req.body.groups
-    }
-
-    // if (req.body.high_unopened && req.body.high_unopened != "") {
-    obj.high_unopened = req.body.high_unopened
-    // }
-    // if (req.body.high_notreplied && req.body.high_notreplied != "") {
-    obj.high_notreplied = req.body.high_notreplied
-    // }
-    // if (req.body.medium_unopened && req.body.medium_unopened != "") {
-    obj.medium_unopened = req.body.medium_unopened
-    // }
-    // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
-    obj.medium_notreplied = req.body.medium_notreplied
-    // }
-
-    if (req.body.title && req.body.title != "") {
-        obj.title = req.body.title
-    }
-    if (req.body.salarytype && req.body.salarytype != "") {
-        obj.salarytype = req.body.salarytype
-    }
-
-    if (req.body.salaryduration && req.body.salaryduration != "") {
-        obj.salaryduration = req.body.salaryduration
-    }
-    if (req.body.country && req.body.country != "") {
-        obj.country = req.body.country
-    }
-    if (req.body.location && req.body.location != "") {
-        obj.location = req.body.location
-    }
-    if (req.body.currenct_type && req.body.currenct_type != "") {
-        obj.currenct_type = req.body.currenct_type
-    }
-    if (req.body.salarybracket && req.body.salarybracket != "") {
-        obj.salarybracket = req.body.salarybracket
-    }
-    if (req.body.expirydate && req.body.expirydate != "") {
-        obj.expirydate = req.body.expirydate
-    }
-    if (req.body.joiningdate && req.body.joiningdate != "") {
-        obj.joiningdate = req.body.joiningdate
-    }
-    if (req.body.offertype && req.body.offertype != "") {
-        obj.offertype = req.body.offertype
-    }
-    if (req.body.group && req.body.group != "") {
-        obj.group = req.body.group
-    }
-    if (req.body.status && req.body.status != "") {
-        obj.status = req.body.status
-    }
-    if (req.body.notes && req.body.notes != "") {
-        obj.notes = req.body.notes
-    }
-
-    if (req.body.salary && req.body.salary != "") {
-        obj.salary = req.body.salary
-    }
-    if (req.body.salary_from && req.body.salary_from != "") {
-        obj.salary_from = req.body.salary_from
-    }
-    if (req.body.salary_to && req.body.salary_to != "") {
-        obj.salary_to = req.body.salary_to
-    }
-
-    if (req.body.customfeild && req.body.customfeild != "") {
-        obj.customfeild = JSON.parse(req.body.customfeild)
-    }
-    if (req.body.data && req.body.data != "") {
-        obj.communication = JSON.parse(req.body.data)
-    }
-
-    if (req.body.AdHoc && req.body.AdHoc != "") {
-        obj.AdHoc = JSON.parse(req.body.AdHoc)
-    }
-
-    if (req.body.is_active && req.body.is_active != "") {
-        obj.is_active = JSON.parse(req.body.is_active)
-    }
-
-    var id = req.body.id;
-
-    var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-
-    if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-        employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
-    } else {
-        employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
-    }
-
-    var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
-    if (req.body.salary == "") {
-        var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary: "" } })
-    } else if (req.body.salary_from == "" && req.body.salary_to == "") {
-        var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary_from: "", salary_to: "" } })
-    }
-
-    if (req.body.groups === "") {
-        var unset_groups = await Offer.updateOne({ "_id": ObjectId(id) }, { $unset: { groups: "" } })
-    }
-
-    var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
-    var user_email = await common_helper.findOne(User, { "_id": offer_upadate.data.user_id })
-    obj.status = offer_upadate.data.status;
-
-    // console.log("========>", obj);
-
-    if (offer.data.status !== req.body.status) {
-        obj.offer_id = offer_upadate.data._id;
-        obj.employer_id = req.userInfo.id;
-        obj.message = `< span > { employer }</span > has ${req.body.status} this offer for <span>{candidate}</span>`
-        var interest = await common_helper.insert(History, obj);
-    }
-
-    if (offer_upadate.status == 0) {
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
-    }
-    else if (offer_upadate.status == 1) {
-
-        if (offer.data.status !== offer_upadate.data.status) {
-            // var user = await common_helper.findOne(User, { _id: new ObjectId(req.body.user_id) })
-            var status = await common_helper.findOne(Status, { 'status': offer_upadate.data.status });
-
-            let content = status.data.MessageContent;
-            content = content.replace("{employer}", `${employer.data.username} `).replace('{title}', offer_upadate.data.title).replace("{candidate}", offer_upadate.data.candidate_name);
-
-            // console.log("@@@", offer_upadate.data.email);
-
-            // let mail_resp = await mail_helper.send('d-4e82d6fcf94e4acdb8b94d71e4c32455', {
-            //     "to": offer_upadate.data.email,
-            //     "subject": "Change Status of offer.",
-            //     // "trackid": ''
-            // }, content);
-            console.log('offer_upadate.data.email', user_email.data.email);
-
-            let mail_resp = await mail_helper.send("status_change", {
-                "to": user_email.data.email,
-                "subject": "Change Status of offer."
-            }, {
-                "msg": content,
-            });
-            console.log('mailmmmm _resp', mail_resp);
-
+        if (req.body.groups && req.body.groups != "") {
+            obj.groups = req.body.groups
         }
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
-    }
-    else {
-        res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while fetching data." });
+
+        // if (req.body.high_unopened && req.body.high_unopened != "") {
+        obj.high_unopened = req.body.high_unopened
+        // }
+        // if (req.body.high_notreplied && req.body.high_notreplied != "") {
+        obj.high_notreplied = req.body.high_notreplied
+        // }
+        // if (req.body.medium_unopened && req.body.medium_unopened != "") {
+        obj.medium_unopened = req.body.medium_unopened
+        // }
+        // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+        obj.medium_notreplied = req.body.medium_notreplied
+        // }
+
+        if (req.body.title && req.body.title != "") {
+            obj.title = req.body.title
+        }
+        if (req.body.salarytype && req.body.salarytype != "") {
+            obj.salarytype = req.body.salarytype
+        }
+
+        if (req.body.salaryduration && req.body.salaryduration != "") {
+            obj.salaryduration = req.body.salaryduration
+        }
+        if (req.body.country && req.body.country != "") {
+            obj.country = req.body.country
+        }
+        if (req.body.location && req.body.location != "") {
+            obj.location = req.body.location
+        }
+        if (req.body.currenct_type && req.body.currenct_type != "") {
+            obj.currenct_type = req.body.currenct_type
+        }
+        if (req.body.salarybracket && req.body.salarybracket != "") {
+            obj.salarybracket = req.body.salarybracket
+        }
+        if (req.body.expirydate && req.body.expirydate != "") {
+            obj.expirydate = req.body.expirydate
+        }
+        if (req.body.joiningdate && req.body.joiningdate != "") {
+            obj.joiningdate = req.body.joiningdate
+        }
+        if (req.body.offertype && req.body.offertype != "") {
+            obj.offertype = req.body.offertype
+        }
+        if (req.body.group && req.body.group != "") {
+            obj.group = req.body.group
+        }
+        if (req.body.status && req.body.status != "") {
+            obj.status = req.body.status
+        }
+        if (req.body.notes && req.body.notes != "") {
+            obj.notes = req.body.notes
+        }
+
+        if (req.body.salary && req.body.salary != "") {
+            obj.salary = req.body.salary
+        }
+        if (req.body.salary_from && req.body.salary_from != "") {
+            obj.salary_from = req.body.salary_from
+        }
+        if (req.body.salary_to && req.body.salary_to != "") {
+            obj.salary_to = req.body.salary_to
+        }
+
+        if (req.body.customfeild && req.body.customfeild != "") {
+            obj.customfeild = JSON.parse(req.body.customfeild)
+        }
+        if (req.body.data && req.body.data != "") {
+            obj.communication = JSON.parse(req.body.data)
+        }
+
+        if (req.body.AdHoc && req.body.AdHoc != "") {
+            obj.AdHoc = JSON.parse(req.body.AdHoc)
+        }
+
+        if (req.body.is_active && req.body.is_active != "") {
+            obj.is_active = JSON.parse(req.body.is_active)
+        }
+
+        var id = req.body.id;
+
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+
+        if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
+        } else {
+            employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
+        }
+
+        var offer = await common_helper.findOne(Offer, { "_id": ObjectId(id) }, obj);
+        if (req.body.salary == "") {
+            var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary: "" } })
+        } else if (req.body.salary_from == "" && req.body.salary_to == "") {
+            var unset_salary = await Offer.update({ "_id": ObjectId(id) }, { $unset: { salary_from: "", salary_to: "" } })
+        }
+
+        if (req.body.groups === "") {
+            var unset_groups = await Offer.updateOne({ "_id": ObjectId(id) }, { $unset: { groups: "" } })
+        }
+
+        var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
+        var user_email = await common_helper.findOne(User, { "_id": offer_upadate.data.user_id })
+        obj.status = offer_upadate.data.status;
+
+        // console.log("========>", obj);
+
+        if (offer.data.status !== req.body.status) {
+            obj.offer_id = offer_upadate.data._id;
+            obj.employer_id = req.userInfo.id;
+            obj.message = `< span > { employer }</span > has ${req.body.status} this offer for <span>{candidate}</span>`
+            var interest = await common_helper.insert(History, obj);
+        }
+
+        if (offer_upadate.status == 0) {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+        }
+        else if (offer_upadate.status == 1) {
+
+            if (offer.data.status === "Released" && offer_upadate.data.status === "Released") {
+                var message = await common_helper.findOne(MailContent, { 'mail_type': "update_offer" });
+
+                let upper_content = message.data.upper_content;
+                let middel_content = message.data.middel_content;
+                let lower_content = message.data.lower_content;
+
+                upper_content = upper_content.replace('{employername}', employer.data.username).replace("{expirydate}", moment(offer.data.expirydate).startOf('day').format('DD/MM/YYYY'));
+                var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
+                var name = user_name.data.firstname;
+
+                let mail_resp = await mail_helper.send("update_offer", {
+                    "to": user_email.data.email,
+                    "subject": "Offer from " + `${employer.data.username}` + " has been updated"
+                }, {
+                    "name": name,
+                    "upper_content": upper_content,
+                    "middel_content": middel_content,
+                    "lower_content": lower_content
+                });
+
+            } else if (offer.data.status === "Accepted" && offer_upadate.data.status === "Not Joined") {
+                var message = await common_helper.findOne(MailContent, { 'mail_type': "not_join_offer" });
+
+                let upper_content = message.data.upper_content;
+                let lower_content = message.data.lower_content;
+
+                upper_content = upper_content.replace('{employername}', employer.data.username);
+                var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
+                var name = user_name.data.firstname;
+
+                let mail_resp = await mail_helper.send("not_joined_offer", {
+                    "to": user_email.data.email,
+                    "subject": employer.data.username + " has marked that you have Not Joined after accepting an offer"
+                }, {
+                    "name": name,
+                    "upper_content": upper_content,
+                    "lower_content": lower_content
+                });
+            } else if (offer.data.status === "On Hold" && offer_upadate.data.status === "Released") {
+                var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
+                var name = user_name.data.firstname;
+
+                var mailcontent = await common_helper.findOne(MailContent, { 'mail_type': 'offer_mail' });
+                var upper_content = mailcontent.data.upper_content;
+                var middel_content = mailcontent.data.middel_content;
+                var lower_content = mailcontent.data.lower_content;
+
+                upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
+
+                var obj = {
+                    "name": name,
+                    "upper_content": upper_content,
+                    "middel_content": middel_content,
+                    "lower_content": lower_content,
+                }
+
+                var reply_to = await common_helper.findOne(User, { "_id": offer_upadate.data.created_by });
+                let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
+                    "to": user_email.data.email,
+                    "reply_to1": `${reply_to.data.email}`,
+                    "reply_to2": `${offer_upadate.data._id}@em7977.hirecommit.com`,
+                    "subject": "You have received job offer from " + `${employer.data.username}`,
+                    "trackid": offer_upadate.data._id
+                }, obj);
+            }
+
+
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });
+        }
+        else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 })
 
 router.get('/details/:id', async (req, res) => {
     var id = req.params.id;
-    console.log(req.params.id);
     try {
         const offer_detail = await Offer.findOne({ '_id': id })
             .populate([
                 { path: 'employer_id' },
-                // { path: 'salarybracket' },
                 { path: 'location' },
                 { path: 'group' },
                 { path: 'user_id' }
             ])
             .lean();
 
-        console.log(offer_detail);
 
         var candidate_detail = await common_helper.findOne(CandidateDetail, { 'user_id': offer_detail.user_id._id });
         return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail, 'candidate_data': candidate_detail });
@@ -1945,14 +1252,7 @@ router.get('/history/:id', async (req, res) => {
     var history = [];
     var message = {};
     try {
-        // var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
-        // if (user && user.status == 1 && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
-        //     var user_id = user.data.emp_id
-        // }
-        // else {
-        //     var user_id = req.userInfo.id
-        // }
         var history_data = await History.aggregate([
             {
                 $match: {
@@ -1971,7 +1271,6 @@ router.get('/history/:id', async (req, res) => {
 
             {
                 $unwind: "$offer",
-                // preserveNullAndEmptyArrays: true
             },
             {
                 $lookup:
@@ -1986,21 +1285,7 @@ router.get('/history/:id', async (req, res) => {
             {
                 $unwind: "$employer"
             },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "candidateDetail",
-            //         localField: "offer.user_id",
-            //         foreignField: "user_id",
-            //         as: "candidate"
-            //     }
-            // },
 
-            // {
-            //     $unwind: {
-            //         path: "$candidate"
-            //     },
-            // },
         ])
 
 
@@ -2017,15 +1302,14 @@ router.get('/history/:id', async (req, res) => {
                     var content = element.message;
                     if (candidate.data.firstname !== "" && candidate.data.lastname !== "") {
                         content = content.replace("{employer}", `${employer.data.username} `).replace('{candidate}', candidate.data.firstname + " " + candidate.data.lastname);
-                        // console.log(element.createdAt);
-                        // message.push(content);
+
                         message = {
                             "content": content,
                             "createdAt": element.createdAt
                         }
                     } else {
                         content = content.replace("{employer}", `${employer.data.username} `).replace('{candidate}', user.data.email);
-                        // message.push(content);
+
                         message = {
                             "content": content,
                             "createdAt": element.createdAt
@@ -2040,14 +1324,13 @@ router.get('/history/:id', async (req, res) => {
                             "content": content,
                             "createdAt": element.createdAt
                         }
-                        // message.push(content);
+
                     } else {
                         content = content.replace("{employer}", `${employer.data.username} `).replace('{candidate}', user.data.email);
                         message = {
                             "content": content,
                             "createdAt": element.createdAt
                         }
-                        // message.push(content);
                     }
                     history.push(message);
                 }
@@ -2062,14 +1345,12 @@ router.get('/history/:id', async (req, res) => {
                             "content": content,
                             "createdAt": element.createdAt
                         }
-                        // message.push(content);
                     } else {
                         content = content.replace('{candidate}', user.data.email);
                         message = {
                             "content": content,
                             "createdAt": element.createdAt
                         }
-                        // message.push(content);
                     }
                 }
                 history.push(message);
@@ -2085,37 +1366,39 @@ router.get('/history/:id', async (req, res) => {
 });
 
 router.get("/status_list/:status", async (req, res) => {
-    var status = req.params.status;
-    var obj = {};
-    if (status === 'On Hold') {
-        obj.status = [
-            { label: 'On Hold', value: 'On Hold' },
-            { label: 'Released', value: 'Released' },
-            // { label: 'Inactive', value: 'Inactive' }
-        ];
-    } else if (status === 'Released') {
-        obj.status = [
-            { label: 'Released', value: 'Released' },
-            { label: 'Inactive', value: 'Inactive' }
-        ];
+    try {
+        var status = req.params.status;
+        var obj = {};
+        if (status === 'On Hold') {
+            obj.status = [
+                { label: 'On Hold', value: 'On Hold' },
+                { label: 'Released', value: 'Released' },
+            ];
+        } else if (status === 'Released') {
+            obj.status = [
+                { label: 'Released', value: 'Released' },
+                { label: 'Inactive', value: 'Inactive' }
+            ];
+        }
+        else if (status === 'Accepted') {
+            obj.status = [
+                { label: 'Accepted', value: 'Accepted' },
+                { label: 'Not Joined', value: 'Not Joined' },
+            ];
+        } else if (status === 'Not Joined') {
+            obj.status = [
+                { label: 'Not Joined', value: 'Not Joined' },
+                { label: 'Inactive', value: 'Inactive' }
+            ];
+        } else if (status === 'Inactive') {
+            obj.status = [
+                { label: 'Inactive', value: 'Inactive' }
+            ];
+        }
+        res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-    else if (status === 'Accepted') {
-        obj.status = [
-            { label: 'Accepted', value: 'Accepted' },
-            { label: 'Not Joined', value: 'Not Joined' },
-            // { label: 'Inactive', value: 'Inactive' }
-        ];
-    } else if (status === 'Not Joined') {
-        obj.status = [
-            { label: 'Not Joined', value: 'Not Joined' },
-            { label: 'Inactive', value: 'Inactive' }
-        ];
-    } else if (status === 'Inactive') {
-        obj.status = [
-            { label: 'Inactive', value: 'Inactive' }
-        ];
-    }
-    res.status(config.OK_STATUS).json({ "message": "Status is changed successfully", "status": obj.status });
 });
 
 module.exports = router;

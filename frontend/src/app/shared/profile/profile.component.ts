@@ -7,7 +7,6 @@ import { EmployerService } from '../../views/employer/employer.service';
 import { CandidateService } from '../../views/shared-components/candidates/candidate.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
-import { AnimationKeyframesSequenceMetadata } from '@angular/animations';
 
 @Component({
   selector: 'app-profile',
@@ -54,7 +53,7 @@ export class ProfileComponent implements OnInit {
     public fb: FormBuilder,
     private Employerservice: EmployerService,
     private candidateService: CandidateService,
-    private tostsr: ToastrService,
+    private toastr: ToastrService,
     private route: Router,
     private confirmationService: ConfirmationService,
     private commonService: CommonService) {
@@ -144,6 +143,8 @@ export class ProfileComponent implements OnInit {
       this.UserName = res['data']['username'];
       this.CountryCode = res['data']['countrycode'];
       this.ContactNumber = res['data']['contactno'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
   }
 
@@ -179,7 +180,7 @@ export class ProfileComponent implements OnInit {
         accept: () => {
           this.show_spinner = false;
           this.Employerservice.update_Profile(this.obj).subscribe(res => {
-            this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.commonService.changedProfileDetail(true);
             this.getEmploterData();
             if (this.userDetail.email !== this.Email) {
@@ -196,7 +197,7 @@ export class ProfileComponent implements OnInit {
           },
             err => {
               this.show_spinner = false;
-              this.tostsr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+              this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             }
           );
         }
@@ -225,7 +226,7 @@ export class ProfileComponent implements OnInit {
         accept: () => {
           this.show_spinner = false;
           this.candidateService.update_Profile_candidate(this.obj1).subscribe(res => {
-            this.tostsr.success(res['message'], 'Success!', { timeOut: 3000 });
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             console.log('success=======>');
             this.commonService.changedProfileDetail(true);
             this.getCandidate();
@@ -243,7 +244,7 @@ export class ProfileComponent implements OnInit {
           },
             err => {
               this.show_spinner = false;
-              this.tostsr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+              this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             }
           );
         }

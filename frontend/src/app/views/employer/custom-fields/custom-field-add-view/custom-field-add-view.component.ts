@@ -47,6 +47,8 @@ export class CustomFieldAddViewComponent implements OnInit {
       this.service.get_custom_field(this.id).subscribe(res => {
         this.spinner.hide();
         this.data = res['data'];
+      }, (err) => {
+        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
 
       if (this.route.snapshot.data.title === 'Edit') {
