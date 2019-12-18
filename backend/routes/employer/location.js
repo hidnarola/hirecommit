@@ -1,31 +1,23 @@
-var express = require("express");
-var router = express.Router();
-var config = require('../../config')
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
-var location_helper = require('../../helpers/location_helper');
+const express = require("express");
+const router = express.Router();
+const config = require('../../config')
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const location_helper = require('../../helpers/location_helper');
+const logger = config.logger;
+const async = require('async');
 
-var logger = config.logger;
-var async = require('async');
-
-var location = require('../../models/location');
-var Salary = require('../../models/salary_bracket');
-var User = require('../../models/user');
-var Offer = require('../../models/offer');
+const location = require('../../models/location');
+const Salary = require('../../models/salary_bracket');
+const User = require('../../models/user');
+const Offer = require('../../models/offer');
 
 
 //manage Location
 router.post("/", async (req, res) => {
     try {
         var schema = {
-            // "country": {
-            //     notEmpty: true,
-            //     errorMessage: "Country is required"
-            // },
-            // "city": {
-            //     notEmpty: true,
-            //     errorMessage: "City is required"
-            // }
+
         };
         req.checkBody(schema);
 
@@ -89,14 +81,9 @@ router.post('/get', async (req, res) => {
                 [sortOrderColumn]: sortOrder
             }
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-            console.log('user.data.role_id', user.data.role_id);
 
             if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-                console.log('1', 1);
-
                 var user_id = user.data.emp_id
-                console.log('user_id', user_id);
-
             }
             else {
                 var user_id = req.userInfo.id
@@ -144,13 +131,9 @@ router.get('/get_location', async (req, res) => {
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
         if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-
-
             var user_id = user.data.emp_id
         }
         else {
-
-
             var user_id = req.userInfo.id
         }
         var aggregate = [
@@ -160,18 +143,6 @@ router.get('/get_location', async (req, res) => {
                     "emp_id": new ObjectId(user_id)
                 }
             },
-            // {
-            //     $lookup:
-            //     {
-            //         from: "country_datas",
-            //         localField: "country",
-            //         foreignField: "_id",
-            //         as: "country"
-            //     }
-            // },
-            // {
-            //     $unwind: "$country",
-            // },
             {
                 $group: {
                     "_id": "$country.alpha3Code",
@@ -209,7 +180,6 @@ router.get('/get_locations', async (req, res) => {
         var salary_list = await common_helper.find(Salary, {
             "emp_id": new ObjectId(req.userInfo.id),
             "is_del": false
-            // "salary_type": req.body.salary_type
         });
         if (location_list.status === 1) {
             return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list, salary: salary_list });
@@ -268,7 +238,6 @@ router.put("/deactivate_location/:id", async (req, res) => {
         var obj = {
             is_del: true
         }
-
 
         var id = req.params.id;
 

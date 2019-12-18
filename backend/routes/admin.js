@@ -1,11 +1,11 @@
-var express = require("express");
-var router = express.Router();
-var auth = require("../middlewares/auth");
-var authorization = require("../middlewares/authorization");
+const express = require("express");
+const router = express.Router();
+const auth = require("../middlewares/auth");
+const authorization = require("../middlewares/authorization");
 
 
-var employer = require('./admin/employer');
-var candidate = require('./admin/candidate');
+const employer = require('./admin/employer');
+const candidate = require('./admin/candidate');
 
 
 router.use("/employer", auth, authorization, employer);

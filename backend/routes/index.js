@@ -1,54 +1,44 @@
-// var express = require('express');
-// var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const auth = require("../middlewares/auth");
+const config = require('../config');
+const fs = require('fs');
+const path = require('path');
+const ObjectId = require('mongodb').ObjectID;
+const btoa = require('btoa');
 
-/* GET home page. */
-var express = require('express');
-var router = express.Router();
-var auth = require("../middlewares/auth");
-var authorization = require("../middlewares/authorization");
-var config = require('../config');
-var fs = require('fs');
-var path = require('path');
-var mongoose = require('mongoose');
-var ObjectId = require('mongodb').ObjectID;
-var moment = require('moment');
-var btoa = require('btoa');
-//var ObjectId = mongoose.Types.ObjectId;
-//var moment = require('moment');
-var _ = require('underscore');
-var request = require('request');
-var passwordValidator = require('password-validator');
-var passwordValidatorSchema = new passwordValidator();
+const _ = require('underscore');
+const request = require('request');
+const passwordValidator = require('password-validator');
+const passwordValidatorSchema = new passwordValidator();
 
-var logger = config.logger;
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-var async = require('async');
-var mail_helper = require('./../helpers/mail_helper');
-var Role = require('./../models/role');
-var User = require('./../models/user');
-var Candidate_Detail = require('./../models/candidate-detail');
-var Employer_Detail = require('./../models/employer-detail');
-var SubEmployer_Detail = require('./../models/employer-detail');
+const logger = config.logger;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const async = require('async');
+const mail_helper = require('./../helpers/mail_helper');
+const Role = require('./../models/role');
+const User = require('./../models/user');
+const Candidate_Detail = require('./../models/candidate-detail');
+const Employer_Detail = require('./../models/employer-detail');
+const SubEmployer_Detail = require('./../models/employer-detail');
 
-var CountryData = require('./../models/country_data');
-var BusinessType = require('./../models/business_type');
-var DocumentType = require('./../models/document_type');
-var Offer = require('./../models/offer');
-var RepliedMail = require('./../models/replied_mail');
-var MailType = require('./../models/mail_content');
-var new_mail_helper = require('./../helpers/new_mail_helper');
-var testmail_helper = require('./../helpers/testmail_helper');
+const CountryData = require('./../models/country_data');
+const BusinessType = require('./../models/business_type');
+const DocumentType = require('./../models/document_type');
+const Offer = require('./../models/offer');
+const RepliedMail = require('./../models/replied_mail');
+const MailType = require('./../models/mail_content');
+const new_mail_helper = require('./../helpers/new_mail_helper');
 
-var DisplayMessage = require('./../models/display_messages');
-var userpProfile = require('./profile');
+const DisplayMessage = require('./../models/display_messages');
+const userpProfile = require('./profile');
 
 router.use("/profile", auth, userpProfile);
 
 const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper');
 
-// live
 var captcha_secret = config.captcha_secret
 
 //get user
@@ -151,7 +141,6 @@ router.post("/admin_register", async (req, res) => {
 // Candidate Registration
 router.post("/candidate_register", async (req, res) => {
   try {
-    // console.log(' : req.body ==> ', req.body);
     var schema = {
       "firstname": {
         notEmpty: true,
@@ -236,17 +225,6 @@ router.post("/candidate_register", async (req, res) => {
           res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
         }
         else {
-          // let user_resp = await common_helper.findOne(User, {
-          //   "email": req.body.email.toLowerCase(),
-          //   "is_del": false,
-          //   "is_register": false
-          // });
-          // if (user_resp.status === 1) {
-
-          // } else {
-
-          // }
-          // var interest_user_resp = await common_helper.insert(User, user_reg_obg);
 
           const condition = {
             "email": req.body.email.toLowerCase(),
@@ -273,36 +251,7 @@ router.post("/candidate_register", async (req, res) => {
               "is_del": false,
               "document_verified": false
             };
-            // var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
-            // if (interest_resp.status == 0) {
-            //   logger.debug("Error = ", interest_resp.error);
-            //   res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-            // } else {
-            //   var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
-            //     config.ACCESS_TOKEN_SECRET_KEY, {
-            //     expiresIn: 60 * 60 * 24 * 3
-            //   }
-            //   )).toString('base64');
 
-            //   var time = new Date();
-            //   time.setMinutes(time.getMinutes() + 20);
-            //   time = btoa(time);
-
-            //   logger.trace("sending mail");
-            //   let mail_resp = await mail_helper.send("email_confirmation", {
-            //     "to": interest_user_resp.data.email,
-            //     "subject": "HC - Email Confirmation"
-            //   }, {
-            //     // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
-            //     "confirm_url": config.WEBSITE_URL + 'confirmation/' + reset_token
-            //   });
-
-            //   if (mail_resp.status === 0) {
-            //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-            //   } else {
-            //     res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp })
-            //   }
-            // }
             async.waterfall(
               [
                 function (callback) {
@@ -366,8 +315,6 @@ router.post("/candidate_register", async (req, res) => {
               async (err, image_path_array) => {
                 reg_obj.documentimage = image_path_array;
 
-                // var interest_resp = await common_helper.insert(Candidate_Detail, reg_obj);
-
                 var interest_resp = await Candidate_Detail.findOneAndUpdate({ user_id: interest_user_resp._id }, reg_obj, {
                   new: true,
                   upsert: true
@@ -390,20 +337,17 @@ router.post("/candidate_register", async (req, res) => {
                   var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate_email_confirmation' });
 
                   logger.trace("sending mail");
-                  // console.log("1312");
 
                   let mail_resp = await mail_helper.send("email_confirmation_template", {
                     "to": interest_user_resp.email,
                     "subject": "Welcome to the HireCommit | Verify Email"
                   }, {
-                    // "confirm_url": config.website_url + "/email_confirm/" + interest_resp.data._id
                     "msg": message.data.content,
                     "name": interest_resp.firstname,
                     "upper_content": message.data.upper_content,
                     "lower_content": message.data.lower_content,
                     "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                   });
-                  // console.log(' : mail_resp ==> ', mail_resp);
 
                   if (mail_resp.status === 0) {
                     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
@@ -431,14 +375,6 @@ router.post("/candidate_register", async (req, res) => {
 
 router.post('/check_document_size', async (req, res) => {
   try {
-    // var schema = {
-    //   image: {
-    //     required: true,
-    //     extension: "jpg,jpeg,pdf",
-    //     // filesize: 5,
-    //   }
-    // }
-
 
     if (req.files && req.files["documentimage"]) {
       var documentImage = req.files["documentimage"];
@@ -638,10 +574,7 @@ router.post("/employer_register", async (req, res) => {
 
 router.post("/check_employer_email", async (req, res) => {
   try {
-    // re = new RegExp(req.body.email.toLowerCase(), "i");
-    // value = {
-    //   $regex: re
-    // };
+
     let user_resp = await common_helper.findOne(User, { "email": req.body.email.toLowerCase(), "is_del": false })
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
@@ -689,19 +622,13 @@ router.post('/login', async (req, res) => {
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-      // let user_resp = await common_helper.findOne(User, { "email": req.body.email })
       let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
-
-
-      // console.log(req.body, user_resp);
-
       if (!user_resp) {
         var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'email_not_exist' });
         logger.trace("Login checked resp = ", user_resp);
         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": message.data.content, "error": "We are not aware of this user" });
       }
       else if (user_resp) {
-        // if (user_resp.data.email_verified == true) {
         logger.trace("valid token. Generating token");
         if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email.toLowerCase())) {
 
@@ -709,7 +636,6 @@ router.post('/login', async (req, res) => {
             if (user_resp.isAllow == true) {
               var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
               let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-              // let role = await common_helper.findOne(Role, { "_id": user_resp.role_id });
               var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
               var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
                 expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
@@ -815,8 +741,6 @@ router.post('/login', async (req, res) => {
               res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
             } else {
               var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'candidate_not_approve' });
-              // console.log(message);
-
               res.status(config.UNAUTHORIZED).json({ "status": 0, "isApproved": false, "message": message.data.content });
             }
           } else if (user_resp.role_id.role === "employer") {
@@ -942,8 +866,6 @@ router.post('/login', async (req, res) => {
               if (user_resp.email_verified == true) {
                 var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
                 let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-                // let role = await common_helper.findOne(Role, { "_id": user_resp.role_id });
-
 
                 var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
                 var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
@@ -1074,7 +996,6 @@ router.post('/login', async (req, res) => {
 
 router.post('/email_verify', async (req, res) => {
   try {
-    // console.log('==>');
 
     logger.trace("Verifying JWT");
     jwt.verify(Buffer.from(req.body.token, 'base64').toString(), config.ACCESS_TOKEN_SECRET_KEY, async (err, decoded) => {
@@ -1138,9 +1059,6 @@ router.post('/email_verify', async (req, res) => {
               var lower_content = message.data.lower_content;
             }
 
-
-
-
             logger.trace("sending mail");
             let mail_resp = await mail_helper.send("welcome_email", {
               "to": user_resp.data.email,
@@ -1150,7 +1068,6 @@ router.post('/email_verify', async (req, res) => {
               "upper_content": upper_content,
               "lower_content": lower_content,
               'msg': message.data.content,
-              // "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
             });
 
           }
@@ -1315,7 +1232,6 @@ router.post('/reset_password', async (req, res) => {
                       "name": name,
                       "upper_content": upper_content,
                       "lower_content": lower_content,
-                      // "reset_link": config.WEBSITE_URL + "reset-password/" + reset_token
                     });
 
                     res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
@@ -1441,7 +1357,6 @@ router.post('/match_old_password', async (req, res) => {
 
 router.post('/test_mail', async (req, res) => {
   try {
-    // console.log('req.body ==> ', req.body);
     var content = req.body.content;
 
     var trackid = req.body.trackid;
@@ -1451,12 +1366,7 @@ router.post('/test_mail', async (req, res) => {
       "content": trackid
     }
 
-    // let mail_resp = await testmail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
-    //   "to": req.body.email,
-    //   "reply_to": req.body.reply_to,
-    //   "subject": "Offer",
-    //   "trackid": trackid
-    // }, content);
+
 
     let mail_resp = await new_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
       "to": req.body.email,
@@ -1466,15 +1376,6 @@ router.post('/test_mail', async (req, res) => {
     }, obj);
 
 
-    // let mail_resp = mail_helper.send("candidate_email_confirmation", {
-    //   "to": req.body.email,
-    //   "subject": "Welcome to the HireCommit | Verify Email"
-    // }, {
-    //   "msg": content,
-    //   "url": ""
-    // });
-
-    // if (mail_resp)
     res.json({ "message": "success" })
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
@@ -1483,10 +1384,7 @@ router.post('/test_mail', async (req, res) => {
 
 async function getCountry(req, res) {
   try {
-    // var condition = { "country": India};
-    // if (req.params.id) {
-    //   condition = { ...condition, _id: req.params.id }
-    // }
+
     const country = await CountryData.find({ $or: [{ "country": "India" }, { "country": "United States" }] }).lean();
     return res.status(config.OK_STATUS).json({
       success: true, message: 'country list fetched successfully.',
@@ -1521,20 +1419,14 @@ router.get('/country/:id', getCountry);
 
 router.post('/get_email', async (req, res) => {
   try {
-    console.log('==> getmail : req.body ==> ', req.body);
-    // console.log(' : from ==> ', req.body.from);
-    // console.log(' : cc ==> ', req.body.cc);
-    // console.log(": to =>", req.body.to)
+
     const reqBody = req.body;
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
-    // console.log(": id ===> ", id);
 
     var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
-    // console.log("insert_reply_mail_resp", insert_reply_mail_resp);
 
     var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true }).populate('created_by', { email: 1 }).lean();
-    // console.log("update_offer_reply", update_offer_reply);
 
     mail_helper.forwardRepliedMail({
       to: offer.created_by.email,

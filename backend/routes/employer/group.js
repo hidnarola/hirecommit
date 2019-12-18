@@ -1,20 +1,17 @@
-var express = require("express");
-var router = express.Router();
-var btoa = require('btoa');
+const express = require("express");
+const router = express.Router();
+const async = require('async');
 
-var auth = require("../../middlewares/auth");
-var authorization = require("../../middlewares/authorization");
-var config = require('../../config')
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
-var groups_helper = require('../../helpers/groups_helper');
-var logger = config.logger;
-var group = require('../../models/group');
-var GroupDetail = require('../../models/group-detail');
-var AlertDays = require('../../models/alert_days');
-var Offer = require('../../models/offer');
-
-var User = require('../../models/user');
+const config = require('../../config')
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const groups_helper = require('../../helpers/groups_helper');
+const logger = config.logger;
+const group = require('../../models/group');
+const GroupDetail = require('../../models/group-detail');
+const AlertDays = require('../../models/alert_days');
+const Offer = require('../../models/offer');
+const User = require('../../models/user');
 
 
 
@@ -60,31 +57,7 @@ router.post("/", async (req, res) => {
             "name": {
                 notEmpty: true,
                 errorMessage: "Group Name is required"
-            },
-            // "high_unopened": {
-            //     notEmpty: true,
-            //     errorMessage: "High priority is required"
-            // },
-            // "high_notreplied": {
-            //     notEmpty: true,
-            //     errorMessage: "High priority is required"
-            // },
-            // "medium_unopened": {
-            //     notEmpty: true,
-            //     errorMessage: "Medium priority is required"
-            // },
-            // "medium_notreplied": {
-            //     notEmpty: true,
-            //     errorMessage: "Medium priority is required"
-            // },
-            // "low_unopened": {
-            //     notEmpty: true,
-            //     errorMessage: "Low priority is required"
-            // },
-            // "low_notreplied": {
-            //     notEmpty: true,
-            //     errorMessage: "Low priority is required"
-            // }
+            }
         };
         req.checkBody(schema);
 
@@ -171,7 +144,6 @@ router.post('/get', async (req, res) => {
                 var user_id = req.userInfo.id
             }
 
-
             var aggregate = [
                 {
                     $match:
@@ -186,7 +158,7 @@ router.post('/get', async (req, res) => {
                     "$match":
                     {
                         $or: [{ "name": RE }, { "high_unopened": RE }, { "high_notreplied": RE }, { "medium_unopened": RE }, { "medium_notreplied": RE },
-                            // { "low_unopened": RE }, { "low_notreplied": RE }
+
                         ]
                     }
                 });
@@ -195,7 +167,6 @@ router.post('/get', async (req, res) => {
 
             let totalMatchingCountRecords = await group.aggregate(aggregate);
             totalMatchingCountRecords = totalMatchingCountRecords.length;
-            // var search={};
             var resp_data = await groups_helper.get_all_groups(group, user_id, req.body.search, req.body.start, req.body.length, totalMatchingCountRecords, sortingObject);
 
             if (resp_data.status == 1) {
@@ -232,12 +203,7 @@ router.put('/', async (req, res) => {
         // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
         obj.medium_notreplied = req.body.medium_notreplied
         // }
-        // if (req.body.low_unopened && req.body.low_unopened != "") {
-        //     obj.low_unopened = req.body.low_unopened
-        // }
-        // if (req.body.low_notreplied && req.body.low_notreplied != "") {
-        //     obj.low_notreplied = req.body.low_notreplied
-        // }
+
         var id = req.body.id;
 
         var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
@@ -255,7 +221,6 @@ router.put('/', async (req, res) => {
                 flag: "undraft"
             }
             var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
-            // console.log('responses======>', responses);
         }
         else {
             var response = await common_helper.insert(GroupDetail, grp_data);
@@ -263,7 +228,6 @@ router.put('/', async (req, res) => {
                 flag: "undraft"
             }
             var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
-            // console.log('responses======>', responses);
         }
 
 
@@ -484,40 +448,26 @@ router.put("/deactivate_group/:id", async (req, res) => {
 
 router.put("/deactivate_communication/:id", async (req, res) => {
     try {
-        var obj = {
 
-        }
         var id = req.params.id;
 
         var resp_group_data = await common_helper.GroupDetail(GroupDetail, { "communication._id": new ObjectId(id) }, { "communication.is_del": true });
 
-        // if (resp_group_data.status == 0) {
-        //     logger.error("Error occured while fetching User = ", resp_group_data);
-        //     res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error while fetching data.", "data": resp_group_data });
-        // }
-        // else if (resp_group_data.status == 1) {
-        logger.trace("User got successfully = ", resp_group_data);
-        res.status(config.OK_STATUS).json({ "status": 1, "message": "Record is Deleted Successfully", resp_group_data });
-        // }
-        // else if (resp_group_data.status == 2) {
-        //     logger.trace("User got successfully = ", resp_group_data);
-        //     res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No Data Found." });
-        // }
+        if (resp_group_data) {
+
+            logger.trace("User got successfully = ", resp_group_data);
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Record is Deleted Successfully", resp_group_data });
+        }
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': 'No Data Found' })
+        }
+
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
 
 
-// router.get("/groups_list", async (req, res) => {
-//     var group_list = await common_helper.find(group, { is_del: false });
-//     if (group_list.status === 1) {
-//         return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
-//     }
-//     else {
-//         return res.status(config.BAD_REQUEST).json({ 'message': "No Records Found", "status": 0 });
-//     }
-// })
 
 router.get('/commit_status/:id', async (req, res) => {
     try {

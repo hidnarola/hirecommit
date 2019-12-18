@@ -1,26 +1,24 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const async = require('async');
 
-var config = require('../../config')
-var Offer = require('../../models/offer');
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
-var cron = require('node-cron');
+const config = require('../../config')
+const Offer = require('../../models/offer');
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const offer_helper = require('../../helpers/offer_helper');
 
-var offer_helper = require('../../helpers/offer_helper');
-
-var logger = config.logger;
-var moment = require("moment")
-var User = require('../../models/user');
-var Candidate = require('../../models/candidate-detail');
-var History = require('../../models/offer_history');
-var Employer = require('../../models/employer-detail');
-var SubEmployer = require('../../models/sub-employer-detail');
-var Status = require('../../models/status');
-var OfferTypeMessage = require('../../models/offer_type_message');
-var Location = require('../../models/location');
-var MailType = require('../../models/mail_content');
-var mail_helper = require('../../helpers/mail_helper');
+const logger = config.logger;
+const moment = require("moment")
+const User = require('../../models/user');
+const Candidate = require('../../models/candidate-detail');
+const History = require('../../models/offer_history');
+const Employer = require('../../models/employer-detail');
+const SubEmployer = require('../../models/sub-employer-detail');
+const OfferTypeMessage = require('../../models/offer_type_message');
+const Location = require('../../models/location');
+const MailType = require('../../models/mail_content');
+const mail_helper = require('../../helpers/mail_helper');
 
 
 router.post('/get', async (req, res) => {
@@ -52,7 +50,6 @@ router.post('/get', async (req, res) => {
                         "user_id": new ObjectId(req.userInfo.id),
                         "is_del": false,
                         "status": { $ne: 'On Hold' },
-                        // "expirydate": { $gte: new Date() }
                     }
                 },
                 {
@@ -188,37 +185,19 @@ router.post('/get', async (req, res) => {
 
 
 router.post('/type_message', async (req, res) => {
-    // console.log('1', 1);
-    // console.log('req.body.type', req.body.type);
     try {
-        const message_type = await OfferTypeMessage.findOne({ "type": req.body.type })
-        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: message_type });
+        const message_type = await OfferTypeMessage.findOne({ "type": req.body.type });
+        if (message_type) {
+            return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: message_type });
+        }
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': 'No Data Found' })
+        }
+
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
-
-
-
-// router.get('/details/:id', async (req, res) => {
-//     var id = req.params.id;
-//     try {
-//         const offer_detail = await Offer.findOne({ _id: id })
-//             .populate([
-//                 { path: 'employer_id' },
-//                 { path: 'salarybracket' },
-//                 { path: 'location' },
-//                 { path: 'groups' },
-//                 { path: 'created_by' },
-//                 { path: 'created_by._id' }
-//             ])
-//             .lean();
-
-//         return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offer_detail });
-//     } catch (error) {
-//         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-//     }
-// });
 
 
 router.get('/details/:id', async (req, res) => {
@@ -337,8 +316,14 @@ router.get('/details/:id', async (req, res) => {
         ]
 
         var offre_resp = await Offer.aggregate(aggregate);
+        if (offre_resp) {
+            return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offre_resp });
 
-        return res.status(config.OK_STATUS).json({ 'message': "Offer detail", "status": 1, data: offre_resp });
+        }
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': 'No Data Found' })
+        }
+
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
@@ -350,7 +335,6 @@ router.put('/', async (req, res) => {
             "status": "Accepted",
             "acceptedAt": new Date()
         }
-        // console.log(reg_obj);
         var current_date = moment();
         var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id), "expirydate": { $gte: current_date } })
         if (offer.status == 1) {
@@ -367,7 +351,6 @@ router.put('/', async (req, res) => {
             }
             else if (sub_account_upadate.status == 1) {
                 var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
-                // var employee = await common_helper.findOne(User, { _id: new ObjectId(offer.data.employer_id) })
 
                 var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate-accept-offer' });
                 let upper_content = message.data.upper_content;
@@ -432,38 +415,6 @@ router.put('/', async (req, res) => {
                         "lower_content": lower_content
                     });
                 }
-
-                // if (employee.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-                //     let mail_resp = await mail_helper.send("offer", {
-                //         "to": employee.data.email,
-                //         "subject": "Offer Accepted"
-                //     }, {
-                //         "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
-                //     });
-                // }
-                // else if (employee.data.role_id == ("5d9d98a93a0c78039c6dd00d")) {
-
-                //     let mail_resp = await mail_helper.send("offer", {
-                //         "to": employee.data.email,
-                //         "subject": "Offer Accepted"
-                //     }, {
-                //         "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
-                //     });
-
-                //     var sub_emp_email = await User.find({ "emp_id": new ObjectId(employee.data._id) })
-                //     if (sub_emp_email.length > 0) {
-                //         for (const data of sub_emp_email) {
-
-                //             let mail_resp = await mail_helper.send("offer", {
-                //                 "to": data.email,
-                //                 "subject": "Offer Accepted"
-                //             }, {
-                //                 "msg": `${candidate.data.firstname} ${candidate.data.lastname}` + " " + "has accepted offer."
-                //             });
-
-                //         }
-                //     }
-                // }
 
                 res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Accepted", "data": sub_account_upadate });
             }

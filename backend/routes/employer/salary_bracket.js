@@ -1,14 +1,15 @@
-var express = require("express");
-var router = express.Router();
-var config = require('../../config')
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
+const express = require("express");
+const router = express.Router();
+const config = require('../../config')
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const async = require('async');
 
-var salary_helper = require('../../helpers/salary_helper');
+const salary_helper = require('../../helpers/salary_helper');
 
-var logger = config.logger;
-var salary_bracket = require('../../models/salary_bracket');
-var User = require('../../models/user');
+const logger = config.logger;
+const salary_bracket = require('../../models/salary_bracket');
+const User = require('../../models/user');
 
 
 router.post("/", async (req, res) => {
@@ -32,8 +33,6 @@ router.post("/", async (req, res) => {
         var errors = req.validationErrors();
         if (!errors) {
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-            var sal_bracket = await common_helper.find(salary_bracket, { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false, $or: [{ "from": { "$le": req.body.from, "$ge": req.body.end } }], $or: [{ "to": { "$le": req.body.from, "$ge": req.body.end } }], $or: [{ "start": { "$le": req.body.from, "$ge": req.body.end } }], $or: [{ "end": { "$le": req.body.from, "$ge": req.body.end } }] })
-            // if (sal_bracket.status == 2) {
             if (user && user.data.role_id == ObjectId("5d9d99003a0c78039c6dd00f")) {
                 var reg_obj = {
                     "emp_id": user.data.emp_id,
@@ -54,7 +53,6 @@ router.post("/", async (req, res) => {
                     "to": req.body.to,
                     "start": req.body.start,
                     "end": req.body.end
-                    //"location": req.body.location
                 };
             }
             var interest_resp = await common_helper.insert(salary_bracket, reg_obj);
@@ -64,10 +62,6 @@ router.post("/", async (req, res) => {
             } else {
                 res.json({ "message": "Sub Account is Added successfully", "data": interest_resp })
             }
-            // }
-            // else {
-            //     res.status(config.BAD_REQUEST).json({ message: "Please enter another salary type or time period" });
-            // }
 
         }
         else {
@@ -118,7 +112,6 @@ router.post('/get', async (req, res) => {
                 {
                     $unwind: {
                         path: "$country",
-                        // preserveNullAndEmptyArrays: false
                     },
                 }
             ]
@@ -183,9 +176,6 @@ router.get('/get_salary_bracket', async (req, res) => {
         else {
             return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
         }
-        // else {
-        //     return res.status(config.BAD_REQUEST).json({ 'message': "Error while fetching", "status": 0 });
-        // }
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
@@ -240,22 +230,6 @@ router.get('/get_salary_country', async (req, res) => {
     }
 });
 
-
-
-// router.get('/get_salary_bracket', async (req, res) => {
-//     var salary_bracket_list = await common_helper.find(salary_bracket, {});
-
-
-//     if (salary_bracket_list.status === 1) {
-//         return res.status(config.OK_STATUS).json({ 'message': "Salary_bracket List", "status": 1, data: salary_bracket_list });
-//     }
-//     else if (salary_bracket_list.status === 2) {
-//         return res.status(config.OK_STATUS).json({ 'message': "No Records Found", "status": 2 });
-//     }
-//     else {
-//         return res.status(config.BAD_REQUEST).json({ 'message': "Error while fetching", "status": 0 });
-//     }
-// });
 
 
 router.put('/', async (req, res) => {

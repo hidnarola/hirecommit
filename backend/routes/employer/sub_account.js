@@ -1,24 +1,22 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var config = require('../../config')
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
-var user_helper = require('../../helpers/user_helper');
-var MailType = require('../../models/mail_content');
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
-var _ = require('underscore');
-var btoa = require('btoa');
-const saltRounds = 10;
+const config = require('../../config')
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const user_helper = require('../../helpers/user_helper');
+const MailType = require('../../models/mail_content');
+const jwt = require('jsonwebtoken');
+const _ = require('underscore');
+const btoa = require('btoa');
 
-var logger = config.logger;
-var User = require('../../models/user');
+const logger = config.logger;
+const User = require('../../models/user');
 
-var async = require('async');
-var mail_helper = require('../../helpers/mail_helper');
-var Sub_Employer_Detail = require('../../models/sub-employer-detail');
-var Employer_Detail = require('../../models/employer-detail');
+const async = require('async');
+const mail_helper = require('../../helpers/mail_helper');
+const Sub_Employer_Detail = require('../../models/sub-employer-detail');
+const Employer_Detail = require('../../models/employer-detail');
 const random_pass_word = require('secure-random-password');
 
 
@@ -44,7 +42,6 @@ router.post("/", async (req, res) => {
                 "email": req.body.email,
                 "admin_rights": req.body.admin_rights,
                 "is_del": false,
-                // "emp_id": req.userInfo.id,
                 "email_verified": false,
                 "is_register": true,
                 "isAllow": true,
@@ -255,7 +252,6 @@ router.put('/details', async (req, res) => {
             } else {
                 var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
                 var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
-                // console.log("==>", resp_user_data.data.email);
 
                 var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
                     config.ACCESS_TOKEN_SECRET_KEY, {
@@ -272,10 +268,8 @@ router.put('/details', async (req, res) => {
                     "subject": "HireCommit - Email Confirmation"
                 }, {
                     "msg": message.data.content,
-                    // config.website_url + "/email_confirm/" + interest_resp.data._id
                     "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
                 });
-                // console.log("====>", mail_response);
 
             }
         }
@@ -303,13 +297,11 @@ router.get('/:id', async (req, res) => {
         if (sub_account_detail) {
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer fetched successfully", "data": sub_account_detail });
         }
-        // if (sub_account_detail.status == 0) {
-        //     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-        // }
-        // else
-        // else {
-        //     res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error while fetching data." });
-        // }
+
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': 'No Data Found' })
+        }
+
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
