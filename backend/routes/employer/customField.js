@@ -1,15 +1,16 @@
-var express = require("express");
-var router = express.Router();
-var config = require('../../config')
-var ObjectId = require('mongoose').Types.ObjectId;
-var common_helper = require('../../helpers/common_helper');
-var custom_helper = require('../../helpers/custom_helper');
+const express = require("express");
+const router = express.Router();
+const config = require('../../config')
+const ObjectId = require('mongoose').Types.ObjectId;
+const common_helper = require('../../helpers/common_helper');
+const custom_helper = require('../../helpers/custom_helper');
+const async = require('async');
 
 
-var logger = config.logger;
-var CustomField = require('../../models/customfield');
-var User = require('../../models/user');
-var Offer = require('../../models/offer');
+const logger = config.logger;
+const CustomField = require('../../models/customfield');
+const User = require('../../models/user');
+const Offer = require('../../models/offer');
 
 
 router.post("/", async (req, res) => {
@@ -97,23 +98,14 @@ router.put("/", async (req, res) => {
 router.post("/get", async (req, res) => {
     try {
         user_id = req.userInfo.id;
-        //var totalMatchingCountRecords = await common_helper.count(CustomField, { "emp_id": new ObjectId(req.userInfo.id), "is_del": false });
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
-        // console.log(' user.data.role_id', user.data.role_id);
 
         if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
-            // console.log('1', 1);
-
             var user_id = user.data.emp_id
-            // console.log('user_id', user_id);
-
         }
         else {
             var user_id = req.userInfo.id
         }
-
-
-
         var aggregate = [
             {
                 $match:
@@ -133,9 +125,8 @@ router.post("/get", async (req, res) => {
         let totalMatchingCountRecords = await CustomField.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length
 
-
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data; // column name
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
             [sortOrderColumn]: sortOrder
@@ -184,10 +175,16 @@ router.get("/", async (req, res) => {
 router.get('/first', async (req, res) => {
     try {
         const country = await CustomField.find({ "emp_id": req.userInfo.id, is_del: false }).sort({ serial_number: 1 }).limit(1).lean();
-        return res.status(config.OK_STATUS).json({
-            success: true, message: 'country list fetched successfully.',
-            data: country
-        });
+        if (country) {
+            return res.status(config.OK_STATUS).json({
+                success: true, message: 'country list fetched successfully.',
+                data: country
+            });
+        }
+        else {
+            return res.status(config.BAD_REQUEST).json({ 'message': 'No Data Found' })
+        }
+
     } catch (error) {
         return res.status(config.INTERNAL_SERVER_ERROR).send({
             success: false,
@@ -228,9 +225,6 @@ router.put("/delete/:id", async (req, res) => {
         var obj = {
             "is_del": true
         };
-
-        // console.log("hiiii", req.userInfo.id);
-
 
         var resp_data = await common_helper.findOne(CustomField, { "_id": req.params.id });
         var resp_data1 = await Offer.find({ "employer_id": req.userInfo.id, 'customfeild.key': resp_data.data.key });

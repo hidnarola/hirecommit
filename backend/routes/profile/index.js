@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const config = require('../../config');
-var async = require('async');
-var ObjectId = require('mongodb').ObjectID;
-var mail_helper = require('../../helpers/mail_helper');
-var common_helper = require('../../helpers/common_helper')
-var User = require('../../models/user');
-var Employer = require('../../models/employer-detail');
-var Candidate = require('../../models/candidate-detail');
-var SubEmployer = require('../../models/sub-employer-detail');
+const async = require('async');
+const ObjectId = require('mongodb').ObjectID;
+const mail_helper = require('../../helpers/mail_helper');
+const common_helper = require('../../helpers/common_helper')
+const User = require('../../models/user');
+const Employer = require('../../models/employer-detail');
+const Candidate = require('../../models/candidate-detail');
+const SubEmployer = require('../../models/sub-employer-detail');
 
 // Profile
 router.post("/", async (req, res) => {
@@ -36,7 +36,6 @@ router.post("/", async (req, res) => {
             },
         ])
         if (user_resp[0].role.role === 'employer') {
-            // console.log(' : emaployer ==> ');
             var employer_resp = await Employer.aggregate([
                 {
                     $match: {
@@ -54,7 +53,6 @@ router.post("/", async (req, res) => {
                 },
                 {
                     $unwind: "$country",
-                    // preserveNullAndEmptyArrays: true
                 },
                 {
                     $lookup:
@@ -79,7 +77,6 @@ router.post("/", async (req, res) => {
                 },
                 {
                     $unwind: "$user_id",
-                    // preserveNullAndEmptyArrays: true
                 },
             ])
             if (employer_resp.length > 0) {
@@ -106,7 +103,6 @@ router.post("/", async (req, res) => {
                 },
                 {
                     $unwind: "$user_id",
-                    // preserveNullAndEmptyArrays: true
                 }
             ])
 
@@ -134,7 +130,6 @@ router.post("/", async (req, res) => {
                 },
                 {
                     $unwind: "$country",
-                    // preserveNullAndEmptyArrays: true
                 },
                 {
                     $lookup:
@@ -159,7 +154,6 @@ router.post("/", async (req, res) => {
                 },
                 {
                     $unwind: "$user_id",
-                    // preserveNullAndEmptyArrays: true
                 }
             ])
 
@@ -170,7 +164,6 @@ router.post("/", async (req, res) => {
                 return res.status(config.BAD_REQUEST).json({ 'message': "No Record Found", "status": 0 });
             }
         }
-        // res.status(config.OK_STATUS).send(user_resp);
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
@@ -333,5 +326,7 @@ router.put('/', async (req, res) => {
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
-})
+});
+
+
 module.exports = router;

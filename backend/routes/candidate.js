@@ -1,11 +1,11 @@
-var express = require("express");
-var router = express.Router();
-var auth = require("../middlewares/auth");
-var authorization = require("../middlewares/authorization");
+const express = require("express");
+const router = express.Router();
+const auth = require("../middlewares/auth");
+const authorization = require("../middlewares/authorization");
 
 
-var index = require('./candidate/index');
-var offer = require('./candidate/offer');
+const index = require('./candidate/index');
+const offer = require('./candidate/offer');
 
 router.use("/", auth, authorization, index);
 router.use("/offer", auth, authorization, offer);

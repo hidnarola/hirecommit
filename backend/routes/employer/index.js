@@ -1,36 +1,28 @@
-var express = require('express');
-var router = express.Router();
-var config = require('../../config');
-var logger = config.logger;
-var jwt = require('jsonwebtoken');
-var async = require('async');
-var fs = require('fs');
-var path = require('path');
-var common_helper = require('../../helpers/common_helper');
-var ObjectId = require('mongodb').ObjectID;
-var bcrypt = require('bcryptjs');
-const saltRounds = 10;
-var mongoose = require('mongoose');
-var _ = require('underscore');
-var btoa = require('btoa');
-var moment = require('moment');
-var common_helper = require('../../helpers/common_helper');
-var MailType = require('../../models/mail_content');
-var DisplayMessage = require('../../models/display_messages');
+const express = require('express');
+const router = express.Router();
+const config = require('../../config');
+const logger = config.logger;
+const jwt = require('jsonwebtoken');
+const ObjectId = require('mongodb').ObjectID;
 
-var User = require('../../models/user');
-var Employer = require('../../models/employer-detail');
-var mail_helper = require('../../helpers/mail_helper');
+const _ = require('underscore');
+const btoa = require('btoa');
+const common_helper = require('../../helpers/common_helper');
+const MailType = require('../../models/mail_content');
+const DisplayMessage = require('../../models/display_messages');
+const async = require('async');
+
+const User = require('../../models/user');
+const Employer = require('../../models/employer-detail');
+const mail_helper = require('../../helpers/mail_helper');
 
 router.put('/login_first_status', async (req, res) => {
     try {
-        // var id = req.body.id;
         var obj = {
             'is_login_first': true
         }
 
         var employer_upadate = await common_helper.update(User, { "_id": req.body.id }, obj)
-
         if (employer_upadate.status == 0) {
             res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
         }
@@ -73,7 +65,6 @@ router.put('/', async (req, res) => {
             obj.email_verified = false
         }
 
-
         var employer_upadate = await common_helper.update(Employer, { "user_id": req.body.id }, obj)
         var employer_upadate = await common_helper.update(User, { "_id": req.body.id }, obj)
         if (employer_upadate.status == 0) {
@@ -104,11 +95,9 @@ router.put('/', async (req, res) => {
                     });
                 }
 
-                // if (mail_resp.status === 0) {
-                // res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-                // } else {
+
                 res.json({ "message": "Email has been changed, Email verification link sent to your mail.", "data": employer_upadate })
-                // }
+
             } else {
                 res.status(config.OK_STATUS).json({ "status": 1, "message": "Profile updated successfully", "data": employer_upadate });
             }
@@ -145,7 +134,7 @@ router.post("/", async (req, res) => {
 
             {
                 $unwind: "$country",
-                // preserveNullAndEmptyArrays: true
+
             },
             {
                 $lookup:
@@ -170,11 +159,9 @@ router.post("/", async (req, res) => {
             },
             {
                 $unwind: "$user_id",
-                // preserveNullAndEmptyArrays: true
+
             },
         ])
-
-        // console.log(' : employer_resp ==> ', employer_resp);
 
         var obj = {
             companyname: employer_resp[0].companyname,
@@ -188,7 +175,6 @@ router.post("/", async (req, res) => {
             user_id: employer_resp[0].user_id
         }
 
-        // console.log(' : obj ==> ', obj);
 
         if (user_resp.status === 1 && employer_resp) {
             return res.status(config.OK_STATUS).json({ 'message': "Profile Data", "status": 1, data: obj });
@@ -218,9 +204,8 @@ router.get("/checkStatus/:id", async (req, res) => {
     try {
         var user_id = req.params.id;
         var user_resp = await common_helper.findOne(User, { "_id": user_id });
-        // console.log(user_resp.data.isAllow);
+
         var message = await common_helper.findOne(DisplayMessage, { "msg_type": "employer_not_approve" })
-        // console.log(message);
         if (user_resp.status === 1 && user_resp.data.isAllow === false) {
             return res.status(config.OK_STATUS).json({ 'message': message.data.content, "status": 1 });
         }
