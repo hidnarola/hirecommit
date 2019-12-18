@@ -178,8 +178,7 @@
                                 <label class="col-form-label" for="salarybracket">Salary</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
                                     formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()">
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket'].valid">
+                                <div class="cust_err_msg" *ngIf="!form.controls['salarybracket'].valid">
                                     <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
@@ -193,8 +192,7 @@
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Range From"
                                     formControlName="salarybracket_from" id="salarybracket_from"
                                     (keyup)="checkFrom($event,salaryto.value)" #salaryfrom (blur)="onSalaryRangeBlur()">
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket_from'].valid">
+                                <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_from'].valid">
                                     <span *ngIf="form.controls['salarybracket_from'].errors['required']"
                                         class="text-danger">
                                         This field is required.
@@ -212,8 +210,7 @@
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Range To"
                                     formControlName="salarybracket_to" id="salarybracket_to"
                                     (blur)="onSalaryRangeBlur()" #salaryto (keyup)="checkTo($event,salaryfrom.value)">
-                                <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket_to'].valid">
+                                <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_to'].valid">
                                     <span *ngIf="form.controls['salarybracket_to'].errors['required']"
                                         class="text-danger">
                                         This field is required.
@@ -428,7 +425,7 @@
 
                                             <span class="text-danger"
                                                 *ngIf="form.controls['high_unopened'].errors['pattern']">
-                                                Only Month Days
+                                                Enter valid data.
                                             </span>
                                         </div>
                                     </div>
@@ -437,10 +434,10 @@
                                 <div class="form-group row">
                                     <label class="ml-4 col-md-6" for="high_notreplied">High - NotReplied</label>
                                     <div class="input-group col-md-4">
-                                        <input type="number" class="form-control" autocomplete="high_notreplied"
+                                        <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
                                             id="high_notreplied" disabled *ngIf="isAccepted">
-                                        <input type="number" class="form-control" autocomplete="high_notreplied"
+                                        <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
                                             id="high_notreplied" *ngIf="!isAccepted">
                                         <div class="input-group-append">
@@ -449,7 +446,7 @@
                                         <div class="cust_err_msg" *ngIf="!form.controls['high_notreplied'].valid ">
                                             <span class="text-danger"
                                                 *ngIf="form.controls['high_notreplied'].errors['pattern']">
-                                                Only Month Days
+                                                Enter valid data.
                                             </span>
                                         </div>
                                     </div>
@@ -458,10 +455,10 @@
                                 <div class="form-group row">
                                     <label class="ml-4 col-md-6" for="medium_unopened">Medium - UnOpened</label>
                                     <div class="input-group col-md-4">
-                                        <input type="number" class="form-control" autocomplete="medium_unopened"
+                                        <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
                                             id="medium_unopened" disabled *ngIf="isAccepted">
-                                        <input type="number" class="form-control" autocomplete="medium_unopened"
+                                        <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
                                             id="medium_unopened" *ngIf="!isAccepted">
                                         <div class="input-group-append">
@@ -470,7 +467,7 @@
                                         <div class="cust_err_msg" *ngIf="!form.controls['medium_unopened'].valid">
                                             <span class="text-danger"
                                                 *ngIf="form.controls['medium_unopened'].errors['pattern']">
-                                                Only Month Days
+                                                Enter valid data.
                                             </span>
                                         </div>
                                     </div>
@@ -479,12 +476,12 @@
                                 <div class="form-group row">
                                     <label class="ml-4 col-md-6" for="medium_notreplied">Medium - NotReplied</label>
                                     <div class="input-group col-md-4">
-                                        <input type="number" class="form-control" autocomplete="medium_notreplied"
-                                            formControlName="medium_notreplied"
+                                        <input type="number" min="0" class="form-control"
+                                            autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied" disabled
                                             *ngIf="isAccepted">
-                                        <input type="number" class="form-control" autocomplete="medium_notreplied"
-                                            formControlName="medium_notreplied"
+                                        <input type="number" min="0" class="form-control"
+                                            autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied"
                                             *ngIf="!isAccepted">
                                         <div class="input-group-append">
@@ -493,7 +490,7 @@
                                         <div class="cust_err_msg" *ngIf="!form.controls['medium_notreplied'].valid">
                                             <span class="text-danger"
                                                 *ngIf="form.controls['medium_notreplied'].errors['pattern']">
-                                                Only Month Days
+                                                Enter valid data.
                                             </span>
                                         </div>
                                     </div>
@@ -502,7 +499,7 @@
                             <!-- group details -->
                         </div>
                         <!-- communication -->
-                        <ng-container formArrayName="communicationFieldItems">
+                        <ng-container formArrayName="communicationFieldItems" *ngIf="isSetCommunication">
                             <div class="form-group row" formGroupName="{{i}}"
                                 *ngFor="let customfield of communicationData; let i=index">
                                 <div class="col-md-12 mt-3">
@@ -599,20 +596,46 @@
 
                                             </div>
                                             <div class="form row">
-                                                <label class="col-md-12 col-form-label" for="message">Message</label>
-                                                <div class="col-md-12">
-                                                    <ckeditor [editor]="Editor" formControlName="message"
+                                                <div class="col-md-8">
+                                                    <label class="col-form-label" for="message">Message</label>
+                                                    <div>
+                                                        <!-- <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
-                                                    </ckeditor>
-                                                    <div class="cust_err_msg"
-                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['message'].valid">
-                                                        <span
-                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] ||
+                                                    </ckeditor> -->
+
+                                                        <div>
+                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)"
+                                                                [ngxSummernote]="config" #editor
+                                                                [(summernoteModel)]="customfield.message" id="editor"
+                                                                formControlName="message">
+                                                            </div>
+                                                        </div>
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['message'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] ||
                                                                                                         form.controls['communicationFieldItems'].controls[i].controls['message'].errors['whitespace']"
-                                                            class="text-danger">
-                                                            This field is required.
-                                                        </span>
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
                                                     </div>
+                                                </div>
+                                                <div class="col-md-4 bunch-list">
+                                                    <label class="col-form-label">Title here</label>
+                                                    <ul>
+                                                        <li (click)="append('||offer_date||')">offer_date</li>
+                                                        <li (click)="append('||candidate_name||')">candidate_name</li>
+                                                        <li (click)="append('||title||')">title</li>
+                                                        <li (click)="append('||location||')">location</li>
+                                                        <li (click)="append('||joining_date||')">joining_date</li>
+                                                        <li (click)="append('||expiry_date||')">expiry_date</li>
+                                                        <li (click)="append('||acceptance_date||')">acceptance_date</li>
+                                                    </ul>
+                                                    <p style="color: grey;">If you want to use this content click on it
+                                                        and paste it in
+                                                        editor.</p>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -744,37 +767,15 @@
                                                 <div class="col-md-8">
                                                     <label class="col-form-label" for="AdHoc_message">Message</label>
                                                     <!-- [(ngModel)]="customfield.AdHoc_message"  -->
-                                                    <div (click)="append('AdHoc_message')">
+                                                    <div>
 
-                                                        <!-- ck-editor -->
-                                                        <ckeditor [editor]="Editor" formControlName="AdHoc_message"
-                                                            (ready)="onReady($event)"
-                                                            [(ngModel)]="customfield.AdHoc_message">
-                                                        </ckeditor>
-                                                        <!-- ck-editor -->
-
-                                                        <!-- angular-editor -->
-                                                        <!-- <angular-editor formControlName="AdHoc_message"
-                                                            [config]="editorConfig" [(ngModel)]="valueForEditor"
-                                                            (blur)="getCursor($event)" (focus)="getFocusCursor()">
-                                                        </angular-editor> -->
-                                                        <!-- angular-editor -->
-
-                                                        <!-- <textarea #editor1 id="editor" formControlName="AdHoc_message"
-                                                            (click)="getCursor(i, editor1)"
-                                                            (keyup)="getCursor(i, editor1)">
-
-</textarea> -->
-
-                                                        <!-- <div (click)="getCursor($event)" (keyup)="getCursor($event)">
-                                                            <textarea [ngxSummernote]="config" #editor
-                                                                [(summernoteModel)]="valueForEditor" id="editor"
-                                                                formControlName="AdHoc_message">
-                                                            </textarea>
-                                                        </div> -->
-
-                                                        <!-- <textarea id="summernote" class="summernote">
-                                                        </textarea> -->
+                                                        <div>
+                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)"
+                                                                [ngxSummernote]="config" #editor
+                                                                [(summernoteModel)]="customfield.AdHoc_message"
+                                                                id="editor" formControlName="AdHoc_message">
+                                                            </div>
+                                                        </div>
 
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_message'].valid">
@@ -787,26 +788,22 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 bunch-list">
-                                                    <!-- <label class="col-form-label">Title here</label>
+                                                    <label class="col-form-label">Title here</label>
                                                     <ul>
-                                                        <li (click)="append('{offer_date}')">offer_date</li>
-                                                        <li (click)="append('{candidate_name}')">candidate_name</li>
-                                                        <li (click)="append('{title}')">title</li>
-                                                        <li (click)="append('{location}')">location</li>
-                                                        <li (click)="append('{joining_date}')">joining_date</li>
-                                                        <li (click)="append('{expiry_date}')">expiry_date</li>
-                                                        <li (click)="append('{acceptance_date}')">acceptance_date</li>
-                                                    </ul> -->
-                                                    <!-- <ul>
-                                                        <li (click)="append('Offer Date')">Offer Date</li>
-                                                        <li (click)="append('Candidate Name')">Candidate Name</li>
-                                                        <li (click)="append('Title')">Title</li>
-                                                        <li (click)="append('Location')">Location</li>
-                                                        <li (click)="append('Joining Date')">Joining Date</li>
-                                                        <li (click)="append('Expiry Date')">Expiry Date</li>
-                                                        <li (click)="append('Acceptance Date')">Acceptance Date</li>
-                                                    </ul> -->
+                                                        <li (click)="append('||offer_date||')">offer_date</li>
+                                                        <li (click)="append('||candidate_name||')">candidate_name</li>
+                                                        <li (click)="append('||title||')">title</li>
+                                                        <li (click)="append('||location||')">location</li>
+                                                        <li (click)="append('||joining_date||')">joining_date</li>
+                                                        <li (click)="append('||expiry_date||')">expiry_date</li>
+                                                        <li (click)="append('||acceptance_date||')">acceptance_date</li>
+                                                    </ul>
+                                                    <p style="color: grey;">If you want to use this content click on it
+                                                        and paste it in
+                                                        editor.</p>
+
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -1094,10 +1091,16 @@
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
-                                            <ckeditor [editor]="Editor" [(ngModel)]="communication.message"
+                                            <!-- <ckeditor [editor]="Editor" [(ngModel)]="communication.message"
                                                 [ngModelOptions]="{standalone: true}" [disabled]="true">
-                                            </ckeditor>
+                                            </ckeditor> -->
+                                            <div>
+                                                <div [ngxSummernote]="config" #editor
+                                                    [(summernoteModel)]="communication.message" id="editor">
+                                                </div>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -1141,9 +1144,14 @@
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
-                                            <ckeditor [editor]="Editor" [(ngModel)]="communication.AdHoc_message"
+                                            <!-- <ckeditor [editor]="Editor" [(ngModel)]="communication.AdHoc_message"
                                                 [ngModelOptions]="{standalone: true}" [disabled]="true">
-                                            </ckeditor>
+                                            </ckeditor> -->
+                                            <div>
+                                                <div [ngxSummernote]="config" #editor disabled
+                                                    [(summernoteModel)]="communication.AdHoc_message" id="editor">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

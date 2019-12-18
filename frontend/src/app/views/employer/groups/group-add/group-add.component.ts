@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators, FormArray } from '@angular/forms';
 import { GroupService } from '../manage-groups.service';
 import { ToastrService } from 'ngx-toastr';
@@ -6,13 +6,15 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CommonService } from '../../../../services/common.service';
-
+import { NgxSummernoteDirective } from 'ngx-summernote';
 @Component({
   selector: 'app-group-add',
   templateUrl: './group-add.component.html',
   styleUrls: ['./group-add.component.scss']
 })
 export class GroupAddComponent implements OnInit {
+  @ViewChild('editor', { static: false }) editorDir: NgxSummernoteDirective;
+  @ViewChild('editor', { static: false }) summernote: ElementRef;
   public Editor = ClassicEditor;
   addGroup: FormGroup;
   communicationForm: FormGroup;
@@ -26,7 +28,19 @@ export class GroupAddComponent implements OnInit {
   group_id: any;
   formData: FormData;
   show_spinner = false;
+  config: any = {
+    height: '200px',
+    uploadImagePath: '/api/upload',
+    toolbar: [
+      ['misc', ['codeview', 'undo', 'redo', 'codeBlock', 'paste']],
+      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+      ['fontsize', ['fontname', 'fontsize', 'color']],
+      ['para', ['style0', 'ul', 'ol', 'paragraph', 'height']],
+      ['insert', ['table', 'picture', 'link', 'video', 'hr']]
+    ]
+  };
   userDetail: any;
+  cursorPos: any;
   days: any;
   constructor(
     public fb: FormBuilder,
@@ -34,16 +48,17 @@ export class GroupAddComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private commonService: CommonService
+
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
 
     // form controls
     this.addGroup = this.fb.group({
       name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      high_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      high_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)])
+      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)])
     });
 
     this.service.alert_days().subscribe(res => {
@@ -68,6 +83,14 @@ export class GroupAddComponent implements OnInit {
   // communbication field items controls
   get communicationFieldItems() {
     return this.communicationForm.get('communicationFieldItems') as FormArray;
+  }
+  getCursor = (e) => {
+    const selection = document.getSelection();
+    this.cursorPos = selection.anchorOffset;
+    console.log('pos=>', e, this.cursorPos, this.summernote.nativeElement.selectionStart);
+    // console.log('values=>', this.form.value);
+    // console.log('this.form.controls[`AdHoc_message`].value=>',
+    //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
   }
 
   // add new communication
@@ -140,10 +163,10 @@ export class GroupAddComponent implements OnInit {
       this.show_spinner = true;
       const obj = {
         ...this.addGroup.value,
-        high_unopened: this.addGroup.controls[`high_unopened`].value ? this.addGroup.controls[`high_unopened`].value : undefined,
-        high_notreplied: this.addGroup.controls[`high_notreplied`].value ? this.addGroup.controls[`high_notreplied`].value : undefined,
-        medium_unopened: this.addGroup.controls[`medium_unopened`].value ? this.addGroup.controls[`medium_unopened`].value : undefined,
-        medium_notreplied: this.addGroup.controls[`medium_notreplied`].value ?
+        high_unopened: this.addGroup.controls[`high_unopened`].value || this.addGroup.controls[`high_unopened`].value == 0 ? this.addGroup.controls[`high_unopened`].value : undefined,
+        high_notreplied: this.addGroup.controls[`high_notreplied`].value || this.addGroup.controls[`high_notreplied`].value == 0 ? this.addGroup.controls[`high_notreplied`].value : undefined,
+        medium_unopened: this.addGroup.controls[`medium_unopened`].value || this.addGroup.controls[`medium_unopened`].value == 0 ? this.addGroup.controls[`medium_unopened`].value : undefined,
+        medium_notreplied: this.addGroup.controls[`medium_notreplied`].value || this.addGroup.controls[`medium_notreplied`].value == 0 ?
           this.addGroup.controls[`medium_notreplied`].value : undefined,
       }
       this.service.addGroup(obj).subscribe(res => {

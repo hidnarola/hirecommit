@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { Validators, FormControl, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -7,14 +7,15 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
-
+import { NgxSummernoteDirective } from 'ngx-summernote';
 @Component({
   selector: 'app-group-edit',
   templateUrl: './group-edit.component.html',
   styleUrls: ['./group-edit.component.scss']
 })
 export class GroupEditComponent implements OnInit {
-
+  @ViewChild('editor', { static: false }) editorDir: NgxSummernoteDirective;
+  @ViewChild('editor', { static: false }) summernote: ElementRef;
   public Editor = ClassicEditor;
   groupForm: FormGroup;
   communicationForm: FormGroup;
@@ -31,7 +32,19 @@ export class GroupEditComponent implements OnInit {
   formData: FormData;
   Comm_Flag: boolean = true;
   show_spinner = false;
+  cursorPos: any;
   userDetail: any;
+  config: any = {
+    height: '200px',
+    uploadImagePath: '/api/upload',
+    toolbar: [
+      ['misc', ['codeview', 'undo', 'redo', 'codeBlock', 'paste']],
+      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+      ['fontsize', ['fontname', 'fontsize', 'color']],
+      ['para', ['style0', 'ul', 'ol', 'paragraph', 'height']],
+      ['insert', ['table', 'picture', 'link', 'video', 'hr']]
+    ]
+  };
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -49,10 +62,10 @@ export class GroupEditComponent implements OnInit {
     // form controls
     this.groupForm = this.fb.group({
       name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      high_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      high_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_unopened: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      medium_notreplied: new FormControl('', [Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
       // low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       // low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       communicationFieldItems: this.fb.array([])
@@ -123,6 +136,15 @@ export class GroupEditComponent implements OnInit {
   // Update form validation
   updateValidation() {
     this.groupForm.updateValueAndValidity();
+  }
+
+  getCursor = (e) => {
+    const selection = document.getSelection();
+    this.cursorPos = selection.anchorOffset;
+    console.log('pos=>', e, this.cursorPos, this.summernote.nativeElement.selectionStart);
+    // console.log('values=>', this.form.value);
+    // console.log('this.form.controls[`AdHoc_message`].value=>',
+    //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
   }
 
   // On change of communication
@@ -227,10 +249,10 @@ export class GroupEditComponent implements OnInit {
         const obj = {
           id: this.id,
           name: this.groupData['name'],
-          high_unopened: this.groupData['high_unopened'] ? this.groupData['high_unopened'] : '',
-          high_notreplied: this.groupData['high_notreplied'] ? this.groupData['high_notreplied'] : '',
-          medium_unopened: this.groupData['medium_unopened'] ? this.groupData['medium_unopened'] : '',
-          medium_notreplied: this.groupData['medium_notreplied'] ? this.groupData['medium_notreplied'] : '',
+          high_unopened: this.groupData['high_unopened'] || this.groupData['high_unopened'] == 0 ? this.groupData['high_unopened'] : '',
+          high_notreplied: this.groupData['high_notreplied'] || this.groupData['high_notreplied'] == 0 ? this.groupData['high_notreplied'] : '',
+          medium_unopened: this.groupData['medium_unopened'] || this.groupData['medium_unopened'] == 0 ? this.groupData['medium_unopened'] : '',
+          medium_notreplied: this.groupData['medium_notreplied'] || this.groupData['medium_notreplied'] == 0 ? this.groupData['medium_notreplied'] : '',
           // low_unopened: this.groupData['low_unopened'],
           // low_notreplied: this.groupData['low_notreplied'],
           data: JSON.stringify(communication_array)

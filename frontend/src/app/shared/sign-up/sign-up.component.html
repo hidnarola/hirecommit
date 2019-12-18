@@ -58,29 +58,19 @@
                     </span>
                   </div>
                   <input type="text" class="form-control" placeholder="yourname@companyname.com"
-                    [(ngModel)]="formData.email" name="email" formControlName="email" required="required"
+                    [(ngModel)]="formData.email" name="email" formControlName="email" required="required" email
                     (blur)="checkEmail()">
                   <div class="error" *ngIf="!registerForm.controls['email'].valid && isFormSubmitted">
                     <span
                       *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
                       field
                       is required.</span>
-                    <!-- <span *ngIf="registerForm.controls['email'].errors['pattern'] ">Email
-                      must be in valid format.</span>
-                    <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
-                      This Email address is already registered.
-                    </span> -->
                   </div>
                   <div class="error" *ngIf="!registerForm.controls['email'].valid">
                     <span *ngIf="registerForm.controls['email'].errors.pattern">Email
                       must be in valid format.</span>
-                    <span *ngIf="registerForm.controls['email'].errors['isExist'] ">
-                      This Email address is already registered.
-                    </span>
-                    <!-- <span
-                      *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace  && !isFormSubmitted ">This
-                      field
-                      is required.</span> -->
+                    <span *ngIf="registerForm.controls['email'].errors['isExist']">
+                      This Email address is already registered.</span>
                   </div>
                 </div>
               </fieldset>
@@ -209,7 +199,7 @@
               <!-- <h4>Contact Details</h4> -->
               <div class="row">
                 <fieldset class="form-group col-md-6 mb-3">
-                  <label class="col-form-label" for="username" style="text-align: left">User Name <p class="ast">
+                  <label class="col-form-label" for="username" style="text-align: left">Contact Name<p class="ast">
                       *</p></label>
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -217,8 +207,8 @@
                         <i class="icon-user"></i>
                       </span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Your Name" [(ngModel)]="formData.username"
-                      name="username" formControlName="username" required="required">
+                    <input type="text" class="form-control" placeholder="FirstName LastName"
+                      [(ngModel)]="formData.username" name="username" formControlName="username" required="required">
                     <!-- error mb-2 mt-1 -->
                     <div class="error" *ngIf="!registerForm.controls['username'].valid && isFormSubmitted">
                       <span
@@ -331,8 +321,7 @@
 
               <div class="input-group mb-3">
                 <div class="custome-checkbox">
-                  <p-checkbox [(ngModel)]="isChecked" (onChange)="checkValue($event)" formControlName="isChecked"
-                    [required]>
+                  <p-checkbox (onChange)="checkValue($event)" formControlName="isChecked" [required]>
                   </p-checkbox>
 
                   <label for="signing-agree">By signing up you agree to our
@@ -368,8 +357,10 @@
       </div>
       <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
       <div class="contact-link">
-        <a [routerLink]="['aboutus']" target="_blank">About us</a>
-        <a [routerLink]="['contactus']" target="_blank">Contact us</a>
+        <a [routerLink]="['/aboutus']" target="_blank">About us</a>
+        <!-- <a [routerLink]="['contactus']" target="_blank">Contact us</a> -->
+        <a [routerLink]="['/termsandcondition']" target="_blank">Terms & Condition</a>
+        <a [routerLink]="['/privacypolicy']" target="_blank">Privacy policy</a>
       </div>
     </div>
   </div>

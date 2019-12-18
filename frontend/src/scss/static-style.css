@@ -113,13 +113,16 @@ section.header-bluepart .d-flex{align-items: flex-end;}
 
 /***** Footer *****/
 .footer{ padding:15px 0; border-top:2px solid #eaeaea;}
-.copyright p{ margin:0; padding:0; font-weight:400; font-size:14px; color:#666; line-height:20px;}
+.footer .d-flex{ align-items:center;}
+.copyright p{ padding:0; font-weight:400; font-size:12px; color:#666; line-height:100%; display:block; margin:0 0 5px;}
 .copyright p a{ text-decoration:underline; color:#bf7a68;}
 .copyright p a:hover{ text-decoration:none;}
+.copyright>a{ color:#666; font-size:13px; font-weight:600; line-height:100%; margin:0 10px 0 0; text-transform:uppercase;}
+.copyright>a:hover{ text-decoration:none; color:#bf7a68;}
+.footer-media{ margin:0 0 0 auto;}
+.footer-media a {margin:0 0 0 5px;}
+.footer-media a img{ width:30px;}
 
-.contact-link{ margin:0 0 0 auto;}
-.contact-link a{ font-size:14px; line-height:normal; color:#666; font-size:14px; font-weight:600; line-height:20px; margin:0 0 0 10px;}
-.contact-link a:hover{ text-decoration:none; color:#bf7a68;}
 .mobile-view{ display:none !important;}
 .boxes-section ul li:nth-child(2n+2) .boxes-section-div h3{ color:#bf7a68;}
 
@@ -292,8 +295,8 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .data-security {margin:0 0 30px;}
     .transparency { margin:0 0 30px;}
     .support-identity {margin: 0 0 30px;}
-    .footer .d-flex{ flex-direction: column-reverse; justify-content: center; text-align: center;}
-    .contact-link {margin: 0 auto;padding: 0 0 10px;}
+    .footer>.container>.d-flex{ flex-direction: column-reverse; justify-content: center; text-align: center;}
+    .copyright {margin: 0 auto;padding:10px 0 0;}
     .boxes-section ul.four-box li{width:100%;}
     .candidate-employer {right: 0;max-width: 180px;top: -34px;}
     .candidate-employer a {font-size: 13px; letter-spacing: 0; margin:0 5px;}
@@ -311,7 +314,6 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     section.header-bluepart { padding:170px 0 15px;}
     .transparency-bg p br{ display:none;}
     .support-identity-l h2 small{ display:block; margin:0;}
-    .copyright p {font-size:13px; line-height:normal;}
     .advance-alerts-bg  h2{ max-width:296px;}
     .Inner-title {margin: -156px auto 40px; padding: 180px 0 0; height: 270px;}
     .Inner-title h2 {font-size:25px;}
@@ -332,7 +334,9 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .recaptcha-div iframe{transform: scale(0.8); margin:0 0 0 -30px;}
     .recaptcha-div ngx-recaptcha2{max-width:280px;}
     .recaptcha-div div{ width: 100% !important; text-align: left; display: inline-block; vertical-align: top; max-width:280px;}
-    
+    .footer .d-flex {align-items: center;width: 100%;text-align: center;justify-content: center;}
+    .footer {padding: 10px 0;border-top: 2px solid #eaeaea;margin: 40px 0 0;}
+
 }    
 
 @media(max-width:499px){

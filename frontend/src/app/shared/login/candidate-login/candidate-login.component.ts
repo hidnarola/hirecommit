@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { CommonService } from '../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-candidate-login',
   templateUrl: './candidate-login.component.html',
@@ -18,7 +19,7 @@ export class CandidateLoginComponent implements OnInit {
   show_spinner = false;
   userData: any = {};
   role: any;
-
+  siteKey = environment.captcha_site_key;
   constructor(
     public router: Router,
     private service: CommonService,
@@ -29,7 +30,8 @@ export class CandidateLoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required,
       Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
-      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)]))
+      password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
+      recaptcha: new FormControl('', [Validators.required]),
     });
 
   }

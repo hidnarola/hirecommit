@@ -42,8 +42,9 @@ export class SignUpComponent implements OnInit {
   ) {
     this.formData = {};
     this.registerForm = this.fb.group({
-      email: new FormControl('', [Validators.required,
-      Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       password: new FormControl('',
         Validators.compose([
           Validators.required,
@@ -76,7 +77,6 @@ export class SignUpComponent implements OnInit {
 
     this.service.country_registration().subscribe(res => {
       this.alldata = res['data'];
-      console.log('employer registration country>', res['data']);
       res['data'].forEach(element => {
         this.Country.push({ 'label': element.country, 'value': element._id });
       });
@@ -103,7 +103,6 @@ export class SignUpComponent implements OnInit {
   next1() {
     this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
-    console.log('this.registerForm.controls[`email`].valid=>', this.registerForm.controls[`email`].valid);
     // this.checkEmail();
     if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid
       //  && this.registerForm.controls['recaptcha'].valid
@@ -125,27 +124,24 @@ export class SignUpComponent implements OnInit {
   }
 
   checkPattern(e) {
-    console.log('e=>', e['target'].value);
-    console.log('this.registerForm.value.website=>', this.registerForm.value.website);
-
     if (this.registerForm.value.website.length > 0) {
       this.registerForm.controls['website'].setValidators([Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/)]);
     } else {
       this.registerForm.controls['website'].setValidators(null);
     }
     this.registerForm.controls['website'].updateValueAndValidity();
-    console.log('this.registerForm=>', this.registerForm);
   }
 
   checkEmail() {
-    this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
-    }, (err) => {
-      this.registerForm.controls['email'].setErrors({ 'isExist': true });
-      this.registerForm.updateValueAndValidity();
-    });
+    if (this.registerForm.value.email.length > 0) {
+      this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
+      }, (err) => {
+        this.registerForm.controls['email'].setErrors({ 'isExist': true });
+        this.registerForm.updateValueAndValidity();
+      });
+    }
+
   }
-
-
   // }
 
   // Update form validation
@@ -153,17 +149,19 @@ export class SignUpComponent implements OnInit {
     this.registerForm.updateValueAndValidity();
   }
 
+  checkValue(e) {
+    this.marked = e;
+    // this.isChecked = e;
+  }
   onSubmit(valid) {
     this.isFormSubmitted = true;
-    console.log('valid => ', valid);
-    console.log('registerForm => ', this.registerForm);
     if (valid) {
       this.show_spinner = true;
+      this.registerForm.value.isChecked = this.marked;
       this.service.employer_signup(this.registerForm.value).subscribe(res => {
         this.isFormSubmitted = false;
         this.formData = {};
         if (res['status'] === 0) {
-          console.log('error 1 => ');
           this.show_spinner = false;
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
           // this.formData.recaptcha = '';
@@ -178,9 +176,6 @@ export class SignUpComponent implements OnInit {
           console.log('else => ');
         }
       }, (err) => {
-        console.log('error => ', err);
-        console.log('spinner', this.show_spinner);
-
         this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 9000 });
       });
@@ -188,28 +183,18 @@ export class SignUpComponent implements OnInit {
       console.log('this.registerForm.value == else => ', this.registerForm.value);
     }
 
-    console.log('this.registerForm.value == last ======> ', this.registerForm.value);
+
   }
 
-  checkValue(e) {
-    console.log('e>>', e);
-    this.marked = e;
-  }
+
 
   getCode(e) {
-    console.log('element of country =>', e.value);
-
     this.countryID = this.alldata.find(x => x._id === e.value);
-    console.log('countryID', this.countryID.country);
-
     this.Business_Type = [];
     this.service.get_Type(this.countryID.country).subscribe(res => {
-      console.log('Business types of selected country =>', res['data']);
       res['data'].forEach(element => {
         this.Business_Type.push({ 'label': element.name, 'value': element._id });
       });
-      console.log('drop dowm of selected country =>', this.Business_Type);
-
       if (this.countryID.country === 'India') {
         this.registerForm.controls['countrycode'].setValue('+91');
       } else {

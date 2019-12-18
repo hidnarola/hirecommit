@@ -13,6 +13,7 @@ import { GroupEditComponent } from './group-edit/group-edit.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { GroupViewComponent } from './group-view/group-view.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { NgxSummernoteModule } from 'ngx-summernote';
 @NgModule({
   declarations: [
     GroupsListComponent,
@@ -31,6 +32,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     ConfirmDialogModule,
     InputSwitchModule,
     TooltipModule,
+    NgxSummernoteModule,
   ],
   providers: [ConfirmationService]
 })
