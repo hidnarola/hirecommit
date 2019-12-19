@@ -351,7 +351,6 @@ router.post("/candidate_register", async (req, res) => {
                       var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate_email_confirmation' });
 
                       logger.trace("sending mail");
-
                       let mail_resp = await mail_helper.send("email_confirmation_template", {
                         "to": interest_user_resp.email,
                         "subject": "Welcome to the HireCommit | Verify Email"

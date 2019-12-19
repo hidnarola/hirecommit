@@ -130,8 +130,13 @@ offer_helper.get_candidate_offer = async (collection, id, search, start, length,
       {
         $match: {
           "is_del": false,
-          "status": { $ne: 'On Hold' },
           "user_id": new ObjectId(id),
+          // "status": { $ne: 'On Hold' },
+          $and:
+            [
+              { status: { $ne: 'On Hold' } },
+              { status: { $ne: 'Inactive' } }
+            ]
           // "expirydate": { $gte: new Date() }
         }
       },
