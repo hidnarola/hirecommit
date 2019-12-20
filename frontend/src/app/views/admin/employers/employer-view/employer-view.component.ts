@@ -22,6 +22,7 @@ export class EmployerViewComponent implements OnInit {
   buttonValue: any;
   buttonValue1: String;
   approval: boolean = false;
+
   obj: any;
   show_spinner = false;
   // cancel_link = '/admin/employers/list';
@@ -136,7 +137,9 @@ export class EmployerViewComponent implements OnInit {
 
   Update(valid, id) {
     this.submitted = true;
+    this.show_spinner = true;
     if (valid) {
+     
       this.obj = {
         'user_id': id,
         'username': this.username,
@@ -146,7 +149,7 @@ export class EmployerViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to update Employer Profile?',
         accept: () => {
-          this.show_spinner = true;
+          
           this.service.update_employer(this.obj).subscribe(res => {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.show_spinner = false;
@@ -157,8 +160,13 @@ export class EmployerViewComponent implements OnInit {
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
 
+        }, reject: () => {
+          this.show_spinner = false;
         }
       });
+    }
+    else {
+      this.show_spinner = false;
     }
   }
 
@@ -176,7 +184,7 @@ export class EmployerViewComponent implements OnInit {
       'id': id
     };
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
+      message: 'Are you sure that you want to Approve this Employer?',
       accept: () => {
         this.service.aprroved_employer(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -185,6 +193,8 @@ export class EmployerViewComponent implements OnInit {
           console.log(err);
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      }, reject: () =>{
+        document.getElementById('approve').removeAttribute('disabled');
       }
     });
   }

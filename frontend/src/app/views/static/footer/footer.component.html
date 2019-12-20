@@ -1,16 +1,35 @@
 <footer class="footer">
     <div class="container">
         <div class="d-flex">
-            <div class="copyright">
-                <p>© Copyright <a [routerLink]="['/']">hirecommit.com</a> - 2019 | All Righr Reserved.</p>
+            <div class="fotoer-logo">
+                <a href=""><img src="assets/img/email-logo.png" alt="" /></a>
             </div>
-            <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
-            <div class="contact-link">
-                <a [routerLink]="['/aboutus']" target="_blank">About us</a>
-                <!-- <a [routerLink]="['contactus']" target="_blank">Contact us</a> -->
+            <div class="quick-link">
+                <h3>Company </h3>
+                <a [routerLink]="['/aboutus']" target="_blank">About Us</a>
                 <a [routerLink]="['/termsandcondition']" target="_blank">Terms & Condition</a>
                 <a [routerLink]="['/privacypolicy']" target="_blank">Privacy policy</a>
+                <a [routerLink]="['/contactus']" target="_blank">Contact Us</a>
+            </div>
+            <div class="quick-link">
+                <h3>Quick Links</h3>
+                <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
+                <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+            </div>
+            <div class="footer-media">
+                <h3>Find Us Online</h3>
+                <div class="d-flex">
+                    <a target="_blank" href="https://www.facebook.com/HireCommit/"><img src="assets/img/facebook.svg"
+                            alt="" /></a>
+                    <a target="_blank" href="https://twitter.com/hirecommit"><img src="assets/img/twitter.svg"
+                            alt="" /></a>
+                    <a target="_blank" href="https://www.linkedin.com/company/hirecommit/?viewAsMember=true"><img
+                            src="assets/img/linkedin.svg" alt="" /></a>
+                </div>
             </div>
         </div>
+    </div>
+    <div class="copyright">
+        <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 All Rights Reserved.</p>
     </div>
 </footer>

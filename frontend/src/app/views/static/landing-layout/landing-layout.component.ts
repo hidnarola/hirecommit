@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-landing-layout',
@@ -10,8 +11,10 @@ export class LandingLayoutComponent implements OnInit {
   isEmployer: Boolean = false;
   isCandidate: Boolean = false;
   hostName: any = '';
+  isProd: Boolean = false;
 
   constructor() {
+    this.isProd = environment.production;
     console.log('window.location.hostname => ', window.location.hostname);
     this.hostName = window.location.hostname;
     if (this.hostName === 'employer.hirecommit.com') {
@@ -19,7 +22,9 @@ export class LandingLayoutComponent implements OnInit {
     } else if (this.hostName === 'candidate.hirecommit.com') {
       this.isCandidate = true;
     } else {
-      // window.location.href = 'http://candidate.hirecommit.com/';
+      if (this.isProd) {
+        window.location.href = 'http://candidate.hirecommit.com/';
+      }
     }
     // else if (this.hostName === 'candidate.hirecommit.com') {
     //   this.isCandidate = true;

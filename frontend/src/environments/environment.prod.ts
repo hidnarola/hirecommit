@@ -13,10 +13,12 @@ if (host === 'localhost') {
 export const environment = {
   production: true,
   // API_URL: str + host + ':' + port + '/',
-  API_URL: 'http://13.235.235.178:3000/',
+  // API_URL: 'http://13.235.235.178:3000/',
+  API_URL: 'https://hirecommit.com:3000/',
   // captcha_site_key: '6LfCebwUAAAAAPiHpm2sExyVChiVhhTDe31JTFkc',
   // captcha_site_key: '6Ld35scUAAAAAPIB9rbf4ti5ELsampcdqwNeCgKc',
   captcha_site_key: '6Lem7ccUAAAAABRIlRSa6Nil1yC9m-uLVZTEdR3g',
 
-  imageUrl: 'http://13.235.235.178:3000/upload/'
+  // imageUrl: 'http://13.235.235.178:3000/upload/'
+  imageUrl: 'https://hirecommit.com:3000/upload/'
 };

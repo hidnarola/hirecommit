@@ -168,6 +168,7 @@
                                         <label class="custom-control-label" for="hourly">Hourly</label>
                                     </div>
                                 </div>
+
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['salarytype'].valid">
                                     <span *ngIf="form.controls['salarytype'].errors['required']" class="text-danger">
                                         This field is required.
@@ -178,6 +179,8 @@
                                 <label class="col-form-label" for="salarybracket">Salary</label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
                                     formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()">
+
+        
                                 <div class="cust_err_msg" *ngIf="!form.controls['salarybracket'].valid">
                                     <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
                                         This field is required.
@@ -186,6 +189,7 @@
                                         *ngIf="form.controls['salarybracket'].errors['pattern'] || !form.controls['salarybracket'].errors['required']"
                                         class="text-danger">Enter valid value.</span>
                                 </div>
+
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="salarybracket_from">Salary From</label>
@@ -602,10 +606,10 @@
                                                         <!-- <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
                                                     </ckeditor> -->
-
+                                                        <!-- (click)="getCursor($event)" (keyup)="getCursor($event)" -->
                                                         <div>
-                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)"
-                                                                [ngxSummernote]="config" #editor
+                                                            <div [ngxSummernote]="config" #editor
+                                                                [(ngModel)]="customfield.message"
                                                                 [(summernoteModel)]="customfield.message" id="editor"
                                                                 formControlName="message">
                                                             </div>
@@ -659,12 +663,6 @@
                                             <button class=" btn btn-secondary  pull-right mr-2"
                                                 (click)="add_new_AdHoc_communication(i)">Add AdHoc
                                                 Communication</button>
-                                            <!-- <span class="input-group-text pull-right"
-                                                (click)="remove_AdHoc_communication(i)"><i
-                                                    class="icon-close"></i></span> -->
-                                            <!-- <span class="input-group-text pull-right"
-                                                (click)="add_new_AdHoc_communication(i)"><i
-                                                    class="icon-plus"></i></span> -->
                                         </div>
                                         <div class="card-body">
                                             <div class="form-goup no-gutters row">
@@ -768,12 +766,12 @@
                                                     <label class="col-form-label" for="AdHoc_message">Message</label>
                                                     <!-- [(ngModel)]="customfield.AdHoc_message"  -->
                                                     <div>
-
+                                                        <!-- (click)="getCursor($event)" (keyup)="getCursor($event)"; -->
                                                         <div>
-                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)"
-                                                                [ngxSummernote]="config" #editor
+                                                            <div [ngxSummernote]="config" #editor
                                                                 [(summernoteModel)]="customfield.AdHoc_message"
-                                                                id="editor" formControlName="AdHoc_message">
+                                                                id="editor" [(ngModel)]="customfield.AdHoc_message"
+                                                                formControlName="AdHoc_message">
                                                             </div>
                                                         </div>
 
@@ -816,18 +814,7 @@
                     </div>
 
 
-                    <!-- <div class="text-editor-wrap" style="width: 70%;">
-                        <angular-editor formControlName="editor" [config]="editorConfig" [(ngModel)]="valueForEditor">
-                        </angular-editor>
-                        <div class="col-md-4 bunch-list">
-                            <label class="col-form-label">Title here</label>
-                            <ul>
-                                <li id="Candidate" #Candidate (click)="append('candidate_name')">Candidate_Name</li>
-                                <li (click)="append('location')">Location</li>
-                            </ul>
-                        </div>
 
-                    </div> -->
 
                     <div class="card-footer text-right">
                         <p *ngIf="!form.valid && is_submitted" class="text-danger">
@@ -1148,7 +1135,7 @@
                                                 [ngModelOptions]="{standalone: true}" [disabled]="true">
                                             </ckeditor> -->
                                             <div>
-                                                <div [ngxSummernote]="config" #editor disabled
+                                                <div [ngxSummernote]="config" #editor
                                                     [(summernoteModel)]="communication.AdHoc_message" id="editor">
                                                 </div>
                                             </div>

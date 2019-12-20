@@ -273,28 +273,27 @@
                                                             class="text-danger">Only Positive
                                                             Number</span>
                                                     </div>
+                                                    
                                                 </div>
                                             </div>
                                             <div class="form row">
                                                 <div class="col-md-8">
                                                     <label class="col-form-label" for="message">Message</label>
                                                     <div>
-                                                        <!-- <ckeditor [editor]="Editor" formControlName="message"
-                                                                                                    [(ngModel)]="customfield.message" (ready)="onReady($event)">
-                                                                                                </ckeditor> -->
                                                         <div>
-                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)" [ngxSummernote]="config" #editor
-                                                                [(summernoteModel)]="customfield.message" id="editor" formControlName="message">
+                                                            <!-- (click)="getCursor($event)" (keyup)="getCursor($event)" -->
+                                                            <div  [ngxSummernote]="config" #editor
+                                                                [(summernoteModel)]="customfield.message" id="editor" formControlName="message" [(ngModel)]="customfield.message">
                                                             </div>
                                                         </div>
                                                         <!-- [(ngModel)]="customfield.communicationname"> -->
-                                                        <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
-                                                            style="color: red;">
-                                                            <div
-                                                                *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
-                                                                This field is required.
-                                                            </div>
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
+                                                         class="cust_err_msg">
+                                                        <div class="text-danger"
+                                                            *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || groupForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
+                                                            This field is required.
                                                         </div>
+                                                    </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 bunch-list">

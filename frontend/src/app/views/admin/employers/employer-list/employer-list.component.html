@@ -37,7 +37,7 @@
                                         <i class="icon-eye"></i>
                                     </button>
                                     <button *ngIf="employer_type === 'Approved'" type="button"
-                                        class="btn btn-sm btn-info"
+                                        class="btn btn-sm btn-info"  tooltip="Edit"
                                         [routerLink]="['/admin/employers/approved_employer/edit/',emp._id]">
                                         <i class="icon-pencil"></i>
                                     </button>
@@ -66,7 +66,7 @@
                                     </button>
 
                                     <button *ngIf="employer_type === 'New'" type="button" class="btn btn-sm btn-primary"
-                                        tooltip='Approve' (click)="aprrove(emp.user_id)">
+                                        tooltip='Approve' (click)="aprrove(emp.user_id)" [disabled]="isApproved">
                                         <i class="icon-check"></i>
                                     </button>
                                 </td>

@@ -1,24 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from '../manage-groups.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CommonService } from '../../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { NgxSummernoteDirective } from 'ngx-summernote';
 @Component({
   selector: 'app-group-view',
   templateUrl: './group-view.component.html',
   styleUrls: ['./group-view.component.scss']
 })
 export class GroupViewComponent implements OnInit {
-
+  @ViewChild('editor', { static: false }) editorDir: NgxSummernoteDirective;
+  @ViewChild('editor', { static: false }) summernote: ElementRef;
   public Editor = ClassicEditor;
   id: any;
   groupData: any = [];
   communicationData: any = [];
   cancel_link = '/employer/groups/list';
   userDetail: any;
+  config: any = {
+    height: '200px',
+    uploadImagePath: '/api/upload',
+    toolbar: [
+      ['misc', ['codeview', 'undo', 'redo', 'codeBlock', 'paste']],
+      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+      ['fontsize', ['fontname', 'fontsize', 'color']],
+      ['para', ['style0', 'ul', 'ol', 'paragraph', 'height']],
+      ['insert', ['table', 'picture', 'link', 'video', 'hr']]
+    ]
+  };
   Trigger_Option = [
     { label: 'Select Offer Type', value: '' },
     { label: 'Before Joining', value: 'beforeJoining' },
@@ -48,6 +60,7 @@ export class GroupViewComponent implements OnInit {
       // hide spinner
       this.spinner.hide();
       if (res['communication']['data'] && res['communication']['data'].length > 0) {
+        // document.getElementById('editor').setAttribute('disabled','true');
         this.communicationData = res['communication']['data'][0]['communication'];
 
         if (res['communication']['data'][0]['communication'].length > 0) {

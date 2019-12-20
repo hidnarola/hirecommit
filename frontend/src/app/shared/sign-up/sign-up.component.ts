@@ -30,7 +30,7 @@ export class SignUpComponent implements OnInit {
   // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // live
   siteKey = environment.captcha_site_key;
-
+  is_submitted = false;
   private stepper: Stepper;
   Country: any = [];
   constructor(
@@ -116,6 +116,8 @@ export class SignUpComponent implements OnInit {
   next2() {
     this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
+    console.log('this.registerForm.controls[`businesstype`]=>', this.registerForm.controls['businesstype']);
+    
     if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
       this.isFormSubmitted = false;
       this.step3 = true;
@@ -154,6 +156,7 @@ export class SignUpComponent implements OnInit {
     // this.isChecked = e;
   }
   onSubmit(valid) {
+    this.is_submitted = true;
     this.isFormSubmitted = true;
     if (valid) {
       this.show_spinner = true;
@@ -172,15 +175,13 @@ export class SignUpComponent implements OnInit {
             text: res['message']
           });
           this.router.navigate(['/login']);
-        } else {
-          console.log('else => ');
         }
       }, (err) => {
         this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 9000 });
       });
     } else {
-      console.log('this.registerForm.value == else => ', this.registerForm.value);
+      this.show_spinner = false;
     }
 
 
@@ -189,6 +190,9 @@ export class SignUpComponent implements OnInit {
 
 
   getCode(e) {
+    console.log('e => country on change=>', e.value);
+    console.log('businesstype=>', this.registerForm.value.businesstype);
+    
     this.countryID = this.alldata.find(x => x._id === e.value);
     this.Business_Type = [];
     this.service.get_Type(this.countryID.country).subscribe(res => {
@@ -204,6 +208,16 @@ export class SignUpComponent implements OnInit {
     }, (err) => {
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
+    if (this.registerForm.value.businesstype) {
+      console.log('bussiness type found =======>');
+      
+      // this.registerForm.value.businesstype = '';
+      this.registerForm.controls['businesstype'].setValue('');
+      this.registerForm.controls['businesstype'].setValidators([Validators.required]);
+      this.updateValidation();
+    }
+    console.log('this.registerForm.=>', this.registerForm.value.businesstype);
+    
 
     // this.code.forEach(element => {
     //   if (e.value === element._id) {

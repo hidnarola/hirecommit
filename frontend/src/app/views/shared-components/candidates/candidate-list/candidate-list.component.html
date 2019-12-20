@@ -47,7 +47,7 @@
                                             class="icon-trash"></i></button>
 
                                     <button type="button" *ngIf="candidate_type === 'New'" tooltip='Approve'
-                                        class="btn btn-sm btn-primary" (click)="onApproved(data.user_id)"><i
+                                        class="btn btn-sm btn-primary" id="approve" (click)="onApproved(data.user_id)" [disabled]="isApproved"><i
                                             class="icon-check"></i></button>
                                 </td>
                             </tr>

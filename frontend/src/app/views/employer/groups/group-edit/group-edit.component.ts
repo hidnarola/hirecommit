@@ -137,6 +137,20 @@ export class GroupEditComponent implements OnInit {
   updateValidation() {
     this.groupForm.updateValueAndValidity();
   }
+  append(value) {
+
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = value;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
 
   getCursor = (e) => {
     const selection = document.getSelection();
@@ -227,6 +241,7 @@ export class GroupEditComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
+    this.show_spinner = true;
     this.formData = new FormData();
     if (valid) {
 
@@ -269,8 +284,6 @@ export class GroupEditComponent implements OnInit {
         this.confirmationService.confirm({
           message: 'Are you sure that you want to Update this record?',
           accept: () => {
-            this.show_spinner = true;
-
             this.service.edit_group(this.formData).subscribe(res => {
               if (res['data']['status'] === 1) {
                 this.isFormSubmitted = false;
@@ -284,11 +297,16 @@ export class GroupEditComponent implements OnInit {
               }
             }, (err) => {
               this.show_spinner = false;
-              this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
+              this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             });
+          }, reject: () => {
+            this.show_spinner = false;
           }
         });
       }
+    }
+    else {
+      this.show_spinner = false;
     }
 
   }

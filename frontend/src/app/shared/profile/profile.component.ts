@@ -183,7 +183,7 @@ export class ProfileComponent implements OnInit {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.commonService.changedProfileDetail(true);
             this.getEmploterData();
-            if (this.userDetail.email !== this.Email) {
+            if (this.userDetail.email !== this.Email.toLowerCase()) {
               localStorage.removeItem('token');
               localStorage.removeItem('user');
               localStorage.removeItem('userid');
@@ -200,9 +200,11 @@ export class ProfileComponent implements OnInit {
               this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             }
           );
+        }, reject: () => {
+          this.show_spinner = false;
         }
       });
-    } this.show_spinner = false;
+    }
 
   }
 
@@ -227,10 +229,9 @@ export class ProfileComponent implements OnInit {
           this.show_spinner = false;
           this.candidateService.update_Profile_candidate(this.obj1).subscribe(res => {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-            console.log('success=======>');
             this.commonService.changedProfileDetail(true);
             this.getCandidate();
-            if (this.userDetail.email !== this.Candidate_Email) {
+            if (this.userDetail.email !== this.Candidate_Email.toLowerCase()) {
               localStorage.removeItem('token');
               localStorage.removeItem('user');
               localStorage.removeItem('userid');
@@ -239,7 +240,6 @@ export class ProfileComponent implements OnInit {
               this.route.navigate(['/login']);
             } else {
               console.log('else=>');
-
             }
           },
             err => {
@@ -247,6 +247,8 @@ export class ProfileComponent implements OnInit {
               this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
             }
           );
+        }, reject: () => {
+          this.show_spinner = false;
         }
       });
     }

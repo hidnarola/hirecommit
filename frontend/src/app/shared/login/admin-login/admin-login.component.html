@@ -26,15 +26,15 @@
                 <span class="input-group-text"><i class="icon-envelope-letter"></i></span>
             </div>
             <input type="text" class="form-control" placeholder="Email" [(ngModel)]="formData.email" name="email"
-                formControlName="email" id="email" required (blur)="checkMail()">
+                formControlName="email" id="email" required (blur)="checkMail()" required>
             <div class="error" *ngIf="!loginForm.controls['email'].valid && isFormSubmitted">
                 <span
-                    *ngIf="this.loginForm.controls['email'].errors.required || loginForm.controls['email'].errors['whitespace']">Email
-                    is required.</span>
+                    *ngIf="loginForm.controls['email'].errors['required']">This field is required.</span>
             </div>
             <div class="error" *ngIf="!loginForm.controls['email'].valid">
                 <span *ngIf="loginForm.controls['email'].errors['pattern'] ">Email
                     must be in valid format.</span>
+                   
             </div>
         </div>
         <div class="input-group mb-4">
@@ -45,12 +45,9 @@
                 name="password" formControlName="password" id="password" required>
             <div class="error" *ngIf="!loginForm.controls['password'].valid && isFormSubmitted">
                 <span
-                    *ngIf="loginForm.controls['password'].errors['whitespace'] || loginForm.controls['password'].errors['required'] ">Password
-                    is required.</span>
+                    *ngIf="loginForm.controls['password'].errors['whitespace'] || loginForm.controls['password'].errors['required'] ">This field is required.</span>
                 <span
-                    *ngIf="loginForm.controls['password'].errors['minlength'] && !loginForm.controls['password'].errors['whitespace']">Password
-                    must be more then 8
-                    characters.</span>
+                    *ngIf="loginForm.controls['password'].errors['minlength'] && !loginForm.controls['password'].errors['whitespace']">Password should be 8 character long and must contain at least one lowercase and one number.</span>
             </div>
         </div>
         <!-- captcha -->
@@ -79,18 +76,35 @@
 <footer class="footer">
     <div class="container">
         <div class="d-flex">
-            <div class="copyright">
-                <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
-                <a [routerLink]="['/aboutus']" target="_blank">About us</a>
+            <div class="fotoer-logo">
+                <a href=""><img src="assets/img/email-logo.png" alt="" /></a>
+            </div>
+            <div class="quick-link">
+                <h3>Company </h3>
+                <a [routerLink]="['/aboutus']" target="_blank">About Us</a>
                 <a [routerLink]="['/termsandcondition']" target="_blank">Terms & Condition</a>
                 <a [routerLink]="['/privacypolicy']" target="_blank">Privacy policy</a>
+                <a [routerLink]="['/contactus']" target="_blank">Contact Us</a>
             </div>
-            <div class="footer-media d-flex">
-                <a href="https://www.facebook.com/HireCommit/"><img src="assets/img/facebook.svg" alt="" /></a>
-                <a href="https://twitter.com/hirecommit"><img src="assets/img/twitter.svg" alt="" /></a>
-                <a href="https://www.linkedin.com/company/hirecommit/?viewAsMember=true"><img
-                        src="assets/img/linkedin.svg" alt="" /></a>
+            <div class="quick-link">
+                <h3>Quick Links</h3>
+                <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
+                <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+            </div>
+            <div class="footer-media">
+                <h3>Find Us Online</h3>
+                <div class="d-flex">
+                    <a target="_blank" href="https://www.facebook.com/HireCommit/"><img src="assets/img/facebook.svg"
+                            alt="" /></a>
+                    <a target="_blank" href="https://twitter.com/hirecommit"><img src="assets/img/twitter.svg"
+                            alt="" /></a>
+                    <a target="_blank" href="https://www.linkedin.com/company/hirecommit/?viewAsMember=true"><img
+                            src="assets/img/linkedin.svg" alt="" /></a>
+                </div>
             </div>
         </div>
+    </div>
+    <div class="copyright">
+        <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 All Rights Reserved.</p>
     </div>
 </footer>

@@ -20,6 +20,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
   dtTrigger: Subject<any> = new Subject();
   candidates: any[];
   userDetail: any = [];
+  isApproved = false;
   candidate_type = 'Approved';
   doc: any;
   constructor(
@@ -127,12 +128,14 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onApproved(id) {
+    this.isApproved = true;
     const obj = {
       'id': id
     };
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to  Approve this candidate this action?',
+      message: 'Are you sure that you want to Approve this candidate?',
       accept: () => {
+        this.isApproved = true;
         this.service.approved(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.rrerender();
@@ -140,13 +143,16 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           console.log(err);
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      },reject: () => {
+     
+        this.isApproved = false;
       }
     });
   }
 
   onDelete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to Delete this record?',
+      message: 'Are you sure that you want to Reject this Candidate?',
       accept: () => {
         this.service.deactivate_candidate(id).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

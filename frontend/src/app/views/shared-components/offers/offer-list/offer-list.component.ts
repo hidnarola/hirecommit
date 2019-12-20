@@ -98,7 +98,8 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.Canididate_message = res['message'];
         }
       }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        console.log('err=>', err);        
+        // this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     }
 
@@ -472,7 +473,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   delete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
+      message: 'Are you sure that you want to Delete this Offer?',
       accept: () => {
         this.service.deactivate_employer_offer(id).subscribe(res => {
           this.rrerender();
@@ -484,10 +485,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onAccept(id, type) {
-    console.log('this.offerData[0].offertype=>', this.offerData[0].offertype);
-
     // type = (this.offer_type_optoins.find(o => o.label === this.offerData[0].offertype).value);
-    console.log('type=>', type);
     this.accept_btn = true;
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {

@@ -286,6 +286,8 @@ export class RegisterComponent implements OnInit {
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
         this.show_spinner = false;
       });
+    } else {
+      this.show_spinner = false;
     }
   }
 
