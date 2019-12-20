@@ -40,6 +40,9 @@ const saltRounds = 10;
 var common_helper = require('./../helpers/common_helper');
 
 var captcha_secret = config.captcha_secret
+// var captcha_secret = "6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK"
+
+
 
 //get user
 router.get("/user", async (req, res) => {
@@ -173,6 +176,10 @@ router.post("/candidate_register", async (req, res) => {
       "contactno": {
         notEmpty: true,
         errorMessage: "contactno is required"
+      },
+      "recaptcha": {
+        notEmpty: true,
+        errorMessage: "captcha is required"
       }
     };
 
@@ -191,178 +198,187 @@ router.post("/candidate_register", async (req, res) => {
     var errors = req.validationErrors();
 
     if (!errors) {
-      re = new RegExp(req.body.email, "i");
-      value = {
-        $regex: re
-      };
-      let user_resp = await common_helper.findOne(User, {
-        "email": req.body.email.toLowerCase(),
-        "is_del": false,
-        "is_register": true
-      });
-      if (user_resp.status === 1) {
-        res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
-      } else {
-
-        let role = await common_helper.findOne(Role, { 'role': 'candidate' }, 1)
-
-        const [hash] = await Promise.all([common_helper.passwordHash(req.body.password)]);
-        var user_reg_obg = {
-          "email": req.body.email.toLowerCase(),
-          "password": hash,
-          "role_id": new ObjectId(role.data._id),
-          "admin_rights": "no",
-          "email_verified": false,
-          "isAllow": false,
-          "flag": 1,
-          "createdate": new Date(),
-          "is_email_change": false,
-          "is_login_first": false,
-          'is_register': true
-        }
-
-        if (passwordValidatorSchema.validate(req.body.password) == false) {
-          res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
+      const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + captcha_secret + "&response=" + req.body['recaptcha'];
+      await request(verificationURL, async (error, response, body) => {
+        body = JSON.parse(body);
+        if (body.success !== undefined && !body.success) {
+          res.json({ "status": 0, "responseError": "Failed captcha verification" });
         }
         else {
-
-          const condition = {
+          re = new RegExp(req.body.email, "i");
+          value = {
+            $regex: re
+          };
+          let user_resp = await common_helper.findOne(User, {
             "email": req.body.email.toLowerCase(),
             "is_del": false,
-            "is_register": false
-          }
-          var interest_user_resp = await User.findOneAndUpdate(condition, user_reg_obg, {
-            new: true, upsert: true
-          })
+            "is_register": true
+          });
+          if (user_resp.status === 1) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
+          } else {
 
-          if (interest_user_resp) {
-            var reg_obj = {
-              "firstname": req.body.firstname,
-              "lastname": req.body.lastname,
-              "countrycode": req.body.countrycode,
-              "country": req.body.country,
-              "contactno": req.body.contactno,
-              "documenttype": req.body.documenttype,
-              "documentimage": req.body.documentImage,
-              "documentNumber": req.body.documentNumber,
-              "drivingLicenseState": req.body.drivingLicenseState,
-              "user_id": interest_user_resp._id,
-              "createdAt": new Date(),
-              "is_del": false,
-              "document_verified": false
-            };
+            let role = await common_helper.findOne(Role, { 'role': 'candidate' }, 1)
 
-            async.waterfall(
-              [
-                function (callback) {
-                  if (req.files && req.files["documentimage"]) {
-                    var image_path_array = [];
-                    var file = req.files['documentimage'];
-                    var files = [].concat(req.files.documentimage);
-                    var dir = "./upload";
-                    var filename = file.name;
-                    async.eachSeries(
-                      files,
-                      function (file, loop_callback) {
-                        var mimetype = path.extname(file.name);
-                        var mimetype = ["image/jpeg", "image/png", 'application/pdf'];
-                        if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
-                          if (!fs.existsSync(dir)) {
-                            fs.mkdirSync(dir);
-                          }
-                          var filename = file.name;
-                          file.mv(dir + "/" + filename, function (err) {
-                            if (err) {
-                              logger.error("There was an issue in uploading");
-                              loop_callback({
-                                status: config.MEDIA_ERROR_STATUS,
-                                err: "There was an issue in uploading"
+            const [hash] = await Promise.all([common_helper.passwordHash(req.body.password)]);
+            var user_reg_obg = {
+              "email": req.body.email.toLowerCase(),
+              "password": hash,
+              "role_id": new ObjectId(role.data._id),
+              "admin_rights": "no",
+              "email_verified": false,
+              "isAllow": false,
+              "flag": 1,
+              "createdate": new Date(),
+              "is_email_change": false,
+              "is_login_first": false,
+              'is_register': true
+            }
+
+            if (passwordValidatorSchema.validate(req.body.password) == false) {
+              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Please Enter password of atleast 8 characters including 1 Lowercase and 1 Numerice character" })
+            }
+            else {
+
+              const condition = {
+                "email": req.body.email.toLowerCase(),
+                "is_del": false,
+                "is_register": false
+              }
+              var interest_user_resp = await User.findOneAndUpdate(condition, user_reg_obg, {
+                new: true, upsert: true
+              })
+
+              if (interest_user_resp) {
+                var reg_obj = {
+                  "firstname": req.body.firstname,
+                  "lastname": req.body.lastname,
+                  "countrycode": req.body.countrycode,
+                  "country": req.body.country,
+                  "contactno": req.body.contactno,
+                  "documenttype": req.body.documenttype,
+                  "documentimage": req.body.documentImage,
+                  "documentNumber": req.body.documentNumber,
+                  "drivingLicenseState": req.body.drivingLicenseState,
+                  "user_id": interest_user_resp._id,
+                  "createdAt": new Date(),
+                  "is_del": false,
+                  "document_verified": false
+                };
+
+                async.waterfall(
+                  [
+                    function (callback) {
+                      if (req.files && req.files["documentimage"]) {
+                        var image_path_array = [];
+                        var file = req.files['documentimage'];
+                        var files = [].concat(req.files.documentimage);
+                        var dir = "./upload";
+                        var filename = file.name;
+                        async.eachSeries(
+                          files,
+                          function (file, loop_callback) {
+                            var mimetype = path.extname(file.name);
+                            var mimetype = ["image/jpeg", "image/png", 'application/pdf'];
+                            if (mimetype.indexOf((file.mimetype).toLowerCase()) != -1) {
+                              if (!fs.existsSync(dir)) {
+                                fs.mkdirSync(dir);
+                              }
+                              var filename = file.name;
+                              file.mv(dir + "/" + filename, function (err) {
+                                if (err) {
+                                  logger.error("There was an issue in uploading");
+                                  loop_callback({
+                                    status: config.MEDIA_ERROR_STATUS,
+                                    err: "There was an issue in uploading"
+                                  });
+                                } else {
+                                  logger.trace(
+                                    "image has been uploaded. File name = ",
+                                    filename
+                                  );
+                                  location = filename;
+                                  image_path_array.push(location);
+                                  loop_callback();
+                                }
                               });
                             } else {
-                              logger.trace(
-                                "image has been uploaded. File name = ",
-                                filename
-                              );
-                              location = filename;
-                              image_path_array.push(location);
-                              loop_callback();
+                              logger.error(" format is invalid");
+                              loop_callback({
+                                status: config.VALIDATION_FAILURE_STATUS,
+                                err: " format is invalid"
+                              });
                             }
-                          });
-                        } else {
-                          logger.error(" format is invalid");
-                          loop_callback({
-                            status: config.VALIDATION_FAILURE_STATUS,
-                            err: " format is invalid"
-                          });
-                        }
-                      },
-                      function (err) {
-                        if (err) {
-                          res.status(err.status).json(err);
-                        } else {
-                          callback(null, image_path_array);
-                        }
+                          },
+                          function (err) {
+                            if (err) {
+                              res.status(err.status).json(err);
+                            } else {
+                              callback(null, image_path_array);
+                            }
+                          }
+                        );
+                      } else {
+                        logger.info(
+                          "File not available to upload. Executing next instruction"
+                        );
+                        callback(null, []);
                       }
-                    );
-                  } else {
-                    logger.info(
-                      "File not available to upload. Executing next instruction"
-                    );
-                    callback(null, []);
+                    }
+                  ],
+                  async (err, image_path_array) => {
+                    reg_obj.documentimage = image_path_array;
+
+                    var interest_resp = await Candidate_Detail.findOneAndUpdate({ user_id: interest_user_resp._id }, reg_obj, {
+                      new: true,
+                      upsert: true
+                    });
+
+
+                    if (!interest_resp) {
+                      logger.debug("Error = ", interest_resp.error);
+                      res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+                    } else {
+                      var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id },
+                        config.ACCESS_TOKEN_SECRET_KEY, {
+                        expiresIn: 60 * 60 * 24 * 3
+                      }
+                      )).toString('base64');
+
+                      var time = new Date();
+                      time.setMinutes(time.getMinutes() + 20);
+                      time = btoa(time);
+                      var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate_email_confirmation' });
+
+                      logger.trace("sending mail");
+                      let mail_resp = await mail_helper.send("email_confirmation_template", {
+                        "to": interest_user_resp.email,
+                        "subject": "Welcome to the HireCommit | Verify Email"
+                      }, {
+                        "msg": message.data.content,
+                        "name": interest_resp.firstname,
+                        "upper_content": message.data.upper_content,
+                        "lower_content": message.data.lower_content,
+                        "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
+                      });
+
+                      if (mail_resp.status === 0) {
+                        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
+                      } else {
+                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp })
+                      }
+                    }
+
                   }
-                }
-              ],
-              async (err, image_path_array) => {
-                reg_obj.documentimage = image_path_array;
-
-                var interest_resp = await Candidate_Detail.findOneAndUpdate({ user_id: interest_user_resp._id }, reg_obj, {
-                  new: true,
-                  upsert: true
-                });
-
-
-                if (!interest_resp) {
-                  logger.debug("Error = ", interest_resp.error);
-                  res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-                } else {
-                  var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id },
-                    config.ACCESS_TOKEN_SECRET_KEY, {
-                    expiresIn: 60 * 60 * 24 * 3
-                  }
-                  )).toString('base64');
-
-                  var time = new Date();
-                  time.setMinutes(time.getMinutes() + 20);
-                  time = btoa(time);
-                  var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate_email_confirmation' });
-
-                  logger.trace("sending mail");
-
-                  let mail_resp = await mail_helper.send("email_confirmation_template", {
-                    "to": interest_user_resp.email,
-                    "subject": "Welcome to the HireCommit | Verify Email"
-                  }, {
-                    "msg": message.data.content,
-                    "name": interest_resp.firstname,
-                    "upper_content": message.data.upper_content,
-                    "lower_content": message.data.lower_content,
-                    "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
-                  });
-
-                  if (mail_resp.status === 0) {
-                    res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
-                  } else {
-                    res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp })
-                  }
-                }
+                );
               }
-            );
-          }
-          else {
-            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
+              else {
+                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
+              }
+            }
           }
         }
-      }
+      });
     }
     else {
       logger.error("Validation Error = ", errors);
@@ -618,10 +634,21 @@ router.post('/login', async (req, res) => {
         notEmpty: true,
         errorMessage: "password is required."
       },
+      // "recaptcha": {
+      //   notEmpty: true,
+      //   errorMessage: "captcha is required"
+      // }
     };
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
+      // const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + captcha_secret + "&response=" + req.body['recaptcha'];
+      // await request(verificationURL, async (error, response, body) => {
+      //   body = JSON.parse(body);
+      //   if (body.success !== undefined && !body.success) {
+      //     res.json({ "status": 0, "responseError": "Failed captcha verification" });
+      //   }
+      //   else {
       let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
       if (!user_resp) {
         var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'email_not_exist' });
@@ -985,6 +1012,8 @@ router.post('/login', async (req, res) => {
       else {
         res.status(config.BAD_REQUEST).json({ message: "Your email is not registered" });
       }
+      //   }
+      // });
     }
     else {
       res.status(config.BAD_REQUEST).json({ message: "Invalid email" });

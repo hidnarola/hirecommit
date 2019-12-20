@@ -108,7 +108,7 @@ router.put('/', async (req, res) => {
             obj.lastname = req.body.lastname
         }
         if (req.body.email && req.body.email != "") {
-            obj.email = req.body.email
+            obj.email = req.body.email.toLowerCase()
         }
 
         if (req.body.contactno && req.body.contactno != "") {
@@ -119,7 +119,7 @@ router.put('/', async (req, res) => {
         }
 
         var candidate = await common_helper.findOne(User, { "_id": req.body.id }, obj)
-        if (candidate.data.email !== req.body.email) {
+        if (candidate.data.email !== req.body.email.toLowerCase()) {
             obj.email_verified = false
             obj.is_email_change = true
         }

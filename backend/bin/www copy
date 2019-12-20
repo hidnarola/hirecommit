@@ -5,6 +5,7 @@ var https = require('https');
 var config = require('./../config');
 const socket = require('../config/socket');
 var fs = require('fs');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -30,6 +31,9 @@ if (config.IS_HTTPS == "true") {
   server = http.createServer(app);
 }
 
+// Socket initialization
+socket(server);
+
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -38,6 +42,8 @@ if (config.IS_HTTPS == "true") {
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+
 
 /**
  * Normalize a port into a number, string, or false.
@@ -58,9 +64,6 @@ function normalizePort(val) {
 
   return false;
 }
-
-// Socket initialization
-socket(server);
 
 /**
  * Event listener for HTTP server "error" event.

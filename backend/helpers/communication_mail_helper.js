@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const sgMail = require('@sendgrid/mail');
 var request = require("request");
-var new_mail_helper = {};
+var communication_mail_helper = {};
 var config = require("./../config");
 var mail_api_key = config.SENDGRID_API_KEY;
 
@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport(
 );
 
 
-new_mail_helper.send = async (template_id, options, data) => {
+communication_mail_helper.send = async (template_id, options, data) => {
     sgMail.setApiKey(mail_api_key);
     const msg = {
         "customArgs": {
@@ -29,17 +29,13 @@ new_mail_helper.send = async (template_id, options, data) => {
             {
                 "to": [
                     {
-                        "email": options.reply_to1,
+                        "email": options.to,
                         "name": "John Doe"
                     }
                 ],
-                "cc": [{ "email": options.to }],
                 "dynamic_template_data": {
-                    "message": "",
-                    "name": data.name,
-                    "upper_content": data.upper_content,
-                    "middel_content": data.middel_content,
-                    "lower_content": data.lower_content,
+                    "message": data.message,
+                    "subject": data.subject
                 },
                 "subject": options.subject
             }
@@ -48,7 +44,7 @@ new_mail_helper.send = async (template_id, options, data) => {
             "email": "support@hirecommit.com",
             "name": "Hire Commit"
         },
-        "reply_to": options.reply_to2,
+        "reply_to": options.reply_to,
         "template_id": template_id
     };
     var mail_resp = await sgMail.send(msg);
@@ -60,4 +56,4 @@ new_mail_helper.send = async (template_id, options, data) => {
     }
 }
 
-module.exports = new_mail_helper;
+module.exports = communication_mail_helper;

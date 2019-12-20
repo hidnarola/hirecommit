@@ -76,6 +76,9 @@ router.post("/", async (req, res) => {
 
                     var name = req.body.username;
                     var subemployerfirstname = name.substring(0, name.lastIndexOf(" "));
+                    if (subemployerfirstname === "") {
+                        subemployerfirstname = name;
+                    }
 
                     var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id },
                         config.ACCESS_TOKEN_SECRET_KEY, {

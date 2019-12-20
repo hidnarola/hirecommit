@@ -796,7 +796,7 @@ router.put('/update', async (req, res) => {
             obj.username = req.body.username
         }
         if (req.body.email && req.body.email != "") {
-            obj.email = req.body.email
+            obj.email = req.body.email.toLowerCase()
             obj.is_email_change = true
         }
         if (req.body.contactno && req.body.contactno != "") {
@@ -805,10 +805,10 @@ router.put('/update', async (req, res) => {
 
         var user_detail = await common_helper.findOne(User, { '_id': req.body.user_id });
         var employer_detail_upadate = await common_helper.update(Employer, { "user_id": req.body.user_id }, obj)
-        if (user_detail.data.email !== req.body.email) {
+        if (user_detail.data.email !== req.body.email.toLowerCase()) {
             var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
             let content = message.data.content;
-            content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email);
+            content = content.replace("{old_email}", `${user_detail.data.email}`).replace('{new_email}', req.body.email.toLowerCase());
             obj.email_verified = false;
             logger.trace("sending mail");
             if (req.body.email && req.body.email != "") {

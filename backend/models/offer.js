@@ -38,13 +38,6 @@ const OfferSchema = new Schema({
     type: String,
     default: "UnOpened"
   },
-  // email: {
-  //   type: String,
-  //   required: true
-  // },
-  // candidate_name: {
-  //   type: String,
-  // },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
@@ -64,10 +57,6 @@ const OfferSchema = new Schema({
   salaryduration: {
     type: String
   },
-  // country: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'country_datas'
-  // },
   location: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'location'
@@ -77,11 +66,6 @@ const OfferSchema = new Schema({
   },
   communication: [{ type: CommunicationSchema }],
   AdHoc: [{ type: AdhockSchema }],
-
-  // salarybracket: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'salary_bracket'
-  // },
   expirydate: {
     type: Date,
     required: true

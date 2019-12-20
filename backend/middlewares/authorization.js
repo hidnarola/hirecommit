@@ -13,16 +13,6 @@ module.exports = function (req, res, next) {
         req.userInfo = req.decoded;
         next();
     }
-    // else if ((req.decoded.role == "employer" || req.decoded.role == "sub-employer" || req.decoded.role == "candidate" || req.decoded.role == "admin")) {
-    //     req.userInfo = req.decoded;
-    //     next();
-    // }
-    // else if (req.decoded.role == "admin" && req.baseUrl.match('/admin')) {
-    //     req.userInfo = req.decoded;
-    //     next();
-    // }
-
-
     else {
         return res.status(config.UNAUTHORIZED).json({
             "message": 'Unauthorized access'

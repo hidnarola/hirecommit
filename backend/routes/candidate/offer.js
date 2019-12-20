@@ -49,7 +49,11 @@ router.post('/get', async (req, res) => {
                     $match: {
                         "user_id": new ObjectId(req.userInfo.id),
                         "is_del": false,
-                        "status": { $ne: 'On Hold' },
+                        $and:
+                            [
+                                { status: { $ne: 'On Hold' } },
+                                { status: { $ne: 'Inactive' } }
+                            ]
                     }
                 },
                 {

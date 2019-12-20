@@ -56,12 +56,12 @@ router.put('/', async (req, res) => {
             obj.contactno = req.body.contactno
         }
         if (req.body.email && req.body.email != "") {
-            obj.email = req.body.email
+            obj.email = req.body.email.toLowerCase()
             obj.is_email_change = true
         }
 
         var employer = await common_helper.findOne(User, { "_id": req.body.id }, obj)
-        if (employer.data.email !== req.body.email) {
+        if (employer.data.email !== req.body.email.toLowerCase()) {
             obj.email_verified = false
         }
 
@@ -94,7 +94,6 @@ router.put('/', async (req, res) => {
                         "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
                     });
                 }
-
 
                 res.json({ "message": "Email has been changed, Email verification link sent to your mail.", "data": employer_upadate })
 
