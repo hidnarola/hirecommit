@@ -215,17 +215,40 @@ router.put('/', async (req, res) => {
             "is_del": false,
         };
         var id = req.body.id;
+        const RE = { $regex: new RegExp(`^${req.body.city}$`, 'gi') };
+        // console.log(RE);
 
-        var update_location = await common_helper.update(location, { "_id": id }, reg_obj)
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
-        if (update_location.status == 0) {
-            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
-        }
-        else if (update_location.status == 1) {
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Location is Updated successfully", "data": update_location });
+        if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
         }
         else {
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "No data found" });
+            var user_id = req.userInfo.id
+        }
+
+        var exist_location = await common_helper.findOne(location, {
+            is_del: false,
+            city: RE, "emp_id": new ObjectId(user_id),
+            _id: { $ne: new ObjectId(id) }
+        })
+
+        // console.log(' : exist_location ==> ', exist_location); return false;
+
+        if (exist_location.status == 2) {
+            var update_location = await common_helper.update(location, { "_id": id }, reg_obj)
+
+            if (update_location.status == 0) {
+                res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+            }
+            else if (update_location.status == 1) {
+                res.status(config.OK_STATUS).json({ "status": 1, "message": "Location is Updated successfully", "data": update_location });
+            }
+            else {
+                res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "No data found" });
+            }
+        } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This location is already exist" });
         }
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })

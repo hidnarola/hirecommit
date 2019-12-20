@@ -82,13 +82,36 @@ router.put("/", async (req, res) => {
         if (req.body.key && req.body.key != "") {
             obj.key = req.body.key
         }
-        var interest_resp = await common_helper.update(CustomField, { "_id": req.body.id }, obj);
-        if (interest_resp.status == 0) {
-            logger.debug("Error = ", interest_resp.error);
-            res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
-        } else {
-            res.json({ "message": "Custom Field is Updated successfully", "data": interest_resp })
+
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
+
+        if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
         }
+        else {
+            var user_id = req.userInfo.id
+        }
+        const RE = { $regex: new RegExp(`^${req.body.key}$`, 'gi') };
+        console.log(RE);
+
+        var exist_customfield = await common_helper.findOne(CustomField, {
+            is_del: false,
+            key: RE, "emp_id": new ObjectId(user_id),
+            _id: { $ne: new ObjectId(req.body.id) }
+        })
+
+        if (exist_customfield.status == 2) {
+            var interest_resp = await common_helper.update(CustomField, { "_id": req.body.id }, obj);
+            if (interest_resp.status == 0) {
+                logger.debug("Error = ", interest_resp.error);
+                res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
+            } else {
+                res.json({ "message": "Custom Field is Updated successfully", "data": interest_resp })
+            }
+        } else {
+            return res.status(config.BAD_REQUEST).json({ 'status': 0, 'message': "This coustom field is already exist", "success": false })
+        }
+
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }

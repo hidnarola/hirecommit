@@ -204,39 +204,70 @@ router.put('/', async (req, res) => {
         obj.medium_notreplied = req.body.medium_notreplied
         // }
 
+
+
         var id = req.body.id;
 
-        var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
 
-        const reqData = req.body.data;
+        var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
-        const grp_data = {
-            group_id: req.body.id,
-            communication: JSON.parse(reqData)
-        };
-        var find_communication = await common_helper.findOne(GroupDetail, { "group_id": req.body.id })
-        if (find_communication.status == 1) {
-            var response = await common_helper.update(GroupDetail, { "group_id": req.body.id }, grp_data);
-            var obj = {
-                flag: "undraft"
-            }
-            var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
+        if (user && user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+            var user_id = user.data.emp_id
         }
         else {
-            var response = await common_helper.insert(GroupDetail, grp_data);
-            var obj = {
-                flag: "undraft"
+            var user_id = req.userInfo.id
+        }
+
+        // var privious_group = await common_helper.findOne(group, {
+        //     is_del: false, flag: "undraft",
+        //     "_id": new ObjectId(id), name: RE, "emp_id": new ObjectId(user_id)
+        // })
+        // console.log(' : privious_group ==> ', privious_group.data);
+        const RE = { $regex: new RegExp(`^${req.body.name}$`, 'gi') };
+        // console.log(RE);
+
+        var exist_group = await common_helper.findOne(group, {
+            is_del: false, flag: "undraft",
+            name: RE, "emp_id": new ObjectId(user_id), _id: { $ne: new ObjectId(id) }
+        })
+
+        // console.log(' : exist_group ==> ', exist_group)
+        if (exist_group.status == 2) {
+            var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
+
+            const reqData = req.body.data;
+
+            const grp_data = {
+                group_id: req.body.id,
+                communication: JSON.parse(reqData)
+            };
+            var find_communication = await common_helper.findOne(GroupDetail, { "group_id": req.body.id })
+            if (find_communication.status == 1) {
+                var response = await common_helper.update(GroupDetail, { "group_id": req.body.id }, grp_data);
+                var obj = {
+                    flag: "undraft"
+                }
+                var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
             }
-            var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
-        }
+            else {
+                var response = await common_helper.insert(GroupDetail, grp_data);
+                var obj = {
+                    flag: "undraft"
+                }
+                var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
+            }
 
 
-        if (group_upadate.status == 0) {
-            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+            if (group_upadate.status == 0) {
+                res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
+            }
+            else if (group_upadate.status == 1) {
+                res.status(config.OK_STATUS).json({ "status": 1, "message": "Group is Updated successfully", "data": group_upadate, "communication": response });
+            }
+        } else {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This group is already exist" });
         }
-        else if (group_upadate.status == 1) {
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Group is Updated successfully", "data": group_upadate, "communication": response });
-        }
+        // var exist_group = await common_helper.find(group, { name: { $regex: req.body.name, $options: "$i" } })
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }

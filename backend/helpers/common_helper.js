@@ -42,10 +42,10 @@ common_helper.loginCheck = async (data) => {
 common_helper.find = async (collection, data = {}, type = 2, start, length, filteredrecords) => {
     try {
         if (type == 1) {
-            var data = await collection.findOne(data);
+            var data = await collection.findOne(data).lean();
         }
         else {
-            var data = await collection.find(data).skip(start).limit(length).sort({});
+            var data = await collection.find(data).skip(start).limit(length).sort({}).lean();
         }
         if (data || (data && data.length > 0)) {
             return {
