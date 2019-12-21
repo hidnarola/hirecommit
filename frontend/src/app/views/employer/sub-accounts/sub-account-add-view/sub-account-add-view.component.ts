@@ -28,8 +28,9 @@ export class SubAccountAddViewComponent implements OnInit {
   obj: any;
   userDetail: any;
   show_spinner = false;
+  employerID:any;
   cancel_link = '/employer/sub_accounts/list';
-  cancel_link1 = '/admin/employers/approved_employer/5dc177fc1b81361795365fa1/sub_accounts/list';
+  // cancel_link1 = '/admin/employers/approved_employer/'+ this.employerID +'/sub_accounts/list';
   constructor(
     private router: Router,
     private service: SubAccountService,
@@ -41,6 +42,7 @@ export class SubAccountAddViewComponent implements OnInit {
     private employerService: EmployerService
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
+    this.employerID = this.route.snapshot.params['eid'];
   }
 
   ngOnInit() {
@@ -157,6 +159,7 @@ export class SubAccountAddViewComponent implements OnInit {
 
   onSubmit(flag: boolean) {
     this.submitted = true;
+    this.show_spinner = true;
     if (this.id && flag && (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer')) {
       if (this.detail['admin_rights'] === false) {
         this.obj = {
@@ -174,7 +177,6 @@ export class SubAccountAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
-          this.show_spinner = true;
           this.service.edit_sub_account(this.update_data_id, this.obj).subscribe(res => {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -183,16 +185,18 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
-              this.router.navigate([this.cancel_link1]);
+              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
             }
           }, (err) => {
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
+        }, reject: () => {
+          this.show_spinner = false;
         }
       });
     } else if (this.id && flag && this.userDetail.role === 'admin') {
-      alert(this.userDetail.role);
+      this.show_spinner = true;
       if (this.detail['admin_rights'] === false) {
         this.obj = {
           username: this.detail['username'],
@@ -209,7 +213,7 @@ export class SubAccountAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
-          this.show_spinner = true;
+         
           this.employerService.edit_sub_employer(this.update_data_id, this.obj).subscribe(res => {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -218,12 +222,14 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
-              this.router.navigate([this.cancel_link1]);
+              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
             }
           }, (err) => {
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
+        }, reject: () => {
+          this.show_spinner = false;
         }
       });
     } else {
@@ -257,7 +263,7 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
-              this.router.navigate([this.cancel_link1]);
+              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
             }
             this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
           }
@@ -265,6 +271,9 @@ export class SubAccountAddViewComponent implements OnInit {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      }
+      else {
+        this.show_spinner = false;
       }
     }
   }

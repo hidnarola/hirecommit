@@ -143,10 +143,14 @@
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
-                                            <ckeditor [editor]="Editor" [disabled]="true"
+                                            <!-- <ckeditor [editor]="Editor" [disabled]="true"
                                                 [(ngModel)]="communication.message"
                                                 [ngModelOptions]="{standalone: true}">
-                                            </ckeditor>
+                                            </ckeditor> -->
+                                            <div>
+                                                <div [ngxSummernote]="config" #editor [(summernoteModel)]="communication.message" id="editor" disabled>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

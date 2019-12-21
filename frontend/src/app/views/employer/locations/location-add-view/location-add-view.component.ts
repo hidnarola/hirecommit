@@ -122,6 +122,7 @@ export class LocationAddViewComponent implements OnInit {
 
   onSubmit(flag: boolean, id) {
     this.submitted = true;
+    this.show_spinner = true;
     if (this.id && flag) {
 
       const res_data = {
@@ -132,7 +133,7 @@ export class LocationAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
-          this.show_spinner = true;
+         
           this.service.edit_location(res_data).subscribe(res => {
             if (res['data']['status'] === 1) {
               this.submitted = false;
@@ -149,6 +150,8 @@ export class LocationAddViewComponent implements OnInit {
             this.show_spinner = false;
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
+        }, reject: () => {
+          this.show_spinner = false;
         }
       });
     } else {
@@ -171,6 +174,8 @@ export class LocationAddViewComponent implements OnInit {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      } else {
+        this.show_spinner = false;
       }
     }
   }

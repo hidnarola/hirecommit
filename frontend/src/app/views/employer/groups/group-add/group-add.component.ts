@@ -156,6 +156,20 @@ export class GroupAddComponent implements OnInit {
       return isValid ? null : { 'whitespace': true };
     }
   }
+  append(value) {
+
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = value;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
@@ -183,6 +197,8 @@ export class GroupAddComponent implements OnInit {
         this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
+    } else {
+      this.show_spinner = false;
     }
   }
 
@@ -206,6 +222,7 @@ export class GroupAddComponent implements OnInit {
             });
           });
         } else {
+          this.show_spinner = false;
           communication_array.push();
         }
 
@@ -229,6 +246,7 @@ export class GroupAddComponent implements OnInit {
         }
 
         this.service.edit_group(this.formData).subscribe(res => {
+          this.show_spinner = true;
           if (res['data']['status'] === 1) {
             this.isFormSubmitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

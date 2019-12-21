@@ -25,6 +25,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   userDetail;
   obj: any;
   _profile_data: any = [];
+  link:string;
 
   constructor(
     private router: Router,
@@ -46,6 +47,20 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       attributes: true,
       attributeFilter: ['class']
     });
+
+    if(this.userDetail.role === 'employer')
+    {
+      this.link = '/employer/offers/list';
+    }
+    else if (this.userDetail.role === 'sub-employer')
+    {
+      this.link = '/sub_employer/offers/list';
+    } else if (this.userDetail.role === 'candidate') {
+      this.link = '/candidate/offers/list';
+    } else if (this.userDetail.role === 'admin') {
+      this.link = '/admin/employers/approved_employer';
+    }
+
   }
 
   ngOnInit() {
@@ -67,7 +82,16 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this.commonService.profileData().then(res => {
           profile = res;
           this._profile_data = profile;
-          if (userType === 'employer') {
+           if (userType === 'candidate') {
+            if (this._profile_data[0].user_id.email_verified) {
+              this.navItems = candidate;
+              this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
+            } else {
+              this.navItems = [];
+              this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
+            }
+          }
+          else if (userType === 'employer') {
             this.navItems = employer;
             this.name = this._profile_data[0].username;
             // if (this._profile_data[0].user_id.is_email_change) {
@@ -80,37 +104,15 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
 
             this.commonService.getFirstLogin.subscribe(response => {
-              // console.log('res=>', res);
-              console.log(' this._profile_data[0].user_id.is_login_first=>', this._profile_data[0].user_id.is_login_first);
-              // if (res) {
-              //   this._profile_data[0].user_id.is_login_first = res;
-              // }
               if (this._profile_data[0].user_id.is_login_first === false) {
                 this.router.navigate(['sub_employer/change-password']);
-                console.log(' this.commonService.changedProfileDetail=>');
                 this.name = this._profile_data[0].username;
-                // }
-                // else if (this._profile_data[0].user_id.is_email_change) {
-                //   this.router.navigate(['/sub_employer/change-password']);
-                // }
               } else {
                 this.navItems = sub_employer;
                 this.name = this._profile_data[0].username;
               }
             });
-          } else if (userType === 'candidate') {
-            console.log('this._profile_data[0].user_id.is_email_change=>', this._profile_data[0].user_id.is_email_change);
-            // if (this._profile_data[0].user_id.is_email_change === true) {
-            //   this.router.navigate(['candidate/change-password']);
-            // } else
-            if (this._profile_data[0].user_id.email_verified) {
-              this.navItems = candidate;
-              this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
-            } else {
-              this.navItems = [];
-              this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
-            }
-          }
+          } 
         });
       });
 

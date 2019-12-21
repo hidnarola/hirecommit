@@ -35,7 +35,7 @@ const routes: Routes = [
         },
       },
       {
-        path: 'approved_employer/:id/sub_accounts/view/:id',
+        path: 'approved_employer/:eid/sub_accounts/view/:id',
         component: SubAccountAddViewComponent,
         data: {
           title: 'Sub - Account View',
@@ -43,7 +43,7 @@ const routes: Routes = [
         },
       },
       {
-        path: 'approved_employer/:id/sub_accounts/edit/:id',
+        path: 'approved_employer/:eid/sub_accounts/edit/:id',
         component: SubAccountAddViewComponent,
         data: {
           title: 'Sub - Account Edit',

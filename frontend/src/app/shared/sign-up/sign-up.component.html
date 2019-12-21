@@ -67,10 +67,12 @@
                       is required.</span>
                   </div>
                   <div class="error" *ngIf="!registerForm.controls['email'].valid">
-                    <span *ngIf="registerForm.controls['email'].errors.pattern">Email
-                      must be in valid format.</span>
+                    <span *ngIf="registerForm.controls['email'].errors.pattern">
+                      Email must be in valid format.
+                    </span>
                     <span *ngIf="registerForm.controls['email'].errors['isExist']">
-                      This Email address is already registered.</span>
+                      This Email address is already registered.
+                    </span>
                   </div>
                 </div>
               </fieldset>
@@ -91,7 +93,7 @@
                       is required.</span>
                     <span
                       *ngIf="registerForm.controls['password'].errors['minlength']  || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
-                      Password should be 8 character long , 1 small letter and 1 number is required.</span>
+                      Password should be 8 character long and must contain at least one lowercase and one number.</span>
                   </div>
                 </div>
               </fieldset>
@@ -150,10 +152,6 @@
               <h5>Need Your Business Details</h5>
               <!-- <h4>Company Detail</h4> -->
               <div class="row">
-
-
-
-
 
                 <fieldset class="form-group col-md-6 mb-3">
                   <label class="col-form-label" for="companyname" style="text-align: left">Comapny Name <p class="ast">
@@ -302,9 +300,6 @@
                     </div>
                   </div>
                 </fieldset>
-
-
-
               </div>
 
               <!-- captcha -->
@@ -338,6 +333,9 @@
             </div>
             <div class="step-form-btn">
               <!-- <p *ngIf="!form.valid"></p> -->
+              <div *ngIf="!registerForm.valid && is_submitted" class="text-danger">
+                Please review fields with error and Submit again.
+              </div>
               <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
                 (click)="onSubmit(registerForm.valid)">Submit <i *ngIf="show_spinner"
                   class="fa fa-spinner fa-spin"></i></button>
@@ -352,16 +350,34 @@
 <footer class="footer">
   <div class="container">
     <div class="d-flex">
-      <div class="copyright">
-        <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 | All Rights Reserved.</p>
+      <div class="fotoer-logo">
+        <a href=""><img src="assets/img/email-logo.png" alt="" /></a>
       </div>
-      <!-- <div class="contact-link"><a [routerLink]="['/']">Contact us</a></div> -->
-      <div class="contact-link">
-        <a [routerLink]="['/aboutus']" target="_blank">About us</a>
-        <!-- <a [routerLink]="['contactus']" target="_blank">Contact us</a> -->
+      <div class="quick-link">
+        <h3>Company </h3>
+        <a [routerLink]="['/aboutus']" target="_blank">About Us</a>
         <a [routerLink]="['/termsandcondition']" target="_blank">Terms & Condition</a>
         <a [routerLink]="['/privacypolicy']" target="_blank">Privacy policy</a>
+        <a [routerLink]="['/contactus']" target="_blank">Contact Us</a>
+      </div>
+      <div class="quick-link">
+        <h3>Quick Links</h3>
+        <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
+        <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+      </div>
+      <div class="footer-media">
+        <h3>Find Us Online</h3>
+        <div class="d-flex">
+          <a target="_blank" href="https://www.facebook.com/HireCommit/"><img src="assets/img/facebook.svg"
+              alt="" /></a>
+          <a target="_blank" href="https://twitter.com/hirecommit"><img src="assets/img/twitter.svg" alt="" /></a>
+          <a target="_blank" href="https://www.linkedin.com/company/hirecommit/?viewAsMember=true"><img
+              src="assets/img/linkedin.svg" alt="" /></a>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="copyright">
+    <p>© Copyright <a [routerLink]="['/']">HireCommit</a> - 2019 All Rights Reserved.</p>
   </div>
 </footer>

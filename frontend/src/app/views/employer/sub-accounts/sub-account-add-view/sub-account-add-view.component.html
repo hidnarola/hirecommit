@@ -76,7 +76,7 @@
                             [routerLink]="['/sub_employer/sub_accounts/list']">
                             Cancel</button>
                         <button *ngIf="userDetail.role === 'admin'" type="button" class="btn btn-md btn-danger"
-                            [routerLink]="cancel_link1">
+                            [routerLink]="['/admin/employers/approved_employer/'+ employerID +'/sub_accounts/list']">
                             Cancel</button>
                     </div>
                 </form>
@@ -123,7 +123,7 @@
                         [routerLink]="['/sub_employer/sub_accounts/list']">
                         Back</button>
                     <button *ngIf="userDetail.role === 'admin'" type="button" class="btn btn-md btn-primary"
-                        [routerLink]="cancel_link1">
+                        [routerLink]="['/admin/employers/approved_employer/'+ employerID +'/sub_accounts/list']">
                         Back</button>
                 </div>
             </div>

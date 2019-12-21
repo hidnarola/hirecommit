@@ -27,6 +27,7 @@ export class CandidateViewComponent implements OnInit {
   buttonValue: any;
   buttonValue1: any;
   documenttype: any;
+  show_spinner = false;
   constructor(
     private router: Router,
     private service: CandidateService,
@@ -70,22 +71,25 @@ export class CandidateViewComponent implements OnInit {
 
   approve(id) {
     document.getElementById('approve').setAttribute('disabled', 'true');
+    this.show_spinner = true;
     this.approval = true;
     const obj = {
       'id': id
     };
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to Approve This Candidate this action?',
+      message: 'Are you sure that you want to Approve this Candidate?',
       accept: () => {
-
         this.service.approved(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           // this.rrerender();
           this.router.navigate([this.cancel_link1]);
         }, (err) => {
-          console.log(err);
+            this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      } , reject : () => {
+        this.show_spinner = false;
+        document.getElementById('approve').removeAttribute('disabled');
       }
     });
   }

@@ -20,6 +20,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   employer_data: any = [];
   country: any;
   userDetail: any = [];
+  isApproved = false;
   employer_type = 'Approved';
   id: any;
 
@@ -123,13 +124,14 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   aprrove(id) {
+    this.isApproved = true;
     const obj = {
       'id': id
     };
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to perform this action?',
+      message: 'Are you sure that you want to Approve this Employer?',
       accept: () => {
-
+        this.isApproved = true;
         this.service.aprroved_employer(obj).subscribe(res => {
           // console.log("hiii", res['data']['data']._id);
           this.socketService.joinGrp(res['data']['data']._id);
@@ -140,6 +142,8 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      }, reject: () => {
+        this.isApproved = false;
       }
     });
   }
@@ -150,7 +154,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   delete(id) {
     this.confirmationService.confirm({
-      message: 'Are you sure that you want to Delete this record?',
+      message: 'Are you sure that you want to Reject this Employer?',
       accept: () => {
         this.service.deactivate_employer(id).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });

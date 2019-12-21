@@ -319,3 +319,9 @@ html body .ui-radiobutton div.ui-radiobutton-box.ui-state-active { border-color:
     .communication-fills .no-gutters.row .col-md-6 + .col-md-6  label{ padding-left:0;}
     .dataTables_filter input[type=search] {min-width:179px;}
 }
+
+
+
+body p-dropdown.ng-dirty.ng-invalid > .ui-dropdown{
+    border: none !important;
+  }

@@ -283,8 +283,8 @@
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
                                                     </ckeditor> -->
                                                         <div>
-                                                            <div (click)="getCursor($event)" (keyup)="getCursor($event)"
-                                                                [ngxSummernote]="config" #editor
+                                                            <div 
+                                                                [ngxSummernote]="config" #editor  [(ngModel)]="customfield.message"
                                                                 [(summernoteModel)]="customfield.message" id="editor"
                                                                 formControlName="message">
                                                             </div>

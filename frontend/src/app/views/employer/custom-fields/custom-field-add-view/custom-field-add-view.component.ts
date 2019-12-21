@@ -79,35 +79,40 @@ export class CustomFieldAddViewComponent implements OnInit {
 
   onSubmit(valid) {
     this.submitted = true;
+    this.show_spinner = true;
     if (this.id && this.id !== 0) {
+   if (valid) {
+     const obj = {
+       'id': this.id,
+       'key': this.addCustomFeild.value['key']
+     };
+     this.confirmationService.confirm({
+       message: 'Are you sure that you want to Update this record?',
+       accept: () => {
+         this.submitted = false;
+       
+         this.service.edit_custom_field(obj).subscribe(res => {
+           if (res['data'].status === 1) {
 
-      const obj = {
-        'id': this.id,
-        'key': this.addCustomFeild.value['key']
-      };
-      this.confirmationService.confirm({
-        message: 'Are you sure that you want to Update this record?',
-        accept: () => {
-          this.show_spinner = true;
-          this.service.edit_custom_field(obj).subscribe(res => {
-            if (res['data'].status === 1) {
+             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+             if (this.userDetail.role === 'employer') {
+               this.router.navigate([this.cancel_link]);
+             } else if (this.userDetail.role === 'sub-employer') {
+               this.router.navigate(['/sub_employer/custom_fields/list']);
+             }
 
-              this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-              if (this.userDetail.role === 'employer') {
-                this.router.navigate([this.cancel_link]);
-              } else if (this.userDetail.role === 'sub-employer') {
-                this.router.navigate(['/sub_employer/custom_fields/list']);
-              }
-
-              this.addCustomFeild.reset();
-            }
-            this.submitted = false;
-          }, (err) => {
-            this.show_spinner = false;
-            this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
-          });
-        }
-      });
+             this.addCustomFeild.reset();
+           }
+           this.submitted = false;
+         }, (err) => {
+           this.show_spinner = false;
+           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+         });
+       }, reject: () => {
+         this.show_spinner = false;
+       }
+     });
+   }
     } else {
       if (valid) {
         this.show_spinner = true;
@@ -126,8 +131,9 @@ export class CustomFieldAddViewComponent implements OnInit {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
+      } else {
+        this.show_spinner = false;
       }
     }
   }
-
 }

@@ -45,7 +45,7 @@ export class CheckVerificationComponent implements OnInit {
         }
       }, (err) => {
         console.log('err => ', err);
-        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        // this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
       });
     }
   }

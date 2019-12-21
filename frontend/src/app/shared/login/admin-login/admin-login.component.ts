@@ -42,8 +42,8 @@ export class AdminLoginComponent implements OnInit {
     if (this.loginForm.value.email.length > 0) {
       // tslint:disable-next-line: max-line-length
       this.loginForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
-    } else {
-      this.loginForm.controls['email'].setValidators(null);
+    }else {
+      this.loginForm.controls['email'].setValidators([Validators.required]);
     }
     this.loginForm.controls['email'].updateValueAndValidity();
   }
@@ -145,6 +145,9 @@ export class AdminLoginComponent implements OnInit {
       });
       //   this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       // });
+    }
+    else {
+      this.isFormSubmitted = true;
     }
   }
 

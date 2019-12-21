@@ -112,16 +112,38 @@ section.header-bluepart .d-flex{align-items: flex-end;}
 
 
 /***** Footer *****/
-.footer{ padding:15px 0; border-top:2px solid #eaeaea;}
-.footer .d-flex{ align-items:center;}
-.copyright p{ padding:0; font-weight:400; font-size:12px; color:#666; line-height:100%; display:block; margin:0 0 5px;}
+.footer { padding:60px 0 0; border-top:8px solid #bf7a68; background:#162741;}
+
+.fotoer-logo {width: 33%; text-align: left; position: relative; padding: 0 50px 0 0;}
+.fotoer-logo img{ max-width:100%;}
+/* .fotoer-logo:before, .fotoer-logo:after {content: '';width: 1px;height: 60%;position: absolute;top: 50%;left: 0;transform: translateY(-50%);background: #3d434c;}
+.fotoer-logo:after {left:4px;} */
+
+.quick-link{ width:26%; position:relative; padding:0 0 0 50px;}
+/* .quick-link:before, .quick-link:after {content: '';width: 1px;height: 60%;position: absolute;top: 50%;left: 0;transform: translateY(-50%);background: #3d434c;}
+.quick-link:after {left:4px;} */
+.quick-link h3 {display: block;font-size: 18px;color: #fff;margin: 0 0 15px;}
+.quick-link a {display: block;font-size: 14px;line-height: normal;color:rgba(255, 255, 255, .5); text-decoration:none; margin:0 10px 0 0;}
+.quick-link a + a{ margin-top:10px;}
+.quick-link a:hover{color:#bf7a68;}
+
+.footer-media {margin:0 0 0 auto; width:auto; position:relative; padding:0;}
+/* .footer-media:before, .footer-media:after {content: ''; width: 1px; height: 60%; position: absolute; top: 50%; left: 0;  transform: translateY(-50%); background: #3d434c;}
+.footer-media:after {left:4px;} */
+
+.footer-media h3 {display: block;font-size: 18px;color: #fff;margin: 0 0 15px;}
+.footer-media a {margin:0 10px 0 0;}
+.footer-media a img{ width:30px;}
+
+.copyright{ padding:15px 15px 20px; border-top:1px solid rgba(255, 255, 255, .1); margin:40px 0 0;}
+.copyright p{ padding: 0; font-weight: 400; font-size: 12px; color: #9fa2a7; line-height: normal;display:block; text-align:center; margin:0;}
 .copyright p a{ text-decoration:underline; color:#bf7a68;}
 .copyright p a:hover{ text-decoration:none;}
 .copyright>a{ color:#666; font-size:13px; font-weight:600; line-height:100%; margin:0 10px 0 0; text-transform:uppercase;}
 .copyright>a:hover{ text-decoration:none; color:#bf7a68;}
-.footer-media{ margin:0 0 0 auto;}
-.footer-media a {margin:0 0 0 5px;}
-.footer-media a img{ width:30px;}
+
+
+
 
 .mobile-view{ display:none !important;}
 .boxes-section ul li:nth-child(2n+2) .boxes-section-div h3{ color:#bf7a68;}
@@ -258,6 +280,11 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .support-identity .d-flex { align-items:end;}
     .transparency-bg {min-height: 240px;}
     .advance-alerts-bg {min-height: 270px;}
+    .quick-link {width: 26%; padding: 0 0 0 40px;}
+    .quick-link {width: 26%;padding: 0 0 0 40px;}
+    .footer { padding:40px 0 0;}
+    .copyright { padding:10px 15px; margin:30px 0 0;}
+    .fotoer-logo {width: 25%; padding:0;}
 
 }
 @media(max-width:767px){
@@ -295,8 +322,9 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .data-security {margin:0 0 30px;}
     .transparency { margin:0 0 30px;}
     .support-identity {margin: 0 0 30px;}
-    .footer>.container>.d-flex{ flex-direction: column-reverse; justify-content: center; text-align: center;}
-    .copyright {margin: 0 auto;padding:10px 0 0;}
+    /* .footer>.container>.d-flex{ flex-direction: column-reverse; justify-content: center; text-align: center;} */
+    .footer>.container>.d-flex{ flex-wrap:wrap;align-items:end;    max-width: 300px; margin: 0 auto;}
+    .copyright { margin: 25px 0 0; padding:10px 15px 0;}
     .boxes-section ul.four-box li{width:100%;}
     .candidate-employer {right: 0;max-width: 180px;top: -34px;}
     .candidate-employer a {font-size: 13px; letter-spacing: 0; margin:0 5px;}
@@ -334,8 +362,18 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .recaptcha-div iframe{transform: scale(0.8); margin:0 0 0 -30px;}
     .recaptcha-div ngx-recaptcha2{max-width:280px;}
     .recaptcha-div div{ width: 100% !important; text-align: left; display: inline-block; vertical-align: top; max-width:280px;}
-    .footer .d-flex {align-items: center;width: 100%;text-align: center;justify-content: center;}
-    .footer {padding: 10px 0;border-top: 2px solid #eaeaea;margin: 40px 0 0;}
+    /* .footer .d-flex {align-items: center;width: 100%;text-align: center;justify-content: center;} */
+    .footer {padding:25px 0 10px;border-top: 2px solid #eaeaea;margin: 40px 0 0;}
+    .fotoer-logo {width: 100%;padding: 0;text-align: center;margin: 0 0 30px;}
+    .quick-link {width: 50%;padding: 0;text-align: left;}
+    .footer-media {margin:15px 0 0; width: auto; text-align: left;}
+    .footer-media h3,
+    .quick-link h3 {display: block;font-size: 16px;text-transform: uppercase;color: #fff;margin: 0 0 10px;}
+    .quick-link a {font-size: 13px;}
+    .quick-link{ width:50%;}
+    .quick-link + .quick-link{width: 142px;margin: 0 0 0 auto;}
+    .footer-media {margin:0 0 0 auto;width: 142px;text-align: left;}
+    .fotoer-logo img { max-width:180px;}
 
 }    
 

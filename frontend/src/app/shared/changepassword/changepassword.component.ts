@@ -49,7 +49,7 @@ export class ChangepasswordComponent implements OnInit {
 
     this.commonService.profileData().then(res => {
       this._profile_data = res[0];
-      if (this._profile_data.user_id.is_login_first === false) {
+      if (this._profile_data.user_id.is_login_first === false && !(this.userDetail.role === 'candidate' )) {
         this.isDisabled = true;
       } else {
         this.isDisabled = false;
