@@ -27,7 +27,9 @@ const MailRecord = require('../../models/mail_record');
 const MailContent = require('../../models/mail_content');
 const request = require('request');
 var result = [];
+var result1 = [];
 let valuesmail;
+let valuesmail1;
 //Offer
 router.post("/", async (req, res) => {
     try {
@@ -445,20 +447,9 @@ cron.schedule('00 00 * * *', async (req, res) => {
         var notOpened = [];
         var notReplied = [];
 
-        // for (const resp of resp_data) {
-        //     result.push(resp);
-        // }
-        // console.log(result);
-        // return false;
-        // const promise = new Promise((resolve, reject) => {
         var i = 0;
-        // result.push(resolve)
         for (const resp of resp_data) {
             var index = i;
-            //  result.push(resp);
-            // setTimeout(async function (index) {
-            // const resp = resp_data[index];
-            //  console.log(' : resp._id ==> ', resp._id);
             let element = resp;
             var options = {
                 method: 'GET',
@@ -494,7 +485,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     var priority = "Medium";
                                 }
 
-                                content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+                                // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
                                 var data = {
                                     "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
@@ -507,23 +498,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 notOpened.push(data);
                                 valuesmail = notOpened.length
                                 result.push(data);
-                                //   notOpenedmail(notOpened)
-                                // notOpened = [];
-                                // console.log("===> in side not open", notOpened);
-
-                                // let mail_resp = mail_helper.send("notification_email", {
-                                //     "to": resp.created_by.email,
-                                //     "subject": "List of candidates with UnOpened email"
-                                // }, {
-                                //     "msg": content,
-                                // });
-                                // console.log(' : not open ==> ', "not open");
-
                             } else if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
 
                                 const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
 
-                                content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+                                // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
                                 if (moment(current_date).isSame(high_notreplied) === true) {
                                     var priority = "High";
@@ -537,20 +516,12 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "subject": newresp.subject,
                                     "not_replied_days": total_days,
                                     "priority": priority,
-                                    "emp_id": resp.employer_id
+                                    "empid": resp.employer_id
                                 }
 
                                 notReplied.push(data);
-                                // console.log("===> in side not_reply", notReplied);
-
-                                // let mail_resp = mail_helper.send("notification_email", {
-                                //     "to": resp.created_by.email,
-                                //     "subject": "List of candidates with NotReplied email"
-                                // }, {
-                                //     "msg": content,
-                                // });
-                                // console.log(' : not reply ==> ', "not reply");
-
+                                valuesmail1 = notReplied.length
+                                result1.push(data);
                             } else {
                             }
 
@@ -561,45 +532,93 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     console.log('error=> ', error.message);
                 }
             });
-            // }, index * 15000, index)
             i++;
-
-            // err => reject();
         }
-        //     resolve();
-        // })
-        var notOpeneddata = notOpened;
+        // var notOpeneddata = notOpened;
         setTimeout(async () => {
-            if (valuesmail == result.length) {
-
-                // console.log(' : notOpened ==> ', result);
+            if (valuesmail == result.length && valuesmail1 == result1.length) {
                 var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
 
                 if (all_employer.status == 1) {
-                    //   console.log(all_employer.data);
                     var new_data = all_employer.data;
                     for (const filterdata of all_employer.data) {
-                        const filtered = result.filter(r => new ObjectId(r.emp_id).equals(new ObjectId(filterdata._id)));
-                        console.log(' : filtered ==> ', filtered);
-                        console.log(' : filterdata._id ==> ', typeof filterdata._id);
-                        console.log('filter ==>', typeof result[0].empid);
+                        const filtered = result.filter(r => r.empid.toString() === filterdata._id.toString())
+                        const filtered1 = result1.filter(r => r.empid.toString() === filterdata._id.toString())
 
+                        var emial_send_to = await common_helper.find(User, {
+                            "isAllow": true,
+                            "is_del": false,
+                            $or: [
+                                { "_id": new ObjectId(filterdata._id) },
+                                { "emp_id": new ObjectId(filterdata._id) },
+                            ]
+                        })
+
+                        if (filtered.length > 0 && emial_send_to.status == 1) {
+                            for (const sendto of emial_send_to.data) {
+                                const element = sendto;
+                                if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                                    var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                                    var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                }
+
+                                let mail_resp = await mail_helper.send("not_opened_mail_report", {
+                                    "to": element.email,
+                                    "subject": "Report of Not Opend candidate"
+                                }, {
+                                    "name": name,
+                                    "data": filtered
+                                });
+                            }
+                        }
+
+                        if (filtered1.length > 0 && emial_send_to.status == 1) {
+                            for (const sendto of emial_send_to.data) {
+                                const element = sendto;
+                                if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                                    var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                                    var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                }
+
+                                let mail_resp = await mail_helper.send("not_replied_mail_report", {
+                                    "to": element.email,
+                                    "subject": "Report of Not Replied candidate"
+                                }, {
+                                    "name": name,
+                                    "data": filtered1
+                                });
+                            }
+                        }
                     }
                 }
             }
         }, 5000);
-
-
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 })
-
-function notOpenedmail(Mail) {
-    result.push(Mail);
-    console.log(' : notOpened result ==> ', result);
-    console.log(' : notOpened valuemail==> ', valuesmail);
-}
 
 // offers mail
 cron.schedule('00 00 * * *', async (req, res) => {
