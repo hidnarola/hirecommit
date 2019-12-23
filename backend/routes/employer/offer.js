@@ -466,7 +466,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     } else if (new_resp && new_resp.messages) {
                         for (const newresp of new_resp.messages) {
                             //   console.log('new ress =>', newresp);
-
                             var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
                             var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
                             var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
@@ -496,9 +495,13 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "empid": resp.employer_id
                                 }
                                 notOpened.push(data);
+                                // console.log(' :  ==> notOpened', notOpened);
                                 valuesmail = notOpened.length
+                                console.log(' : valuesmail ==> ', notOpened.length, valuesmail);
                                 result.push(data);
-                            } else if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
+                            }
+
+                            if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
 
                                 const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
 
@@ -520,9 +523,10 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 }
 
                                 notReplied.push(data);
+                                // console.log(' : notReplied ==> ', notReplied);
                                 valuesmail1 = notReplied.length
+                                console.log(' : valuesmail1 ==> ', notReplied.length, valuesmail1);
                                 result1.push(data);
-                            } else {
                             }
 
                         }
@@ -536,9 +540,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
         }
         // var notOpeneddata = notOpened;
         setTimeout(async () => {
-            if (valuesmail == result.length && valuesmail1 == result1.length) {
-                var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
 
+            if (valuesmail == result.length || valuesmail1 == result1.length) {
+                var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
+                // console.log(' :  valuesmail==> ', valuesmail);
+                // console.log(' : valuesmail1==> ', valuesmail1);
                 if (all_employer.status == 1) {
                     var new_data = all_employer.data;
                     for (const filterdata of all_employer.data) {
@@ -554,6 +560,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             ]
                         })
 
+                        // console.log(' : filtered ==> ', filtered);
+                        // console.log(' : filtered1 ==> ', filtered1);
                         if (filtered.length > 0 && emial_send_to.status == 1) {
                             for (const sendto of emial_send_to.data) {
                                 const element = sendto;
@@ -580,6 +588,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "name": name,
                                     "data": filtered
                                 });
+                                if (mail_resp.status == 1) {
+                                    filtered = [];
+                                    result = [];
+                                    valuesmail = 0;
+                                }
                             }
                         }
 
@@ -609,12 +622,17 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "name": name,
                                     "data": filtered1
                                 });
+                                if (mail_resp.status == 1) {
+                                    filtered1 = [];
+                                    result1 = [];
+                                    valuesmail1 = 0;
+                                }
                             }
                         }
                     }
                 }
             }
-        }, 5000);
+        }, 10000);
     } catch (error) {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }

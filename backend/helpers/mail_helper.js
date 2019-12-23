@@ -58,7 +58,7 @@ mail_helper.forwardRepliedMail = async (data, cb) => {
     };
     transporter.sendMail(msg, function (err, info) {
         if (err) {
-            console.log(error);
+            console.log(err);
         }
         else {
             console.log('Message sent: ' + info.response);

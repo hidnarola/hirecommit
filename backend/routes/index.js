@@ -1456,7 +1456,7 @@ router.post('/get_email', async (req, res) => {
     var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
 
     var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true }).populate('created_by', { email: 1 }).lean();
-
+    console.log(' : reqBody.from, offer.created_by.email, reqBody.subject, reqBody.email ==> ', reqBody.from, offer.created_by.email, reqBody.subject, reqBody.email);
     mail_helper.forwardRepliedMail({
       to: offer.created_by.email,
       from: reqBody.from,
