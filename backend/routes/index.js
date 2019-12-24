@@ -1482,10 +1482,13 @@ router.post('/email_opened', async (req, res) => {
     console.log(req.body);
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
-    console.log(' : open_id ==> ', open_id);
     var offer_resp = await common_helper.findOne(Offer, { "_id": open_id });
-    console.log(' : offer_resp ==> ', offer_resp);
-
+    if (offer_resp.status == 1 && offer_resp.email_open === true && reqBody.event === 'open') {
+      var offer_update_resp = await common_helper.update(Offer, { "_id": open_id, 'email_open': true });
+      console.log("offer_update_resp", offer_update_resp);
+    } else {
+      console.log('Offer is already opened..! Or offer is deleted..!');
+    }
   } catch (error) {
     res.status(500).send(error.message);
   }
