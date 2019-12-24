@@ -1483,9 +1483,9 @@ router.post('/email_opened', async (req, res) => {
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
     var offer_resp = await common_helper.findOne(Offer, { "_id": open_id });
-    console.log(' : ', offer_resp.status, offer_resp.email_open, reqBody.event);
-    console.log(' : ==>', offer_resp.status == 1 && offer_resp.data.email_open === true && reqBody.event === 'open');
-    if (offer_resp.status == 1 && offer_resp.data.email_open === true && reqBody.event === 'open') {
+    console.log(' : ', offer_resp.status, offer_resp.data.email_open, reqBody.event);
+    console.log(' : ==>', offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open');
+    if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
       var offer_update_resp = await common_helper.update(Offer, { "_id": open_id, 'email_open': true });
       console.log("offer_update_resp", offer_update_resp);
     } else {
