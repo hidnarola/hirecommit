@@ -238,6 +238,33 @@ export class GroupEditComponent implements OnInit {
       editor.ui.getEditableElement()
     );
   }
+  //remove zero 
+  removeZeroCommunication(index) {
+    if (this.groupForm.controls['communicationFieldItems'].value[index].day >= 0) {
+      this.groupForm.controls['communicationFieldItems'][`controls`][index].controls['day'].setValue(parseFloat(this.groupForm.value[`communicationFieldItems`][index].day));
+    }
+  }
+
+  removeZero_high_unopened() {
+    if (this.groupForm.value.high_unopened && (this.groupForm.value.high_unopened >= 0) ) {
+      this.groupForm.controls['high_unopened'].setValue(parseFloat(this.groupForm.value[`high_unopened`]));
+    }
+  }
+  removeZero_high_notreplied() {
+    if (this.groupForm.value.high_notreplied && this.groupForm.value.high_notreplied >= 0) {
+      this.groupForm.controls['high_notreplied'].setValue(parseFloat(this.groupForm.value[`high_notreplied`]));
+    }
+  }
+  removeZero_medium_unopened() {
+    if (this.groupForm.value.medium_unopened && this.groupForm.value.medium_unopened >= 0) {
+      this.groupForm.controls['medium_unopened'].setValue(parseFloat(this.groupForm.value[`medium_unopened`]));
+    }
+  }
+  removeZero_medium_notreplied() {
+    if (this.groupForm.value.medium_notreplied && this.groupForm.value.medium_notreplied >= 0) {
+      this.groupForm.controls['medium_notreplied'].setValue(parseFloat(this.groupForm.value[`medium_notreplied`]));
+    }
+  }
 
   onSubmit(valid) {
     this.isFormSubmitted = true;

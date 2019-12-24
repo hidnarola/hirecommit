@@ -285,6 +285,11 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .footer { padding:40px 0 0;}
     .copyright { padding:10px 15px; margin:30px 0 0;}
     .fotoer-logo {width: 25%; padding:0;}
+    .app-header a.navbar-brand {position: absolute;top: 0;left: 23px;margin-left: 0;}
+    .nav-link p{ font-size:14px !important;  display:inline-block !important;  vertical-align:top; line-height:35px; margin:0; text-overflow:ellipsis;
+    box-shadow:0 0 black; white-space:nowrap; overflow:hidden; height:35px; width:250px; text-align:right;}
+    .app-header .nav-item .nav-link > .img-avatar, 
+    .app-header .nav-item .avatar.nav-link > img {margin: 0 10px 0 5px;  vertical-align: top;}
 
 }
 @media(max-width:767px){
@@ -388,4 +393,5 @@ body .new-signup.header-bluepart-01 .custome-checkbox label {line-height: 15px;m
     .header-bluepart-l h1 strong,
     .header-bluepart-l h1 small { font-size:22px;}
     .new-signup .btn {padding: 0.375rem 0.25rem;}
+    .nav-link p{ width:158px;}
 }

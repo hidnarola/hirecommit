@@ -237,7 +237,8 @@
                                     [disabled]="!(form.controls['salarytype'].value === 'hourly')">
                                 </p-dropdown> -->
                                     <input type="number" class="form-control" placeholder="Enter Hourly Salary Duration"
-                                        formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled>
+                                        formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled 
+                                       >
 
                                     <input type="number" class="form-control" placeholder="Enter Hourly Salary Duration"
                                         formControlName="salaryduration" id="salaryduration" *ngIf="!disabled" min="1"
@@ -267,11 +268,15 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="joiningdate">Joining Date</label>
-                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" 
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="joiningdate" id="joiningdate" [readonlyInput]="is_View"
-                                    [disabled]="is_View || isAccepted" [minDate]="max_date">
+                                    formControlName="joiningdate" id="joiningdate"
+                                    [disabled]="is_View" [minDate]="max_date" >
                                 </p-calendar>
+                                <!-- <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="is_Edit" [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="joiningdate" id="joiningdate" [minDate]="max_date"
+                                   > -->
+                                <!-- </p-calendar> -->
                                 <div class="cust_err_msg"
                                     *ngIf="form_validation && !form.controls['joiningdate'].valid">
                                     <span *ngIf="form.controls['joiningdate'].errors['required']" class="text-danger">
@@ -421,7 +426,7 @@
                                             id="high_unopened" disabled *ngIf="isAccepted">
                                         <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                             formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
-                                            id="high_unopened" *ngIf="!isAccepted">
+                                            id="high_unopened" *ngIf="!isAccepted" (blur)="removeZero_high_unopened()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -443,7 +448,7 @@
                                             id="high_notreplied" disabled *ngIf="isAccepted">
                                         <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                            id="high_notreplied" *ngIf="!isAccepted">
+                                            id="high_notreplied" *ngIf="!isAccepted" (blur)="removeZero_high_notreplied()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -464,7 +469,7 @@
                                             id="medium_unopened" disabled *ngIf="isAccepted">
                                         <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                            id="medium_unopened" *ngIf="!isAccepted">
+                                            id="medium_unopened" *ngIf="!isAccepted" (blur)="removeZero_medium_unopened()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -483,11 +488,11 @@
                                         <input type="number" min="0" class="form-control"
                                             autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied" disabled
-                                            *ngIf="isAccepted">
+                                            *ngIf="isAccepted" >
                                         <input type="number" min="0" class="form-control"
                                             autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied"
-                                            *ngIf="!isAccepted">
+                                            *ngIf="!isAccepted" (blur)="removeZero_medium_notreplied()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -528,6 +533,7 @@
                                                         <input type="text" class="form-control" placeholder="Enter name"
                                                             formControlName="communicationname" id="communicationname"
                                                             [(ngModel)]="customfield.communicationname">
+                                                            {{form_validation}}
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
@@ -540,7 +546,7 @@
                                                 </div>
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label"
-                                                        for="trigger">Priority</label>
+                                                        for="priority">Priority</label>
                                                     <div class="col-md-7">
                                                         <select id="priority" name="select1" class="form-control"
                                                             formControlName="priority"
@@ -579,13 +585,13 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="number" min="0" id="day" name="day"
                                                             class="form-control" placeholder="Enter Days"
-                                                            formControlName="day" [(ngModel)]="customfield.day">
+                                                            formControlName="day" [(ngModel)]="customfield.day" (blur)="removeZeroCommunication(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
 
                                                     </div>
-                                                    <div class="cust_err_msg"
+                                                    <div class="cust_err_msg offset-md-5 "
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
@@ -741,13 +747,13 @@
                                                         <input type="number" min="0" id="AdHoc_day" name="AdHoc_day"
                                                             class="form-control" placeholder="Enter Days"
                                                             formControlName="AdHoc_day"
-                                                            [(ngModel)]="customfield.AdHoc_day">
+                                                            [(ngModel)]="customfield.AdHoc_day" (blur)="removeZero(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
 
                                                     </div>
-                                                    <div class="cust_err_msg"
+                                                    <div class="cust_err_msg offset-md-5"
                                                         *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_day'].valid">
                                                         <span
                                                             *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_day'].errors['required']"
@@ -838,122 +844,82 @@
                     <strong style="font-size: 20px;">View Offer</strong>
                 </div>
                 <div class="card-body detail-box" *ngIf="resData">
-                    <div class="row detail-panel">
-
-                        <div class="col-md-3 detail-label lbl">
-                            Candidate Email
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6">
+                            <strong>Candidate Email</strong>
+                            <p>{{resData.user_id.email}}
                         </div>
                         <div class="col-md-6">
-                            {{resData.user_id.email}}
+                            <strong>Candidate Name</strong>
+                            <p>{{candidateData.firstname}} {{candidateData.lastname}}</p>
                         </div>
                     </div>
-                    <div class="row detail-panel">
+                    
 
-                        <div class="col-md-3 detail-label lbl">
-                            Candidate Name
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6">
+                            <strong>Title</strong>
+                            <p>{{resData.title}}</p>
                         </div>
-                        <div class="col-md-6 ">
-                            {{candidateData.firstname}} {{candidateData.lastname}}
-                        </div>
-                    </div>
-
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Title
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.title}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Location
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.location.city | titlecase}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Salary Type
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.salarytype| titlecase}}
+                        <div class="col-md-6">
+                            <strong>Location</strong>
+                            <p>{{resData.location.city | titlecase}}</p>
                         </div>
                     </div>
 
-
-                    <div class="row detail-panel" *ngIf="resData.salary">
-                        <div class="col-md-3 detail-label lbl">
-                            Salary
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6">
+                            <strong>Salary Type</strong>
+                            <p>{{resData.salarytype| titlecase}}</p>
                         </div>
-                        <div class="col-md-6 ">
-                            {{resData.salary}}
+                        <div class="col-md-6" *ngIf="resData.salary">
+                            <strong>Salary</strong>
+                            <p>{{resData.salary}}</p>
                         </div>
-                    </div>
-                    <div class="row detail-panel" *ngIf="resData.salary_from">
-                        <div class="col-md-3 detail-label lbl">
-                            Salary From
+                        <div class="col-md-6 detail-label lbl" *ngIf="resData.salary_from">
+                            <strong>Salary From</strong>
+                            <p>{{resData.salary_from}}</p>
                         </div>
-                        <div class="col-md-6 ">
-                            {{resData.salary_from}}
+                        <div class="col-md-6 detail-label lbl" *ngIf="resData.salary_to">
+                            <strong>Salary To</strong>
+                            <p>{{resData.salary_to}}</p>
                         </div>
-                    </div>
-                    <div class="row detail-panel" *ngIf="resData.salary_to">
-                        <div class="col-md-3 detail-label lbl">
-                            Salary To
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.salary_to}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
-                        <div class="col-md-3 detail-label lbl">
-                            Hourly Salary Duration
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.salaryduration}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Joining Date
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Expiry Date
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Acceptance Date
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}
-                        </div>
-                    </div>
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Offer Type
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.offertype}}
+                        <div class="col-md-6" *ngIf="resData.salaryduration && resData.salaryduration !== 'null'">
+                            <strong>Hourly Salary Duration</strong>
+                            <p>{{resData.salaryduration}}</p>
                         </div>
                     </div>
 
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Notes
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6">
+                            <strong>Joining Date</strong>
+                            <p>{{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</p>
                         </div>
-                        <div class="col-md-6 ">
-                            {{resData.notes}}
+                        <div class="col-md-6">
+                            <strong>Expiry Date</strong>
+                            <p>{{resData.expirydate | date: 'dd/MM/yyyy': 'utc'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6">
+                            <strong>Acceptance Date</strong>
+                            <p>{{resData.acceptedAt | date: 'dd/MM/yyyy': 'utc'}}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Offer Type</strong>
+                            <p>{{resData.offertype}}</p>
+                        </div>
+                    </div>
+
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6">
+                            <strong>Notes</strong>
+                            <p>{{resData.notes}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Offer Status</strong>
+                            <p>{{resData.status}}</p>
                         </div>
                     </div>
                     <!-- <div class="row detail-panel">
@@ -964,78 +930,64 @@
                             {{resData.commitstatus}}
                         </div>
                     </div> -->
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Offer Status
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.status}}
-                        </div>
-                    </div>
+                    
                     <!-- custom fields -->
-                    <div class="row detail-panel" *ngFor="let field of resData.customfeild">
-                        <div class="col-md-3 detail-label lbl">
-                            {{field.key|titlecase}}
+                    <div class="row viewoffers-info">
+                        <div class="col-md-6" *ngFor="let field of resData.customfeild">
+                            <strong>{{field.key|titlecase}}</strong>
+                            <p>{{field.value ? field.value : '-'}}</p>
                         </div>
-                        <div class="col-md-6">
-                            {{field.value ? field.value : '-'}}
-                        </div>
+                        
                     </div>
-                    <!-- custom fields -->
-                    <div class="row detail-panel">
-                        <div class="col-md-3 detail-label lbl">
-                            Group
-                        </div>
-                        <div class="col-md-6 ">
-                            {{resData.groupName ? resData.groupName : '-'}}
-                        </div>
-                    </div>
-
+                   
                     <!-- group details -->
-                    <div *ngIf="getGroupDetails">
-                        <div class="row detail-panel">
-                            <div class="col-md-3 detail-label lbl">
-                                High - UnOpened
-                            </div>
-                            <div class="col-md-1 detail-input">
-                                {{resData.high_unopened}}
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text">Days</span>
+                    <div class="row viewoffers-info" *ngIf="getGroupDetails">
+                        <div class="col-md-12">
+                            <strong>Group</strong>
+                            <p>{{resData.groupName ? resData.groupName : '-'}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>High - UnOpened</strong>
+                            <div class="input-group  mb-3">
+                                <div class="form-control">
+                                    {{resData.high_unopened}}
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Days</span>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="row detail-panel">
-                            <div class="col-md-3 detail-label lbl">
-                                High - NotReplied
-                            </div>
-                            <div class="col-md-1 detail-input">
-                                {{resData.high_notreplied}}
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text">Days</span>
-                            </div>
-                        </div>
-                        <div class="row detail-panel">
-                            <div class="col-md-3 detail-label lbl">
-                                Medium - UnOpened
-                            </div>
-                            <div class="col-md-1 detail-input">
-                                {{resData.medium_unopened}}
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text">Days</span>
+                        <div class="col-md-3">
+                            <strong>High - NotReplied</strong>
+                            <div class="input-group  mb-3">
+                                <div class="form-control">
+                                    {{resData.high_notreplied}}
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Days</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="row detail-panel">
-                            <div class="col-md-3 detail-label lbl">
-                                Medium - NotReplied
+                        <div class="col-md-3">
+                            <strong>Medium - UnOpened</strong>
+                            <div class="input-group  mb-3">
+                                <div class="form-control">
+                                    {{resData.medium_unopened}}
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Days</span>
+                                </div>
                             </div>
-                            <div class="col-md-1 detail-input">
-                                {{resData.medium_notreplied}}
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text">Days</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Medium - NotReplied</strong>
+                            <div class="input-group  mb-3">
+                                <div class="form-control">
+                                    {{resData.medium_notreplied}}
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Days</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1068,10 +1020,8 @@
                                         <label class="col-md-2 detail-label">
                                             -
                                         </label>
-                                        <div class="input-group col-md-3 detail-input">
-                                            {{communication.day}}
-                                        </div>
-                                        <div class="input-group-append">
+                                        <div class="col-md-4 detail-input d-flex">
+                                            <div class="input-group"> {{communication.day}} </div>
                                             <span class="input-group-text">Day(s)</span>
                                         </div>
                                     </div>
@@ -1121,10 +1071,10 @@
                                         <label class="col-md-2 detail-label">
                                             -
                                         </label>
-                                        <div class="input-group col-md-3 detail-input">
-                                            {{communication.AdHoc_day}}
-                                        </div>
-                                        <div class="input-group-append">
+                                        <div class="col-md-4 detail-input d-flex">
+                                            <div class="input-group">
+                                                {{communication.AdHoc_day}}
+                                            </div>
                                             <span class="input-group-text">Day(s)</span>
                                         </div>
                                     </div>
@@ -1302,7 +1252,7 @@
                             Joining Date
                         </div>
                         <div class="col-md-6 ">
-                            {{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}
+                            
                         </div>
                     </div>
 
@@ -1366,8 +1316,8 @@
                 <div class="card-footer text-right">
                     <button *ngIf="userDetail.role === 'candidate' && !isExpired" type="button"
                         class="btn btn-md btn-success" (click)="Accept(resData._id,resData.offertype)"
-                        [disabled]="resData.status === 'Accepted' || accept_btn" id="accept">
-                        Accept</button>
+                        [disabled]="resData.status === 'Accepted'|| show_spinner" id="accept ">
+                        Accept <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
                     <button type="button" class="btn btn-md btn-primary" (click)='cancel()'>
                         Back</button>
                 </div>

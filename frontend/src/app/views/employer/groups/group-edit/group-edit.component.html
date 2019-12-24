@@ -15,7 +15,7 @@
                             </label>
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
-                                    autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
+                                    autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name" >
                                 <div class="cust_err_msg" *ngIf="!groupForm.controls['name'].valid && isFormSubmitted">
                                     <span
                                         *ngIf="groupForm.controls['name'].errors['required'] ||  groupForm.controls['name'].errors['whitespace']"
@@ -37,7 +37,7 @@
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                     formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
-                                    id="high_unopened">
+                                    id="high_unopened" (blur)="removeZero_high_unopened()">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -56,11 +56,11 @@
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="high_notreplied"
                                     formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                    id="high_notreplied">
+                                    id="high_notreplied" (blur)="removeZero_high_notreplied()">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="cust_err_msg" *ngIf="!groupForm.controls['high_notreplied'].valid">
+                                <div class="cust_err_msg" *ngIf="!groupForm.controls['high_notreplied'].valid ">
 
                                     <span class="text-danger"
                                         *ngIf="groupForm.controls['high_notreplied'].errors['pattern']">
@@ -72,17 +72,17 @@
 
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="medium_unopened">Medium - UnOpened</label>
-                            <div class="input-group col-md-2">
+                            <div class="input-group col-md-2" >
                                 <input type="number" class="form-control" autocomplete="medium_unopened"
                                     formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                    id="medium_unopened">
+                                    id="medium_unopened" (blur)="removeZero_medium_unopened()">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
                                 <div class="cust_err_msg" *ngIf="!groupForm.controls['medium_unopened'].valid ">
 
                                     <span class="text-danger"
-                                        *ngIf="groupForm.controls['medium_unopened'].errors['pattern']">
+                                        *ngIf="roupForm.controls['medium_unopened'].errors['pattern']">
                                         Enter valid data.
                                     </span>
                                 </div>
@@ -94,7 +94,7 @@
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="medium_notreplied"
                                     formControlName="medium_notreplied" [(ngModel)]="groupData.medium_notreplied"
-                                    id="medium_notreplied">
+                                    id="medium_notreplied" (blur)="removeZero_medium_notreplied()">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -192,7 +192,7 @@
                                                     <div class="col-md-7 no-gutters">
                                                         <input type="text" class="form-control" placeholder="Enter name"
                                                             formControlName="communicationname" id="communicationname"
-                                                            [(ngModel)]="customfield.communicationname">
+                                                            [(ngModel)]="customfield.communicationname" (blur)="removeZeroCommunication(index)">
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
                                                             class="cust_err_msg">
                                                             <div class="text-danger"
@@ -256,14 +256,14 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="number" id="day" name="day" class="form-control"
                                                             placeholder="Enter Days" formControlName="day"
-                                                            [(ngModel)]="customfield.day">
+                                                            [(ngModel)]="customfield.day"   (blur) = "removeZeroCommunication(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
 
                                                     </div>
-                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
-                                                        class="cust_err_msg">
+                                                    <div  *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
+                                                        class="cust_err_msg offset-md-5">
                                                         <div class="text-danger"
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
                                                             This field is required.
