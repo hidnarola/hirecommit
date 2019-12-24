@@ -1483,6 +1483,8 @@ router.post('/email_opened', async (req, res) => {
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
     console.log(' : open_id ==> ', open_id);
+    var offer_resp = await common_helper.findOne(Offer, { "offerid": open_id });
+    console.log(' : offer_resp ==> ', offer_resp);
 
   } catch (error) {
     res.status(500).send(error.message);
