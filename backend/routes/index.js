@@ -1477,7 +1477,7 @@ router.post('/get_email', async (req, res) => {
   }
 })
 
-router.post('/user/webhooks/event/settings', async (req, res) => {
+router.post('/email_opened', async (req, res) => {
   try {
     console.log(req.body);
   } catch (error) {
