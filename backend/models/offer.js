@@ -128,6 +128,18 @@ const OfferSchema = new Schema({
     type: Boolean,
     default: false
   },
+  reply_At: {
+    type: Date,
+    default: ""
+  },
+  email_open: {
+    type: Boolean,
+    default: false
+  },
+  open_At: {
+    type: Date,
+    default: ""
+  },
   is_del: {
     type: Boolean,
     default: false
