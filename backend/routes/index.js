@@ -1448,32 +1448,54 @@ router.get('/country/:id', getCountry);
 
 router.post('/get_email', async (req, res) => {
   try {
-
     const reqBody = req.body;
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
 
-    var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
+    var offer_resp = await common_helper.findOne(Offer, { "_id": id });
+    if (offer_resp.status == 1 && offer_resp.data.reply === false) {
+      var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
 
-    var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true }).populate('created_by', { email: 1 }).lean();
+      var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
+      mail_helper.forwardRepliedMail({
+        to: offer.created_by.email,
+        from: reqBody.from,
+        subject: reqBody.subject,
+        content: reqBody.email,
+        filename: `${mail.data._id}.eml`,
+        html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+      }, (err, info) => {
+        if (err) {
+          console.log(error);
+        }
+        else {
+          console.log('Message forwarded: ' + info.response);
+        }
+      });
+      res.status(200).send('success');
+    } else {
+      console.log("Already replied..! Or offer was deleted..!");
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
 
-    mail_helper.forwardRepliedMail({
-      to: offer.created_by.email,
-      from: reqBody.from,
-      subject: reqBody.subject,
-      content: reqBody.email,
-      filename: `${mail.data._id}.eml`,
-      html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-    }, (err, info) => {
-      if (err) {
-        console.log(error);
-      }
-      else {
-        console.log('Message forwarded: ' + info.response);
-      }
-    });
-
-    res.status(200).send('success');
+router.post('/email_opened', async (req, res) => {
+  try {
+    console.log(req.body);
+    const reqBody = req.body[0];
+    var open_id = reqBody.trackid;
+    var offer_resp = await common_helper.findOne(Offer, { "_id": open_id });
+    var obj = {
+      email_open: true,
+      open_At: new Date()
+    }
+    if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
+      var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
+    } else {
+      console.log('Offer is already opened..! Or offer is deleted..!');
+    }
   } catch (error) {
     res.status(500).send(error.message);
   }

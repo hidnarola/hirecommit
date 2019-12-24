@@ -29,13 +29,14 @@ new_mail_helper.send = async (template_id, options, data) => {
             {
                 "to": [
                     {
-                        "email": options.reply_to1,
-                        "name": "John Doe"
+                        "email": options.to,
+                        "name": ""
                     }
                 ],
-                "cc": [{ "email": options.to }],
+                "cc": [{ "email": options.reply_to1 }],
                 "dynamic_template_data": {
                     "message": "",
+                    "subject": data.subject,
                     "name": data.name,
                     "upper_content": data.upper_content,
                     "middel_content": data.middel_content,

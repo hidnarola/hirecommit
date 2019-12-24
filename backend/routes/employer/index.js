@@ -81,16 +81,21 @@ router.put('/', async (req, res) => {
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
                 time = btoa(time);
-                var message = await common_helper.findOne(MailType, { 'mail_type': 'user-update-email' });
-                let content = message.data.content;
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'updated_email_verification' });
+                let upper_content = message.data.upper_content;
+                let lower_content = message.data.lower;
+
+                upper_content = upper_content.replace("{email}", `${employer_upadate.data.email}`);
 
                 logger.trace("sending mail");
                 if (req.body.email && req.body.email != "") {
-                    let mail_resp = await mail_helper.send("email_confirmation", {
+                    let mail_resp = await mail_helper.send("email_confirmation_template", {
                         "to": employer_upadate.data.email,
-                        "subject": "HireCommit - Email Confirmation"
+                        "subject": "Email has been changes | Verify Email"
                     }, {
-                        "msg": content,
+                        "name": req.body.username,
+                        "upper_content": upper_content,
+                        'lower_content': lower_content,
                         "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
                     });
                 }

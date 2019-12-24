@@ -240,21 +240,28 @@ router.put('/details', async (req, res) => {
 
         if (user_detail.data.email !== req.body.data.email) {
             var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
-            let content = message.data.content;
-            content = content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email}`);
+            let upper_content = message.data.upper_content;
+            let lower_content = message.data.lower_content;
+            upper_content = upper_content.replace("{old_email}", `${user_detail.data.email}`).replace("{new_email}", `${req.body.data.email.toLowerCase()}`);
             obj.email_verified = false;
             logger.trace("sending mail");
             let mail_resp = await mail_helper.send("welcome_email", {
                 "to": user_detail.data.email,
-                "subject": "Attention Mail"
+                "subject": "Notification Email | Email Updated"
             }, {
-                'msg': content
+                'name': resp_Detail_data.data.username,
+                'upper_content': upper_content,
+                'lower_content': lower_content
             });
             if (mail_resp.status === 0) {
                 res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
             } else {
                 var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
-                var message = await common_helper.findOne(MailType, { 'mail_type': 'email_verification' });
+
+                var message = await common_helper.findOne(MailType, { 'mail_type': 'updated_email_verification' });
+                let upper_content = message.data.upper_content;
+                let lower_content = message.data.lower_content;
+                upper_content = upper_content.replace("{email}", `${resp_user_data.data.email}`);
 
                 var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
                     config.ACCESS_TOKEN_SECRET_KEY, {
@@ -266,12 +273,14 @@ router.put('/details', async (req, res) => {
                 time.setMinutes(time.getMinutes() + 20);
                 time = btoa(time);
 
-                let mail_response = await mail_helper.send("email_confirmation", {
+                let mail_response = await mail_helper.send("email_confirmation_template", {
                     "to": resp_user_data.data.email,
-                    "subject": "HireCommit - Email Confirmation"
+                    "subject": "Email has been changes | Verify Email"
                 }, {
-                    "msg": message.data.content,
-                    "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                    "name": resp_Detail_data.data.username,
+                    "upper_content": upper_content,
+                    "lower_content": lower_content,
+                    "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
                 });
 
             }
