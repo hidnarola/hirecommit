@@ -416,7 +416,7 @@ router.put('/', async (req, res) => {
 
                     let mail_resp = await mail_helper.send("notification_accept_offer", {
                         "to": element.email,
-                        "subject": `${candidate.data.firstname} ${candidate.data.lastname}` + "has accepted offer"
+                        "subject": `${candidate.data.firstname} ${candidate.data.lastname}` + " has accepted offer"
                     }, {
                         "name": name,
                         "upper_content": upper_content,

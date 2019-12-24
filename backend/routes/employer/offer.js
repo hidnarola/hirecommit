@@ -141,7 +141,7 @@ router.post("/", async (req, res) => {
 
             var candidate_user = await common_helper.find(User, { 'email': req.body.email.toLowerCase(), 'is_del': false });
             if (candidate_user.data.length <= 0) {
-                // var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
+                var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
 
                 if (req.body.candidate_name != '') {
                     let candidate_name = req.body.candidate_name.split(' ');
@@ -214,10 +214,12 @@ router.post("/", async (req, res) => {
 
                     var obj = {
                         "name": name,
+                        "subject": "You have received job offer from " + employer.data.username,
                         "upper_content": upper_content,
                         "middel_content": middel_content,
                         "lower_content": lower_content,
                     }
+
 
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
@@ -455,6 +457,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
         var i = 0;
         for (const resp of resp_data) {
+
             var index = i;
             let element = resp;
             var options = {
@@ -481,7 +484,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             high_notreplied = moment(high_notreplied)
                             medium_notreplied = moment(medium_notreplied)
 
-                            if ((newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
+                            if ((resp.email_open === false && newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
                                 const total_days = moment(current_date).isSame(high_unopened) == true ? resp.high_unopened : moment(current_date).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
 
                                 if (moment(current_date).isSame(high_unopened) === true) {
@@ -543,6 +546,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                 }
             });
             i++;
+
         }
         // var notOpeneddata = notOpened;
         setTimeout(async () => {
@@ -1715,6 +1719,7 @@ router.put('/', async (req, res) => {
 
                 var obj = {
                     "name": name,
+                    "subject": "You have received job offer from " + `${employer.data.username}`,
                     "upper_content": upper_content,
                     "middel_content": middel_content,
                     "lower_content": lower_content,
