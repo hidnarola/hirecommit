@@ -141,20 +141,27 @@ router.post("/", async (req, res) => {
 
             var candidate_user = await common_helper.find(User, { 'email': req.body.email.toLowerCase(), 'is_del': false });
             if (candidate_user.data.length <= 0) {
-                var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
+                // var interest_candidate = await common_helper.insert(User, { 'email': req.body.email.toLowerCase(), 'role_id': '5d9d98e13a0c78039c6dd00e' });
 
                 if (req.body.candidate_name != '') {
                     let candidate_name = req.body.candidate_name.split(' ');
-                    if (candidate_name.length <= 1) {
+                    if (candidate_name.length == 1) {
                         var newcandidate = {
                             'firstname': candidate_name[0],
                             'lastname': '',
                             'user_id': interest_candidate.data._id
                         }
-                    } else if (candidate_name.length >= 1) {
+                    } else if (candidate_name.length > 1) {
+                        var lastname = '';
+                        for (let index = 0; index < candidate_name.length; index++) {
+                            const element = candidate_name[index];
+                            if (index > 0) {
+                                lastname = lastname + ' ' + candidate_name[index]
+                            }
+                        }
                         var newcandidate = {
                             'firstname': candidate_name[0],
-                            'lastname': candidate_name[1],
+                            'lastname': lastname,
                             'user_id': interest_candidate.data._id
                         }
                     }
@@ -165,7 +172,6 @@ router.post("/", async (req, res) => {
                         'user_id': interest_candidate.data._id
                     }
                 }
-
                 var interest_candidate_detail = await common_helper.insert(CandidateDetail, newcandidate);
                 obj.user_id = interest_candidate.data._id;
                 var role = await common_helper.findOne(Role, { '_id': interest_candidate.data.role_id });
@@ -949,7 +955,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "communication_afterOffer"
                             }, obj);
-                            console.log(' : mail_resp ==> ', mail_resp);
+                            // console.log(' : mail_resp ==> ', mail_resp);
 
                             // let mail_resp = new_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                             //     "to": resp.candidate.email,

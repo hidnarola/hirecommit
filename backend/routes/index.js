@@ -1448,7 +1448,6 @@ router.get('/country/:id', getCountry);
 
 router.post('/get_email', async (req, res) => {
   try {
-
     const reqBody = req.body;
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
@@ -1456,7 +1455,6 @@ router.post('/get_email', async (req, res) => {
     var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
 
     var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true }).populate('created_by', { email: 1 }).lean();
-    console.log(' : reqBody.from, offer.created_by.email, reqBody.subject, reqBody.email ==> ', reqBody.from, offer.created_by.email, reqBody.subject, reqBody.email);
     mail_helper.forwardRepliedMail({
       to: offer.created_by.email,
       from: reqBody.from,
@@ -1474,6 +1472,14 @@ router.post('/get_email', async (req, res) => {
     });
 
     res.status(200).send('success');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
+
+router.post('/user/webhooks/event/settings', async (req, res) => {
+  try {
+    console.log(req.body);
   } catch (error) {
     res.status(500).send(error.message);
   }
