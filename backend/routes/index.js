@@ -1480,6 +1480,10 @@ router.post('/get_email', async (req, res) => {
 router.post('/email_opened', async (req, res) => {
   try {
     console.log(req.body);
+    const reqBody = req.body[0];
+    var open_id = reqBody.trackid;
+    console.log(' : open_id ==> ', open_id);
+
   } catch (error) {
     res.status(500).send(error.message);
   }
