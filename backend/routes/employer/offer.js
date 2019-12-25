@@ -1291,8 +1291,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     { "_id": resp._id, "AdHoc._id": comm._id },
                                     {
                                         $set: {
-                                            "AdHoc.$.reply": false,
-                                            "AdHoc.$.open": false
+                                            "AdHoc.$.AdHoc_reply": false,
+                                            "AdHoc.$.AdHoc_open": false
                                         }
                                     })
                             }
@@ -1330,8 +1330,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     { "_id": resp._id, "AdHoc._id": comm._id },
                                     {
                                         $set: {
-                                            "AdHoc.$.reply": false,
-                                            "AdHoc.$.open": false
+                                            "AdHoc.$.AdHoc_reply": false,
+                                            "AdHoc.$.AdHoc_open": false
                                         }
                                     })
                             }
@@ -1370,8 +1370,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     { "_id": resp._id, "AdHoc._id": comm._id },
                                     {
                                         $set: {
-                                            "AdHoc.$.reply": false,
-                                            "AdHoc.$.open": false
+                                            "AdHoc.$.AdHoc_reply": false,
+                                            "AdHoc.$.AdHoc_open": false
                                         }
                                     })
                             }
@@ -1410,8 +1410,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     { "_id": resp._id, "AdHoc._id": comm._id },
                                     {
                                         $set: {
-                                            "AdHoc.$.reply": false,
-                                            "AdHoc.$.open": false
+                                            "AdHoc.$.AdHoc_reply": false,
+                                            "AdHoc.$.AdHoc_open": false
                                         }
                                     })
                             }
@@ -1450,8 +1450,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     { "_id": resp._id, "AdHoc._id": comm._id },
                                     {
                                         $set: {
-                                            "AdHoc.$.reply": false,
-                                            "AdHoc.$.open": false
+                                            "AdHoc.$.AdHoc_reply": false,
+                                            "AdHoc.$.AdHoc_open": false
                                         }
                                     })
                             }
