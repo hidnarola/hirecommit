@@ -899,7 +899,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 });
 
 // comunication mail
-cron.schedule('* * * * *', async (req, res) => {
+cron.schedule('00 00 * * *', async (req, res) => {
     try {
         var resp_data = await Offer.aggregate(
             [
