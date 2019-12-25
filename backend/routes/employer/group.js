@@ -191,6 +191,10 @@ router.put('/', async (req, res) => {
         if (req.body.name && req.body.name != "") {
             obj.name = req.body.name
         }
+
+        if (req.body.subject && req.body.subject != "") {
+            obj.subject = req.body.subject
+        }
         // if (req.body.high_unopened && req.body.high_unopened != "") {
         obj.high_unopened = req.body.high_unopened
         // }
@@ -340,6 +344,10 @@ router.put("/communication/:id", async (req, res) => {
                 "priority": {
                     notEmpty: true,
                     errorMessage: "Priority is required"
+                },
+                "subject": {
+                    notEmpty: true,
+                    errorMessage: "Subject is required"
                 }
             }];
 

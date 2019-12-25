@@ -983,7 +983,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -1035,7 +1035,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -1074,7 +1074,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -1114,7 +1114,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -1154,7 +1154,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -1194,7 +1194,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -1241,7 +1241,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "reply_to": `${resp.created_by.email}`,
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -1282,7 +1282,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -1321,7 +1321,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -1361,7 +1361,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -1401,7 +1401,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -1441,7 +1441,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
-                                "reply_to": `${resp._id}@em7977.hirecommit.com`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_communicationname,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);

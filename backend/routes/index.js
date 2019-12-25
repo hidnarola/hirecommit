@@ -1451,31 +1451,94 @@ router.post('/get_email', async (req, res) => {
     const reqBody = req.body;
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
+    var length = id.length;
 
-    var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-    if (offer_resp.status == 1 && offer_resp.data.reply === false) {
-      var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
+    if (length > 24) {
+      var split_data = id.split("_");
+      if (split_data.length == 3 && split_data[2] === "communication") {
+        var offer_id = split_data[0];
+        var communication_id = split_data[1];
+        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
 
-      var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
-      mail_helper.forwardRepliedMail({
-        to: offer.created_by.email,
-        from: reqBody.from,
-        subject: reqBody.subject,
-        content: reqBody.email,
-        filename: `${mail.data._id}.eml`,
-        html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-      }, (err, info) => {
-        if (err) {
-          console.log(error);
-        }
-        else {
-          console.log('Message forwarded: ' + info.response);
-        }
-      });
-      res.status(200).send('success');
+        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+          $set: {
+            "communication.$.reply": true,
+            "communication.$.reply_date": new Date()
+          }
+        }).populate('created_by', { email: 1 }).lean();
+        mail_helper.forwardRepliedMail({
+          to: update_communication.created_by.email,
+          from: reqBody.from,
+          subject: reqBody.subject,
+          content: reqBody.email,
+          filename: `${mail.data._id}.eml`,
+          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+        }, (err, info) => {
+          if (err) {
+            console.log(error);
+          }
+          else {
+            console.log('Message forwarded: ' + info.response);
+          }
+        });
+      } else if (split_data.length == 3 && split_data[2] === "adhoc") {
+        console.log("adhoc");
+        var offer_id = split_data[0];
+        var adhoc_id = split_data[1];
+        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
+
+        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+          $set: {
+            "AdHoc.$.AdHoc_reply": true,
+            "AdHoc.$.AdHoc_reply_date": new Date()
+          }
+        }).populate('created_by', { email: 1 }).lean();
+        mail_helper.forwardRepliedMail({
+          to: update_communication.created_by.email,
+          from: reqBody.from,
+          subject: reqBody.subject,
+          content: reqBody.email,
+          filename: `${mail.data._id}.eml`,
+          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+        }, (err, info) => {
+          if (err) {
+            console.log(error);
+          }
+          else {
+            console.log('Message forwarded: ' + info.response);
+          }
+        });
+      }
     } else {
-      console.log("Already replied..! Or offer was deleted..!");
+      var offer_resp = await common_helper.findOne(Offer, { "_id": id });
+      if (offer_resp.status == 1 && offer_resp.data.reply === false) {
+        var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
+
+        var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
+        mail_helper.forwardRepliedMail({
+          to: offer.created_by.email,
+          from: reqBody.from,
+          subject: reqBody.subject,
+          content: reqBody.email,
+          filename: `${mail.data._id}.eml`,
+          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+        }, (err, info) => {
+          if (err) {
+            console.log(error);
+          }
+          else {
+            console.log('Message forwarded: ' + info.response);
+          }
+        });
+        res.status(200).send('success');
+      } else {
+        console.log("Already replied..! Or offer was deleted..!");
+      }
     }
+
+
+
+
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -1544,5 +1607,21 @@ router.post('/email_opened', async (req, res) => {
     res.status(500).send(error.message);
   }
 })
+
+router.put('/check_query', async (req, res) => {
+  var update_communication = await Offer.findOneAndUpdate({ "_id": "5e031dee4a54cc17ac0161f0", "communication._id": "5e031dee4a54cc17ac0161f6" }, {
+    $set: {
+      "communication.$.reply": true,
+      "communication.$.reply_date": new Date()
+    }
+  }).populate('created_by', { email: 1 }).lean();
+
+  if (update_communication) {
+    res.status(config.OK_STATUS).json(update_communication);
+  } else {
+    res.status(config.BAD_REQUEST).json("ERROR");
+  }
+})
+
 
 module.exports = router;
