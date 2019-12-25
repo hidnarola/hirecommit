@@ -25,7 +25,6 @@ const Status = require("../../models/status");
 const History = require('../../models/offer_history');
 const MailRecord = require('../../models/mail_record');
 const MailContent = require('../../models/mail_content');
-const MailStatus = require('../../models/mail_status');
 const request = require('request');
 var result = [];
 var result1 = [];
