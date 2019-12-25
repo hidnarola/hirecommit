@@ -1484,12 +1484,14 @@ router.post('/get_email', async (req, res) => {
 
 router.post('/email_opened', async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
     var length = open_id.length;
     if (length > 24) {
-      var split_data = abc.split("_");
+      console.log("1");
+      var split_data = open_id.split("_");
+      console.log(' : split_data.length == 3 && split_data[3] === "adhoc" ==> ', split_data.length == 3 && split_data[3] === "adhoc");
       if (split_data.length == 3 && split_data[3] === "communication") {
         var offer_id = split_data[0];
         var communication_id = split_data[1];
