@@ -1481,17 +1481,14 @@ router.post('/get_email', async (req, res) => {
   }
 })
 
-
 router.post('/email_opened', async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
     var length = open_id.length;
     if (length > 24) {
-      console.log("1");
       var split_data = open_id.split("_");
-      console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
       if (split_data.length == 3 && split_data[2] === "communication") {
         var offer_id = split_data[0];
         var communication_id = split_data[1];
@@ -1516,9 +1513,7 @@ router.post('/email_opened', async (req, res) => {
         var adhoc_id = split_data[1];
         var previous_status = await common_helper.findOne(Offer,
           { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
-        console.log(' : previous_status ==> ', previous_status);
         if (previous_status.status == 1) {
-          console.log(' :  ==> ', offer_id, adhoc_id);
           var update_offer_communication = await common_helper.update(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id },
             {

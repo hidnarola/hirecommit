@@ -30,7 +30,7 @@ communication_mail_helper.send = async (template_id, options, data) => {
                 "to": [
                     {
                         "email": options.to,
-                        "name": "John Doe"
+                        "name": ""
                     }
                 ],
                 "dynamic_template_data": {
