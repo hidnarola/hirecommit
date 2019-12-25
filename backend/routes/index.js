@@ -32,6 +32,7 @@ const MailType = require('./../models/mail_content');
 const new_mail_helper = require('./../helpers/new_mail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
+const MailStatus = require('./../models/mail_status');
 const userpProfile = require('./profile');
 
 router.use("/profile", auth, userpProfile);
@@ -1480,6 +1481,7 @@ router.post('/get_email', async (req, res) => {
     res.status(500).send(error.message);
   }
 })
+
 
 router.post('/email_opened', async (req, res) => {
   try {
