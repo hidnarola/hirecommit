@@ -1487,6 +1487,8 @@ router.post('/email_opened', async (req, res) => {
     console.log(req.body);
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
+    var length = open_id.length;
+    console.log(' : length ==> ', length);
     var offer_resp = await common_helper.findOne(Offer, { "_id": open_id });
     var obj = {
       email_open: true,

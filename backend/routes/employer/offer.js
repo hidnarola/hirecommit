@@ -341,23 +341,23 @@ router.post('/pastOffer', async (req, res) => {
             }
 
 
-            var ReleasedOffer = await common_helper.find(Offer, {
-                "user_id": ObjectId(user.data._id),
-                $or: [
-                    { "created_by": new ObjectId(req.userInfo.id) },
-                    { "employer_id": new ObjectId(req.userInfo.id) },
-                ],
-                // "created_by": req.userInfo.id,
-                $and:
-                    [
-                        { status: { $eq: "Released" } },
-                        { expirydate: { $gte: new Date() } }
-                    ]
-            });
+            // var ReleasedOffer = await common_helper.find(Offer, {
+            //     "user_id": ObjectId(user.data._id),
+            //     $or: [
+            //         { "created_by": new ObjectId(req.userInfo.id) },
+            //         { "employer_id": new ObjectId(req.userInfo.id) },
+            //     ],
+            //     // "created_by": req.userInfo.id,
+            //     $and:
+            //         [
+            //             { status: { $eq: "Released" } },
+            //             { expirydate: { $gte: new Date() } }
+            //         ]
+            // });
 
-            if (ReleasedOffer.data.length > 0) {
-                ReleasedOffer.displayMessage = "There is already Relesed offer for this Candidate , So you can't create offer.";
-            }
+            // if (ReleasedOffer.data.length > 0) {
+            //     ReleasedOffer.displayMessage = "There is already Relesed offer for this Candidate , So you can't create offer.";
+            // }
         }
         else {
             var pastOffer = [];
