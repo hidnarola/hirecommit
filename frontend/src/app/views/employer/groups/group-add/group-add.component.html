@@ -36,12 +36,12 @@
                             <label class="ml-4 col-md-3 " for="high_unopened">High - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_unopened"
-                                    formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
+                                    formControlName="high_unopened" (blur)="removeZero_high_unopened()" [(ngModel)]="groupData.high_unopened"
                                     id="high_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="cust_err_msg" *ngIf="!addGroup.controls['high_unopened'].valid">
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['high_unopened'].valid ">
 
                                     <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']"
                                         class="text-danger">Enter valid data.</span>
@@ -53,7 +53,7 @@
                             <label class="ml-4 col-md-3 " for="high_notreplied">High - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
-                                    formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
+                                    formControlName="high_notreplied" (blur)=" removeZero_high_notreplied()" [(ngModel)]="groupData.high_notreplied"
                                     id="high_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
@@ -70,12 +70,12 @@
                             <label class="ml-4 col-md-3 " for="medium_unopened">Medium - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
-                                    formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
+                                    formControlName="medium_unopened" (blur)="removeZero_medium_unopened()"  [(ngModel)]="groupData.medium_unopened"
                                     id="medium_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_unopened'].valid">
+                                <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_unopened'].valid ">
 
                                     <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']"
                                         class="text-danger">Enter valid data.</span>
@@ -87,7 +87,7 @@
                             <label class="ml-4 col-md-3 " for="medium_notreplied">Medium - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="medium_notreplied"
-                                    formControlName="medium_notreplied" [(ngModel)]="groupData.medium_notreplied"
+                                    formControlName="medium_notreplied" (blur)="removeZero_medium_notreplied()"  [(ngModel)]="groupData.medium_notreplied"
                                     id="medium_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
@@ -257,13 +257,13 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="number" id="day" name="day" class="form-control"
                                                             placeholder="Enter Days" formControlName="day" min="0"
-                                                            [(ngModel)]="customfield.day">
+                                                            [(ngModel)]="customfield.day" (blur)="removeZeroCommunication(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
 
                                                     </div>
-                                                    <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
+                                                    <div class="offset-md-5" *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
                                                         style="color: red;">
                                                         <div
                                                             *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">

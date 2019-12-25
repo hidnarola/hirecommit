@@ -38,6 +38,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offer_data: any = {};
   panelTitle = 'Add';
   user_detail: any = {};
+ 
   candidate: any = [];
   candidateList: any = [];
   groupForm: FormGroup;
@@ -132,6 +133,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   profileData: any;
   min_date = new Date();
   min_expiry_date = new Date();
+  default_date =new Date();
   max_date = new Date(new Date().setFullYear(new Date().getFullYear() + 20));
   userDetail: any = [];
   offerList: any;
@@ -262,10 +264,24 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // salary duration positive check
   checkPositive() {
     if (this.form.value.salarytype === 'hourly') {
-      if (this.form.value.salaryduration.length > 0) {
+      if (this.form.value.salaryduration > 0) {
+        this.form.controls['salaryduration'].setValue(parseFloat(this.form.value.salaryduration));
         this.form.controls['salaryduration'].setValidators([Validators.pattern(/^[0-9]*$/)]);
       }
       this.form.controls['salaryduration'].updateValueAndValidity();
+    }
+  }
+  
+  //remove Zero
+   removeZero(index){
+     if (this.form.controls['AdHocCommunication'].value[index].AdHoc_day > 0){
+       this.form.controls['AdHocCommunication'][`controls`][index].controls['AdHoc_day'].setValue(parseFloat(this.form.value[`AdHocCommunication`][index].AdHoc_day));
+     }
+   }
+
+  removeZeroCommunication(index) {
+    if (this.form.controls['communicationFieldItems'].value[index].day > 0) {
+      this.form.controls['communicationFieldItems'][`controls`][index].controls['day'].setValue(parseFloat(this.form.value[`communicationFieldItems`][index].day));
     }
   }
 
@@ -508,11 +524,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
             } else if (this.is_Edit){
               if (res['data'].status === 'Accepted') {
-                console.log('this.form=>', this.form);
+                
+                // this.default_date = res[`data`][`joiningdate`];
+                console.log('res[`data`].expirydate=>', res[`data`].expirydate);
+                this.max_date = new Date(res[`data`].expirydate);
+                console.log('max_date=>', this.max_date);
+                
                 // this.form.controls['salarybracket'].setErrors(null);
                 this.isAccepted = true;
                 this.form.controls['title'].disable();
-                if (res[`data`][`salary`]){
+                if (res[`data`][`salary`]) {
                   // this.form.controls['salarybracket'].disable();
                   document.getElementById('salarybracket').setAttribute('disabled', 'true');
                 } else if (res[`data`][`salary_from`] && res[`data`][`salary_to`]){
@@ -530,8 +551,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               }
 
                 // set communication
-                console.log('res[`data`][`communication`]=>', res['data']['communication']);
-                console.log('res[`data`][`communication`].length=>', res['data']['communication'].length);
                 if (res['data']['communication'] && res['data']['communication'].length > 0) {
                   this.isSetCommunication = true;
                   this.communicationData = res['data']['communication'];
@@ -554,9 +573,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     _communication_array.push(new_communication);
                   });
                   this.communicationData = _communication_array;
-                  console.log('communicationFieldItems=>', this.communicationFieldItems);
-                  console.log('communicationData=>', this.communicationData);
-
 
                 } else {
                   this.isSetCommunication = false;
@@ -943,8 +959,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   Accept(id, type) {
-    this.accept_btn = true;
-    type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
+    // this.accept_btn = true;
+    this.show_spinner = true;
+    // type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {
         this.isNoCommit = true;
@@ -985,7 +1002,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   acceptedOffer() {
     this.modalService.dismissAll(this.content1);
     this.service.offer_accept({ 'id': this.OfferID }).subscribe(res => {
-      this.accept_btn = true;
+      // this.accept_btn = true;
+      this.show_spinner = true;
       const routee = this.router;
       Swal.fire(
         {
@@ -997,11 +1015,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           routee.navigate(['/candidate/offers/list']);
         }
       });
-
+      this.show_spinner = false;
     });
+    
   }
   disabledAccept() {
-    this.accept_btn = false;
+    this.show_spinner = false;
 
     // document.getElementById('accept').setAttribute('disabled', 'false');
   }
@@ -1015,10 +1034,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // }
 
   getExpiryDate(e) {
-    const date = new Date(e);
-    const month = date.getMonth() + 1;
-    this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
-    this.max_date = this.form.value.expirydate;
+    // if ((this.resData !== 'Accepted')){
+      const date = new Date(e);
+      const month = date.getMonth() + 1;
+      this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
+      this.max_date = this.form.value.expirydate;
+      console.log('this.max_date=>', this.form.value.expirydate);
+    // }
   }
 
   // add more communication
@@ -1270,6 +1292,27 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
+  }
+
+  removeZero_high_unopened() {
+    if (this.form.value.high_unopened && this.form.value.high_unopened >= 0) {
+      this.form.controls['high_unopened'].setValue(parseFloat(this.form.value[`high_unopened`]));
+    }
+  }
+  removeZero_high_notreplied() {
+    if (this.form.value.high_notreplied && this.form.value.high_notreplied >= 0) {
+      this.form.controls['high_notreplied'].setValue(parseFloat(this.form.value[`high_notreplied`]));
+    }
+  }
+  removeZero_medium_unopened() {
+    if (this.form.value.medium_unopened && this.form.value.medium_unopened >= 0) {
+      this.form.controls['medium_unopened'].setValue(parseFloat(this.form.value[`medium_unopened`]));
+    }
+  }
+  removeZero_medium_notreplied() {
+    if (this.form.value.medium_notreplied && this.form.value.medium_notreplied >= 0) {
+      this.form.controls['medium_notreplied'].setValue(parseFloat(this.form.value[`medium_notreplied`]));
+    }
   }
 
 

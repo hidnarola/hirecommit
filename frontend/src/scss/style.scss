@@ -301,6 +301,11 @@ html body .ui-radiobutton div.ui-radiobutton-box.ui-state-active { border-color:
 .not_verified_block .alert.alert-danger{ display:inline-block; font-size: 24px; vertical-align:top;}
 .not_verified_block i { font-size: 40px; color: red; vertical-align: middle; margin: 0 20px 0 0;}
 
+.viewoffers-info strong{ font-weight:600; display:block; line-height:normal; margin:0 0 5px;}
+.viewoffers-info p{ font-weight:400; display:block; color:#666;}
+.viewoffers-info + .viewoffers-info {margin-top:15px; border-top:1px solid #eee; padding:15px 0 0;}
+
+
 
 /***** Media start it *****/
 @media(min-width:992px){

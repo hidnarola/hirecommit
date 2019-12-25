@@ -63,7 +63,6 @@ export class GroupAddComponent implements OnInit {
 
     this.service.alert_days().subscribe(res => {
       // this.days = res[`data`];
-      console.log('this.days=>', this.days);
       this.groupData = res[`data`];
 
     }, (err) => {
@@ -199,6 +198,32 @@ export class GroupAddComponent implements OnInit {
       });
     } else {
       this.show_spinner = false;
+    }
+  }
+  //remove zero 
+  removeZeroCommunication(index) {
+    if (this.communicationForm.controls['communicationFieldItems'].value[index].day >= 0) {
+      this.communicationForm.controls['communicationFieldItems'][`controls`][index].controls['day'].setValue(parseFloat(this.communicationForm.value[`communicationFieldItems`][index].day));
+    }
+  }
+  removeZero_high_unopened() {
+    if (this.addGroup.value.high_unopened && this.addGroup.value.high_unopened >= 0) {
+      this.addGroup.controls['high_unopened'].setValue(parseFloat(this.addGroup.value[`high_unopened`]));
+    }
+  }
+  removeZero_high_notreplied(){
+    if (this.addGroup.value.high_notreplied && this.addGroup.value.high_notreplied >= 0) {
+      this.addGroup.controls['high_notreplied'].setValue(parseFloat(this.addGroup.value[`high_notreplied`]));
+    }
+  }
+  removeZero_medium_unopened(){
+    if (this.addGroup.value.medium_unopened && this.addGroup.value.medium_unopened >= 0) {
+      this.addGroup.controls['medium_unopened'].setValue(parseFloat(this.addGroup.value[`medium_unopened`]));
+    } 
+  }
+  removeZero_medium_notreplied(){
+    if (this.addGroup.value.medium_notreplied && this.addGroup.value.medium_notreplied >= 0) {
+      this.addGroup.controls['medium_notreplied'].setValue(parseFloat(this.addGroup.value[`medium_notreplied`]));
     }
   }
 
