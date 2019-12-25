@@ -382,8 +382,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
   next(e) {
     this.modalService.dismissAll(this.content);
-    this.modalService.open(this.content1, ModalOptions);
-    this.err_msg = this.pastDetails.previousOffer.displayMessage;
+    if (this.pastDetails.previousOffer.data.length > 0){
+      this.modalService.open(this.content1, ModalOptions);
+      this.err_msg = this.pastDetails.previousOffer.displayMessage;
+    }
   }
   send() {
     if (this.pastDetails.ReleasedOffer.data.length > 0) {
@@ -561,6 +563,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                       'trigger': element.trigger,
                       'priority': element.priority,
                       'day': element.day,
+                      'subject': element.subject,
                       'message': element.message,
                     };
                     this.communicationFieldItems.setControl(index, this.fb.group({
@@ -568,7 +571,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                       trigger: ['', Validators.required],
                       priority: ['', Validators.required],
                       day: ['', Validators.required],
-                      message: ['']
+                      subject: ['', Validators.required],
+                      message: ['', Validators.required]
                     }));
                     _communication_array.push(new_communication);
                   });
@@ -589,6 +593,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                       'AdHoc_trigger': element.AdHoc_trigger,
                       'AdHoc_priority': element.AdHoc_priority,
                       'AdHoc_day': element.AdHoc_day,
+                      'AdHoc_subject':element.AdHoc_subject,
                       'AdHoc_message': element.AdHoc_message,
                     };
                     this.AdHocCommunication.setControl(index, this.fb.group({
@@ -596,20 +601,21 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                       AdHoc_trigger: ['', Validators.required],
                       AdHoc_priority: ['', Validators.required],
                       AdHoc_day: ['', Validators.required],
+                      AdHoc_subject: ['', Validators.required],
                       AdHoc_message: ['', Validators.required]
                     }));
                     _Adhoc_communication_array.push(new_communication);
                   });
                   this.AdHocCommunicationData = _Adhoc_communication_array;
                 } else {
-                  let index = 1;
-                  this.AdHocCommunication.setControl(index, this.fb.group({
-                    AdHoc_communicationname: [''],
-                    AdHoc_trigger: [''],
-                    AdHoc_priority: [''],
-                    AdHoc_day: [''],
-                    AdHoc_message: ['']
-                  }));
+                  // let index = 1;
+                  // this.AdHocCommunication.setControl(index, this.fb.group({
+                  //   AdHoc_communicationname: [''],
+                  //   AdHoc_trigger: [''],
+                  //   AdHoc_priority: [''],
+                  //   AdHoc_day: [''],
+                  //   AdHoc_message: ['']
+                  // }));
                 }
                 // set AdHoc
                 this.form.controls['email'].setValue(res[`data`].user_id.email);
@@ -913,6 +919,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               'trigger': element.trigger,
               'priority': element.priority,
               'day': element.day,
+              'subject':element.subject,
               'message': element.message,
             };
             this.communicationFieldItems.setControl(index, this.fb.group({
@@ -920,6 +927,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               trigger: ['', Validators.required],
               priority: ['', Validators.required],
               day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+              subject: ['', Validators.required],
               message: ['', [Validators.required, this.noWhitespaceValidator]]
               // message: ['', Validators.required]
             }));
@@ -1071,6 +1079,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'trigger': '',
       'priority': '',
       'day': '',
+      'subject':'',
       'message': '',
     };
 
@@ -1079,6 +1088,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+      subject: ['', Validators.required],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
     this.communicationData.push(new_communication);
@@ -1104,6 +1114,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'AdHoc_trigger': '',
       'AdHoc_priority': '',
       'AdHoc_day': '',
+      'AdHoc_subject':'',
       'AdHoc_message': '',
     };
 
@@ -1112,6 +1123,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       AdHoc_trigger: ['', Validators.required],
       AdHoc_priority: ['', Validators.required],
       AdHoc_day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+      AdHoc_subject: ['', Validators.required],
       AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
     this.AdHocCommunicationData.push(new_communication);
@@ -1337,6 +1349,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           trigger: element.trigger,
           priority: element.priority,
           day: element.day,
+          subject:element.subject,
           message: element.message
         });
       });
@@ -1353,6 +1366,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           AdHoc_trigger: element.AdHoc_trigger,
           AdHoc_priority: element.AdHoc_priority,
           AdHoc_day: element.AdHoc_day,
+          AdHoc_subject: element.AdHoc_subject,
           AdHoc_message: element.AdHoc_message
           // AdHoc_message: element.AdHoc_message
         });

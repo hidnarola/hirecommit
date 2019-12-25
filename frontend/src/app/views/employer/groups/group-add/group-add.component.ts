@@ -111,6 +111,7 @@ export class GroupAddComponent implements OnInit {
       'trigger': '',
       'priority': '',
       'day': '',
+      'subject':'',
       'message': '',
     };
 
@@ -119,7 +120,7 @@ export class GroupAddComponent implements OnInit {
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
-      // day: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+      subject: ['', [Validators.required, this.noWhitespaceValidator]],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
       // message: ['', Validators.required]
     }));
@@ -243,6 +244,7 @@ export class GroupAddComponent implements OnInit {
               trigger: element.trigger,
               priority: element.priority,
               day: element.day,
+              subject: element.subject,
               message: element.message
             });
           });

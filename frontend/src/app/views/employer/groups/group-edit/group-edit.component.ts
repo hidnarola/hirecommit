@@ -97,6 +97,7 @@ export class GroupEditComponent implements OnInit {
             'trigger': element.trigger,
             'priority': element.priority,
             'day': element.day,
+            'subject':element.subject,
             'message': element.message,
           };
           this.communicationFieldItems.setControl(index, this.fb.group({
@@ -104,6 +105,7 @@ export class GroupEditComponent implements OnInit {
             trigger: ['', Validators.required],
             priority: ['', Validators.required],
             day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+            subject: ['', [Validators.required, this.noWhitespaceValidator]],
             message: ['', [Validators.required, this.noWhitespaceValidator]]
             // message: ['', Validators.required]
           }));
@@ -195,6 +197,7 @@ export class GroupEditComponent implements OnInit {
       'trigger': '',
       'priority': '',
       'day': '',
+      'subject':'',
       'message': '',
     };
 
@@ -203,6 +206,7 @@ export class GroupEditComponent implements OnInit {
       trigger: ['', Validators.required],
       priority: ['', Validators.required],
       day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+      subject: ['', [Validators.required, this.noWhitespaceValidator]],
       message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
 
@@ -281,6 +285,7 @@ export class GroupEditComponent implements OnInit {
               trigger: element.trigger,
               priority: element.priority,
               day: element.day,
+              subject:element.subject,
               message: element.message
             });
           });

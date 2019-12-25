@@ -276,6 +276,24 @@
                                                     
                                                 </div>
                                             </div>
+                                            <div class="col-md-6 row no-gutters">
+                                                <label class="col-md-5 col-form-label" for="subject">Subject</label>
+                                                <div class="input-group col-md-7">
+                                                    <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject"
+                                                        formControlName="subject" [(ngModel)]="customfield.subject">
+                                            
+                                            
+                                                </div>
+                                                <div class="offset-md-5"
+                                                    *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors"
+                                                    style="color: red;">
+                                                    <div
+                                                        *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || groupForm.controls['communicationFieldItems'].controls[i].get('subject').errors['whitespace']">
+                                                        This field is required.
+                                                    </div>
+                                            
+                                                </div>
+                                            </div>
                                             <div class="form row">
                                                 <div class="col-md-8">
                                                     <label class="col-form-label" for="message">Message</label>
