@@ -1516,6 +1516,7 @@ router.post('/email_opened', async (req, res) => {
         var adhoc_id = split_data[1];
         var previous_status = await common_helper.findOne(Offer,
           { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.open": false })
+        console.log(' : previous_status.status ==> ', previous_status.status);
         if (previous_status.status == 1) {
           var update_offer_communication = await common_helper.update(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id },
@@ -1525,6 +1526,7 @@ router.post('/email_opened', async (req, res) => {
                 "AdHoc.$.AdHoc_open_At": new Date()
               }
             })
+          console.log(' : update_offer_communication ==> ', update_offer_communication);
         } else if (previous_status.status == 2) {
           res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
         } else {
