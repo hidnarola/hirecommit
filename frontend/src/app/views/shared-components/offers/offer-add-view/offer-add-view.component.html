@@ -533,7 +533,7 @@
                                                         <input type="text" class="form-control" placeholder="Enter name"
                                                             formControlName="communicationname" id="communicationname"
                                                             [(ngModel)]="customfield.communicationname">
-                                                            {{form_validation}}
+                                                            
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
@@ -591,7 +591,7 @@
                                                         </div>
 
                                                     </div>
-                                                    <div class="cust_err_msg offset-md-5 "
+                                                    <div class="cust_err_msg offset-md-5"
                                                         *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['day'].valid">
                                                         <span
                                                             *ngIf="form.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']"
@@ -605,6 +605,27 @@
                                                 </div>
 
                                             </div>
+                                        <div class="form-goup no-gutters row">
+                                            <div class="col-md-12 row no-gutters">
+                                                <label class="col-md-2 col-form-label" for="subject">
+                                                   Subject 
+                                                </label>
+                                                <div class="col-md-7 no-gutters">
+                                                    <input type="text" class="form-control" placeholder="Enter name" formControlName="subject"
+                                                        id="subject" [(ngModel)]="customfield.subject">
+                                        
+                                                    <div class="cust_err_msg"
+                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['subject'].valid">
+                                                        <span
+                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['subject'].errors['whitespace']"
+                                                            class="text-danger">
+                                                            This field is required.
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
                                             <div class="form row">
                                                 <div class="col-md-8">
                                                     <label class="col-form-label" for="message">Message</label>
@@ -766,6 +787,27 @@
                                                     </div>
                                                 </div>
 
+                                            </div>
+                                            <div class="form-goup no-gutters row">
+                                                <div class="col-md-12 row no-gutters">
+                                                    <label class="col-md-2 col-form-label" for="AdHoc_subject">
+                                                        Subject
+                                                    </label>
+                                                    <div class="col-md-7 no-gutters">
+                                                        <input type="text" class="form-control" placeholder="Enter Subject" formControlName="AdHoc_subject"
+                                                            id="AdHoc_subject" [(ngModel)]="customfield.AdHoc_subject">
+                                            
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].errors['whitespace']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
                                             </div>
                                             <div class="form row">
                                                 <div class="col-md-8">
@@ -1026,6 +1068,13 @@
                                         </div>
                                     </div>
                                     <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">Subject</label>
+                                            <div class="col-md-6 detail-input">
+                                                {{communication.subject}}
+                                            </div> 
+                                        </div>
+                                    
+                                    <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
                                             <!-- <ckeditor [editor]="Editor" [(ngModel)]="communication.message"
@@ -1035,10 +1084,27 @@
                                                 <div [ngxSummernote]="config" #editor
                                                     [(summernoteModel)]="communication.message" id="editor">
                                                 </div>
+                                                <!-- <div>
+                                                    <textarea  id="editor">{{communication.message}}</textarea>
+                                                </div> -->
                                             </div>
                                         </div>
 
                                     </div>
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">
+                                            Email Open Date
+                                        </label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.open_date | date: 'dd/MM/yyyy': 'utc'}}
+                                        </div>
+                                        <label class="col-md-2 detail-label">Email Replied Date</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.reply_date | date: 'dd/MM/yyyy': 'utc'}}
+                                        </div>
+                                    </div>
+
+                                    
                                 </div>
                             </div>
                         </div>
@@ -1079,16 +1145,35 @@
                                         </div>
                                     </div>
                                     <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">Subject</label>
+                                        <div class="col-md-6 detail-input">
+                                            {{communication.AdHoc_subject}}
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
                                             <!-- <ckeditor [editor]="Editor" [(ngModel)]="communication.AdHoc_message"
                                                 [ngModelOptions]="{standalone: true}" [disabled]="true">
                                             </ckeditor> -->
                                             <div>
+                                                <!-- {{communication.AdHoc_message}} -->
                                                 <div [ngxSummernote]="config" #editor
-                                                    [(summernoteModel)]="communication.AdHoc_message" id="editor">
+                                                    [(summernoteModel)]="communication.AdHoc_message" id="editor" disabled="true">
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">
+                                            Email Open Date
+                                        </label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.AdHoc_open_date | date: 'dd/MM/yyyy': 'utc'}}
+                                        </div>
+                                        <label class="col-md-2 detail-label">Email Replied Date</label>
+                                        <div class="col-md-4 detail-input">
+                                            {{communication.AdHoc_reply_date  | date: 'dd/MM/yyyy': 'utc' }}
                                         </div>
                                     </div>
                                 </div>
