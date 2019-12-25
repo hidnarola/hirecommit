@@ -1519,8 +1519,8 @@ router.post('/email_opened', async (req, res) => {
             { "_id": offer_id, "AdHoc._id": adhoc_id },
             {
               $set: {
-                "AdHoc.$.open": true,
-                "AdHoc.$.open_At": new Date()
+                "AdHoc.$.AdHoc_open": true,
+                "AdHoc.$.AdHoc_open_At": new Date()
               }
             })
         } else if (previous_status.status == 2) {
