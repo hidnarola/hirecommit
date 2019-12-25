@@ -1481,7 +1481,9 @@ router.post('/get_email', async (req, res) => {
             console.log('Message forwarded: ' + info.response);
           }
         });
-      } else if (split_data.length == 3 && split_data[2] === "adhoc") {
+      }
+
+      if (split_data.length == 3 && split_data[2] === "adhoc") {
         console.log("adhoc");
         var offer_id = split_data[0];
         var adhoc_id = split_data[1];
