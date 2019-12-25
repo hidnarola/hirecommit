@@ -1516,7 +1516,9 @@ router.post('/email_opened', async (req, res) => {
         var adhoc_id = split_data[1];
         var previous_status = await common_helper.findOne(Offer,
           { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
+        console.log(' : previous_status ==> ', previous_status);
         if (previous_status.status == 1) {
+          console.log(' :  ==> ', offer_id, adhoc_id);
           var update_offer_communication = await common_helper.update(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id },
             {
