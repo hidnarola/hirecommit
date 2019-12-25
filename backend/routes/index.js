@@ -1491,8 +1491,8 @@ router.post('/email_opened', async (req, res) => {
     if (length > 24) {
       console.log("1");
       var split_data = open_id.split("_");
-      console.log(' : split_data.length == 3 && split_data[3] === "adhoc" ==> ', split_data.length == 3 && split_data[3] === "adhoc");
-      if (split_data.length == 3 && split_data[3] === "communication") {
+      console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
+      if (split_data.length == 3 && split_data[2] === "communication") {
         var offer_id = split_data[0];
         var communication_id = split_data[1];
         var previous_status = await common_helper.findOne(Offer,
@@ -1511,7 +1511,7 @@ router.post('/email_opened', async (req, res) => {
         } else {
           res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
         }
-      } else if (split_data.length == 3 && split_data[3] === "adhoc") {
+      } else if (split_data.length == 3 && split_data[2] === "adhoc") {
         var offer_id = split_data[0];
         var adhoc_id = split_data[1];
         var previous_status = await common_helper.findOne(Offer,
