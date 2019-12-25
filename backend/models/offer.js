@@ -25,7 +25,7 @@ var CommunicationSchema = new Schema({
 
 var AdhockSchema = new Schema({
   AdHoc_communicationname: { type: String, required: true },
-  AdHoc_subject: { type: String, required: true },
+  AdHoc_subject: { type: String },
   AdHoc_open: { type: Boolean },
   AdHoc_open_date: { type: Date },
   AdHoc_reply: { type: Boolean },

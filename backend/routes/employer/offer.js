@@ -341,23 +341,23 @@ router.post('/pastOffer', async (req, res) => {
             }
 
 
-            // var ReleasedOffer = await common_helper.find(Offer, {
-            //     "user_id": ObjectId(user.data._id),
-            //     $or: [
-            //         { "created_by": new ObjectId(req.userInfo.id) },
-            //         { "employer_id": new ObjectId(req.userInfo.id) },
-            //     ],
-            //     // "created_by": req.userInfo.id,
-            //     $and:
-            //         [
-            //             { status: { $eq: "Released" } },
-            //             { expirydate: { $gte: new Date() } }
-            //         ]
-            // });
+            var ReleasedOffer = await common_helper.find(Offer, {
+                "user_id": ObjectId(user.data._id),
+                $or: [
+                    { "created_by": new ObjectId(req.userInfo.id) },
+                    { "employer_id": new ObjectId(req.userInfo.id) },
+                ],
+                // "created_by": req.userInfo.id,
+                $and:
+                    [
+                        { status: { $eq: "Released" } },
+                        { expirydate: { $gte: new Date() } }
+                    ]
+            });
 
-            // if (ReleasedOffer.data.length > 0) {
-            //     ReleasedOffer.displayMessage = "There is already Relesed offer for this Candidate , So you can't create offer.";
-            // }
+            if (ReleasedOffer.data.length > 0) {
+                ReleasedOffer.displayMessage = "There is already Relesed offer for this Candidate , So you can't create offer.";
+            }
         }
         else {
             var pastOffer = [];
@@ -898,7 +898,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 });
 
 // comunication mail
-cron.schedule('00 00 * * *', async (req, res) => {
+cron.schedule('* * * * *', async (req, res) => {
     try {
         var resp_data = await Offer.aggregate(
             [
@@ -983,9 +983,9 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
-                                "trackid": resp._id + "communication_afterOffer"
+                                "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
 
                             if (mail_resp.status == 1) {
@@ -1037,7 +1037,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "reply_to": `${resp.created_by.email}`,
                                 // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
                                 "subject": comm.communicationname,
-                                "trackid": resp._id + "communication_beforeJoining"
+                                "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1075,7 +1075,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
                                 "subject": comm.communicationname,
-                                "trackid": resp._id + "communication_afterJoining"
+                                "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1114,7 +1114,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
                                 "subject": comm.communicationname,
-                                "trackid": resp._id + "communication_beforeExpiry"
+                                "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1153,7 +1153,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
                                 "subject": comm.communicationname,
-                                "trackid": resp._id + "communication_afterExpiry"
+                                "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1192,7 +1192,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
                                 "subject": comm.communicationname,
-                                "trackid": resp._id + "communication_afterAcceptance"
+                                "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1219,31 +1219,35 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var email = resp.candidate.email
 
                         if (moment(current_date).isSame(offer_date) == true) {
-                            var message = comm.message;
+
+                            var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
                             message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
+
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.AdHoc_communicationname
                             }
-
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "subject": comm.communicationname,
-                                "trackid": resp._id + "adhoc_afterOffer"
+                                "to": resp.candidate.email,
+                                "reply_to": `${resp.created_by.email}`,
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                "subject": comm.AdHoc_communicationname,
+                                "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
                                     { "_id": resp._id, "AdHoc._id": comm._id },
                                     {
                                         $set: {
-                                            "AdHoc.$.reply": false,
-                                            "AdHoc.$.open": false
+                                            "AdHoc.$.AdHoc_reply": false,
+                                            "AdHoc.$.AdHoc_open": false
                                         }
                                     })
                             }
@@ -1259,7 +1263,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var email = resp.candidate.email;
 
                         if (moment(current_date).isSame(offer_date) == true) {
-                            var message = comm.message;
+                            var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
@@ -1268,14 +1272,15 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.AdHoc_communicationname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "subject": comm.communicationname,
-                                "trackid": resp._id + "adhoc_beforeJoining"
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                "subject": comm.AdHoc_communicationname,
+                                "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1297,7 +1302,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
                         if (moment(current_date).isSame(offer_date) == true) {
-                            var message = comm.message;
+                            var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
@@ -1306,14 +1311,15 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.AdHoc_communicationname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "subject": comm.communicationname,
-                                "trackid": resp._id + "adhoc_afterJoining"
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                "subject": comm.AdHoc_communicationname,
+                                "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1336,7 +1342,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
                         if (moment(current_date).isSame(offer_date) == true) {
-                            var message = comm.message;
+                            var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
@@ -1345,14 +1351,15 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.AdHoc_communicationname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "subject": comm.communicationname,
-                                "trackid": resp._id + "adhoc_beforeExpiry"
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                "subject": comm.AdHoc_communicationname,
+                                "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1375,7 +1382,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
                         if (moment(current_date).isSame(offer_date) == true) {
-                            var message = comm.message;
+                            var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
@@ -1384,14 +1391,15 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.AdHoc_communicationname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "subject": comm.communicationname,
-                                "trackid": resp._id + "adhoc_afterExpiry"
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                "subject": comm.AdHoc_communicationname,
+                                "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,
@@ -1414,7 +1422,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
                         if (moment(current_date).isSame(offer_date) == true) {
-                            var message = comm.message;
+                            var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
@@ -1423,14 +1431,15 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.AdHoc_communicationname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 "reply_to": `${resp.created_by.email}`,
-                                "subject": comm.communicationname,
-                                "trackid": resp._id + "adhoc_afterAcceptance"
+                                // "reply_to2": `${resp._id}@em7977.hirecommit.com`,
+                                "subject": comm.AdHoc_communicationname,
+                                "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
                                 var update_offer_communication = await common_helper.update(Offer,

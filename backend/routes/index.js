@@ -1488,16 +1488,58 @@ router.post('/email_opened', async (req, res) => {
     const reqBody = req.body[0];
     var open_id = reqBody.trackid;
     var length = open_id.length;
-    console.log(' : length ==> ', length);
-    var offer_resp = await common_helper.findOne(Offer, { "_id": open_id });
-    var obj = {
-      email_open: true,
-      open_At: new Date()
-    }
-    if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
-      var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
+    if (length > 24) {
+      var split_data = abc.split("_");
+      if (split_data.length == 3 && split_data[3] === "communication") {
+        var offer_id = split_data[0];
+        var communication_id = split_data[1];
+        var previous_status = await common_helper.findOne(Offer,
+          { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
+        if (previous_status.status == 1) {
+          var update_offer_communication = await common_helper.update(Offer,
+            { "_id": offer_id, "communication._id": communication_id },
+            {
+              $set: {
+                "communication.$.open": true,
+                "communication.$.open_At": new Date()
+              }
+            })
+        } else if (previous_status.status == 2) {
+          res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
+        } else {
+          res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
+        }
+      } else if (split_data.length == 3 && split_data[3] === "adhoc") {
+        var offer_id = split_data[0];
+        var adhoc_id = split_data[1];
+        var previous_status = await common_helper.findOne(Offer,
+          { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.open": false })
+        if (previous_status.status == 1) {
+          var update_offer_communication = await common_helper.update(Offer,
+            { "_id": offer_id, "AdHoc._id": adhoc_id },
+            {
+              $set: {
+                "AdHoc.$.open": true,
+                "AdHoc.$.open_At": new Date()
+              }
+            })
+        } else if (previous_status.status == 2) {
+          res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
+        } else {
+          res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
+        }
+      }
     } else {
-      console.log('Offer is already opened..! Or offer is deleted..!');
+      var offer_resp = await common_helper.findOne(Offer, { "_id": open_id });
+      var obj = {
+        email_open: true,
+        open_At: new Date()
+      }
+      if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
+        var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
+      } else {
+        console.log('Offer is already opened..! Or offer is deleted..!');
+      }
     }
   } catch (error) {
     res.status(500).send(error.message);
