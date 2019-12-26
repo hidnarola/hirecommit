@@ -75,7 +75,7 @@ router.post('/get', async (req, res) => {
 
         if (!errors) {
             var sortOrderColumnIndex = req.body.order[0].column;
-            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? 'city' : req.body.columns[sortOrderColumnIndex].data;
             let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
             let sortingObject = {
                 [sortOrderColumn]: sortOrder

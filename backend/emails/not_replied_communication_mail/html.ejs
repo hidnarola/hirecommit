@@ -54,24 +54,74 @@
                                                         Priority</th>
                                                 </tr>
                                             </thead>
-                                            <% for(var i=0; i < data.length; i++) { %>
+                                            <% for(var i=0; i < data.communication.length; i++) { %>
                                             <tbody>
                                                 <tr>
                                                     <td
                                                         style="border:0; border-bottom:1px solid #eee; padding:10px; font-size:15px; font-size:#333; font-weight:normal">
-                                                        <%= data[i].candidatename %></td>
+                                                        <%=  data.communication[i].candidatename %></td>
                                                     <td
                                                         style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
-                                                        <%= data[i].candidateemail %></td>
+                                                        <%=  data.communication[i].candidateemail %></td>
                                                     <td
                                                         style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
-                                                        <%= data[i].subject %></td>
+                                                        <%=  data.communication[i].subject %></td>
                                                     <td
                                                         style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
-                                                        <%= data[i].not_replied_days %></td>
+                                                        <%=  data.communication[i].not_replied_days %></td>
                                                     <td
                                                         style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
-                                                        <%= data[i].priority %></td>
+                                                        <%=  data.communication[i].priority %></td>
+                                                </tr>
+
+                                            <tbody>
+                                                <% } %>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table style="border:1px solid #eee; margin:0; border-spacing:0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; font-size:15px; color:#333; font-weight:normal; background: #eee; text-align:left;">
+                                                        Name</th>
+                                                    <th
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal;background: #eee; text-align: left;">
+                                                        Email</th>
+                                                    <th
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal;background: #eee; text-align: left;">
+                                                        Subject</th>
+                                                    <th
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal;background: #eee; text-align: left;">
+                                                        Not Replied Days</th>
+                                                    <th
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal;background: #eee; text-align: left;">
+                                                        Priority</th>
+                                                </tr>
+                                            </thead>
+                                            <% for(var i=0; i < data.adhoc.length; i++) { %>
+                                            <tbody>
+                                                <tr>
+                                                    <td
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; font-size:15px; font-size:#333; font-weight:normal">
+                                                        <%= data.adhoc[i].candidatename %></td>
+                                                    <td
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
+                                                        <%= data.adhoc[i].candidateemail %></td>
+                                                    <td
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
+                                                        <%= data.adhoc[i].subject %></td>
+                                                    <td
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
+                                                        <%= data.adhoc[i].not_replied_days %></td>
+                                                    <td
+                                                        style="border:0; border-bottom:1px solid #eee; padding:10px; border-left:1px solid #eee; font-size:15px; color:#333; font-weight:normal">
+                                                        <%= data.adhoc[i].priority %></td>
                                                 </tr>
 
                                             <tbody>
