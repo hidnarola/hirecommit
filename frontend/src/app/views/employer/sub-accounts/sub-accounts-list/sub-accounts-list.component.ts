@@ -228,21 +228,38 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         'id': id,
         'admin_rights': 'no'
       };
-      this.service.admin_rigth(this.obj).subscribe(res => {
-        this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
-      }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-      });
+      if(this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer'){
+        this.service.admin_rigth(this.obj).subscribe(res => {
+          this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
+      } else if(this.userDetail.role === 'admin') {
+         this.employer_admin_Service.admin_rights_SuperAdmin(this.obj).subscribe (res => {
+           this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
+         }, (err) => {
+           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+         }); 
+      }
+      
     } else if (e.checked === true) {
       this.obj = {
         'id': id,
         'admin_rights': 'yes'
       };
-      this.service.admin_rigth(this.obj).subscribe(res => {
-        this.toastr.success('Admin Rights Granted.', 'Success!', { timeOut: 3000 });
-      }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-      });
+      if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+        this.service.admin_rigth(this.obj).subscribe(res => {
+          this.toastr.success('Admin Rights Granted.', 'Success!', { timeOut: 3000 });
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
+      } else if (this.userDetail.role === 'admin') {
+        this.employer_admin_Service.admin_rights_SuperAdmin(this.obj).subscribe(res => {
+          this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
+      }
     }
   }
 

@@ -43,4 +43,6 @@ export class SubAccountService {
   admin_rigth(data): Observable<any[]> {
     return this.http.put<any[]>(`${this.url}` + '/sub_account', data);
   }
+  
+
 }

@@ -112,6 +112,8 @@ export class CustomFieldAddViewComponent implements OnInit {
          this.show_spinner = false;
        }
      });
+   } else {
+     this.show_spinner = false;
    }
     } else {
       if (valid) {

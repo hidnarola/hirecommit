@@ -179,22 +179,27 @@ export class EmployerViewComponent implements OnInit {
   }
 
   onApprove(id) {
-    document.getElementById('approve').setAttribute('disabled', 'true');
+    this.show_spinner = true;
+    // document.getElementById('approve').setAttribute('disabled', 'true');
     const obj = {
       'id': id
     };
     this.confirmationService.confirm({
+    
       message: 'Are you sure that you want to Approve this Employer?',
       accept: () => {
+      
         this.service.aprroved_employer(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          
           this.router.navigate([this.cancel_link1]);
         }, (err) => {
-          console.log(err);
+            this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       }, reject: () =>{
-        document.getElementById('approve').removeAttribute('disabled');
+        this.show_spinner = false;
+        // document.getElementById('approve').removeAttribute('disabled');
       }
     });
   }
