@@ -227,7 +227,7 @@ router.put('/details', async (req, res) => {
             obj.admin_rights = req.body.data.admin_rights
         }
         if (req.body.data.email && req.body.data.email !== "") {
-            obj.email = req.body.data.email
+            obj.email = req.body.data.email.toLowerCase()
         }
 
         if (req.body.data.username && req.body.data.username !== "") {
@@ -284,6 +284,8 @@ router.put('/details', async (req, res) => {
                 });
 
             }
+        } else {
+            var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
         }
 
         if (resp_Detail_data.status == 0) {

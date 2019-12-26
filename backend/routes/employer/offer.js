@@ -26,6 +26,10 @@ const History = require('../../models/offer_history');
 const MailRecord = require('../../models/mail_record');
 const MailContent = require('../../models/mail_content');
 const request = require('request');
+communication_notopen = [];
+adhoc_notopen = [];
+communication_notreply = [];
+adhoc_notreply = [];
 var result = [];
 var result1 = [];
 let valuesmail;
@@ -400,7 +404,7 @@ router.post('/check_is_candidate', async (req, res) => {
     }
 })
 
-// unopen offer mail
+// unopen and not replied offer mail
 cron.schedule('00 00 * * *', async (req, res) => {
     try {
         var resp_data = await Offer.aggregate(
@@ -584,7 +588,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         const filtered = result.filter(r => r.empid.toString() === filterdata._id.toString())
                         const filtered1 = result1.filter(r => r.empid.toString() === filterdata._id.toString())
 
-                        var emial_send_to = await common_helper.find(User, {
+                        var email_send_to = await common_helper.find(User, {
                             "isAllow": true,
                             "is_del": false,
                             $or: [
@@ -595,8 +599,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         // console.log(' : filtered ==> ', filtered);
                         // console.log(' : filtered1 ==> ', filtered1);
-                        if (filtered.length > 0 && emial_send_to.status == 1) {
-                            for (const sendto of emial_send_to.data) {
+                        if (filtered.length > 0 && email_send_to.status == 1) {
+                            for (const sendto of email_send_to.data) {
                                 const element = sendto;
                                 if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
                                     var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
@@ -621,16 +625,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "name": name,
                                     "data": filtered
                                 });
-                                if (mail_resp.status == 1) {
-                                    filtered = [];
-                                    result = [];
-                                    valuesmail = 0;
-                                }
                             }
+                            filtered = [];
+                            result = [];
+                            valuesmail = 0;
                         }
 
-                        if (filtered1.length > 0 && emial_send_to.status == 1) {
-                            for (const sendto of emial_send_to.data) {
+                        if (filtered1.length > 0 && email_send_to.status == 1) {
+                            for (const sendto of email_send_to.data) {
                                 const element = sendto;
                                 if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
                                     var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
@@ -655,12 +657,10 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "name": name,
                                     "data": filtered1
                                 });
-                                if (mail_resp.status == 1) {
-                                    filtered1 = [];
-                                    result1 = [];
-                                    valuesmail1 = 0;
-                                }
                             }
+                            filtered1 = [];
+                            result1 = [];
+                            valuesmail1 = 0;
                         }
                     }
                 }
@@ -670,6 +670,981 @@ cron.schedule('00 00 * * *', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 })
+
+// unopen and not replied communication mail
+cron.schedule('00 00 * * *', async (req, res) => {
+    try {
+        var resp_data = await Offer.aggregate(
+            [
+                {
+                    $match: {
+                        status: { $ne: 'On Hold' }
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "created_by",
+                        foreignField: "_id",
+                        as: "created_by"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$created_by",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "group",
+                        localField: "groups",
+                        foreignField: "_id",
+                        as: "group"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$group",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "user",
+                        localField: "user_id",
+                        foreignField: "_id",
+                        as: "user_id"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$user_id",
+                        preserveNullAndEmptyArrays: true
+                    },
+                },
+                {
+                    $lookup:
+                    {
+                        from: "candidateDetail",
+                        localField: "user_id._id",
+                        foreignField: "user_id",
+                        as: "candidate"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$candidate",
+                        preserveNullAndEmptyArrays: true
+                    },
+                }
+
+            ]
+        )
+
+        var current_date = moment().startOf('day')
+        for (const resp of resp_data) {
+            console.log(resp._id);
+
+            if (resp.communication !== undefined && resp.communication.length > 0) {
+                for (const comm of resp.communication) {
+                    if (comm.open === false) {
+                        if (comm.trigger == "afterOffer") {
+                            var days = comm.day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "beforeJoining") {
+                            var days = comm.day
+                            var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "afterJoining") {
+                            var days = comm.day
+                            var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "beforeExpiry") {
+                            var days = comm.day
+                            var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "afterExpiry") {
+                            var days = comm.day
+                            var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "afterAcceptance") {
+                            var days = comm.day
+                            var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notopen.push(data);
+                                }
+                            }
+                        }
+                    }
+
+                    if (comm.reply === false) {
+                        if (comm.trigger == "afterOffer") {
+                            var days = comm.day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "beforeJoining") {
+                            var days = comm.day
+                            var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "afterJoining") {
+                            var days = comm.day
+                            var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "beforeExpiry") {
+                            var days = comm.day
+                            var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "afterExpiry") {
+                            var days = comm.day
+                            var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.trigger == "afterAcceptance") {
+                            var days = comm.day
+                            var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date)
+                            if (comm.priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            } else if (comm.priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    communication_notreply.push(data);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (resp.AdHoc !== undefined && resp.AdHoc.length > 0) {
+                for (const comm of resp.AdHoc) {
+                    if (comm.AdHoc_open === false) {
+                        if (comm.AdHoc_trigger == "afterOffer") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "beforeJoining") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "afterJoining") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "beforeExpiry") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "afterExpiry") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "afterAcceptance") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.high_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
+                                if (moment(current_date).isSame(NotOpenDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_unopened_days": resp.medium_unopened,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notopen.push(data);
+                                }
+                            }
+                        }
+                    }
+
+                    if (comm.AdHoc_reply === false) {
+                        if (comm.AdHoc_trigger == "afterOffer") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "beforeJoining") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "afterJoining") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "beforeExpiry") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "afterExpiry") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            }
+                        } else if (comm.AdHoc_trigger == "afterAcceptance") {
+                            var days = comm.AdHoc_day
+                            var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
+                            offer_date = moment(offer_date);
+                            if (comm.AdHoc_priority === "High") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.high_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            } else if (comm.AdHoc_priority === "Medium") {
+                                var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
+                                if (moment(current_date).isSame(NotReplyDay) == true) {
+                                    var data = {
+                                        "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+                                        "candidateemail": resp.user_id.email,
+                                        "subject": comm.AdHoc_subject,
+                                        "not_replied_days": resp.medium_notreplied,
+                                        "priority": comm.AdHoc_priority,
+                                        "empid": resp.employer_id
+                                    }
+                                    adhoc_notreply.push(data);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(' : communication_notreply ==> ', communication_notreply);
+        var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
+
+        if (all_employer.status == 1) {
+            for (const filterdata of all_employer.data) {
+                if (communication_notopen.length > 0 || adhoc_notopen.length > 0) {
+                    let filtered = communication_notopen.filter(r => r.empid.toString() === filterdata._id.toString())
+                    let filtered1 = adhoc_notopen.filter(r => r.empid.toString() === filterdata._id.toString())
+
+                    if (filtered.length > 0 || filtered1.length > 0) {
+                        var email_send_to = await common_helper.find(User, {
+                            "isAllow": true,
+                            "is_del": false,
+                            $or: [
+                                { "_id": new ObjectId(filterdata._id) },
+                                { "emp_id": new ObjectId(filterdata._id) },
+                            ]
+                        })
+
+                        if (email_send_to.status == 1) {
+                            for (const sendto of email_send_to.data) {
+                                const element = sendto;
+                                if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                                    var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                                    var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                }
+
+                                var obj = {
+                                    "communication": filtered,
+                                    "adhoc": filtered1
+                                };
+                                let mail_resp = await mail_helper.send("not_opened_communication_mail", {
+                                    "to": element.email,
+                                    "subject": " List of candidates with UnOpened email"
+                                }, {
+                                    "name": name,
+                                    "data": obj,
+                                });
+                                console.log(' : mail_resp ==> ', mail_resp);
+                            }
+                            communication_notopen = [];
+                            adhoc_notopen = [];
+                            filtered1 = [];
+                            filtered = [];
+
+                            // else if (communication_mail_report.length > 0 || adhoc_mail_report.length > 0) {
+                            // }
+                        } else {
+                            return res.status(config.BAD_REQUEST).json({ 'message': "No data found.", "success": false })
+                        }
+                    }
+                }
+                if (communication_notreply.length > 0 || adhoc_notreply.length > 0) {
+                    let filtered = communication_notreply.filter(r => r.empid.toString() === filterdata._id.toString())
+                    let filtered1 = adhoc_notreply.filter(r => r.empid.toString() === filterdata._id.toString())
+
+                    if (filtered.length > 0 || filtered1.length > 0) {
+                        var email_send_to = await common_helper.find(User, {
+                            "isAllow": true,
+                            "is_del": false,
+                            $or: [
+                                { "_id": new ObjectId(filterdata._id) },
+                                { "emp_id": new ObjectId(filterdata._id) },
+                            ]
+                        })
+
+                        if (email_send_to.status == 1) {
+                            for (const sendto of email_send_to.data) {
+                                const element = sendto;
+                                if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                                    var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+                                    var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+                                    var email = emp_name.data.username;
+                                    var name = email.substring(0, email.lastIndexOf(" "));
+                                    if (name === "") {
+                                        name = email;
+                                    }
+                                }
+
+                                var obj = {
+                                    "communication": filtered,
+                                    "adhoc": filtered1
+                                };
+                                let mail_resp = await mail_helper.send("not_replied_communication_mail", {
+                                    "to": element.email,
+                                    "subject": "List of candidates with NotReplied email"
+                                }, {
+                                    "name": name,
+                                    "data": obj,
+                                });
+                                console.log(' : mail_resp 1==> ', mail_resp);
+                            }
+                            communication_notreply = [];
+                            adhoc_notreply = [];
+                            filtered1 = [];
+                            filtered = [];
+                        } else {
+                            return res.status(config.BAD_REQUEST).json({ 'message': "No data found.", "success": false })
+                        }
+                    }
+                }
+            }
+        } else {
+            return res.status(config.BAD_REQUEST).json({ 'message': "Employer Not Found", "success": false })
+        }
+    } catch (error) {
+        console.log('error=> ', error.message);
+    }
+});
+
 
 // offers mail
 cron.schedule('00 00 * * *', async (req, res) => {
@@ -977,14 +1952,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             // logger.trace("sending mail");
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
-                                "subject": comm.communicationname,
+                                "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
 
@@ -1029,14 +2004,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
-                                "subject": comm.communicationname,
+                                "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1068,14 +2043,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
-                                "subject": comm.communicationname,
+                                "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1108,14 +2083,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
-                                "subject": comm.communicationname,
+                                "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1148,14 +2123,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
-                                "subject": comm.communicationname,
+                                "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1188,14 +2163,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.communicationname
+                                "subject": comm.subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
-                                "subject": comm.communicationname,
+                                "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1234,7 +2209,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_communicationname
+                                "subject": comm.AdHoc_subject
                             }
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
@@ -1242,7 +2217,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
-                                "subject": comm.AdHoc_communicationname,
+                                "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1276,14 +2251,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_communicationname
+                                "subject": comm.AdHoc_subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
-                                "subject": comm.AdHoc_communicationname,
+                                "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1315,14 +2290,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_communicationname
+                                "subject": comm.AdHoc_subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
-                                "subject": comm.AdHoc_communicationname,
+                                "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1355,14 +2330,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_communicationname
+                                "subject": comm.AdHoc_subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
-                                "subject": comm.AdHoc_communicationname,
+                                "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1395,14 +2370,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_communicationname
+                                "subject": comm.AdHoc_subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
-                                "subject": comm.AdHoc_communicationname,
+                                "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {
@@ -1435,14 +2410,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_communicationname
+                                "subject": comm.AdHoc_subject
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
                                 // "reply_to": `${resp.created_by.email}`,
                                 "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
-                                "subject": comm.AdHoc_communicationname,
+                                "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
                             if (mail_resp.status == 1) {

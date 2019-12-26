@@ -10,7 +10,7 @@ const customField = new Schema({
 
 var CommunicationSchema = new Schema({
   communicationname: { type: String, required: true },
-  subject: { type: String },
+  subject: { type: String, required: true },
   open: { type: Boolean },
   open_date: { type: Date },
   reply: { type: Boolean },
@@ -25,7 +25,7 @@ var CommunicationSchema = new Schema({
 
 var AdhockSchema = new Schema({
   AdHoc_communicationname: { type: String, required: true },
-  AdHoc_subject: { type: String },
+  AdHoc_subject: { type: String, required: true },
   AdHoc_open: { type: Boolean },
   AdHoc_open_date: { type: Date },
   AdHoc_reply: { type: Boolean },

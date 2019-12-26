@@ -694,7 +694,7 @@ router.put('/sub_account/details', async (req, res) => {
 
         var resp_Detail_data = await common_helper.update(Sub_Employer_Detail, { "user_id": new ObjectId(id) }, obj);
 
-        if (req.body.data.email && req.body.data.email != "") {
+        if (user_detail.data.email !== req.body.data.email) {
             var message = await common_helper.findOne(MailType, { 'mail_type': 'admin-change-email' });
 
             let upper_content = message.data.upper_content;
@@ -744,6 +744,8 @@ router.put('/sub_account/details', async (req, res) => {
                 }
             }
 
+        } else {
+            var resp_user_data = await common_helper.update(User, { "_id": new ObjectId(id) }, obj);
         }
 
 
@@ -877,6 +879,28 @@ router.put('/update', async (req, res) => {
         }
         else if (employer_detail_upadate.status == 1) {
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Employer's record is updated successfully", "data": employer_detail_upadate, "user": employer_upadate });
+        }
+        else {
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
+        }
+    } catch (error) {
+        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+    }
+})
+
+
+router.put('/sub_account', async (req, res) => {
+    try {
+        var reg_obj = {
+            "admin_rights": req.body.admin_rights
+        }
+        var sub_account_upadate = await common_helper.update(User, { "_id": req.body.id }, reg_obj)
+
+        if (sub_account_upadate.status == 0) {
+            res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
+        }
+        else if (sub_account_upadate.status == 1) {
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Sub Employer is Updated successfully", "data": sub_account_upadate });
         }
         else {
             res.status(config.INTERNAL_SERVER_ERROR).json({ "message": "Error occurred while fetching data." });
