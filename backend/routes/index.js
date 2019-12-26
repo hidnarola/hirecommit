@@ -1548,8 +1548,10 @@ router.post('/get_email', async (req, res) => {
 
 router.post('/email_opened', async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const reqBody = req.body[0];
+    console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
+    console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
     if (reqBody.trackid && reqBody.trackid !== "") {
       var open_id = reqBody.trackid;
       var length = open_id.length;
@@ -1560,6 +1562,7 @@ router.post('/email_opened', async (req, res) => {
         if (split_data.length == 3 && split_data[2] === "communication") {
           var offer_id = split_data[0];
           var communication_id = split_data[1];
+          console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
           if (previous_status.status == 1) {
@@ -1571,6 +1574,7 @@ router.post('/email_opened', async (req, res) => {
                   "communication.$.open_date": new Date()
                 }
               })
+            console.log(' : success comm ==> ');
           } else if (previous_status.status == 2) {
             res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
           } else {
@@ -1579,6 +1583,7 @@ router.post('/email_opened', async (req, res) => {
         } else if (split_data.length == 3 && split_data[2] === "adhoc") {
           var offer_id = split_data[0];
           var adhoc_id = split_data[1];
+          console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
           if (previous_status.status == 1) {
@@ -1590,6 +1595,7 @@ router.post('/email_opened', async (req, res) => {
                   "AdHoc.$.AdHoc_open_date": new Date()
                 }
               })
+            console.log('success  ==> success');
           } else if (previous_status.status == 2) {
             res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
           } else {
