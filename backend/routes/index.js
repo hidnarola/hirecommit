@@ -32,6 +32,7 @@ const MailType = require('./../models/mail_content');
 const new_mail_helper = require('./../helpers/new_mail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
+const CustomField = require('./../models/customfield');
 const userpProfile = require('./profile');
 
 router.use("/profile", auth, userpProfile);
@@ -365,7 +366,7 @@ router.post("/candidate_register", async (req, res) => {
                       if (mail_resp.status === 0) {
                         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                       } else {
-                        res.json({ "status": 1, "message": "Candidate registration successful, Confirmation mail send to your email", "data": interest_user_resp })
+                        res.json({ "status": 1, "message": "Candidate Registration Successful, Confirmation mail send to your email", "data": interest_user_resp })
                       }
                     }
 
@@ -568,7 +569,7 @@ router.post("/employer_register", async (req, res) => {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                 } else {
 
-                  res.json({ "message": "Employer registration successful, Confirmation mail send to your email", "data": interest_user_resp })
+                  res.json({ "message": "Employer Registration Successful, Confirmation mail send to your email", "data": interest_user_resp })
                 }
               } else {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
@@ -610,7 +611,7 @@ router.post("/email_exists", async (req, res) => {
     value = {
       $regex: re
     };
-    var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": value, "is_del": false })
+    var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
     }
@@ -1622,20 +1623,38 @@ router.post('/email_opened', async (req, res) => {
   }
 })
 
-router.put('/check_query', async (req, res) => {
-  var update_communication = await Offer.findOneAndUpdate({ "_id": "5e031dee4a54cc17ac0161f0", "communication._id": "5e031dee4a54cc17ac0161f6" }, {
-    $set: {
-      "communication.$.reply": true,
-      "communication.$.reply_date": new Date()
-    }
-  }).populate('created_by', { email: 1 }).lean();
+// router.get('/check_query', async (req, res) => {
 
-  if (update_communication) {
-    res.status(config.OK_STATUS).json(update_communication);
-  } else {
-    res.status(config.BAD_REQUEST).json("ERROR");
-  }
-})
+// var resp_data = await CustomField.aggregate(
+//   [
+//     {
+//       $match: {
+//         "is_del": false,
+//         $or: [
+//           { "emp_id": ObjectId("5df9dfd64c72a507902bb3e9") },
+//           { "emp_id": ObjectId("5df9dfd64c72a507902bb3e9") }
+//         ],
+//         "key": { $toLower: "$key" }
+//       }
+//     }
+//   ]
+// )
+
+// {
+//   "$project": {
+//     "field": 1,
+//       "insensitive": { "$toLower": "$field" }
+//   }
+// },
+// { "$sort": { "insensitive": 1 } }
+// var update_communication = await Location.find({ "is_del": false, emp_id: "5df9dfd64c72a507902bb3e9" });
+
+//   if (resp_data) {
+//     res.status(config.OK_STATUS).json(resp_data);
+//   } else {
+//     res.status(config.BAD_REQUEST).json("ERROR");
+//   }
+// })
 
 
 module.exports = router;

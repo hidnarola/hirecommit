@@ -133,7 +133,6 @@ router.post("/get", async (req, res) => {
             {
                 $match:
                     { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
-
             }
         ]
 
