@@ -138,6 +138,7 @@ export class EmployerListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.socketService.isAllow(res['data']['data']._id);
           this.socketService.leaveGrp(res['data']['data']._id);
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          this.isApproved = false;
           this.rrerender();
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });

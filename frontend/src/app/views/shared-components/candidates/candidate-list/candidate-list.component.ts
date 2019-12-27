@@ -138,16 +138,17 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.isApproved = true;
         this.service.approved(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
+          this.isApproved = false;
           this.rrerender();
         }, (err) => {
           console.log(err);
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
       },reject: () => {
-     
         this.isApproved = false;
       }
     });
+    
   }
 
   onDelete(id) {

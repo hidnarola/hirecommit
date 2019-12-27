@@ -89,5 +89,8 @@ export class EmployerService {
   get_customfield(id): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}` + '/employer/customfield/first/' + id);
   }
+  admin_rights_SuperAdmin(data): Observable<any[]> {
+    return this.http.put<any[]>(`${this.url}` + '/employer/sub_account', data);
+  }
   // http://localhost:3000/admin/employer/details/5dc53b1c42b0a03b045f050a
 }

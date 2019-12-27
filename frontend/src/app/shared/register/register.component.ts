@@ -275,16 +275,18 @@ export class RegisterComponent implements OnInit {
       this.service.candidate_signup(this.formData).subscribe(res => {
 
         this.isFormSubmitted = false;
-        this.registerData = {};
+        // this.registerData = {};
         if (res['status'] === 0) {
-          this.toastr.error(res['message'], 'Error!', { timeOut: 3000 });
+          this.show_spinner = false;
+          this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           this.router.navigate(['/login']);
         }
       }, (err) => {
-        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
         this.show_spinner = false;
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+         
       });
     } else {
       this.show_spinner = false;

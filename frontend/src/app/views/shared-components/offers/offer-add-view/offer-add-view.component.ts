@@ -38,11 +38,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offer_data: any = {};
   panelTitle = 'Add';
   user_detail: any = {};
- 
+
   candidate: any = [];
   candidateList: any = [];
   groupForm: FormGroup;
   date: any;
+  ast = false;
   country: any = [];
   isSetCommunication = false;
   countryList: any = [];
@@ -129,11 +130,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   communicationData: any = [];
   AdHocCommunicationData: any = [];
   is_disabled_btn = false;
-  disable_salary_period = false;
   profileData: any;
   min_date = new Date();
   min_expiry_date = new Date();
-  default_date =new Date();
+  default_date = new Date();
   max_date = new Date(new Date().setFullYear(new Date().getFullYear() + 20));
   userDetail: any = [];
   offerList: any;
@@ -142,6 +142,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   isExpired = false;
   is_submitted = false;
   accept_btn = false;
+  isAcceptedView:any;
+  isCustomFieldView = false;
+  astSalary = false;
   constructor(
     private fb: FormBuilder,
     private service: OfferService,
@@ -271,13 +274,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.form.controls['salaryduration'].updateValueAndValidity();
     }
   }
-  
+
   //remove Zero
-   removeZero(index){
-     if (this.form.controls['AdHocCommunication'].value[index].AdHoc_day > 0){
-       this.form.controls['AdHocCommunication'][`controls`][index].controls['AdHoc_day'].setValue(parseFloat(this.form.value[`AdHocCommunication`][index].AdHoc_day));
-     }
-   }
+  removeZero(index) {
+    if (this.form.controls['AdHocCommunication'].value[index].AdHoc_day > 0) {
+      this.form.controls['AdHocCommunication'][`controls`][index].controls['AdHoc_day'].setValue(parseFloat(this.form.value[`AdHocCommunication`][index].AdHoc_day));
+    }
+  }
 
   removeZeroCommunication(index) {
     if (this.form.controls['communicationFieldItems'].value[index].day > 0) {
@@ -382,7 +385,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
   next(e) {
     this.modalService.dismissAll(this.content);
-    if (this.pastDetails.previousOffer.data.length > 0){
+    if (this.pastDetails.previousOffer.data.length > 0) {
       this.modalService.open(this.content1, ModalOptions);
       this.err_msg = this.pastDetails.previousOffer.displayMessage;
     }
@@ -500,229 +503,248 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.spinner.show();
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       this.service.offer_detail(this.id).subscribe((res) => {
-          if (res[`data`]){
-            this.spinner.hide();
-            if(this.is_View){
-              if (!(res['data'].status === 'Accepted')) {
-                  res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
-              }
-              if (res[`data`][`AdHoc`].length > 0) {
-                res[`data`][`AdHoc`].forEach(element => {
-                  element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
-                });
-              }
-              if (res[`data`][`communication`].length > 0) {
-                this.isSetCommunication = true;
-                res[`data`][`communication`].forEach(element => {
-                  $('#editor').summernote('disable');
-                  element.trigger =
-                    (this.Trigger_Option.find(o => o.value === element.trigger).label);
-                });
-                // res[`data`][`communication`][0].trigger =
-                //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
-              } else {
-                this.isSetCommunication = false;
-              }
-
-            } else if (this.is_Edit){
-              if (res['data'].status === 'Accepted') {
-                
-                // this.default_date = res[`data`][`joiningdate`];
-                console.log('res[`data`].expirydate=>', res[`data`].expirydate);
-                this.max_date = new Date(res[`data`].expirydate);
-                console.log('max_date=>', this.max_date);
-                
-                // this.form.controls['salarybracket'].setErrors(null);
-                this.isAccepted = true;
-                this.form.controls['title'].disable();
-                if (res[`data`][`salary`]) {
-                  // this.form.controls['salarybracket'].disable();
-                  document.getElementById('salarybracket').setAttribute('disabled', 'true');
-                } else if (res[`data`][`salary_from`] && res[`data`][`salary_to`]){
-                  // this.form.controls['salarybracket_from'].disable();
-                  // this.form.controls['salarybracket_to'].disable();
-                  document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
-                  document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
-                }
-                this.disabled = true;
-                this.form.controls['offertype'].disable();
-                this.form.controls['notes'].disable();
-                document.getElementById('annual').setAttribute('disabled', 'true');
-                document.getElementById('hourly').setAttribute('disabled', 'true');
-                // this.updateValidation();
-              }
-
-                // set communication
-                if (res['data']['communication'] && res['data']['communication'].length > 0) {
-                  this.isSetCommunication = true;
-                  this.communicationData = res['data']['communication'];
-                  const _communication_array = [];
-                  this.communicationData.forEach((element, index) => {
-                    const new_communication = {
-                      'communicationname': element.communicationname,
-                      'trigger': element.trigger,
-                      'priority': element.priority,
-                      'day': element.day,
-                      'subject': element.subject,
-                      'message': element.message,
-                    };
-                    this.communicationFieldItems.setControl(index, this.fb.group({
-                      communicationname: ['', Validators.required],
-                      trigger: ['', Validators.required],
-                      priority: ['', Validators.required],
-                      day: ['', Validators.required],
-                      subject: ['', Validators.required],
-                      message: ['', Validators.required]
-                    }));
-                    _communication_array.push(new_communication);
-                  });
-                  this.communicationData = _communication_array;
-
-                } else {
-                  this.isSetCommunication = false;
-                }
-                // set communication
-
-                // set AdHoc
-                if (res['data']['AdHoc'] && res['data']['AdHoc'].length > 0) {
-                  this.AdHocCommunicationData = res['data']['AdHoc'];
-                  const _Adhoc_communication_array = [];
-                  this.AdHocCommunicationData.forEach((element, index) => {
-                    const new_communication = {
-                      'AdHoc_communicationname': element.AdHoc_communicationname,
-                      'AdHoc_trigger': element.AdHoc_trigger,
-                      'AdHoc_priority': element.AdHoc_priority,
-                      'AdHoc_day': element.AdHoc_day,
-                      'AdHoc_subject':element.AdHoc_subject,
-                      'AdHoc_message': element.AdHoc_message,
-                    };
-                    this.AdHocCommunication.setControl(index, this.fb.group({
-                      AdHoc_communicationname: ['', Validators.required],
-                      AdHoc_trigger: ['', Validators.required],
-                      AdHoc_priority: ['', Validators.required],
-                      AdHoc_day: ['', Validators.required],
-                      AdHoc_subject: ['', Validators.required],
-                      AdHoc_message: ['', Validators.required]
-                    }));
-                    _Adhoc_communication_array.push(new_communication);
-                  });
-                  this.AdHocCommunicationData = _Adhoc_communication_array;
-                } else {
-                  // let index = 1;
-                  // this.AdHocCommunication.setControl(index, this.fb.group({
-                  //   AdHoc_communicationname: [''],
-                  //   AdHoc_trigger: [''],
-                  //   AdHoc_priority: [''],
-                  //   AdHoc_day: [''],
-                  //   AdHoc_message: ['']
-                  // }));
-                }
-                // set AdHoc
-                this.form.controls['email'].setValue(res[`data`].user_id.email);
-                this.form.controls['candidate_name'].setValue(
-                  res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname
-                );
-                this.form.controls['title'].setValue(res[`data`].title);
-                this.form.controls.salarytype.setValue(res['data'].salarytype);
-                this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
-                this.form.controls['location'].setValue(res[`data`]['location'][`_id`]);
-                this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
-                this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
-                this.form.controls['offertype'].setValue(res[`data`].offertype);
-                if (res['data'].acceptedAt) {
-                  this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
-                } else {
-                  this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
-                }// this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
-                this.form.controls['notes'].setValue(res[`data`].notes);
-                this.form.controls['offerStatus']
-                  .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
-                if (res[`data`].salary) {
-                  this.form.controls['salarybracket'].setValue(res[`data`].salary);
-                  document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
-                  document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
-                  this.form.controls['salarybracket_from'].setErrors(null);
-                  this.form.controls['salarybracket_to'].setErrors(null);
-                  this.updateValidation();
-                }
-                if (res[`data`].salary_from && res[`data`].salary_to) {
-                  this.form.controls['salarybracket_from'].setValue(res[`data`].salary_from);
-                  this.form.controls['salarybracket_to'].setValue(res[`data`].salary_to);
-                  document.getElementById('salarybracket').setAttribute('disabled', 'true');
-                  this.form.controls['salarybracket'].setErrors(null);
-                  this.updateValidation();
-                }
-                // if (res['data'].groups) {
-                //   this.form.controls['group'].setValue(res[`data`]['groups']);
-                //   this.form.controls['high_unopened'].setValue(res[`data`].high_unopened);
-                //   this.form.controls['high_notreplied'].setValue(res[`data`].high_notreplied);
-                //   this.form.controls['medium_unopened'].setValue(res[`data`].medium_unopened);
-                //   this.form.controls['medium_notreplied'].setValue(res[`data`].medium_notreplied);
-                // }
-                const _array = [];
-                const test = res[`data`]['customfeild'];
-                this.service.get_customfield().subscribe(
-                  resp => {
-                    this.customfield = resp['data'];
-                    this.customfield.forEach((element, index) => {
-                      const value = test.find(c => c.key === element.key) ?
-                        test.find(c => c.key === element.key).value : '';
-                      const new_customfield = {
-                        key: element.key,
-                        value,
-                      };
-                      this.customfieldItem.setControl(
-                        index,
-                        this.fb.group({
-                          value: [value, [this.noWhitespaceValidatorForNotRequired]],
-                          key: [element.key]
-                        })
-                      );
-                      this.customfieldItem.updateValueAndValidity();
-                      _array.push(new_customfield);
-                    });
-                    this.offer_data.customfieldItem = _array;
-                  },
-                  err => {
-                    console.log(err);
-                  });
+        if (res[`data`]) {
+          this.spinner.hide();
+          if (this.is_View) {
+            
+            if (!(res['data'].status === 'Accepted')) {
+              res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
             }
+            if (res[`data`][`AdHoc`].length > 0) {
+              res[`data`][`AdHoc`].forEach(element => {
+                element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
+              });
+            }
+            if (res[`data`][`communication`].length > 0) {
+              this.isSetCommunication = true;
+              res[`data`][`communication`].forEach(element => {
+                $('#editor').summernote('disable');
+                element.trigger =
+                  (this.Trigger_Option.find(o => o.value === element.trigger).label);
+              });
+              // res[`data`][`communication`][0].trigger =
+              //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+            } else {
+              this.isSetCommunication = false;
+            }
+
+          } else if (this.is_Edit) {
+            if (res['data'].status === 'Accepted') {
+              this.max_date = new Date(res[`data`].expirydate);;
+              this.isAccepted = true;
+              this.form.controls['title'].disable();
+              if (res[`data`][`salary`]) {
+                // this.form.controls['salarybracket'].disable();
+                document.getElementById('salarybracket').setAttribute('disabled', 'true');
+              } else if (res[`data`][`salary_from`] && res[`data`][`salary_to`]) {
+                // this.form.controls['salarybracket_from'].disable();
+                // this.form.controls['salarybracket_to'].disable();
+                document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+                document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+              }
+              this.disabled = true;
+              this.form.controls['offertype'].disable();
+              this.form.controls['notes'].disable();
+              document.getElementById('annual').setAttribute('disabled', 'true');
+              document.getElementById('hourly').setAttribute('disabled', 'true');
+              // this.updateValidation();
+            }
+
+            // set communication
+            if (res['data']['communication'] && res['data']['communication'].length > 0) {
+              this.isSetCommunication = true;
+              this.communicationData = res['data']['communication'];
+              const _communication_array = [];
+              this.communicationData.forEach((element, index) => {
+                const new_communication = {
+                  'communicationname': element.communicationname,
+                  'trigger': element.trigger,
+                  'priority': element.priority,
+                  'day': element.day,
+                  'subject': element.subject,
+                  'message': element.message,
+                };
+                this.communicationFieldItems.setControl(index, this.fb.group({
+                  communicationname: ['', Validators.required],
+                  trigger: ['', Validators.required],
+                  priority: ['', Validators.required],
+                  day: ['', Validators.required],
+                  subject: ['', Validators.required],
+                  message: ['', Validators.required]
+                }));
+                _communication_array.push(new_communication);
+              });
+              this.communicationData = _communication_array;
+
+            } else {
+              this.isSetCommunication = false;
+            }
+            // set communication
+
+            // set AdHoc
+            if (res['data']['AdHoc'] && res['data']['AdHoc'].length > 0) {
+              this.AdHocCommunicationData = res['data']['AdHoc'];
+              const _Adhoc_communication_array = [];
+              this.AdHocCommunicationData.forEach((element, index) => {
+                const new_communication = {
+                  'AdHoc_communicationname': element.AdHoc_communicationname,
+                  'AdHoc_trigger': element.AdHoc_trigger,
+                  'AdHoc_priority': element.AdHoc_priority,
+                  'AdHoc_day': element.AdHoc_day,
+                  'AdHoc_subject': element.AdHoc_subject,
+                  'AdHoc_message': element.AdHoc_message,
+                };
+                this.AdHocCommunication.setControl(index, this.fb.group({
+                  AdHoc_communicationname: ['', Validators.required],
+                  AdHoc_trigger: ['', Validators.required],
+                  AdHoc_priority: ['', Validators.required],
+                  AdHoc_day: ['', Validators.required],
+                  AdHoc_subject: ['', Validators.required],
+                  AdHoc_message: ['', Validators.required]
+                }));
+                _Adhoc_communication_array.push(new_communication);
+              });
+              this.AdHocCommunicationData = _Adhoc_communication_array;
+            } else {
+              // let index = 1;
+              // this.AdHocCommunication.setControl(index, this.fb.group({
+              //   AdHoc_communicationname: [''],
+              //   AdHoc_trigger: [''],
+              //   AdHoc_priority: [''],
+              //   AdHoc_day: [''],
+              //   AdHoc_message: ['']
+              // }));
+            }
+            // set AdHoc
+            this.form.controls['email'].setValue(res[`data`].user_id.email);
+            this.form.controls['candidate_name'].setValue(
+              res[`candidate_data`]['data'].firstname + ' ' + res[`candidate_data`]['data'].lastname
+            );
+            this.form.controls['title'].setValue(res[`data`].title);
+            this.form.controls.salarytype.setValue(res['data'].salarytype);
+            this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
+            this.form.controls['location'].setValue(res[`data`]['location'][`_id`]);
+            this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
+            this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
+            this.form.controls['offertype'].setValue(res[`data`].offertype);
+            if (res['data'].acceptedAt) {
+              this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
+            } else {
+              this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
+            }// this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
+            this.form.controls['notes'].setValue(res[`data`].notes);
+            this.form.controls['offerStatus']
+              .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
+            if (res[`data`].salary) {
+              this.form.controls['salarybracket'].setValue(res[`data`].salary);
+              document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+              document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+              this.form.controls['salarybracket_from'].setErrors(null);
+              this.form.controls['salarybracket_to'].setErrors(null);
+              this.updateValidation();
+            }
+            if (res[`data`].salary_from && res[`data`].salary_to) {
+              this.form.controls['salarybracket_from'].setValue(res[`data`].salary_from);
+              this.form.controls['salarybracket_to'].setValue(res[`data`].salary_to);
+              document.getElementById('salarybracket').setAttribute('disabled', 'true');
+              this.form.controls['salarybracket'].setErrors(null);
+              this.updateValidation();
+            }
+            // if (res['data'].groups) {
+            //   this.form.controls['group'].setValue(res[`data`]['groups']);
+            //   this.form.controls['high_unopened'].setValue(res[`data`].high_unopened);
+            //   this.form.controls['high_notreplied'].setValue(res[`data`].high_notreplied);
+            //   this.form.controls['medium_unopened'].setValue(res[`data`].medium_unopened);
+            //   this.form.controls['medium_notreplied'].setValue(res[`data`].medium_notreplied);
+            // }
+            const _array = [];
+            const test = res[`data`]['customfeild'];
+            this.service.get_customfield().subscribe(
+              resp => {
+                this.customfield = resp['data'];
+                this.customfield.forEach((element, index) => {
+                  const value = test.find(c => c.key === element.key) ?
+                    test.find(c => c.key === element.key).value : '';
+                  const new_customfield = {
+                    key: element.key,
+                    value,
+                  };
+                  this.customfieldItem.setControl(
+                    index,
+                    this.fb.group({
+                      value: [value, [this.noWhitespaceValidatorForNotRequired]],
+                      key: [element.key]
+                    })
+                  );
+                  this.customfieldItem.updateValueAndValidity();
+                  _array.push(new_customfield);
+                });
+                this.offer_data.customfieldItem = _array;
+              },
+              err => {
+                console.log(err);
+              });
           }
-          this.resData = res[`data`];
-          this.candidateData = res['candidate_data']['data'];
-          this.grpId = this.resData.user_id;
-          this.socketService.joinGrp(this.resData.user_id);
-          this.service.status(this.resData.status).subscribe(resp => {
-            this.offerStatus = resp['status'];
-          });
-          this.spinner.hide();
-          this.groupDetail(res[`data`].groups);
+        }
+
+        this.resData = res[`data`];
+        if (this.resData.acceptedAt) {
+          this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
+        } else {
+          this.isAcceptedView = 'Date of Offer Acceptance';
+        }
+        if (
+          !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
+          this.getGroupDetails = false;
+        } else if (this.group_optoins.value === '') {
+          this.getGroupDetails = false;
+        }
+        this.resData.customfeild.map(res => {
+          if (res.value) {
+            this.isCustomFieldView = true;
+          } 
+        })
+        
+        this.candidateData = res['candidate_data']['data'];
+        this.grpId = this.resData.user_id;
+        this.socketService.joinGrp(this.resData.user_id);
+        this.service.status(this.resData.status).subscribe(resp => {
+          this.offerStatus = resp['status'];
         });
+        this.spinner.hide();
+        this.groupDetail(res[`data`].groups);
+      });
     } else if (this.userDetail.role === 'candidate') {
-
-
-
       this.service.offer_detail_candidate(this.id).subscribe((res) => {
-          this.spinner.hide();
-          this.resData = res[`data`][0];
-          // this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
-          const d = new Date();
-          d.setDate(d.getDate() - 1);
-          if (this.resData.status && d > new Date(this.resData.expirydate)) {
-            this.isExpired = true;
-          } else {
-            this.isExpired = false;
+        this.is_View = true;
+        this.spinner.hide();
+        this.resData = res[`data`][0];
+        
+        if (this.is_View) {
+          this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
+        }
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        if (this.resData.status && d > new Date(this.resData.expirydate)) {
+          this.isExpired = true;
+        } else {
+          this.isExpired = false;
+        }
+          this.userName = this.resData.employer_id.employer.companyname;
+        if (this.resData.acceptedAt){
+         this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
+       } else {
+         this.isAcceptedView = 'Date of Offer Acceptance';
+       }
+        this.resData.customfeild.map(res => {
+          if (res.value) {
+            this.isCustomFieldView = true;
           }
-
-          if (this.resData.created_by.username) {
-            this.userName = this.resData.created_by.username;
-          } else {
-            this.userName = this.resData.employer_id.employer.username;
-          }
-          this.spinner.hide();
-          this.is_View = true;
-          this.resData = res[`data`][0];
-        });
+        })
+        this.spinner.hide();
+        this.is_View = true;
+        this.resData = res[`data`][0];
+      });
 
 
 
@@ -732,31 +754,47 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
       //  do code here for admin side - offer detail
       this.adminService.offer_detail_admin(this.id).subscribe((res) => {
-          this.spinner.hide();
-          // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
-          if (res[`data`][`AdHoc`].length > 0) {
+        this.spinner.hide();
+        // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+        if (res[`data`][`AdHoc`].length > 0) {
 
-            res[`data`][`AdHoc`].forEach(element => {
-              element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
-            });
+          res[`data`][`AdHoc`].forEach(element => {
+            element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
+          });
 
+        }
+        if (res[`data`][`communication`].length > 0) {
+          res[`data`][`communication`].forEach(element => {
+            element.trigger =
+              (this.Trigger_Option.find(o => o.value === element.trigger).label);
+
+          });
+          // res[`data`][`communication`][0].trigger =
+          //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
+        }
+        this.resData = res[`data`];
+        if (this.resData.acceptedAt) {
+          this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
+        } else {
+          this.isAcceptedView = 'Date of Offer Acceptance';
+        }
+        if (
+          !(this.resData.high_notreplied || this.resData.high_unopened || this.resData.medium_notreplied || this.resData.medium_unopened)) {
+          this.getGroupDetails = false;
+        } else if (this.group_optoins.value === '') {
+          this.getGroupDetails = false;
+        }
+        this.resData.customfeild.map(res => {
+          if (res.value) {
+            this.isCustomFieldView = true;
           }
-          if (res[`data`][`communication`].length > 0) {
-            res[`data`][`communication`].forEach(element => {
-              element.trigger =
-                (this.Trigger_Option.find(o => o.value === element.trigger).label);
-
-            });
-            // res[`data`][`communication`][0].trigger =
-            //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
-          }
-          this.resData = res[`data`];
-          this.candidateData = res['candidate_data']['data'];
-          this.spinner.hide();
-          this.is_View = true;
-          this.resData.groupName = res['data']['groups']['name'];
-          this.groupDetail(res[`data`].groups);
-        });
+        })
+        this.candidateData = res['candidate_data']['data'];
+        this.spinner.hide();
+        this.is_View = true;
+        this.resData.groupName = res['data']['groups']['name'];
+        this.groupDetail(res[`data`].groups);
+      });
 
 
 
@@ -806,6 +844,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.service.get_customfield().subscribe(
       res => {
         this.customfield = res['data'];
+     
         const _array = [];
         this.customfield.forEach((element, index) => {
           const new_customfield = {
@@ -919,7 +958,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               'trigger': element.trigger,
               'priority': element.priority,
               'day': element.day,
-              'subject':element.subject,
+              'subject': element.subject,
               'message': element.message,
             };
             this.communicationFieldItems.setControl(index, this.fb.group({
@@ -969,7 +1008,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   Accept(id, type) {
     // this.accept_btn = true;
     this.show_spinner = true;
-    // type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
+    if( this.is_View){
+      type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
+    }
+    
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {
         this.isNoCommit = true;
@@ -1025,7 +1067,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       });
       this.show_spinner = false;
     });
-    
+
   }
   disabledAccept() {
     this.show_spinner = false;
@@ -1043,11 +1085,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   getExpiryDate(e) {
     // if ((this.resData !== 'Accepted')){
-      const date = new Date(e);
-      const month = date.getMonth() + 1;
-      this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
-      this.max_date = this.form.value.expirydate;
-      console.log('this.max_date=>', this.form.value.expirydate);
+    const date = new Date(e);
+    const month = date.getMonth() + 1;
+    this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
+    this.max_date = this.form.value.expirydate;
+    console.log('this.max_date=>', this.form.value.expirydate);
     // }
   }
 
@@ -1079,7 +1121,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'trigger': '',
       'priority': '',
       'day': '',
-      'subject':'',
+      'subject': '',
       'message': '',
     };
 
@@ -1114,7 +1156,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       'AdHoc_trigger': '',
       'AdHoc_priority': '',
       'AdHoc_day': '',
-      'AdHoc_subject':'',
+      'AdHoc_subject': '',
       'AdHoc_message': '',
     };
 
@@ -1166,6 +1208,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // blur event for salary input
   onSalaryBlur() {
     if (this.form.value.salarybracket > 0) {
+      this.astSalary = true;
+      this.ast = false;
       this.form.controls['salarybracket'].setValue(parseFloat(this.form.value.salarybracket));
       this.form.controls['salarybracket'].setValidators([Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
 
@@ -1175,6 +1219,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.form.controls['salarybracket_to'].setErrors(null);
       this.updateValidation();
     } else {
+      // this.ast = false;
       document.getElementById('salarybracket_to').removeAttribute('disabled');
       document.getElementById('salarybracket_from').removeAttribute('disabled');
     }
@@ -1255,8 +1300,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
   }
+ 
 
   checkFrom(from, to) {
+    this.ast = true;
+    this.astSalary = false;
     this.from = parseInt(from.target.value, 10);
     this.to = parseInt(to, 10);
     if (this.from > this.to) {
@@ -1269,6 +1317,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else {
       this.error = false;
     }
+  }
+  CheckAst() {
+    this.ast = false;
+    this.astSalary = true;
   }
 
   checkTo(from, to) {
@@ -1349,7 +1401,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           trigger: element.trigger,
           priority: element.priority,
           day: element.day,
-          subject:element.subject,
+          subject: element.subject,
           message: element.message
         });
       });
