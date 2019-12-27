@@ -38,7 +38,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offer_data: any = {};
   panelTitle = 'Add';
   user_detail: any = {};
-
   candidate: any = [];
   candidateList: any = [];
   groupForm: FormGroup;
@@ -58,6 +57,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   isAccept = false;
   pastDetails: any;
   msg: any;
+  offerExpired = false;
   err_msg: any;
   isShow = false;
   valueForEditor: any;
@@ -67,6 +67,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   Candidate: HTMLElement;
   is_communication_added = false;
   cursorPos: any;
+  d :any;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -121,6 +122,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     { label: 'After Expiry', value: 'afterExpiry' },
     { label: 'After Acceptance', value: 'afterAcceptance' }
 
+  ];
+
+  Priority_Options = [
+    { label: 'Select Trigger', value: '' },
+    { label: 'High', value: 'High' },
+    { label: 'Medium', value: 'Medium' },
+    { label: 'Low', value: 'Low' }
   ];
   contryList: any;
   cancel_link = '/employer/offers/list';
@@ -427,10 +435,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     const promise = new Promise((resolve, reject) => {
       this.service.get_locations().subscribe(
         async res => {
+          console.log('res[`data]=>', res[`data`]);
+          
           // this.location = await res[`data`].data;
           // this.locationList.push(res[`data`].data)
-          if (res[`data`].data) {
-            res[`data`].data.forEach(element => {
+          if (res[`data`]) {
+            res[`data`].forEach(element => {
               this.locationList.push({ label: element.city, value: element._id });
             });
           }
@@ -506,7 +516,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         if (res[`data`]) {
           this.spinner.hide();
           if (this.is_View) {
-            
             if (!(res['data'].status === 'Accepted')) {
               res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
             }
@@ -529,8 +538,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             }
 
           } else if (this.is_Edit) {
+            this.d = moment(new Date(res[`data`].expirydate));
             if (res['data'].status === 'Accepted') {
-              this.max_date = new Date(res[`data`].expirydate);;
+              this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
               this.form.controls['title'].disable();
               if (res[`data`][`salary`]) {
@@ -547,8 +557,35 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.form.controls['notes'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
-              // this.updateValidation();
+              this.updateValidation();
+            } 
+            else if (this.d < new Date()) {
+              console.log('this.d < new Date()=>', this.d < new Date());
+              
+              this.offerExpired = true;
+              // this.max_date = new Date(res[`data`].expirydate);
+              this.isAccepted = true;
+              this.form.controls['title'].disable();
+              if (res[`data`][`salary`]) {
+                // this.form.controls['salarybracket'].disable();
+                document.getElementById('salarybracket').setAttribute('disabled', 'true');
+              } else if (res[`data`][`salary_from`] && res[`data`][`salary_to`]) {
+                // this.form.controls['salarybracket_from'].disable();
+                // this.form.controls['salarybracket_to'].disable();
+                document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+                document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+              }
+              document.getElementById('expirydate').removeAttribute('disabled')
+              this.disabled = true;
+              // this.form.controls['offertype'].disable();
+              this.form.controls['notes'].disable();
+              document.getElementById('annual').setAttribute('disabled', 'true');
+              document.getElementById('hourly').setAttribute('disabled', 'true');
             }
+
+            console.log('this.d < new Date()=>', this.d < new Date());
+            console.log(' this.offerExpired=>',  this.offerExpired);
+            
 
             // set communication
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
