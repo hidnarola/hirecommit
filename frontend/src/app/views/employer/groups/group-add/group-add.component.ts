@@ -28,6 +28,22 @@ export class GroupAddComponent implements OnInit {
   group_id: any;
   formData: FormData;
   show_spinner = false;
+  Priority_Options = [
+    { label: 'Select Trigger', value: '' },
+    { label: 'High', value: 'High' },
+    { label: 'Medium', value: 'Medium' },
+    { label: 'Low', value: 'Low' }
+  ];
+  Trigger_Option = [
+    { label: 'Select Trigger', value: '' },
+    { label: 'Before Joining', value: 'beforeJoining' },
+    { label: 'After Joining', value: 'afterJoining' },
+    { label: 'After Offer', value: 'afterOffer' },
+    { label: 'Before Expiry', value: 'beforeExpiry' },
+    { label: 'After Expiry', value: 'afterExpiry' },
+    { label: 'After Acceptance', value: 'afterAcceptance' }
+
+  ]
   config: any = {
     height: '200px',
     uploadImagePath: '/api/upload',

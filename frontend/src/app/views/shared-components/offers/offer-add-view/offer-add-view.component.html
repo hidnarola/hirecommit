@@ -105,7 +105,8 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="candidate">Candidate Name <p class="ast"> *</p></label>
+                                <label class="col-form-label" for="candidate">Candidate Name <p class="ast"> *</p>
+                                    </label>
 
                                 <input type="text" *ngIf="!is_Edit" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name">
@@ -176,11 +177,13 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="salarybracket">Salary <p class="ast" *ngIf="astSalary"> *</p></label>
+                                <label class="col-form-label" for="salarybracket">Salary <p class="ast"
+                                        *ngIf="astSalary"> *</p></label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Bracket"
-                                    formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()" (keyup)="CheckAst()">
+                                    formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()"
+                                    (keyup)="CheckAst()">
 
-        
+
                                 <div class="cust_err_msg" *ngIf="!form.controls['salarybracket'].valid">
                                     <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
                                         This field is required.
@@ -192,7 +195,8 @@
 
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="salarybracket_from">Salary From <p class="ast" *ngIf="ast"> *</p></label>
+                                <label class="col-form-label" for="salarybracket_from">Salary From <p class="ast"
+                                        *ngIf="ast"> *</p></label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Range From"
                                     formControlName="salarybracket_from" id="salarybracket_from"
                                     (keyup)="checkFrom($event,salaryto.value)" #salaryfrom (blur)="onSalaryRangeBlur()">
@@ -210,7 +214,8 @@
                                 <!-- {{error_msg1}} -->
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="salarybracket_to">Salary To <p class="ast" *ngIf="ast"> *</p></label>
+                                <label class="col-form-label" for="salarybracket_to">Salary To <p class="ast"
+                                        *ngIf="ast"> *</p></label>
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Range To"
                                     formControlName="salarybracket_to" id="salarybracket_to"
                                     (blur)="onSalaryRangeBlur()" #salaryto (keyup)="checkTo($event,salaryfrom.value)">
@@ -232,10 +237,9 @@
                                 <label class="col-form-label" for="salaryduration">Hourly Salary
                                     Duration <p class="ast" *ngIf="!disabled"> *</p></label>
                                 <div class="append-week">
-                                    
+
                                     <input type="number" class="form-control" placeholder="Enter Hourly Salary Duration"
-                                        formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled 
-                                       >
+                                        formControlName="salaryduration" id="salaryduration" *ngIf="disabled" disabled>
 
                                     <input type="number" class="form-control" placeholder="Enter Hourly Salary Duration"
                                         formControlName="salaryduration" id="salaryduration" *ngIf="!disabled" min="1"
@@ -264,11 +268,12 @@
                                 <h3>Offer Dates & Type</h3>
                             </div>
                             <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="joiningdate">Joining Date <p class="ast"> *</p></label>
-                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" 
+                                <label class="col-form-label" for="joiningdate">Joining Date <p class="ast"> *</p>
+                                    </label>
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="joiningdate" id="joiningdate"
-                                    [disabled]="is_View" [minDate]="max_date" >
+                                    formControlName="joiningdate" id="joiningdate" [disabled]="is_View || offerExpired"
+                                    [minDate]="max_date">
                                 </p-calendar>
                                 <!-- <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="is_Edit" [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [minDate]="max_date"
@@ -284,7 +289,13 @@
 
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="expirydate">Expiry Date <p class="ast"> *</p></label>
-                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
+
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="offerExpired"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
+                                    [minDate]="min_date" (onSelect)="getExpiryDate($event)">
+                                </p-calendar>
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="!offerExpired"
                                     [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
                                     [disabled]="is_View || isAccepted" [minDate]="min_date"
@@ -401,7 +412,7 @@
                             <div class="col-md-6 form-group">
                                 <label> &nbsp; </label>
                                 <button class="btn btn-sm btn-primary" style="float: right;"
-                                    (click)="addMoreCommunication()">
+                                    (click)="addMoreCommunication()" [disabled]="offerExpired">
                                     Add AdHoc Communication
                                 </button>
                             </div>
@@ -445,7 +456,8 @@
                                             id="high_notreplied" disabled *ngIf="isAccepted">
                                         <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                            id="high_notreplied" *ngIf="!isAccepted" (blur)="removeZero_high_notreplied()">
+                                            id="high_notreplied" *ngIf="!isAccepted"
+                                            (blur)="removeZero_high_notreplied()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -466,7 +478,8 @@
                                             id="medium_unopened" disabled *ngIf="isAccepted">
                                         <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                            id="medium_unopened" *ngIf="!isAccepted" (blur)="removeZero_medium_unopened()">
+                                            id="medium_unopened" *ngIf="!isAccepted"
+                                            (blur)="removeZero_medium_unopened()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -485,7 +498,7 @@
                                         <input type="number" min="0" class="form-control"
                                             autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied" disabled
-                                            *ngIf="isAccepted" >
+                                            *ngIf="isAccepted">
                                         <input type="number" min="0" class="form-control"
                                             autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied"
@@ -511,14 +524,9 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
                                         <div class="card-header h5">Communication - {{i+1}}
-                                            <button class="btn btn-danger pull-right"
-                                                (click)="remove_communication(i)">Delete</button>
-                                            <!-- <button class=" btn btn-secondary  pull-right mr-2"
-                                                (click)="add_new_communication(i)">Add Communication</button> -->
-                                            <!-- <span class="input-group-text pull-right"
-                                                (click)="remove_communication(i)"><i class="icon-close"></i></span>
-                                            <span class="input-group-text pull-right"
-                                                (click)="add_new_communication(i)"><i class="icon-plus"></i></span> -->
+                                            <button class="btn btn-danger pull-right" (click)="remove_communication(i)"
+                                                [disabled]="offerExpired">Delete</button>
+
                                         </div>
                                         <div class="card-body">
                                             <div class="form-goup no-gutters row">
@@ -527,10 +535,16 @@
                                                         Communication Name
                                                     </label>
                                                     <div class="col-md-7 no-gutters">
-                                                        <input type="text" class="form-control" placeholder="Enter name"
-                                                            formControlName="communicationname" id="communicationname"
+                                                        <input type="text" *ngIf="offerExpired" class="form-control"
+                                                            placeholder="Enter name" formControlName="communicationname"
+                                                            id="communicationname"
+                                                            [(ngModel)]="customfield.communicationname" disabled>
+
+                                                        <input type="text" *ngIf="!offerExpired" class="form-control"
+                                                            placeholder="Enter name" formControlName="communicationname"
+                                                            id="communicationname"
                                                             [(ngModel)]="customfield.communicationname">
-                                                            
+
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['communicationname'].valid">
                                                             <span
@@ -545,16 +559,22 @@
                                                     <label class="col-md-5 col-form-label"
                                                         for="priority">Priority</label>
                                                     <div class="col-md-7">
-                                                        <select id="priority" name="select1" class="form-control"
+                                                        <p-dropdown [options]="Priority_Options"
+                                                            [style]="{'width':'100%'}" formControlName="priority"
+                                                            placeholder="Select Priority" id="priority" id="priority"
+                                                            [(ngModel)]="customfield.priority"
+                                                            [disabled]="offerExpired">
+                                                        </p-dropdown>
+                                                        <!-- <select id="priority" name="select1" class="form-control"
                                                             formControlName="priority"
                                                             [(ngModel)]="customfield.priority">
-                                                            <option value="" selected="selected">Please select
+                                                            <option value="" selected="selected" [disabled]="offerExpired">Please select
                                                                 priority
                                                             </option>
                                                             <option value="High">High</option>
                                                             <option value="Medium">Medium</option>
                                                             <option value="Low">Low</option>
-                                                        </select>
+                                                        </select> -->
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['priority'].valid">
                                                             <span
@@ -573,16 +593,22 @@
                                                         <p-dropdown [options]="Trigger_Option"
                                                             [style]="{'width':'100%'}" formControlName="trigger"
                                                             placeholder="Select Trigger" id="trigger" id="trigger"
-                                                            [(ngModel)]="customfield.trigger">
+                                                            [(ngModel)]="customfield.trigger" [disabled]="offerExpired">
                                                         </p-dropdown>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="day">-</label>
                                                     <div class="input-group col-md-7">
-                                                        <input type="number" min="0" id="day" name="day"
-                                                            class="form-control" placeholder="Enter Days"
-                                                            formControlName="day" [(ngModel)]="customfield.day" (blur)="removeZeroCommunication(i)">
+                                                        <input type="number" *ngIf="offerExpired" min="0" id="day"
+                                                            name="day" class="form-control" placeholder="Enter Days"
+                                                            formControlName="day" [(ngModel)]="customfield.day"
+                                                            (blur)="removeZeroCommunication(i)" disabled>
+
+                                                        <input type="number" *ngIf="!offerExpired" min="0" id="day"
+                                                            name="day" class="form-control" placeholder="Enter Days"
+                                                            formControlName="day" [(ngModel)]="customfield.day"
+                                                            (blur)="removeZeroCommunication(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
@@ -602,27 +628,31 @@
                                                 </div>
 
                                             </div>
-                                        <div class="form-goup no-gutters row">
-                                            <div class="col-md-6 row no-gutters">
-                                                <label class="col-md-5 col-form-label" for="subject">
-                                                   Subject 
-                                                </label>
-                                                <div class="col-md-7 no-gutters">
-                                                    <input type="text" class="form-control" placeholder="Enter name" formControlName="subject"
-                                                        id="subject" [(ngModel)]="customfield.subject">
-                                        
-                                                    <div class="cust_err_msg"
-                                                        *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['subject'].valid">
-                                                        <span
-                                                            *ngIf="form.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['subject'].errors['whitespace']"
-                                                            class="text-danger">
-                                                            This field is required.
-                                                        </span>
+                                            <div class="form-goup no-gutters row">
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label" for="subject">
+                                                        Subject
+                                                    </label>
+                                                    <div class="col-md-7 no-gutters">
+                                                        <input type="text" *ngIf="offerExpired" class="form-control"
+                                                            placeholder="Enter name" formControlName="subject"
+                                                            id="subject" [(ngModel)]="customfield.subject" disabled>
+
+                                                        <input type="text" *ngIf="!offerExpired" class="form-control"
+                                                            placeholder="Enter name" formControlName="subject"
+                                                            id="subject" [(ngModel)]="customfield.subject">
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['subject'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['subject'].errors['whitespace']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
+
                                             </div>
-                                            
-                                        </div>
                                             <div class="form row">
                                                 <div class="col-md-8">
                                                     <label class="col-form-label" for="message">Message</label>
@@ -635,7 +665,7 @@
                                                             <div [ngxSummernote]="config" #editor
                                                                 [(ngModel)]="customfield.message"
                                                                 [(summernoteModel)]="customfield.message" id="editor"
-                                                                formControlName="message">
+                                                                formControlName="message" [disabled]="offerExpired">
                                                             </div>
                                                         </div>
                                                         <div class="cust_err_msg"
@@ -683,9 +713,11 @@
                                         <div class="card-header h5">AdHoc Communication - {{i+1}}
 
                                             <button class="btn btn-danger pull-right"
-                                                (click)="remove_AdHoc_communication(i)">Delete</button>
+                                                (click)="remove_AdHoc_communication(i)"
+                                                [disabled]="offerExpired">Delete</button>
                                             <button class=" btn btn-secondary  pull-right mr-2"
-                                                (click)="add_new_AdHoc_communication(i)">Add AdHoc
+                                                (click)="add_new_AdHoc_communication(i)" [disabled]="offerExpired">Add
+                                                AdHoc
                                                 Communication</button>
                                         </div>
                                         <div class="card-body">
@@ -696,7 +728,14 @@
                                                     </label>
                                                     <!-- [(ngModel)]="customfield.communicationname" -->
                                                     <div class="col-md-7 no-gutters">
-                                                        <input type="text" class="form-control" placeholder="Enter name"
+                                                        <input type="text" *ngIf="offerExpired" class="form-control"
+                                                            placeholder="Enter name"
+                                                            formControlName="AdHoc_communicationname"
+                                                            id="AdHoc_communicationname"
+                                                            [(ngModel)]="customfield.AdHoc_communicationname" disabled>
+
+                                                        <input type="text" class="form-control" *ngIf="!offerExpired"
+                                                            placeholder="Enter name"
                                                             formControlName="AdHoc_communicationname"
                                                             id="AdHoc_communicationname"
                                                             [(ngModel)]="customfield.AdHoc_communicationname">
@@ -715,16 +754,23 @@
                                                         for="trigger">Priority</label>
                                                     <div class="col-md-7">
                                                         <!-- [(ngModel)]="customfield.priority" -->
-                                                        <select id="AdHoc_priority" name="select1" class="form-control"
+                                                        <!-- <select id="AdHoc_priority" name="select1" class="form-control"
                                                             formControlName="AdHoc_priority"
-                                                            [(ngModel)]="customfield.AdHoc_priority">
+                                                            [(ngModel)]="customfield.AdHoc_priority" disabled="offerExpired">
                                                             <option value="" selected="selected">Please select
                                                                 Priority
                                                             </option>
                                                             <option value="High">High</option>
                                                             <option value="Medium">Medium</option>
                                                             <option value="Low">Low</option>
-                                                        </select>
+                                                        </select> -->
+
+                                                        <p-dropdown [options]="Priority_Options"
+                                                            [style]="{'width':'100%'}" formControlName="AdHoc_priority"
+                                                            placeholder="Select Priority" id="AdHoc_priority"
+                                                            id="AdHoc_priority" [(ngModel)]="customfield.AdHoc_priority"
+                                                            [disabled]="offerExpired">
+                                                        </p-dropdown>
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_priority'].valid">
                                                             <span
@@ -745,7 +791,8 @@
                                                         <p-dropdown [options]="Trigger_Option"
                                                             [style]="{'width':'100%'}" formControlName="AdHoc_trigger"
                                                             placeholder="Select Trigger" id="AdHoc_trigger"
-                                                            id="AdHoc_trigger" [(ngModel)]="customfield.AdHoc_trigger">
+                                                            id="AdHoc_trigger" [(ngModel)]="customfield.AdHoc_trigger"
+                                                            [disabled]="offerExpired">
                                                         </p-dropdown>
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_trigger'].valid">
@@ -762,10 +809,17 @@
                                                     <label class="col-md-5 col-form-label" for="AdHoc_day">-</label>
                                                     <div class="input-group col-md-7">
                                                         <!-- [(ngModel)]="customfield.day" -->
-                                                        <input type="number" min="0" id="AdHoc_day" name="AdHoc_day"
-                                                            class="form-control" placeholder="Enter Days"
-                                                            formControlName="AdHoc_day"
+                                                        <input type="number" *ngIf="offerExpired" min="0" id="AdHoc_day"
+                                                            name="AdHoc_day" class="form-control"
+                                                            placeholder="Enter Days" formControlName="AdHoc_day"
+                                                            [(ngModel)]="customfield.AdHoc_day" (blur)="removeZero(i)"
+                                                            disabled>
+
+                                                        <input type="number" min="0" *ngIf="!offerExpired"
+                                                            id="AdHoc_day" name="AdHoc_day" class="form-control"
+                                                            placeholder="Enter Days" formControlName="AdHoc_day"
                                                             [(ngModel)]="customfield.AdHoc_day" (blur)="removeZero(i)">
+
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
@@ -791,9 +845,14 @@
                                                         Subject
                                                     </label>
                                                     <div class="col-md-7 no-gutters">
-                                                        <input type="text" class="form-control" placeholder="Enter Subject" formControlName="AdHoc_subject"
+                                                        <input type="text" *ngIf="offerExpired" class="form-control"
+                                                            placeholder="Enter Subject" formControlName="AdHoc_subject"
+                                                            id="AdHoc_subject" [(ngModel)]="customfield.AdHoc_subject"
+                                                            disabled>
+                                                        <input type="text" *ngIf="!offerExpired" class="form-control"
+                                                            placeholder="Enter Subject" formControlName="AdHoc_subject"
                                                             id="AdHoc_subject" [(ngModel)]="customfield.AdHoc_subject">
-                                            
+
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].valid">
                                                             <span
@@ -804,7 +863,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            
+
                                             </div>
                                             <div class="form row">
                                                 <div class="col-md-8">
@@ -816,7 +875,7 @@
                                                             <div [ngxSummernote]="config" #editor
                                                                 [(summernoteModel)]="customfield.AdHoc_message"
                                                                 id="editor" [(ngModel)]="customfield.AdHoc_message"
-                                                                formControlName="AdHoc_message">
+                                                                formControlName="AdHoc_message" disabled="offerExpired">
                                                             </div>
                                                         </div>
 
@@ -896,7 +955,7 @@
                             <p>{{candidateData.firstname}} {{candidateData.lastname}}</p>
                         </div>
                     </div>
-                    
+
 
                     <div class="row viewoffers-info">
                         <div class="col-md-6">
@@ -965,8 +1024,8 @@
                         </div>
                     </div>
 
-                    
-                    
+
+
                     <!-- <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">
                             Commit Status
@@ -975,10 +1034,10 @@
                             {{resData.commitstatus}}
                         </div>
                     </div> -->
-                    
+
                     <!-- custom fields -->
                     <div class="row viewoffers-info" *ngIf="isCustomFieldView">
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
                             <h3>Custom Field Details</h3>
                         </div>
                         <div class="col-md-6" *ngFor="let field of resData.customfeild">
@@ -989,17 +1048,17 @@
                         </div>
                     </div>
                     <div class="row viewoffers-info" *ngIf="resData.groupName">
-                <div class="col-md-12" >
-                    <h3>Communication Details</h3>
-                </div>
-                <div class="col-md-12">
-                    <strong>Group</strong>
-                    <p>{{resData.groupName ? resData.groupName : '-'}}</p>
-                </div>
-             </div>
+                        <div class="col-md-12">
+                            <h3>Communication Details</h3>
+                        </div>
+                        <div class="col-md-12">
+                            <strong>Group</strong>
+                            <p>{{resData.groupName ? resData.groupName : '-'}}</p>
+                        </div>
+                    </div>
                     <!-- group details -->
-                  
-                        <div  class="row viewoffers-info"  *ngIf="getGroupDetails">
+
+                    <div class="row viewoffers-info" *ngIf="getGroupDetails">
                         <div class="col-md-3">
                             <strong>High - UnOpened</strong>
                             <div class="input-group  mb-3">
@@ -1081,11 +1140,11 @@
                                     </div>
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Subject</label>
-                                            <div class="col-md-6 detail-input">
-                                                {{communication.subject}}
-                                            </div> 
+                                        <div class="col-md-6 detail-input">
+                                            {{communication.subject}}
                                         </div>
-                                    
+                                    </div>
+
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
@@ -1116,7 +1175,7 @@
                                         </div>
                                     </div>
 
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -1171,7 +1230,8 @@
                                             <div>
                                                 <!-- {{communication.AdHoc_message}} -->
                                                 <div [ngxSummernote]="config" #editor
-                                                    [(summernoteModel)]="communication.AdHoc_message" id="editor" disabled="true">
+                                                    [(summernoteModel)]="communication.AdHoc_message" id="editor"
+                                                    disabled="true">
                                                 </div>
                                             </div>
                                         </div>
@@ -1258,17 +1318,17 @@
                         <div class="col-md-6">
                             <strong>Offer Date</strong>
                             <p>{{resData.createdAt | date: 'dd/MM/yyyy': 'utc'}}</p>
-                        </div> 
+                        </div>
                         <div class="col-md-6 ">
                             <strong>Employer Name</strong>
                             <p>{{userName}}</p>
                         </div>
                     </div>
                     <div class="row viewoffers-info">
-                        
+
                         <div class="col-md-6">
                             <strong>Title</strong>
-                            <p>{{resData.title}}</p>                            
+                            <p>{{resData.title}}</p>
                         </div>
                         <div class="col-md-6">
                             <strong>Location</strong>
@@ -1305,8 +1365,8 @@
                     <!-- <div class="row viewoffers-info" >
                        
                     </div> -->
-                    
-                   
+
+
 
                     <div class="row viewoffers-info">
                         <div class="col-md-12">
@@ -1356,7 +1416,7 @@
                         </div>
                     </div> -->
                     <div class="row viewoffers-info" *ngIf="isCustomFieldView">
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
                             <h3>Custom Field Details</h3>
                         </div>
                         <div class="col-md-6">
@@ -1370,7 +1430,7 @@
                     </div>
                     <!-- custom fields -->
 
-                    
+
                     <!-- custom fields -->
                     <!-- <div class="row detail-panel">
                         <div class="col-md-3 detail-label lbl">

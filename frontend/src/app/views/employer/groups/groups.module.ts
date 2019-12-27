@@ -14,6 +14,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { GroupViewComponent } from './group-view/group-view.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { NgxSummernoteModule } from 'ngx-summernote';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   declarations: [
     GroupsListComponent,
@@ -25,6 +26,7 @@ import { NgxSummernoteModule } from 'ngx-summernote';
     CommonModule,
     GroupsRoutingModule,
     FormsModule,
+    DropdownModule,
     ReactiveFormsModule,
     CKEditorModule,
     HttpClientModule,

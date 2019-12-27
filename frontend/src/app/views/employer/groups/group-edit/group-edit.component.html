@@ -207,7 +207,7 @@
                                                     <label class="col-md-5 col-form-label"
                                                         for="trigger">Priority</label>
                                                     <div class="col-md-7">
-                                                        <select id="priority" name="select1" class="form-control"
+                                                        <!-- <select id="priority" name="select1" class="form-control"
                                                             formControlName="priority"
                                                             [(ngModel)]="customfield.priority">
                                                             <option value="" selected="selected">Please select
@@ -216,7 +216,11 @@
                                                             <option value="High">High</option>
                                                             <option value="Medium">Medium</option>
                                                             <option value="Low">Low</option>
-                                                        </select>
+                                                        </select> -->
+                                                        <p-dropdown [options]="Priority_Options" [style]="{'width':'100%'}" formControlName="priority"
+                                                            placeholder="Select Priority" id="priority" id="priority" [(ngModel)]="customfield.priority"
+                                                            >
+                                                        </p-dropdown>
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors"
                                                             class="cust_err_msg">
                                                             <div class="text-danger"
@@ -231,7 +235,7 @@
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="trigger">Trigger</label>
                                                     <div class="col-md-7 no-gutters">
-                                                        <select id="trigger" name="select1" class="form-control"
+                                                        <!-- <select id="trigger" name="select1" class="form-control"
                                                             formControlName="trigger" [(ngModel)]="customfield.trigger">
                                                             <option value="" selected="selected">Please select trigger
                                                             </option>
@@ -241,7 +245,10 @@
                                                             <option value="beforeExpiry">Before Expiry</option>
                                                             <option value="afterExpiry">After Expiry</option>
                                                             <option value="afterAcceptance">After Acceptance</option>
-                                                        </select>
+                                                        </select> -->
+                                                        <p-dropdown [options]="Trigger_Option" [style]="{'width':'100%'}" formControlName="trigger" placeholder="Select Trigger"
+                                                            id="trigger" id="trigger" [(ngModel)]="customfield.trigger" >
+                                                        </p-dropdown>
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors"
                                                             class="cust_err_msg">
                                                             <div class="text-danger"

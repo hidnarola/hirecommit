@@ -34,6 +34,22 @@ export class GroupEditComponent implements OnInit {
   show_spinner = false;
   cursorPos: any;
   userDetail: any;
+  Trigger_Option = [
+    { label: 'Select Trigger', value: '' },
+    { label: 'Before Joining', value: 'beforeJoining' },
+    { label: 'After Joining', value: 'afterJoining' },
+    { label: 'After Offer', value: 'afterOffer' },
+    { label: 'Before Expiry', value: 'beforeExpiry' },
+    { label: 'After Expiry', value: 'afterExpiry' },
+    { label: 'After Acceptance', value: 'afterAcceptance' }
+
+  ]
+  Priority_Options = [
+    { label: 'Select Trigger', value: '' },
+    { label: 'High', value: 'High' },
+    { label: 'Medium', value: 'Medium' },
+    { label: 'Low', value: 'Low' }
+  ];
   config: any = {
     height: '200px',
     uploadImagePath: '/api/upload',

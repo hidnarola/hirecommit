@@ -265,7 +265,7 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'admin') {
               this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
             }
-            this.toastr.success(res['data']['message'], 'Success!', { timeOut: 3000 });
+            this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
         }, (err) => {
           this.show_spinner = false;
