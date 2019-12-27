@@ -172,19 +172,20 @@ router.get('/get_locations', async (req, res) => {
         else {
             var user_id = req.userInfo.id
         }
-        var location_list = await common_helper.find(location, {
-            "emp_id": new ObjectId(user_id),
-            "is_del": false
-        });
+        var location_list = await location.find(
+            {
+                "emp_id": new ObjectId(user_id),
+                "is_del": false
+            }).sort({ "city": 1 });
 
         var salary_list = await common_helper.find(Salary, {
             "emp_id": new ObjectId(req.userInfo.id),
             "is_del": false
         });
-        if (location_list.status === 1) {
+        if (location_list && location_list.length > 0) {
             return res.status(config.OK_STATUS).json({ 'message': "Location List", "status": 1, data: location_list, salary: salary_list });
         }
-        else if (location_list.status === 2) {
+        else if (location_list && location_list.length <= 0) {
             return res.status(config.OK_STATUS).json({ 'message': "No Record Found", "status": 2 });
         }
         else {

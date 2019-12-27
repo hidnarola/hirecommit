@@ -42,6 +42,7 @@ common_helper.loginCheck = async (data) => {
 common_helper.find = async (collection, data = {}, type = 2, start, length, filteredrecords) => {
     try {
         if (type == 1) {
+            console.log(' : 1 ==> ', 1);
             var data = await collection.findOne(data).lean();
         }
         else {

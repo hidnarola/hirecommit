@@ -101,7 +101,7 @@ router.post("/", async (req, res) => {
                         "password": passwords,
                         "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
                     });
-                    res.status(config.OK_STATUS).json({ "message": "Sub Account is Added successfully", "data": interest_resps })
+                    res.status(config.OK_STATUS).json({ "message": "Sub Account is Added Successfully", "data": interest_resps })
                 }
             }
             else {

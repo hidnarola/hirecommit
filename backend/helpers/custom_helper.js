@@ -49,7 +49,7 @@ custom_helper.get_all_custom_field = async (collection, id, search, start, lengt
       return { "status": 2, "message": "salary bracket not found" };
     }
   } catch (err) {
-    return { "status": 0, "message": "Error occured while finding music", "error": err }
+    return { "status": 0, "message": "Error occured while finding custom field", "error": err }
   }
 };
 

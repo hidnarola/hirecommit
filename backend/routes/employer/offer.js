@@ -756,7 +756,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date);
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -769,7 +769,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notopen.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -787,7 +787,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -800,7 +800,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notopen.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -818,7 +818,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -831,7 +831,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notopen.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -849,7 +849,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -862,7 +862,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notopen.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -880,7 +880,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -893,7 +893,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notopen.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -911,7 +911,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.high_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -924,7 +924,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notopen.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
                                 if (moment(current_date).isSame(NotOpenDay) == true) {
                                     var data = {
@@ -946,7 +946,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.createdAt).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date);
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -959,7 +959,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notreply.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -977,7 +977,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -990,7 +990,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notreply.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1008,7 +1008,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1021,7 +1021,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notreply.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1039,7 +1039,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.expirydate).startOf('day').subtract(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1052,7 +1052,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notreply.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1070,7 +1070,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.expirydate).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1083,7 +1083,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notreply.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1101,7 +1101,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var days = comm.day
                             var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
                             offer_date = moment(offer_date)
-                            if (comm.priority === "High") {
+                            if (comm.priority === "High" && (resp.high_unopened !== 0 || resp.high_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.high_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1114,7 +1114,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     }
                                     communication_notreply.push(data);
                                 }
-                            } else if (comm.priority === "Medium") {
+                            } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotReplyDay = moment(offer_date).startOf('day').add(resp.medium_notreplied, 'day')
                                 if (moment(current_date).isSame(NotReplyDay) == true) {
                                     var data = {
@@ -1518,7 +1518,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
             }
         }
 
-        console.log(' : communication_notreply ==> ', communication_notreply);
+
+        console.log(' : communication_notreply ==> ', communication_notreply); return false;
         var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
 
         if (all_employer.status == 1) {
