@@ -94,6 +94,12 @@ router.post('/get', async (req, res) => {
                     $match:
                         { $or: [{ "emp_id": new ObjectId(user_id) }, { "emp_id": new ObjectId(user_id) }], "is_del": false }
 
+                },
+                {
+                    "$project": {
+                        "city": 1,
+                        "insensitive": { "$toLower": "$city" }
+                    }
                 }
             ]
 

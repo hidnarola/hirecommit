@@ -10,6 +10,20 @@ groups_helper.get_all_groups = async (collection, id, search, start, length, rec
           "is_del": false,
           "emp_id": new ObjectId(id)
         }
+      },
+      {
+        "$project": {
+          "name": 1,
+          "is_del": "$is_del",
+          "flag": "$flag",
+          "emp_id": "$emp_id",
+          "high_unopened": "$high_unopened",
+          "medium_unopened": "$medium_unopened",
+          "createdAt": "$createdAt",
+          "high_notreplied": "$high_notreplied",
+          "medium_notreplied": "$medium_notreplied",
+          "insensitive": { "$toLower": "$name" }
+        }
       }
     ]
     if (search && search.value != '') {
@@ -28,10 +42,22 @@ groups_helper.get_all_groups = async (collection, id, search, start, length, rec
         },
       });
     }
+    // if (sort) {
+    //   aggregate.push({
+    //     "$sort": sort
+    //   });
+    // }
+
     if (sort) {
-      aggregate.push({
-        "$sort": sort
-      });
+      if (sort.name) {
+        aggregate.push({
+          "$sort": { "insensitive": sort.name }
+        })
+      } else {
+        aggregate.push({
+          "$sort": sort
+        });
+      }
     }
 
     if (start) {

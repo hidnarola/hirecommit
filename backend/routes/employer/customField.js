@@ -133,6 +133,12 @@ router.post("/get", async (req, res) => {
             {
                 $match:
                     { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
+            },
+            {
+                "$project": {
+                    "key": 1,
+                    "insensitive": { "$toLower": "$key" }
+                }
             }
         ]
 
@@ -144,11 +150,13 @@ router.post("/get", async (req, res) => {
 
             });
         }
+
+
         let totalMatchingCountRecords = await CustomField.aggregate(aggregate);
         totalMatchingCountRecords = totalMatchingCountRecords.length
 
         var sortOrderColumnIndex = req.body.order[0].column;
-        let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+        let sortOrderColumn = sortOrderColumnIndex == 0 ? 'key' : req.body.columns[sortOrderColumnIndex].data;
         let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
         let sortingObject = {
             [sortOrderColumn]: sortOrder

@@ -130,12 +130,14 @@ router.post('/get', async (req, res) => {
 
         if (!errors) {
             var sortOrderColumnIndex = req.body.order[0].column;
-            let sortOrderColumn = sortOrderColumnIndex == 0 ? '_id' : req.body.columns[sortOrderColumnIndex].data;
+            let sortOrderColumn = sortOrderColumnIndex == 0 ? 'name' : req.body.columns[sortOrderColumnIndex].data;
 
             let sortOrder = req.body.order[0].dir == 'asc' ? 1 : -1;
             let sortingObject = {
                 [sortOrderColumn]: sortOrder
             }
+            // console.log(sortingObject);
+
             var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
             if (user.status == 1 && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
                 var user_id = user.data.emp_id
@@ -149,6 +151,20 @@ router.post('/get', async (req, res) => {
                     $match:
                         { $or: [{ "emp_id": new ObjectId(req.userInfo.id) }, { "emp_id": new ObjectId(user.data.emp_id) }], "is_del": false }
 
+                },
+                {
+                    "$project": {
+                        "name": 1,
+                        "is_del": "$is_del",
+                        "flag": "$flag",
+                        "emp_id": "$emp_id",
+                        "high_unopened": "$high_unopened",
+                        "medium_unopened": "$medium_unopened",
+                        "createdAt": "$createdAt",
+                        "high_notreplied": "$high_notreplied",
+                        "medium_notreplied": "$medium_notreplied",
+                        "insensitive": { "$toLower": "$name" }
+                    }
                 }
             ]
 

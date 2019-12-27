@@ -21,7 +21,7 @@ const Role = require('./../models/role');
 const User = require('./../models/user');
 const Candidate_Detail = require('./../models/candidate-detail');
 const Employer_Detail = require('./../models/employer-detail');
-const SubEmployer_Detail = require('./../models/employer-detail');
+const SubEmployer_Detail = require('./../models/sub-employer-detail');
 
 const CountryData = require('./../models/country_data');
 const BusinessType = require('./../models/business_type');
@@ -32,7 +32,7 @@ const MailType = require('./../models/mail_content');
 const new_mail_helper = require('./../helpers/new_mail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
-const CustomField = require('./../models/customfield');
+const Group = require('./../models/group');
 const userpProfile = require('./profile');
 
 router.use("/profile", auth, userpProfile);
@@ -193,7 +193,7 @@ router.post("/candidate_register", async (req, res) => {
       .has().lowercase()                              // Must have lowercase letters
       .has().digits()                                 // Must have digits
       .has().not().spaces()                       // Should not have spaces
-      .is().not().oneOf(['Password', 'Password123'])
+    // .is().not().oneOf(['Password', 'Password123'])
 
     req.checkBody(schema);
     var errors = req.validationErrors();
@@ -489,7 +489,7 @@ router.post("/employer_register", async (req, res) => {
       .has().lowercase()                              // Must have lowercase letters
       .has().digits()                                 // Must have digits
       .has().not().spaces()                       // Should not have spaces
-      .is().not().oneOf(['Password', 'Password123'])
+    // .is().not().oneOf(['Password', 'Password123'])
 
     req.checkBody(schema);
 
@@ -1625,29 +1625,43 @@ router.post('/email_opened', async (req, res) => {
 
 // router.get('/check_query', async (req, res) => {
 
-// var resp_data = await CustomField.aggregate(
-//   [
-//     {
-//       $match: {
-//         "is_del": false,
-//         $or: [
-//           { "emp_id": ObjectId("5df9dfd64c72a507902bb3e9") },
-//           { "emp_id": ObjectId("5df9dfd64c72a507902bb3e9") }
-//         ],
-//         "key": { $toLower: "$key" }
-//       }
-//     }
-//   ]
-// )
-
-// {
-//   "$project": {
-//     "field": 1,
-//       "insensitive": { "$toLower": "$field" }
-//   }
-// },
-// { "$sort": { "insensitive": 1 } }
-// var update_communication = await Location.find({ "is_del": false, emp_id: "5df9dfd64c72a507902bb3e9" });
+//   var resp_data = await SubEmployer_Detail.aggregate(
+//     [
+//       {
+//         $match: {
+//           "is_del": false,
+//           "emp_id": ObjectId("5df9dfd64c72a507902bb3e9"),
+//           "user_id": { $ne: ObjectId("5df9dfd64c72a507902bb3e9") }
+//         }
+//       },
+//       {
+//         $lookup:
+//         {
+//           from: "user",
+//           localField: "user_id",
+//           foreignField: "_id",
+//           as: "user"
+//         }
+//       },
+//       {
+//         $unwind: {
+//           path: "$user",
+//           preserveNullAndEmptyArrays: true
+//         }
+//       },
+//       {
+//         "$project": {
+//           "username": 1,
+//           "user": {
+//             "admin_rights": "$user.admin_rights",
+//             "email": "$user.email",
+//           },
+//           "insensitive": { "$toLower": "$username" }
+//         }
+//       },
+//       { "$sort": { "insensitive": 1 } }
+//     ]
+//   )
 
 //   if (resp_data) {
 //     res.status(config.OK_STATUS).json(resp_data);
