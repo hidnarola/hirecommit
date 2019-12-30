@@ -392,7 +392,6 @@ router.post("/candidate_register", async (req, res) => {
 
 router.post('/check_document_size', async (req, res) => {
   try {
-
     if (req.files && req.files["documentimage"]) {
       var documentImage = req.files["documentimage"];
       if (documentImage.size > 5000000) {
@@ -423,7 +422,25 @@ router.post('/check_document_size', async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
+
+router.post('/check_document_number', async (req, res) => {
+  try {
+    const RE = { $regex: new RegExp(`^${req.body.documentNumber}$`, 'gi') };
+    var candidate_resp = await common_helper.find(Candidate_Detail,
+      {
+        "is_del": false,
+        "documentNumber": RE
+      });
+    if (candidate_resp.status == 1 && candidate_resp.data.length > 0) {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Document Number is Already Registered." });
+    } else {
+      res.status(config.OK_STATUS).json({ "status": 1, "message": "This is Valid Document Number." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false });
+  }
+});
 
 router.post("/check_candidate_email", async (req, res) => {
   try {
@@ -436,7 +453,7 @@ router.post("/check_candidate_email", async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
 
 // employer Registration
 router.post("/employer_register", async (req, res) => {
@@ -601,7 +618,7 @@ router.post("/check_employer_email", async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
 
 
 router.post("/email_exists", async (req, res) => {
@@ -625,7 +642,7 @@ router.post("/email_exists", async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
 
 router.post('/login', async (req, res) => {
   try {
