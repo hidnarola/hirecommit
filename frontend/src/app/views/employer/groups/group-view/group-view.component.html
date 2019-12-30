@@ -131,22 +131,22 @@
                                         <label class="col-md-2 detail-label">
                                             -
                                         </label>
-                                        <div class="input-group col-md-2 detail-input">
-                                            {{communication.day}}
-
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Day(s)</span>
-                                        </div>
-
-                                    </div>
-                                        
-                                        <div class="row detail-panel">
-                                            <label class="col-md-2 detail-label">Subject</label>
-                                            <div class="col-md-6 detail-input">
-                                                {{communication.subject}}
+                                        <div class="col-md-4 detail-input d-flex">
+                                            <div class="input-group">
+                                                {{communication.day}}
                                             </div>
+                                            <span class="input-group-text">Day(s)</span>
+                                            <!-- <div class="input-group-append">
+                                        </div> -->
                                         </div>
+                                    </div>
+
+                                    <div class="row detail-panel">
+                                        <label class="col-md-2 detail-label">Subject</label>
+                                        <div class="col-md-6 detail-input">
+                                            {{communication.subject}}
+                                        </div>
+                                    </div>
                                     <div class="row detail-panel">
                                         <label class="col-md-2 detail-label">Message</label>
                                         <div class="col-md-9 detail-input">
@@ -155,7 +155,8 @@
                                                 [ngModelOptions]="{standalone: true}">
                                             </ckeditor> -->
                                             <div>
-                                                <div [ngxSummernote]="config" #editor [(summernoteModel)]="communication.message" id="editor" disabled>
+                                                <div [ngxSummernote]="config" #editor
+                                                    [(summernoteModel)]="communication.message" id="editor" disabled>
                                                 </div>
                                             </div>
                                         </div>

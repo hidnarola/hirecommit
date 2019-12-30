@@ -139,11 +139,20 @@ export class RegisterComponent implements OnInit {
       return isValid ? null : { 'invalid': true };
     }
   }
-
+  checkDocumentNumber(e){
+    this.service.check_document_number({'documentNumber': e.target.value}).subscribe(res => {
+    }, (err) => {
+        this.registerForm.controls['documentNumber'].setErrors({ 'isExist': true });
+      this.registerForm.updateValueAndValidity();
+    });
+  }
 
   DocumentType(e) {
     this.isDocumentType = true;
-    console.log('e.target.value=>', e);
+    this.registerForm.controls['documentNumber'].setValidators(null);
+    this.registerForm.controls['drivingLicenseState'].setValidators(null);
+    this.registerForm.controls.documentNumber.setValue('');
+    this.registerForm.controls.drivingLicenseState.setValue('');
     //  "5dae95f549f04b196089e906" = AadharCard
     //  "5dae95f549f04b196089e907" = PanCard
     //  "5dae95f549f04b196089e908" = Driving Licence
@@ -218,6 +227,10 @@ export class RegisterComponent implements OnInit {
   }
 
   getCode(e) {
+    this.registerForm.controls['documentNumber'].setValidators(null);
+    this.registerForm.controls['drivingLicenseState'].setValidators(null);
+    this.registerForm.controls.documentNumber.setValue('');
+    this.registerForm.controls.drivingLicenseState.setValue('');
     this.countryID = this.alldata.find(x => x._id === e.value);
     this.Document_optoins = [];
     this.isDocumentType = false;

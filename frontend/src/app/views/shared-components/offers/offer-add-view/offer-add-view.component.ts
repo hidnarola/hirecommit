@@ -322,7 +322,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.isShow = true;
             this.modalService.open(this.content1, ModalOptions);
             this.err_msg = this.pastDetails.previousOffer.displayMessage;
-            console.log('this.pastDetails.previousOffer.displayMessage=>', this.pastDetails.previousOffer.displayMessage);
 
           }
           if ((this.pastDetails.data.data.length > 0) && (this.pastDetails.previousOffer.data.length > 0)) {
@@ -558,10 +557,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
               this.updateValidation();
-            } 
-            else if (this.d < new Date()) {
-              console.log('this.d < new Date()=>', this.d < new Date());
-              
+            } else if (this.d < new Date()) {
               this.offerExpired = true;
               // this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
@@ -582,25 +578,65 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
             }
-
-            console.log('this.d < new Date()=>', this.d < new Date());
-            console.log(' this.offerExpired=>',  this.offerExpired);
-            
-
             // set communication
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
               this.isSetCommunication = true;
               this.communicationData = res['data']['communication'];
               const _communication_array = [];
+              let new_communication;
               this.communicationData.forEach((element, index) => {
-                const new_communication = {
-                  'communicationname': element.communicationname,
-                  'trigger': element.trigger,
-                  'priority': element.priority,
-                  'day': element.day,
-                  'subject': element.subject,
-                  'message': element.message,
-                };
+                if (element.open !== undefined && element.reply !== undefined && element.reply_date !== undefined && element.open_date !== undefined) {
+                   new_communication = {
+                    'communicationname': element.communicationname,
+                    'trigger': element.trigger,
+                    'priority': element.priority,
+                    'day': element.day,
+                    'subject': element.subject,
+                    'message': element.message,
+                    '_id': element._id,
+                    'open': element.open,
+                    'reply': element.reply,
+                     'open_date': element.open_date,
+                     'reply_date':element.reply_date
+                  };
+                } else if (element.open !== undefined && element.reply !== undefined && element.open_date !== undefined) {
+                
+                   new_communication = {
+                    'communicationname': element.communicationname,
+                    'trigger': element.trigger,
+                    'priority': element.priority,
+                    'day': element.day,
+                    'subject': element.subject,
+                    'message': element.message,
+                    '_id': element._id,
+                    'open': element.open,
+                    'reply': element.reply,
+                     'open_date': element.open_date
+                  };
+                } else if (element.open !== undefined && element.reply !== undefined) {
+                 new_communication = {
+                    'communicationname': element.communicationname,
+                    'trigger': element.trigger,
+                    'priority': element.priority,
+                    'day': element.day,
+                    'subject': element.subject,
+                    'message': element.message,
+                    '_id': element._id,
+                    'open': element.open,
+                    'reply': element.reply
+                  };
+                } else {
+                  new_communication = {
+                    'communicationname': element.communicationname,
+                    'trigger': element.trigger,
+                    'priority': element.priority,
+                    'day': element.day,
+                    'subject': element.subject,
+                    'message': element.message,
+                    '_id': element._id
+                  };
+                }
+               
                 this.communicationFieldItems.setControl(index, this.fb.group({
                   communicationname: ['', Validators.required],
                   trigger: ['', Validators.required],
@@ -612,7 +648,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 _communication_array.push(new_communication);
               });
               this.communicationData = _communication_array;
-
             } else {
               this.isSetCommunication = false;
             }
@@ -623,14 +658,57 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.AdHocCommunicationData = res['data']['AdHoc'];
               const _Adhoc_communication_array = [];
               this.AdHocCommunicationData.forEach((element, index) => {
-                const new_communication = {
-                  'AdHoc_communicationname': element.AdHoc_communicationname,
-                  'AdHoc_trigger': element.AdHoc_trigger,
-                  'AdHoc_priority': element.AdHoc_priority,
-                  'AdHoc_day': element.AdHoc_day,
-                  'AdHoc_subject': element.AdHoc_subject,
-                  'AdHoc_message': element.AdHoc_message,
-                };
+                let new_communication;
+                if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_reply_date !== undefined && element.AdHoc_open_date !== undefined){
+                  new_communication = {
+                    'AdHoc_communicationname': element.AdHoc_communicationname,
+                    'AdHoc_trigger': element.AdHoc_trigger,
+                    'AdHoc_priority': element.AdHoc_priority,
+                    'AdHoc_day': element.AdHoc_day,
+                    'AdHoc_subject': element.AdHoc_subject,
+                    'AdHoc_message': element.AdHoc_message,
+                    '_id': element._id,
+                    'AdHoc_open': element.AdHoc_open,
+                    'AdHoc_reply': element.AdHoc_reply,
+                    'AdHoc_open_date': element.AdHoc_open_date,
+                    'AdHoc_reply_date': element.AdHoc_reply_date
+                  };
+                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_open_date !== undefined) { 
+                  new_communication = {
+                    'AdHoc_communicationname': element.AdHoc_communicationname,
+                    'AdHoc_trigger': element.AdHoc_trigger,
+                    'AdHoc_priority': element.AdHoc_priority,
+                    'AdHoc_day': element.AdHoc_day,
+                    'AdHoc_subject': element.AdHoc_subject,
+                    'AdHoc_message': element.AdHoc_message,
+                    '_id': element._id,
+                    'AdHoc_open': element.AdHoc_open,
+                    'AdHoc_reply': element.AdHoc_reply,
+                    'AdHoc_open_date': element.AdHoc_open_date
+                  };
+               } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined ) { 
+                  new_communication = {
+                    'AdHoc_communicationname': element.AdHoc_communicationname,
+                    'AdHoc_trigger': element.AdHoc_trigger,
+                    'AdHoc_priority': element.AdHoc_priority,
+                    'AdHoc_day': element.AdHoc_day,
+                    'AdHoc_subject': element.AdHoc_subject,
+                    'AdHoc_message': element.AdHoc_message,
+                    '_id': element._id,
+                    'AdHoc_open': element.AdHoc_open,
+                    'AdHoc_reply': element.AdHoc_reply
+                  };
+                } else {
+                  new_communication = {
+                    'AdHoc_communicationname': element.AdHoc_communicationname,
+                    'AdHoc_trigger': element.AdHoc_trigger,
+                    'AdHoc_priority': element.AdHoc_priority,
+                    'AdHoc_day': element.AdHoc_day,
+                    'AdHoc_subject': element.AdHoc_subject,
+                    'AdHoc_message': element.AdHoc_message,
+                    '_id': element._id
+                  };
+                }
                 this.AdHocCommunication.setControl(index, this.fb.group({
                   AdHoc_communicationname: ['', Validators.required],
                   AdHoc_trigger: ['', Validators.required],
@@ -1439,7 +1517,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           priority: element.priority,
           day: element.day,
           subject: element.subject,
-          message: element.message
+          message: element.message,
+          _id : element._id,
+          open : element.open,
+          reply: element.reply,
+          open_date: element.open_date,
+          reply_date: element.reply_date
         });
       });
     } else {
@@ -1456,8 +1539,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           AdHoc_priority: element.AdHoc_priority,
           AdHoc_day: element.AdHoc_day,
           AdHoc_subject: element.AdHoc_subject,
-          AdHoc_message: element.AdHoc_message
-          // AdHoc_message: element.AdHoc_message
+          AdHoc_message: element.AdHoc_message,
+          _id: element._id,
+          AdHoc_open: element.AdHoc_open,
+          AdHoc_reply: element.AdHoc_reply,
+          AdHoc_open_date: element.AdHoc_open_date,
+          AdHoc_reply_date : element.AdHoc_reply_date
         });
       });
     } else {

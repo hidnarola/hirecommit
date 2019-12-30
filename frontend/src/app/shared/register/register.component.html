@@ -192,7 +192,7 @@
             </span>
           </div>
           <input type="text" class="form-control" placeholder="Document Number" formControlName="documentNumber"
-            [(ngModel)]="registerData.documentNumber" name="documentNumber" required="required" id="documentNumber">
+            [(ngModel)]="registerData.documentNumber" name="documentNumber" required="required" id="documentNumber" (blur)="checkDocumentNumber($event)">
           <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid && isFormSubmitted">
             <span *ngIf="registerForm.controls['documentNumber'].errors['required']">
               This field is required.
@@ -201,6 +201,9 @@
           <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid">
             <span *ngIf="registerForm.controls['documentNumber'].errors['invalid'] ">
               Please enter valid number</span>
+              <span *ngIf="registerForm.controls['documentNumber'].errors['isExist'] ">
+                This Document Number is already registered.
+              </span>
           </div>
         </div>
       </div>

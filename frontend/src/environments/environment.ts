@@ -23,6 +23,6 @@ export const environment = {
   API_URL: 'https://hirecommit.com:3000/',
   // API_URL: 'localhost:3000/',
   // imageUrl: str + host + ':' + port + '/upload/'
-  imageUrl: ' http://13.235.235.178' + '/upload/'
-  // imageUrl: 'https://hirecommit.com:3000/' + '/upload/'
+  // imageUrl: ' http://13.235.235.178' + '/upload/'
+  imageUrl: 'https://hirecommit.com:3000/' + '/upload/'
 };

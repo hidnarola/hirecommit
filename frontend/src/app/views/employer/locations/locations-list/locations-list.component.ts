@@ -60,7 +60,7 @@ export class LocationsListComponent implements OnInit, AfterViewInit, OnDestroy 
         pageLength: 10,
         serverSide: true,
         processing: true,
-        order: [[0, 'desc']],
+        // order: [[0, 'desc']],
         language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
         destroy: true,
         ajax: (dataTablesParameters: any, callback) => {

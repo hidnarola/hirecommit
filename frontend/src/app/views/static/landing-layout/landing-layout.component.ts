@@ -22,9 +22,9 @@ export class LandingLayoutComponent implements OnInit {
     } else if (this.hostName === 'candidate.hirecommit.com') {
       this.isCandidate = true;
     } else {
-      // if (this.isProd) {
-      //   window.location.href = 'http://candidate.hirecommit.com/';
-      // }
+      if (this.isProd) {
+        window.location.href = 'http://candidate.hirecommit.com/';
+      }
     }
     // else if (this.hostName === 'candidate.hirecommit.com') {
     //   this.isCandidate = true;

@@ -143,8 +143,17 @@
                 </fieldset>
               </div>
             </div>
-            <div class="step-form-btn">
+            <!-- <div class="step-form-btn">
               <button (click)="next2()" class="btn btn-primary">Next</button>
+            </div> -->
+            <div class="row">
+              <div class="col-6">
+                <button (click)="next2()" class="btn btn-primary">Next</button>
+              </div>
+              <div class="col-6 text-right back-div">
+                <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
+                  Back to Login</button>
+              </div>
             </div>
           </div>
           <div id="test-l-3" class="content text-center">
@@ -336,9 +345,17 @@
               <div *ngIf="!registerForm.valid && is_submitted" class="text-danger">
                 Please review fields with error and Submit again.
               </div>
-              <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
-                (click)="onSubmit(registerForm.valid)">Submit <i *ngIf="show_spinner"
-                  class="fa fa-spinner fa-spin"></i></button>
+              <div class="row">
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary" [disabled]="show_spinner" (click)="onSubmit(registerForm.valid)">Submit <i
+                        *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+                </div>
+                <div class="col-6 text-right back-div">
+                  <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
+                    Back to Login</button>
+                </div>
+              </div>
+            
             </div>
           </div>
         </form>

@@ -41,15 +41,18 @@
                                 <td class="lbl lbl_width">Driving License State</td>
                                 <td>{{candidate_detail.drivingLicenseState ? candidate_detail.drivingLicenseState : '-'}}
                                 </td>
-                            </tr>
-                          
-                            <tr *ngIf="candidate_detail.documentimage">
+                            </tr>                          
+                         <tr >
                                 <td class="lbl lbl_width">Document Image</td>
-                                <td>
+                                <td *ngIf="documentImage">
                                     <img src="{{image + candidate_detail.documentimage}}"
                                         style="width:70px; height: 50px;" />
                                 </td>
+                                <td *ngIf="!documentImage">
+                                    -
+                                </td>
                             </tr>
+                            
                             <tr>
                                 <td class="lbl lbl_width">Date Of Register</td>
                                 <td>{{candidate_detail.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>

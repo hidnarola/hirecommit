@@ -89,6 +89,10 @@ export class CommonService {
     return this.http.post<any[]>(`${this.url}` + 'match_old_password', data);
   }
 
+  check_document_number(data): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}` + 'check_document_number', data);
+  }
+
   // get user detail
   getLoggedUserDetail() {
     let userDetails;

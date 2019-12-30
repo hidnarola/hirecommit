@@ -26,7 +26,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   obj: any;
   _profile_data: any = [];
   link:string;
-
+  isProd: Boolean = false;
+  isEmployer: Boolean = false;
+  isCandidate: Boolean = false;
+  isAdmin: Boolean = false;
+  hostName: any = '';
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -48,12 +52,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       attributeFilter: ['class']
     });
 
-    if(this.userDetail.role === 'employer')
-    {
+    if (this.userDetail.role === 'employer') {
       this.link = '/employer/offers/list';
-    }
-    else if (this.userDetail.role === 'sub-employer')
-    {
+    } else if (this.userDetail.role === 'sub-employer') {
       this.link = '/sub_employer/offers/list';
     } else if (this.userDetail.role === 'candidate') {
       this.link = '/candidate/offers/list';
@@ -62,7 +63,6 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     }
 
   }
-
   ngOnInit() {
     const userType = localStorage.getItem('user');
 
@@ -189,7 +189,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     localStorage.removeItem('user');
     localStorage.removeItem('userid');
     localStorage.clear();
-    this.router.navigate(['/login']);
+    
+      this.router.navigate(['/login']);
+   
     //   }
     // });
   }

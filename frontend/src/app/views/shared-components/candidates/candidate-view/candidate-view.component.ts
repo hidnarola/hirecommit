@@ -27,6 +27,7 @@ export class CandidateViewComponent implements OnInit {
   buttonValue: any;
   buttonValue1: any;
   documenttype: any;
+  documentImage=false;
   show_spinner = false;
   constructor(
     private router: Router,
@@ -56,6 +57,16 @@ export class CandidateViewComponent implements OnInit {
       this.email = this.candidate_detail['user_id']['email'];
       this.documenttype = this.candidate_detail['documenttype']['name'];
       this.country = this.candidate_detail['country'].country;
+      console.log('this.candidate_detail[`documentimage`].length=>', this.candidate_detail[`documentimage`].length);
+      if (this.candidate_detail['documentimage'].length > 0) {
+        console.log('=======>');
+        this.documentImage = true;
+        
+      } else if (this.candidate_detail['documentimage'].length === 0) {
+        console.log('=======>');
+        this.documentImage = false;
+        console.log('this.documentImage=>', this.documentImage);
+      }
       // if (this.candidate_detail.user_id.isAllow === false) {
       //   this.buttonValue = 'Approve';
 
@@ -84,10 +95,10 @@ export class CandidateViewComponent implements OnInit {
           // this.rrerender();
           this.router.navigate([this.cancel_link1]);
         }, (err) => {
-            this.show_spinner = false;
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
-      } , reject : () => {
+      }, reject: () => {
         this.show_spinner = false;
         document.getElementById('approve').removeAttribute('disabled');
       }

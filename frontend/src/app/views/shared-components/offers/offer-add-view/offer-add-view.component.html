@@ -271,9 +271,12 @@
                                 <label class="col-form-label" for="joiningdate">Joining Date <p class="ast"> *</p>
                                     </label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
-                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="joiningdate" id="joiningdate" [disabled]="is_View || offerExpired"
+                                    [inputStyle]="{'width':'100%'}" *ngIf="offerExpired" placeholder="DD/MM/YYYY"
+                                    formControlName="joiningdate" id="joiningdate" [disabled]="is_View"
                                     [minDate]="max_date">
+                                </p-calendar>
+                                <p-calendar dateFormat="dd/mm/yy" *ngIf="!offerExpired" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="joiningdate" id="joiningdate"  [minDate]="max_date">
                                 </p-calendar>
                                 <!-- <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="is_Edit" [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [minDate]="max_date"
