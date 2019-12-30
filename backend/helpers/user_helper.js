@@ -32,9 +32,21 @@ user_helper.get_all_sub_user = async (collection, id, user_id, search, start, le
       {
         "$project": {
           "username": 1,
+          "emp_id": "$emp_id",
+          "user_id": "$user_id",
+          "is_del": "$is_del",
           "user": {
             "admin_rights": "$user.admin_rights",
+            "email_verified": "$user.email_verified",
+            "isAllow": "$user.isAllow",
+            "is_del": "$user.is_del",
+            "flag": "$user.flag",
+            "is_register": "$user.is_register",
+            "is_login_first": "$user.is_login_first",
+            "is_email_change": "$user.is_email_change",
             "email": "$user.email",
+            "role_id": "$user.role_id",
+            "emp_id": "$user.emp_id"
           },
           "insensitive": { "$toLower": "$username" }
         }

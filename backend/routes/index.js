@@ -611,7 +611,11 @@ router.post("/email_exists", async (req, res) => {
     value = {
       $regex: re
     };
-    var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
+    if (req.body.email && req.body.email !== "") {
+      var email = req.body.email.toLowerCase();
+    }
+
+    var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": email, "is_del": false })
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
     }
@@ -1623,52 +1627,16 @@ router.post('/email_opened', async (req, res) => {
   }
 })
 
-// router.get('/check_query', async (req, res) => {
+router.get('/check_query', async (req, res) => {
+  var obj = {};
+  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
 
-//   var resp_data = await SubEmployer_Detail.aggregate(
-//     [
-//       {
-//         $match: {
-//           "is_del": false,
-//           "emp_id": ObjectId("5df9dfd64c72a507902bb3e9"),
-//           "user_id": { $ne: ObjectId("5df9dfd64c72a507902bb3e9") }
-//         }
-//       },
-//       {
-//         $lookup:
-//         {
-//           from: "user",
-//           localField: "user_id",
-//           foreignField: "_id",
-//           as: "user"
-//         }
-//       },
-//       {
-//         $unwind: {
-//           path: "$user",
-//           preserveNullAndEmptyArrays: true
-//         }
-//       },
-//       {
-//         "$project": {
-//           "username": 1,
-//           "user": {
-//             "admin_rights": "$user.admin_rights",
-//             "email": "$user.email",
-//           },
-//           "insensitive": { "$toLower": "$username" }
-//         }
-//       },
-//       { "$sort": { "insensitive": 1 } }
-//     ]
-//   )
-
-//   if (resp_data) {
-//     res.status(config.OK_STATUS).json(resp_data);
-//   } else {
-//     res.status(config.BAD_REQUEST).json("ERROR");
-//   }
-// })
+  if (resp_data) {
+    res.status(config.OK_STATUS).json(resp_data);
+  } else {
+    res.status(config.BAD_REQUEST).json("ERROR");
+  }
+})
 
 
 module.exports = router;
