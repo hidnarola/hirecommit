@@ -6,12 +6,19 @@ var custom_helper = {};
 custom_helper.get_all_custom_field = async (collection, id, search, start, length, recordsTotal, sort) => {
   try {
 
+
     const RE = { $regex: new RegExp(`${search.value}`, 'gi') };
     var aggregate = [
       {
         $match: {
           "is_del": false,
           "emp_id": new ObjectId(id)
+        }
+      },
+      {
+        "$project": {
+          "key": 1,
+          "insensitive": { "$toLower": "$key" }
         }
       }
     ]
@@ -23,10 +30,16 @@ custom_helper.get_all_custom_field = async (collection, id, search, start, lengt
       });
     }
 
+    // if (sort) {
+    //   aggregate.push({
+    //     "$sort": sort
+    //   });
+    // }
+
     if (sort) {
-      aggregate.push({
-        "$sort": sort
-      });
+      aggregate.push(
+        { "$sort": { "insensitive": sort.key } }
+      )
     }
 
 

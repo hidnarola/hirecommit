@@ -16,6 +16,12 @@ location_helper.get_all_location = async (collection, id, search, start, length,
           "emp_id": new ObjectId(id)
         }
       },
+      {
+        "$project": {
+          "city": 1,
+          "insensitive": { "$toLower": "$city" }
+        }
+      }
       // {
       //   $lookup:
       //   {
@@ -38,10 +44,16 @@ location_helper.get_all_location = async (collection, id, search, start, length,
       });
     }
 
+    // if (sort) {
+    //   aggregate.push({
+    //     "$sort": sort
+    //   });
+    // }
+
     if (sort) {
-      aggregate.push({
-        "$sort": sort
-      });
+      aggregate.push(
+        { "$sort": { "insensitive": sort.city } }
+      )
     }
 
 

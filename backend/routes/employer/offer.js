@@ -2773,6 +2773,9 @@ router.put('/', async (req, res) => {
             obj.is_active = JSON.parse(req.body.is_active)
         }
 
+        // console.log(' :  obj.communication ==> ', obj.communication);
+        // console.log(' : obj.AdHoc ==> ', obj.AdHoc);
+
         var id = req.body.id;
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
@@ -2793,7 +2796,7 @@ router.put('/', async (req, res) => {
         if (req.body.groups === "") {
             var unset_groups = await Offer.updateOne({ "_id": ObjectId(id) }, { $unset: { groups: "" } })
         }
-
+        // console.log(' : obj ==> ', obj);
         var offer_upadate = await common_helper.update(Offer, { "_id": ObjectId(id) }, obj);
         var user_email = await common_helper.findOne(User, { "_id": offer_upadate.data.user_id })
         obj.status = offer_upadate.data.status;

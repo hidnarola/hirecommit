@@ -247,7 +247,7 @@ common_helper.insertMany = async (collection, data = {}) => {
     }
 }
 
-common_helper.update = async (collection, id, data) => {
+common_helper.update = async (collection, id, data, upsert) => {
     try {
         var data = await collection.findOneAndUpdate(id, data, { new: true });
 
@@ -268,6 +268,7 @@ common_helper.update = async (collection, id, data) => {
         };
     }
 }
+
 
 common_helper.delete = async (collection, id, data = {}) => {
     try {

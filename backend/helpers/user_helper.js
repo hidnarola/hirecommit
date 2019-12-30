@@ -28,6 +28,28 @@ user_helper.get_all_sub_user = async (collection, id, user_id, search, start, le
           path: "$user",
           preserveNullAndEmptyArrays: true
         }
+      },
+      {
+        "$project": {
+          "username": 1,
+          "emp_id": "$emp_id",
+          "user_id": "$user_id",
+          "is_del": "$is_del",
+          "user": {
+            "admin_rights": "$user.admin_rights",
+            "email_verified": "$user.email_verified",
+            "isAllow": "$user.isAllow",
+            "is_del": "$user.is_del",
+            "flag": "$user.flag",
+            "is_register": "$user.is_register",
+            "is_login_first": "$user.is_login_first",
+            "is_email_change": "$user.is_email_change",
+            "email": "$user.email",
+            "role_id": "$user.role_id",
+            "emp_id": "$user.emp_id"
+          },
+          "insensitive": { "$toLower": "$username" }
+        }
       }
     ]
 
@@ -40,10 +62,22 @@ user_helper.get_all_sub_user = async (collection, id, user_id, search, start, le
       }
     });
 
+    // if (sort) {
+    //   aggregate.push({
+    //     "$sort": sort
+    //   });
+    // }
+
     if (sort) {
-      aggregate.push({
-        "$sort": sort
-      });
+      if (sort.username) {
+        aggregate.push({
+          "$sort": { "insensitive": sort.username }
+        })
+      } else {
+        aggregate.push({
+          "$sort": sort
+        });
+      }
     }
 
     if (start) {

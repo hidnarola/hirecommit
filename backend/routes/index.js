@@ -21,7 +21,7 @@ const Role = require('./../models/role');
 const User = require('./../models/user');
 const Candidate_Detail = require('./../models/candidate-detail');
 const Employer_Detail = require('./../models/employer-detail');
-const SubEmployer_Detail = require('./../models/employer-detail');
+const SubEmployer_Detail = require('./../models/sub-employer-detail');
 
 const CountryData = require('./../models/country_data');
 const BusinessType = require('./../models/business_type');
@@ -32,7 +32,7 @@ const MailType = require('./../models/mail_content');
 const new_mail_helper = require('./../helpers/new_mail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
-const CustomField = require('./../models/customfield');
+const Group = require('./../models/group');
 const userpProfile = require('./profile');
 
 router.use("/profile", auth, userpProfile);
@@ -193,7 +193,7 @@ router.post("/candidate_register", async (req, res) => {
       .has().lowercase()                              // Must have lowercase letters
       .has().digits()                                 // Must have digits
       .has().not().spaces()                       // Should not have spaces
-      .is().not().oneOf(['Password', 'Password123'])
+    // .is().not().oneOf(['Password', 'Password123'])
 
     req.checkBody(schema);
     var errors = req.validationErrors();
@@ -392,7 +392,6 @@ router.post("/candidate_register", async (req, res) => {
 
 router.post('/check_document_size', async (req, res) => {
   try {
-
     if (req.files && req.files["documentimage"]) {
       var documentImage = req.files["documentimage"];
       if (documentImage.size > 5000000) {
@@ -423,7 +422,25 @@ router.post('/check_document_size', async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
+
+router.post('/check_document_number', async (req, res) => {
+  try {
+    const RE = { $regex: new RegExp(`^${req.body.documentNumber}$`, 'gi') };
+    var candidate_resp = await common_helper.find(Candidate_Detail,
+      {
+        "is_del": false,
+        "documentNumber": RE
+      });
+    if (candidate_resp.status == 1 && candidate_resp.data.length > 0) {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Document Number is Already Registered." });
+    } else {
+      res.status(config.OK_STATUS).json({ "status": 1, "message": "This is Valid Document Number." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false });
+  }
+});
 
 router.post("/check_candidate_email", async (req, res) => {
   try {
@@ -436,7 +453,7 @@ router.post("/check_candidate_email", async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
 
 // employer Registration
 router.post("/employer_register", async (req, res) => {
@@ -489,7 +506,7 @@ router.post("/employer_register", async (req, res) => {
       .has().lowercase()                              // Must have lowercase letters
       .has().digits()                                 // Must have digits
       .has().not().spaces()                       // Should not have spaces
-      .is().not().oneOf(['Password', 'Password123'])
+    // .is().not().oneOf(['Password', 'Password123'])
 
     req.checkBody(schema);
 
@@ -601,7 +618,7 @@ router.post("/check_employer_email", async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
 
 
 router.post("/email_exists", async (req, res) => {
@@ -611,7 +628,11 @@ router.post("/email_exists", async (req, res) => {
     value = {
       $regex: re
     };
-    var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": req.body.email.toLowerCase(), "is_del": false })
+    if (req.body.email && req.body.email !== "") {
+      var email = req.body.email.toLowerCase();
+    }
+
+    var user_resp = await common_helper.findOne(User, { "_id": { $ne: ObjectId(user_id) }, "email": email, "is_del": false })
     if (user_resp.status === 1) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Email address already Register" });
     }
@@ -621,7 +642,7 @@ router.post("/email_exists", async (req, res) => {
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
-})
+});
 
 router.post('/login', async (req, res) => {
   try {
@@ -1623,38 +1644,16 @@ router.post('/email_opened', async (req, res) => {
   }
 })
 
-// router.get('/check_query', async (req, res) => {
+router.get('/check_query', async (req, res) => {
+  var obj = {};
+  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
 
-// var resp_data = await CustomField.aggregate(
-//   [
-//     {
-//       $match: {
-//         "is_del": false,
-//         $or: [
-//           { "emp_id": ObjectId("5df9dfd64c72a507902bb3e9") },
-//           { "emp_id": ObjectId("5df9dfd64c72a507902bb3e9") }
-//         ],
-//         "key": { $toLower: "$key" }
-//       }
-//     }
-//   ]
-// )
-
-// {
-//   "$project": {
-//     "field": 1,
-//       "insensitive": { "$toLower": "$field" }
-//   }
-// },
-// { "$sort": { "insensitive": 1 } }
-// var update_communication = await Location.find({ "is_del": false, emp_id: "5df9dfd64c72a507902bb3e9" });
-
-//   if (resp_data) {
-//     res.status(config.OK_STATUS).json(resp_data);
-//   } else {
-//     res.status(config.BAD_REQUEST).json("ERROR");
-//   }
-// })
+  if (resp_data) {
+    res.status(config.OK_STATUS).json(resp_data);
+  } else {
+    res.status(config.BAD_REQUEST).json("ERROR");
+  }
+})
 
 
 module.exports = router;
