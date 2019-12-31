@@ -322,12 +322,19 @@ router.post('/pastOffer', async (req, res) => {
             $regex: re
         };
         var user = await common_helper.findOne(User, { "email": value })
+
         if (user.status == 1) {
+            let role = await common_helper.findOne(User, { "_id": req.userInfo.id });
+
+
+            if (role.data.role_id == "5d9d99003a0c78039c6dd00f") {
+                employer_id = role.data.emp_id;
+            }
             var pastOffer = await common_helper.find(Offer,
                 {
                     // "employer_id": ObjectId(req.userInfo.id)
                     $or: [
-                        { "created_by": new ObjectId(req.userInfo.id) },
+                        { "employer_id": new ObjectId(employer_id) },
                         { "employer_id": new ObjectId(req.userInfo.id) },
                     ],
                     "user_id": ObjectId(user.data._id), status: "Not Joined"
@@ -340,7 +347,7 @@ router.post('/pastOffer', async (req, res) => {
             var previousOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
                 $or: [
-                    { "created_by": new ObjectId(req.userInfo.id) },
+                    { "employer_id": new ObjectId(employer_id) },
                     { "employer_id": new ObjectId(req.userInfo.id) },
                 ],
                 // "created_by": req.userInfo.id,
@@ -358,7 +365,7 @@ router.post('/pastOffer', async (req, res) => {
             var ReleasedOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
                 $or: [
-                    { "created_by": new ObjectId(req.userInfo.id) },
+                    { "employer_id": new ObjectId(employer_id) },
                     { "employer_id": new ObjectId(req.userInfo.id) },
                 ],
                 // "created_by": req.userInfo.id,
