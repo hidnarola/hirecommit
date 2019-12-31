@@ -329,13 +329,14 @@ router.post('/pastOffer', async (req, res) => {
 
             if (role.data.role_id == "5d9d99003a0c78039c6dd00f") {
                 employer_id = role.data.emp_id;
+            } else {
+                employer_id = req.userInfo.id;
             }
             var pastOffer = await common_helper.find(Offer,
                 {
                     // "employer_id": ObjectId(req.userInfo.id)
                     $or: [
                         { "employer_id": new ObjectId(employer_id) },
-                        { "employer_id": new ObjectId(req.userInfo.id) },
                     ],
                     "user_id": ObjectId(user.data._id), status: "Not Joined"
                 });
@@ -348,7 +349,6 @@ router.post('/pastOffer', async (req, res) => {
                 "user_id": ObjectId(user.data._id),
                 $or: [
                     { "employer_id": new ObjectId(employer_id) },
-                    { "employer_id": new ObjectId(req.userInfo.id) },
                 ],
                 // "created_by": req.userInfo.id,
                 $or: [
@@ -366,7 +366,6 @@ router.post('/pastOffer', async (req, res) => {
                 "user_id": ObjectId(user.data._id),
                 $or: [
                     { "employer_id": new ObjectId(employer_id) },
-                    { "employer_id": new ObjectId(req.userInfo.id) },
                 ],
                 // "created_by": req.userInfo.id,
                 $and:
