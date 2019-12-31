@@ -325,8 +325,6 @@ router.post('/pastOffer', async (req, res) => {
 
         if (user.status == 1) {
             let role = await common_helper.findOne(User, { "_id": req.userInfo.id });
-
-
             if (role.data.role_id == "5d9d99003a0c78039c6dd00f") {
                 employer_id = role.data.emp_id;
             } else {
@@ -371,7 +369,7 @@ router.post('/pastOffer', async (req, res) => {
                 $and:
                     [
                         { status: { $eq: "Released" } },
-                        { expirydate: { $gte: new Date() } }
+                        { expirydate: { $gte: moment(new Date()).startOf('day') } }
                     ]
             });
 
