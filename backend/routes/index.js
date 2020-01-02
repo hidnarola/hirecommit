@@ -48,6 +48,7 @@ var captcha_secret = config.captcha_secret
 //get user
 router.get("/user", async (req, res) => {
   try {
+    console.log(' : req ==> ', req.headers.host);
     var response = await common_helper.find(User);
     res.status(config.OK_STATUS).send(response);
   } catch (error) {
