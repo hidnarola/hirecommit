@@ -205,6 +205,16 @@ router.post("/", async (req, res) => {
                     logger.debug("Error = ", interest_resp.error);
                     res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
                 } else {
+                    let employer_role = await common_helper.findOne(User, { "_id": employer.data.user_id });
+                    var companyname;
+                    if (employer_role.data.role_id == "5d9d99003a0c78039c6dd00f") {
+                        let contact_name = await common_helper.findOne(EmployerDetail, { "user_id": employer.data.emp_id });
+                        companyname = contact_name.data.companyname;
+                    } else if (employer_role.data.role_id == "5d9d98a93a0c78039c6dd00d") {
+                        let contact_name = await common_helper.findOne(EmployerDetail, { "user_id": employer.data.user_id });
+                        companyname = contact_name.data.companyname;
+                    }
+
                     var user = await common_helper.findOne(User, { _id: new ObjectId(interest_resp.data.user_id) })
                     var candidate = await common_helper.findOne(CandidateDetail,
                         { user_id: new ObjectId(interest_resp.data.user_id) });
@@ -216,19 +226,20 @@ router.post("/", async (req, res) => {
                     var lower_content = mailcontent.data.lower_content;
                     var name = candidate.data.firstname;
 
-                    upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
+                    upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
                     var obj = {
                         "name": name,
-                        "subject": "You have received job offer from " + employer.data.username,
+                        // "subject": "You have received job offer from " + employer.data.username
+                        "subject": "You have received job offer from " + companyname,
                         "upper_content": upper_content,
                         "middel_content": middel_content,
                         "lower_content": lower_content,
                     }
 
-
-
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
+
+
                     if (interest_resp.data.status === "On Hold") {
                         var all_employer = await common_helper.find(User, {
                             "isAllow": true,
@@ -238,7 +249,6 @@ router.post("/", async (req, res) => {
                                 { "emp_id": new ObjectId(interest_resp.data.employer_id) },
                             ]
                         })
-
 
                         for (let index = 0; index < all_employer.data.length; index++) {
                             const element = all_employer.data[index];
@@ -312,13 +322,19 @@ router.post('/pastOffer', async (req, res) => {
             $regex: re
         };
         var user = await common_helper.findOne(User, { "email": value })
+
         if (user.status == 1) {
+            let role = await common_helper.findOne(User, { "_id": req.userInfo.id });
+            if (role.data.role_id == "5d9d99003a0c78039c6dd00f") {
+                employer_id = role.data.emp_id;
+            } else {
+                employer_id = req.userInfo.id;
+            }
             var pastOffer = await common_helper.find(Offer,
                 {
                     // "employer_id": ObjectId(req.userInfo.id)
                     $or: [
-                        { "created_by": new ObjectId(req.userInfo.id) },
-                        { "employer_id": new ObjectId(req.userInfo.id) },
+                        { "employer_id": new ObjectId(employer_id) },
                     ],
                     "user_id": ObjectId(user.data._id), status: "Not Joined"
                 });
@@ -330,8 +346,7 @@ router.post('/pastOffer', async (req, res) => {
             var previousOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
                 $or: [
-                    { "created_by": new ObjectId(req.userInfo.id) },
-                    { "employer_id": new ObjectId(req.userInfo.id) },
+                    { "employer_id": new ObjectId(employer_id) },
                 ],
                 // "created_by": req.userInfo.id,
                 $or: [
@@ -348,14 +363,13 @@ router.post('/pastOffer', async (req, res) => {
             var ReleasedOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
                 $or: [
-                    { "created_by": new ObjectId(req.userInfo.id) },
-                    { "employer_id": new ObjectId(req.userInfo.id) },
+                    { "employer_id": new ObjectId(employer_id) },
                 ],
                 // "created_by": req.userInfo.id,
                 $and:
                     [
                         { status: { $eq: "Released" } },
-                        { expirydate: { $gte: new Date() } }
+                        { expirydate: { $gte: moment(new Date()).startOf('day') } }
                     ]
             });
 
@@ -1768,11 +1782,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
             } else if (resp.status === "Released" && moment(resp.expirydate).startOf('day').subtract(1, 'day').isSame(current_date)) {
                 var employer_name = await common_helper.findOne(EmployerDetail, { "user_id": resp.created_by._id });
                 var employer_name1 = await common_helper.findOne(SubEmployerDetail, { "user_id": resp.created_by._id });
-
+                var companyname;
                 if (employer_name.status == 1) {
                     var employername = employer_name.data.username;
+                    companyname = employer_name.data.companyname;
                 } else {
                     var employername = employer_name1.data.username;
+                    let contact_name = await common_helper.findOne(EmployerDetail, { "user_id": employer_name1.data.emp_id })
+                    companyname = contact_name.data.companyname;
                 }
 
                 var message = await common_helper.findOne(MailContent, { 'mail_type': "offer_expiring" });
@@ -1781,11 +1798,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
                 var middel_content = message.data.middel_content;
                 var lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace('{employername}', employername);
+                upper_content = upper_content.replace('{employername}', companyname);
 
                 let mail_resp = await mail_helper.send("offer_expiring", {
                     "to": resp.user_id.email,
-                    "subject": "Your offer from " + `${employername}` + " is expiring soon!!"
+                    "subject": "Your offer from " + `${companyname}` + " is expiring soon!!"
                 }, {
                     "name": resp.candidate.firstname,
                     "upper_content": upper_content,
@@ -1842,11 +1859,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
             } else if (resp.status === "Accepted" && moment(resp.joiningdate).startOf('day').subtract(2, 'day').isSame(current_date)) {
                 var employer_name = await common_helper.findOne(EmployerDetail, { "user_id": resp.created_by._id });
                 var employer_name1 = await common_helper.findOne(SubEmployerDetail, { "user_id": resp.created_by._id });
-
+                var companyname;
                 if (employer_name.status == 1) {
                     var employername = employer_name.data.username;
+                    companyname = employer_name.data.companyname;
                 } else {
                     var employername = employer_name1.data.username;
+                    let contact_name = await common_helper.findOne(EmployerDetail, { "user_id": employer_name1.data.emp_id })
+                    companyname = contact_name.data.companyname;
                 }
 
                 var message = await common_helper.findOne(MailContent, { 'mail_type': "offer_expiring" });
@@ -2812,6 +2832,15 @@ router.put('/', async (req, res) => {
             res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
         }
         else if (offer_upadate.status == 1) {
+            let employer_role = await common_helper.findOne(User, { "_id": employer.data.user_id });
+            var companyname;
+            if (employer_role.data.role_id == "5d9d99003a0c78039c6dd00f") {
+                let contact_name = await common_helper.findOne(EmployerDetail, { "user_id": employer.data.emp_id });
+                companyname = contact_name.data.companyname;
+            } else if (employer_role.data.role_id == "5d9d98a93a0c78039c6dd00d") {
+                let contact_name = await common_helper.findOne(EmployerDetail, { "user_id": employer.data.user_id });
+                companyname = contact_name.data.companyname;
+            }
 
             if (offer.data.status === "Released" && offer_upadate.data.status === "Released") {
                 var message = await common_helper.findOne(MailContent, { 'mail_type': "update_offer" });
@@ -2820,13 +2849,13 @@ router.put('/', async (req, res) => {
                 let middel_content = message.data.middel_content;
                 let lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace('{employername}', employer.data.username).replace("{expirydate}", moment(offer.data.expirydate).startOf('day').format('DD/MM/YYYY'));
+                upper_content = upper_content.replace('{employername}', companyname).replace("{expirydate}", moment(offer.data.expirydate).startOf('day').format('DD/MM/YYYY'));
                 var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
                 var name = user_name.data.firstname;
 
                 let mail_resp = await mail_helper.send("update_offer", {
                     "to": user_email.data.email,
-                    "subject": "Offer from " + `${employer.data.username}` + " has been updated"
+                    "subject": "Offer from " + `${companyname}` + " has been updated"
                 }, {
                     "name": name,
                     "upper_content": upper_content,
@@ -2840,13 +2869,13 @@ router.put('/', async (req, res) => {
                 let upper_content = message.data.upper_content;
                 let lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace('{employername}', employer.data.username);
+                upper_content = upper_content.replace('{employername}', companyname);
                 var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
                 var name = user_name.data.firstname;
 
                 let mail_resp = await mail_helper.send("not_joined_offer", {
                     "to": user_email.data.email,
-                    "subject": employer.data.username + " has marked that you have Not Joined after accepting an offer"
+                    "subject": companyname + " has marked that you have Not Joined after accepting an offer"
                 }, {
                     "name": name,
                     "upper_content": upper_content,
@@ -2861,11 +2890,11 @@ router.put('/', async (req, res) => {
                 var middel_content = mailcontent.data.middel_content;
                 var lower_content = mailcontent.data.lower_content;
 
-                upper_content = upper_content.replace("{employername}", `${employer.data.username}`).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
+                upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
                 var obj = {
                     "name": name,
-                    "subject": "You have received job offer from " + `${employer.data.username}`,
+                    "subject": "You have received job offer from " + `${companyname}`,
                     "upper_content": upper_content,
                     "middel_content": middel_content,
                     "lower_content": lower_content,
@@ -2876,7 +2905,7 @@ router.put('/', async (req, res) => {
                     "to": user_email.data.email,
                     "reply_to1": `${reply_to.data.email}`,
                     "reply_to2": `${offer_upadate.data._id}@em7977.hirecommit.com`,
-                    "subject": "You have received job offer from " + `${employer.data.username}`,
+                    "subject": "You have received job offer from " + `${companyname}`,
                     "trackid": offer_upadate.data._id
                 }, obj);
             }

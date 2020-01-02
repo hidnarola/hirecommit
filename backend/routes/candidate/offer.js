@@ -340,7 +340,7 @@ router.put('/', async (req, res) => {
             "acceptedAt": new Date()
         }
         var current_date = moment();
-        var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id), "expirydate": { $gte: current_date } })
+        var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id), "expirydate": { $gte: moment(current_date).startOf('day') } })
         if (offer.status == 1) {
             sub_account_upadate = await common_helper.update(Offer, { "_id": req.body.id }, reg_obj)
             reg_obj.offer_id = req.body.id;
@@ -361,17 +361,20 @@ router.put('/', async (req, res) => {
                 let lower_content = message.data.lower_content;
                 var employername = await common_helper.findOne(SubEmployer, { user_id: new ObjectId(offer.data.created_by) })
                 var employername1 = await common_helper.findOne(Employer, { user_id: new ObjectId(offer.data.created_by) })
-
+                var companyname;
                 if (employername.status === 1) {
                     var emp_name = employername.data.username;
+                    let contact_name = await common_helper.findOne(Employer, { "user_id": employername.data.emp_id })
+                    companyname = contact_name.data.companyname;
                 } else if (employername1.status === 1) {
                     var emp_name = employername1.data.username;
+                    companyname = employername1.data.companyname;
                 }
 
-                upper_content = upper_content.replace('{employername}', emp_name).replace("{joiningdate}", moment(offer.data.joiningdate).startOf('day').format('DD/MM/YYYY'));
+                upper_content = upper_content.replace('{employername}', companyname).replace("{joiningdate}", moment(offer.data.joiningdate).startOf('day').format('DD/MM/YYYY'));
                 let mail_resp = await mail_helper.send("candidate_accept_offer", {
                     "to": candidates.data.email,
-                    "subject": "You have accepted offer from " + emp_name
+                    "subject": "You have accepted offer from " + companyname
                 }, {
                     "name": candidate.data.firstname,
                     "upper_content": upper_content,
