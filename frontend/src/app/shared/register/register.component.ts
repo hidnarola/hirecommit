@@ -139,10 +139,10 @@ export class RegisterComponent implements OnInit {
       return isValid ? null : { 'invalid': true };
     }
   }
-  checkDocumentNumber(e){
-    this.service.check_document_number({'documentNumber': e.target.value}).subscribe(res => {
+  checkDocumentNumber(e) {
+    this.service.check_document_number({ 'documentNumber': e.target.value }).subscribe(res => {
     }, (err) => {
-        this.registerForm.controls['documentNumber'].setErrors({ 'isExist': true });
+      this.registerForm.controls['documentNumber'].setErrors({ 'isExist': true });
       this.registerForm.updateValueAndValidity();
     });
   }
@@ -294,12 +294,12 @@ export class RegisterComponent implements OnInit {
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          this.router.navigate(['/login']);
+          window.location.href = 'https://candidate.hirecommit.com/login';
         }
       }, (err) => {
         this.show_spinner = false;
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
-         
+
       });
     } else {
       this.show_spinner = false;

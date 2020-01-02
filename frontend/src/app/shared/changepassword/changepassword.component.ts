@@ -49,7 +49,7 @@ export class ChangepasswordComponent implements OnInit {
 
     this.commonService.profileData().then(res => {
       this._profile_data = res[0];
-      if (this._profile_data.user_id.is_login_first === false && !(this.userDetail.role === 'candidate' )) {
+      if (this._profile_data.user_id.is_login_first === false && !(this.userDetail.role === 'candidate')) {
         this.isDisabled = true;
       } else {
         this.isDisabled = false;
@@ -59,7 +59,6 @@ export class ChangepasswordComponent implements OnInit {
   }
 
   checkPassword() {
-    console.log('this.form.value.oldpassword=>', this.form.value.oldpassword);
     this.commonService.match_old_password({ 'oldpassword': this.form.value.oldpassword, 'id': this.userDetail.id }).subscribe(res => {
     }, (err) => {
       this.form.controls['oldpassword'].setErrors({ 'isExist': true });
@@ -77,7 +76,6 @@ export class ChangepasswordComponent implements OnInit {
     } else if (this.userDetail.role === 'sub-employer') {
       if (this._profile_data.user_id.is_login_first === true) {
         this.router.navigate(['/sub_employer/offers/list']);
-
       } else {
         this.isDisabled = true;
       }
@@ -123,17 +121,14 @@ export class ChangepasswordComponent implements OnInit {
               } else if (this.userDetail.role === 'admin') {
                 this.router.navigate(['/admin/employers/approved_employer']);
               } else if (this.userDetail.role === 'sub-employer') {
-                // this._profile_data[0].user_id.is_login_first = true;
+
+                this._profile_data.user_id.is_login_first = true;
                 this.commonService.firstLogin(this._profile_data.user_id.is_login_first);
                 this._profile_data.user_id.is_login_first = this.isDisabled;
-
-                // this.commonService.setProfileDetail(this._profile_data[0].user_id);
-                console.log('=>', this._profile_data);
                 this.router.navigate(['/sub_employer/offers/list']);
               }
             }
           }, (err) => {
-            console.log('err => ', err);
             this.show_spinner = false;
             this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
           });

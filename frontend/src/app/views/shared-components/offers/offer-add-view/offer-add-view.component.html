@@ -106,7 +106,7 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="candidate">Candidate Name <p class="ast"> *</p>
-                                    </label>
+                                </label>
 
                                 <input type="text" *ngIf="!is_Edit" class="form-control" placeholder="Enter Name"
                                     autocomplete="candidate_name" formControlName="candidate_name" id="candidate_name">
@@ -269,14 +269,15 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="joiningdate">Joining Date <p class="ast"> *</p>
-                                    </label>
+                                </label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
                                     [inputStyle]="{'width':'100%'}" *ngIf="offerExpired" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [disabled]="is_View"
                                     [minDate]="max_date">
                                 </p-calendar>
-                                <p-calendar dateFormat="dd/mm/yy" *ngIf="!offerExpired" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="joiningdate" id="joiningdate"  [minDate]="max_date">
+                                <p-calendar dateFormat="dd/mm/yy" *ngIf="!offerExpired" [style]="{'width':'100%'}"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="joiningdate" id="joiningdate" [minDate]="max_date">
                                 </p-calendar>
                                 <!-- <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="is_Edit" [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
                                     formControlName="joiningdate" id="joiningdate" [minDate]="max_date"
@@ -1155,11 +1156,12 @@
                                                 [ngModelOptions]="{standalone: true}" [disabled]="true">
                                             </ckeditor> -->
                                             <div>
-                                                <div [ngxSummernote]="config" #editor
-                                                    [(summernoteModel)]="communication.message" id="editor">
+                                                <div [ngxSummernote]="config" id="editor"
+                                                    [(ngModel)]="communication.message" readonly="true">
                                                 </div>
                                                 <!-- <div>
-                                                    <textarea  id="editor">{{communication.message}}</textarea>
+                                                    <textarea id="editor" style="width: 100%; height: 100px;"
+                                                        [(ngModel)]="communication.message" #editor disabled></textarea>
                                                 </div> -->
                                             </div>
                                         </div>
@@ -1233,8 +1235,7 @@
                                             <div>
                                                 <!-- {{communication.AdHoc_message}} -->
                                                 <div [ngxSummernote]="config" #editor
-                                                    [(summernoteModel)]="communication.AdHoc_message" id="editor"
-                                                    disabled="true">
+                                                    [(ngModel)]="communication.AdHoc_message" id="editor">
                                                 </div>
                                             </div>
                                         </div>

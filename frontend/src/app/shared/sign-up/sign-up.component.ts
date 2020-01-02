@@ -117,7 +117,7 @@ export class SignUpComponent implements OnInit {
     this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
     console.log('this.registerForm.controls[`businesstype`]=>', this.registerForm.controls['businesstype']);
-    
+
     if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
       this.isFormSubmitted = false;
       this.step3 = true;
@@ -174,7 +174,7 @@ export class SignUpComponent implements OnInit {
             type: 'success',
             text: res['message']
           });
-          this.router.navigate(['/login']);
+          window.location.href = 'https://employer.hirecommit.com/login';
         }
       }, (err) => {
         this.show_spinner = false;
@@ -192,7 +192,7 @@ export class SignUpComponent implements OnInit {
   getCode(e) {
     console.log('e => country on change=>', e.value);
     console.log('businesstype=>', this.registerForm.value.businesstype);
-    
+
     this.countryID = this.alldata.find(x => x._id === e.value);
     this.Business_Type = [];
     this.service.get_Type(this.countryID.country).subscribe(res => {
@@ -210,14 +210,14 @@ export class SignUpComponent implements OnInit {
     });
     if (this.registerForm.value.businesstype) {
       console.log('bussiness type found =======>');
-      
+
       // this.registerForm.value.businesstype = '';
       this.registerForm.controls['businesstype'].setValue('');
       this.registerForm.controls['businesstype'].setValidators([Validators.required]);
       this.updateValidation();
     }
     console.log('this.registerForm.=>', this.registerForm.value.businesstype);
-    
+
 
     // this.code.forEach(element => {
     //   if (e.value === element._id) {

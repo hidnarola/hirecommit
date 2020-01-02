@@ -8,7 +8,8 @@
                     <!-- <i class="icon-plus pull-right" [routerLink]="['/admin/employers/add']">Add Employer</i> -->
                 </div>
                 <div class="card-body">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table"
+                        style="width:100%;">
                         <thead>
                             <tr>
                                 <th>First Name</th>
@@ -37,7 +38,7 @@
                                         <i class="icon-eye"></i>
                                     </button>
                                     <button *ngIf="employer_type === 'Approved'" type="button"
-                                        class="btn btn-sm btn-info"  tooltip="Edit"
+                                        class="btn btn-sm btn-info" tooltip="Edit"
                                         [routerLink]="['/admin/employers/approved_employer/edit/',emp._id]">
                                         <i class="icon-pencil"></i>
                                     </button>

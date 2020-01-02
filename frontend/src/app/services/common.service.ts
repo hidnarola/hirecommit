@@ -97,9 +97,12 @@ export class CommonService {
   getLoggedUserDetail() {
     let userDetails;
     const token = localStorage.getItem('token');
+
     // decode the token to get its payload
     userDetails = jwt_decode(token);
     return userDetails;
+
+
   }
 
   async profileData() {
@@ -110,6 +113,7 @@ export class CommonService {
         resolve(res['data']);
       }, (err) => {
         console.log('err => ', err);
+        reject(err)
       });
     });
   }
@@ -131,8 +135,6 @@ export class CommonService {
     this.profileDetail.next(profileData);
   }
   public firstLogin(data: boolean) {
-    console.log('data for first login=>', data);
-
     this.firstLoginDetail.next(data);
   }
 

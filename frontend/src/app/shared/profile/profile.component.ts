@@ -47,6 +47,7 @@ export class ProfileComponent implements OnInit {
   show_spinner = false;
   userDetail: any = [];
   _profile_data: any;
+  isProd: Boolean = false;
   constructor(
     private service: CommonService,
     private router: ActivatedRoute,
@@ -57,6 +58,7 @@ export class ProfileComponent implements OnInit {
     private route: Router,
     private confirmationService: ConfirmationService,
     private commonService: CommonService) {
+    this.isProd = environment.production;
     this.userDetail = this.service.getLoggedUserDetail();
     this.id = {
       'id': this.userDetail.id
@@ -150,7 +152,6 @@ export class ProfileComponent implements OnInit {
 
   getCandidate() {
     this.candidateService.get_Profile_Candidate(this.id).subscribe(res => {
-      console.log('this.candidate_data=>', res['data']);
       this.candidate_data = res['data'];
       this.FirstName = res['data']['firstname'];
       this.LastName = res['data']['lastname'];
@@ -189,7 +190,19 @@ export class ProfileComponent implements OnInit {
               localStorage.removeItem('userid');
               localStorage.clear();
               // localStorage.removeItem('user');
-              this.route.navigate(['/login']);
+              if (this.isProd) {
+                if (this.userDetail.role === 'employer') {
+                  window.location.href = 'http://employer.hirecommit.com/';
+                } else if (this.userDetail.role === 'sub-employer') {
+                  window.location.href = 'http://employer.hirecommit.com/';
+                } else if (this.userDetail.role === 'candidate') {
+                  window.location.href = 'http://candidate.hirecommit.com/';
+                } else if (this.userDetail.role === 'admin') {
+                  window.location.href = 'http://hirecommit.com/login';
+                }
+              } else {
+                this.route.navigate(['/login']);
+              }
             } else {
               console.log('else=>');
 
@@ -209,8 +222,6 @@ export class ProfileComponent implements OnInit {
   }
 
   candidate_profile(valid, id) {
-    console.log('candidate profile, submit function=======>');
-
     this.submitted = true;
     if (valid) {
 
@@ -237,7 +248,19 @@ export class ProfileComponent implements OnInit {
               localStorage.removeItem('userid');
               localStorage.clear();
               // localStorage.removeItem('user');
-              this.route.navigate(['/login']);
+              if (this.isProd) {
+                if (this.userDetail.role === 'employer') {
+                  window.location.href = 'http://employer.hirecommit.com/';
+                } else if (this.userDetail.role === 'sub-employer') {
+                  window.location.href = 'http://employer.hirecommit.com/';
+                } else if (this.userDetail.role === 'candidate') {
+                  window.location.href = 'http://candidate.hirecommit.com/';
+                } else if (this.userDetail.role === 'admin') {
+                  window.location.href = 'http://hirecommit.com/login';
+                }
+              } else {
+                this.route.navigate(['/login']);
+              }
             } else {
               console.log('else=>');
             }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Validators, FormControl, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -45,7 +45,7 @@ export class GroupEditComponent implements OnInit {
 
   ]
   Priority_Options = [
-    { label: 'Select Trigger', value: '' },
+    { label: 'Select Priority', value: '' },
     { label: 'High', value: 'High' },
     { label: 'Medium', value: 'Medium' },
     { label: 'Low', value: 'Low' }
@@ -113,7 +113,7 @@ export class GroupEditComponent implements OnInit {
             'trigger': element.trigger,
             'priority': element.priority,
             'day': element.day,
-            'subject':element.subject,
+            'subject': element.subject,
             'message': element.message,
           };
           this.communicationFieldItems.setControl(index, this.fb.group({
@@ -213,7 +213,7 @@ export class GroupEditComponent implements OnInit {
       'trigger': '',
       'priority': '',
       'day': '',
-      'subject':'',
+      'subject': '',
       'message': '',
     };
 
@@ -266,7 +266,7 @@ export class GroupEditComponent implements OnInit {
   }
 
   removeZero_high_unopened() {
-    if (this.groupForm.value.high_unopened && (this.groupForm.value.high_unopened >= 0) ) {
+    if (this.groupForm.value.high_unopened && (this.groupForm.value.high_unopened >= 0)) {
       this.groupForm.controls['high_unopened'].setValue(parseFloat(this.groupForm.value[`high_unopened`]));
     }
   }
@@ -301,7 +301,7 @@ export class GroupEditComponent implements OnInit {
               trigger: element.trigger,
               priority: element.priority,
               day: element.day,
-              subject:element.subject,
+              subject: element.subject,
               message: element.message
             });
           });

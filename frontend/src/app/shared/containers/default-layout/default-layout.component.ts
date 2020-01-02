@@ -8,6 +8,7 @@ import { EmployerService } from '../../../views/employer/employer.service';
 import { ModalOptions } from '../../modal_options';
 import { ConfirmationService } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   userDetail;
   obj: any;
   _profile_data: any = [];
-  link:string;
+  link: string;
   isProd: Boolean = false;
   isEmployer: Boolean = false;
   isCandidate: Boolean = false;
@@ -61,8 +62,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     } else if (this.userDetail.role === 'admin') {
       this.link = '/admin/employers/approved_employer';
     }
-
+    this.isProd = environment.production;
   }
+
   ngOnInit() {
     const userType = localStorage.getItem('user');
 
@@ -70,19 +72,12 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.navItems = admin;
       this.name = this.userDetail.email;
     } else {
-
       let profile;
-
-
-      // this.commonService.getFirstLogin.subscribe((res) => {
-      //   console.log('resss for first logi=>', res);
-      // });
-
       this.commonService.getChangedProfileDetail.subscribe((resp) => {
         this.commonService.profileData().then(res => {
           profile = res;
           this._profile_data = profile;
-           if (userType === 'candidate') {
+          if (userType === 'candidate') {
             if (this._profile_data[0].user_id.email_verified) {
               this.navItems = candidate;
               this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
@@ -90,8 +85,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
               this.navItems = [];
               this.name = this._profile_data[0].firstname + ' ' + this._profile_data[0].lastname;
             }
-          }
-          else if (userType === 'employer') {
+          } else if (userType === 'employer') {
             this.navItems = employer;
             this.name = this._profile_data[0].username;
             // if (this._profile_data[0].user_id.is_email_change) {
@@ -101,10 +95,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
               this.modalService.open(this.content, ModalOptions);
             }
           } else if (userType === 'sub-employer') {
-
-
             this.commonService.getFirstLogin.subscribe(response => {
-              if (this._profile_data[0].user_id.is_login_first === false) {
+              if (response === true) {
+                this.navItems = sub_employer;
+                this.name = this._profile_data[0].username;
+              } else if (this._profile_data[0].user_id.is_login_first === false) {
                 this.router.navigate(['sub_employer/change-password']);
                 this.name = this._profile_data[0].username;
               } else {
@@ -112,54 +107,33 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
                 this.name = this._profile_data[0].username;
               }
             });
-          } 
+          }
         });
       });
 
     }
   }
 
-  // logouttoLanding() {
-  //   console.log('working=>');
-  //   if (this.userDetail.role === 'employer') {
-  //     this.confirmationService.confirm({
-  //       message: 'Are you sure you want to Logout?',
-  //       accept: () => {
-  //         localStorage.removeItem('token');
-  //         localStorage.removeItem('user');
-  //         localStorage.removeItem('userid');
-  //         localStorage.clear();
-  //         window.location.href = 'http://employer.hirecommit.com/';
-  //       }
-  //     });
-  //   }
-  //   else if (this.userDetail.role === 'candidate') {
-  //     console.log('candidate=======>');
-  //     this.confirmationService.confirm({
-  //       message: 'Are you sure you want to Logout?',
-  //       accept: () => {
-  //         localStorage.removeItem('token');
-  //         localStorage.removeItem('user');
-  //         localStorage.removeItem('userid');
-  //         localStorage.clear();
-  //         window.location.href = 'http://candidate.hirecommit.com/';
-  //       }
-  //     });
-  //   }
-  //   else if (this.userDetail.role === 'admin') {
-  //     console.log('admin=======>');
-  //     this.confirmationService.confirm({
-  //       message: 'Are you sure you want to Logout?',
-  //       accept: () => {
-  //         localStorage.removeItem('token');
-  //         localStorage.removeItem('user');
-  //         localStorage.removeItem('userid');
-  //         localStorage.clear();
-  //         window.location.href = 'http://hirecommit.com/login';
-  //       }
-  //     });
-  //   }
-  // }
+  logouttoLanding() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userid');
+    localStorage.clear();
+    // this.toastr.info('Please Login Again', 'Session Expired!');
+    if (this.isProd) {
+      if (this.userDetail.role === 'employer') {
+        window.location.href = 'http://employer.hirecommit.com/';
+      } else if (this.userDetail.role === 'sub-employer') {
+        window.location.href = 'http://employer.hirecommit.com/';
+      } else if (this.userDetail.role === 'candidate') {
+        window.location.href = 'http://candidate.hirecommit.com/';
+      } else if (this.userDetail.role === 'admin') {
+        window.location.href = 'http://hirecommit.com/login';
+      }
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
   changepassword() {
     // console.log(this.userDetail.role);
     if (this.userDetail.role === 'admin') {
@@ -181,28 +155,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  logout() {
-    // this.confirmationService.confirm({
-    //   message: 'Are you sure you want to Logout?',
-    //   accept: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userid');
-    localStorage.clear();
-    
-      this.router.navigate(['/login']);
-   
-    //   }
-    // });
-  }
-
   setup(id) {
-    console.log('id=>', id);
     this.obj = {
       'id': id
     };
     this.empServise.setup(this.obj).subscribe(res => {
-      console.log('res=>is_login_first', this._profile_data);
       this._profile_data[0].user_id.is_login_first = true;
       this.commonService.setProfileDetail(this._profile_data);
       this.router.navigate(['/employer/locations/add']);
