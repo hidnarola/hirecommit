@@ -2849,7 +2849,7 @@ router.put('/', async (req, res) => {
                 let middel_content = message.data.middel_content;
                 let lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace('{employername}', companyname).replace("{expirydate}", moment(offer.data.expirydate).startOf('day').format('DD/MM/YYYY'));
+                upper_content = upper_content.replace('{employername}', companyname).replace("{expirydate}", moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY'));
                 var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
                 var name = user_name.data.firstname;
 

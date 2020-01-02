@@ -664,378 +664,378 @@ router.post('/login', async (req, res) => {
     req.checkBody(schema);
     var errors = req.validationErrors();
     if (!errors) {
-      // const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + captcha_secret + "&response=" + req.body['recaptcha'];
-      // await request(verificationURL, async (error, response, body) => {
-      //   body = JSON.parse(body);
-      //   if (body.success !== undefined && !body.success) {
-      //     res.json({ "status": 0, "responseError": "Failed captcha verification" });
-      //   }
-      //   else {
-      let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
-      if (!user_resp) {
-        var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'email_not_exist' });
-        logger.trace("Login checked resp = ", user_resp);
-        res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": message.data.content, "error": "We are not aware of this user" });
-      }
-      else if (user_resp) {
-        logger.trace("valid token. Generating token");
-        if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email.toLowerCase())) {
-
-          if (user_resp.role_id.role === "candidate") {
-            if (user_resp.isAllow == true) {
-              var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-              let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-              var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
-              var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-                expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-              });
-              delete user_resp.status;
-              delete user_resp.password;
-              delete user_resp.refresh_token;
-              delete user_resp.last_login_date;
-              delete user_resp.created_at;
-              logger.info("Token generated");
-
-              var userDetails = await User.aggregate([
-                {
-                  $match: {
-                    "email": req.body.email
-                  }
-                },
-                {
-                  $lookup:
-                  {
-                    from: "employerDetail",
-                    localField: "_id",
-                    foreignField: "user_id",
-                    as: "employee"
-                  }
-                },
-                {
-                  $lookup:
-                  {
-                    from: "candidateDetail",
-                    localField: "_id",
-                    foreignField: "user_id",
-                    as: "candidate"
-                  }
-                },
-                {
-                  $addFields: {
-                    userDetail: {
-                      $concatArrays: ["$candidate", "$employee"]
-                    }
-                  }
-                },
-                {
-                  $unwind: {
-                    path: "$userDetail"
-                  }
-                },
-                {
-                  $project: {
-                    "userDetail": "$userDetail"
-                  }
-                },
-                {
-                  $lookup:
-                  {
-                    from: "country_datas",
-                    localField: "userDetail.country",
-                    foreignField: "_id",
-                    as: "country"
-                  }
-                },
-
-                {
-                  $unwind: {
-                    path: "$country",
-                    preserveNullAndEmptyArrays: true
-                  },
-                },
-                {
-                  $lookup:
-                  {
-                    from: "document_type",
-                    localField: "userDetail.documenttype",
-                    foreignField: "_id",
-                    as: "document"
-                  }
-                },
-                {
-                  $unwind:
-                  {
-                    path: "$document",
-                    preserveNullAndEmptyArrays: true
-                  }
-                },
-                {
-                  $lookup:
-                  {
-                    from: "business_type",
-                    localField: "userDetail.businesstype",
-                    foreignField: "_id",
-                    as: "business"
-                  }
-                },
-                {
-                  $unwind:
-                  {
-                    path: "$business",
-                    preserveNullAndEmptyArrays: true
-                  }
-                }
-
-              ])
-              res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
-            } else {
-              var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'candidate_not_approve' });
-              res.status(config.UNAUTHORIZED).json({ "status": 0, "isApproved": false, "message": message.data.content });
-            }
-          } else if (user_resp.role_id.role === "employer") {
-            if (user_resp.isAllow == true) {
-              if (user_resp.email_verified == true) {
-                var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-                let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-
-                var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
-                var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-                  expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-                });
-                delete user_resp.status;
-                delete user_resp.password;
-                delete user_resp.refresh_token;
-                delete user_resp.last_login_date;
-                delete user_resp.created_at;
-                logger.info("Token generated");
-
-                var userDetails = await User.aggregate([
-                  {
-                    $match: {
-                      "email": req.body.email
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "employerDetail",
-                      localField: "_id",
-                      foreignField: "user_id",
-                      as: "employee"
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "candidateDetail",
-                      localField: "_id",
-                      foreignField: "user_id",
-                      as: "candidate"
-                    }
-                  },
-                  {
-                    $addFields: {
-                      userDetail: {
-                        $concatArrays: ["$candidate", "$employee"]
-                      }
-                    }
-                  },
-                  {
-                    $unwind: {
-                      path: "$userDetail"
-                    }
-                  },
-                  {
-                    $project: {
-                      "userDetail": "$userDetail"
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "country_datas",
-                      localField: "userDetail.country",
-                      foreignField: "_id",
-                      as: "country"
-                    }
-                  },
-
-                  {
-                    $unwind: {
-                      path: "$country",
-                      preserveNullAndEmptyArrays: true
-                    },
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "document_type",
-                      localField: "userDetail.documenttype",
-                      foreignField: "_id",
-                      as: "document"
-                    }
-                  },
-                  {
-                    $unwind:
-                    {
-                      path: "$document",
-                      preserveNullAndEmptyArrays: true
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "business_type",
-                      localField: "userDetail.businesstype",
-                      foreignField: "_id",
-                      as: "business"
-                    }
-                  },
-                  {
-                    $unwind:
-                    {
-                      path: "$business",
-                      preserveNullAndEmptyArrays: true
-                    }
-                  }
-
-                ])
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
-              } else {
-                res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
-              }
-            } else {
-              var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'employer_not_approve' });
-              res.status(config.UNAUTHORIZED).json({
-                "status": 0, "isApproved": false, "message": message.data.content
-              });
-            }
-          } else {
-            if (user_resp.isAllow == true) {
-              if (user_resp.email_verified == true) {
-                var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
-                let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
-
-                var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
-                var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
-                  expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
-                });
-                delete user_resp.status;
-                delete user_resp.password;
-                delete user_resp.refresh_token;
-                delete user_resp.last_login_date;
-                delete user_resp.created_at;
-                logger.info("Token generated");
-
-                var userDetails = await User.aggregate([
-                  {
-                    $match: {
-                      "email": req.body.email
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "employerDetail",
-                      localField: "_id",
-                      foreignField: "user_id",
-                      as: "employee"
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "candidateDetail",
-                      localField: "_id",
-                      foreignField: "user_id",
-                      as: "candidate"
-                    }
-                  },
-                  {
-                    $addFields: {
-                      userDetail: {
-                        $concatArrays: ["$candidate", "$employee"]
-                      }
-                    }
-                  },
-                  {
-                    $unwind: {
-                      path: "$userDetail"
-                    }
-                  },
-                  {
-                    $project: {
-                      "userDetail": "$userDetail"
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "country_datas",
-                      localField: "userDetail.country",
-                      foreignField: "_id",
-                      as: "country"
-                    }
-                  },
-
-                  {
-                    $unwind: {
-                      path: "$country",
-                      preserveNullAndEmptyArrays: true
-                    },
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "document_type",
-                      localField: "userDetail.documenttype",
-                      foreignField: "_id",
-                      as: "document"
-                    }
-                  },
-                  {
-                    $unwind:
-                    {
-                      path: "$document",
-                      preserveNullAndEmptyArrays: true
-                    }
-                  },
-                  {
-                    $lookup:
-                    {
-                      from: "business_type",
-                      localField: "userDetail.businesstype",
-                      foreignField: "_id",
-                      as: "business"
-                    }
-                  },
-                  {
-                    $unwind:
-                    {
-                      path: "$business",
-                      preserveNullAndEmptyArrays: true
-                    }
-                  }
-
-                ])
-                res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
-              } else {
-                res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
-              }
-            } else {
-              res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
-            }
-          }
+      const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + captcha_secret + "&response=" + req.body['recaptcha'];
+      await request(verificationURL, async (error, response, body) => {
+        body = JSON.parse(body);
+        if (body.success !== undefined && !body.success) {
+          res.json({ "status": 0, "responseError": "Failed captcha verification" });
         }
         else {
-          res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
+          let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
+          if (!user_resp) {
+            var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'email_not_exist' });
+            logger.trace("Login checked resp = ", user_resp);
+            res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": message.data.content, "error": "We are not aware of this user" });
+          }
+          else if (user_resp) {
+            logger.trace("valid token. Generating token");
+            if ((bcrypt.compareSync(req.body.password, user_resp.password) && req.body.email.toLowerCase() == user_resp.email.toLowerCase())) {
+
+              if (user_resp.role_id.role === "candidate") {
+                if (user_resp.isAllow == true) {
+                  var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+                  let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+                  var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
+                  var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
+                    expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
+                  });
+                  delete user_resp.status;
+                  delete user_resp.password;
+                  delete user_resp.refresh_token;
+                  delete user_resp.last_login_date;
+                  delete user_resp.created_at;
+                  logger.info("Token generated");
+
+                  var userDetails = await User.aggregate([
+                    {
+                      $match: {
+                        "email": req.body.email
+                      }
+                    },
+                    {
+                      $lookup:
+                      {
+                        from: "employerDetail",
+                        localField: "_id",
+                        foreignField: "user_id",
+                        as: "employee"
+                      }
+                    },
+                    {
+                      $lookup:
+                      {
+                        from: "candidateDetail",
+                        localField: "_id",
+                        foreignField: "user_id",
+                        as: "candidate"
+                      }
+                    },
+                    {
+                      $addFields: {
+                        userDetail: {
+                          $concatArrays: ["$candidate", "$employee"]
+                        }
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path: "$userDetail"
+                      }
+                    },
+                    {
+                      $project: {
+                        "userDetail": "$userDetail"
+                      }
+                    },
+                    {
+                      $lookup:
+                      {
+                        from: "country_datas",
+                        localField: "userDetail.country",
+                        foreignField: "_id",
+                        as: "country"
+                      }
+                    },
+
+                    {
+                      $unwind: {
+                        path: "$country",
+                        preserveNullAndEmptyArrays: true
+                      },
+                    },
+                    {
+                      $lookup:
+                      {
+                        from: "document_type",
+                        localField: "userDetail.documenttype",
+                        foreignField: "_id",
+                        as: "document"
+                      }
+                    },
+                    {
+                      $unwind:
+                      {
+                        path: "$document",
+                        preserveNullAndEmptyArrays: true
+                      }
+                    },
+                    {
+                      $lookup:
+                      {
+                        from: "business_type",
+                        localField: "userDetail.businesstype",
+                        foreignField: "_id",
+                        as: "business"
+                      }
+                    },
+                    {
+                      $unwind:
+                      {
+                        path: "$business",
+                        preserveNullAndEmptyArrays: true
+                      }
+                    }
+
+                  ])
+                  res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
+                } else {
+                  var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'candidate_not_approve' });
+                  res.status(config.UNAUTHORIZED).json({ "status": 0, "isApproved": false, "message": message.data.content });
+                }
+              } else if (user_resp.role_id.role === "employer") {
+                if (user_resp.isAllow == true) {
+                  if (user_resp.email_verified == true) {
+                    var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+                    let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+
+                    var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
+                    var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
+                      expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
+                    });
+                    delete user_resp.status;
+                    delete user_resp.password;
+                    delete user_resp.refresh_token;
+                    delete user_resp.last_login_date;
+                    delete user_resp.created_at;
+                    logger.info("Token generated");
+
+                    var userDetails = await User.aggregate([
+                      {
+                        $match: {
+                          "email": req.body.email
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "employerDetail",
+                          localField: "_id",
+                          foreignField: "user_id",
+                          as: "employee"
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "candidateDetail",
+                          localField: "_id",
+                          foreignField: "user_id",
+                          as: "candidate"
+                        }
+                      },
+                      {
+                        $addFields: {
+                          userDetail: {
+                            $concatArrays: ["$candidate", "$employee"]
+                          }
+                        }
+                      },
+                      {
+                        $unwind: {
+                          path: "$userDetail"
+                        }
+                      },
+                      {
+                        $project: {
+                          "userDetail": "$userDetail"
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "country_datas",
+                          localField: "userDetail.country",
+                          foreignField: "_id",
+                          as: "country"
+                        }
+                      },
+
+                      {
+                        $unwind: {
+                          path: "$country",
+                          preserveNullAndEmptyArrays: true
+                        },
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "document_type",
+                          localField: "userDetail.documenttype",
+                          foreignField: "_id",
+                          as: "document"
+                        }
+                      },
+                      {
+                        $unwind:
+                        {
+                          path: "$document",
+                          preserveNullAndEmptyArrays: true
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "business_type",
+                          localField: "userDetail.businesstype",
+                          foreignField: "_id",
+                          as: "business"
+                        }
+                      },
+                      {
+                        $unwind:
+                        {
+                          path: "$business",
+                          preserveNullAndEmptyArrays: true
+                        }
+                      }
+
+                    ])
+                    res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
+                  } else {
+                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+                  }
+                } else {
+                  var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'employer_not_approve' });
+                  res.status(config.UNAUTHORIZED).json({
+                    "status": 0, "isApproved": false, "message": message.data.content
+                  });
+                }
+              } else {
+                if (user_resp.isAllow == true) {
+                  if (user_resp.email_verified == true) {
+                    var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
+                    let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
+
+                    var LoginJson = { id: user_resp._id, email: user_resp.email, role: user_resp.role_id.role };
+                    var token = jwt.sign(LoginJson, config.ACCESS_TOKEN_SECRET_KEY, {
+                      expiresIn: config.ACCESS_TOKEN_EXPIRE_TIME
+                    });
+                    delete user_resp.status;
+                    delete user_resp.password;
+                    delete user_resp.refresh_token;
+                    delete user_resp.last_login_date;
+                    delete user_resp.created_at;
+                    logger.info("Token generated");
+
+                    var userDetails = await User.aggregate([
+                      {
+                        $match: {
+                          "email": req.body.email
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "employerDetail",
+                          localField: "_id",
+                          foreignField: "user_id",
+                          as: "employee"
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "candidateDetail",
+                          localField: "_id",
+                          foreignField: "user_id",
+                          as: "candidate"
+                        }
+                      },
+                      {
+                        $addFields: {
+                          userDetail: {
+                            $concatArrays: ["$candidate", "$employee"]
+                          }
+                        }
+                      },
+                      {
+                        $unwind: {
+                          path: "$userDetail"
+                        }
+                      },
+                      {
+                        $project: {
+                          "userDetail": "$userDetail"
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "country_datas",
+                          localField: "userDetail.country",
+                          foreignField: "_id",
+                          as: "country"
+                        }
+                      },
+
+                      {
+                        $unwind: {
+                          path: "$country",
+                          preserveNullAndEmptyArrays: true
+                        },
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "document_type",
+                          localField: "userDetail.documenttype",
+                          foreignField: "_id",
+                          as: "document"
+                        }
+                      },
+                      {
+                        $unwind:
+                        {
+                          path: "$document",
+                          preserveNullAndEmptyArrays: true
+                        }
+                      },
+                      {
+                        $lookup:
+                        {
+                          from: "business_type",
+                          localField: "userDetail.businesstype",
+                          foreignField: "_id",
+                          as: "business"
+                        }
+                      },
+                      {
+                        $unwind:
+                        {
+                          path: "$business",
+                          preserveNullAndEmptyArrays: true
+                        }
+                      }
+
+                    ])
+                    res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
+                  } else {
+                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+                  }
+                } else {
+                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
+                }
+              }
+            }
+            else {
+              res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Invalid email address or password" });
+            }
+          }
+          else {
+            res.status(config.BAD_REQUEST).json({ message: "Your email is not registered" });
+          }
         }
-      }
-      else {
-        res.status(config.BAD_REQUEST).json({ message: "Your email is not registered" });
-      }
-      //   }
-      // });
+      });
     }
     else {
       res.status(config.BAD_REQUEST).json({ message: "Invalid email" });
