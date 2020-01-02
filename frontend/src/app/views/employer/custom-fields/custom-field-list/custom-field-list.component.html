@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header group-title-221">
-                    <!--  -->
+
                     <i class="fa fa-info-circle icon-size" style="cursor: pointer;" (click)="open(content)"></i>
                     <strong>Custom Fields</strong>
                     <p class="pull-right"></p>
@@ -38,15 +38,9 @@
                         </h6>
 
                     </div>
-                    <!-- <div class="modal-footer instructions-popup-footer">
-                                        <button type="button" class="btn btn-primary"
-                                            (click)="setup(_profile_data[0].user_id._id)">Let's
-                                            Setup</button>
-                                    </div> -->
                 </ng-template>
                 <!-- popup -->
                 <div class="card-body">
-                    <!-- <button class="btn btn-primary pull-left" (click)="onAdd()">Add New Offer</button> -->
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table"
                         style="width:100%;">
                         <thead>
@@ -59,11 +53,11 @@
                             </tr>
                         </thead>
 
-                        <tbody *ngIf=" data?.length !=0">
+                        <tbody *ngIf="data?.length !=0">
                             <tr *ngFor="let d of data; let i = index;">
                                 <!-- <td>{{d.serial_number}} </td> -->
-                                <td>{{i+1}}</td>
-                                <td>{{d.key}}</td>
+                                <td>{{ dataTablesParameters.start + i + 1 }}</td>
+                                <td>{{ d.key }}</td>
 
                                 <td *ngIf="userDetail.role === 'employer'">
                                     <button tooltip='View' type="button" class="btn btn-sm btn-success"

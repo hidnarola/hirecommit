@@ -8,7 +8,6 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -18,6 +17,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
       window.scrollTo(0, 0);
     });
+
 
   }
 

@@ -60,6 +60,7 @@ export class GroupViewComponent implements OnInit {
       // hide spinner
       this.spinner.hide();
       if (res['communication']['data'] && res['communication']['data'].length > 0) {
+
         // document.getElementById('editor').setAttribute('disabled','true');
         this.communicationData = res['communication']['data'][0]['communication'];
 
@@ -69,6 +70,13 @@ export class GroupViewComponent implements OnInit {
               (this.Trigger_Option.find(o => o.value === element.trigger).label);
           });
         }
+        //disabled summernote 
+        setTimeout(function () {
+          const len = document.getElementsByClassName('note-editable').length;
+          for (let p = 0; p < len; p++) {
+            document.getElementsByClassName('note-editable')[p].setAttribute('contenteditable', 'false');
+          }
+        }, 500);
       }
     }, (err) => {
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });

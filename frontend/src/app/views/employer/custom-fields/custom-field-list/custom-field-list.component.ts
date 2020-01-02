@@ -24,6 +24,7 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
   userDetail: any;
   _profile_data: any;
   adminRights = false;
+  dataTablesParameters;
   constructor(private confirmationService: ConfirmationService,
     private toastr: ToastrService,
     private service: CustomFieldService,
@@ -56,8 +57,8 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
         destroy: true,
         ajax: (dataTablesParameters: any, callback) => {
+          this.dataTablesParameters = dataTablesParameters;
           this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
-            console.log('custom feild res =>>', res);
             if (res['status'] === 1) {
               this.data = res['salary'];
               callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
@@ -81,46 +82,6 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
         ]
       };
     }
-    //  else if (this.userDetail.role === 'sub-employer') {
-    //   this.dtOptions = {
-    //     pagingType: 'full_numbers',
-    //     pageLength: 10,
-    //     serverSide: true,
-    //     processing: true,
-    //     // order: [[0, 'desc']],
-    //     language: { 'processing': '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>' },
-    //     destroy: true,
-    //     ajax: (dataTablesParameters: any, callback) => {
-    //       this.service.view_custom_feild(dataTablesParameters).subscribe(res => {
-    //         console.log('custom feild res =>>', res);
-
-    //         if (res['status'] === 1) {
-    //           this.data = res['salary'];
-    //           // if (this.data.length == 0) {
-    //           //   var el = document.getElementById('DataTables_Table_0_paginate');
-    //           //   el.style.display = 'none';
-    //           // }
-    //           callback({ recordsTotal: res['recordsTotal'], recordsFiltered: res['recordsTotal'], data: [] });
-    //         }
-    //       }, err => {
-    //         callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
-    //       });
-    //     },
-    //     columnDefs: [{ targets: 0, width: '10%' }, { targets: 1, width: '100%' }],
-    //     columns: [
-    //       {
-    //         data: 'index'
-    //       },
-    //       {
-    //         data: 'key'
-    //       },
-    //       // {
-    //       //   data: 'action'
-    //       // }
-    //     ]
-    //   };
-    // }
-
   }
 
   delete(id) {
@@ -141,7 +102,6 @@ export class CustomFieldListComponent implements OnInit, AfterViewInit, OnDestro
   open(content) {
     this.modalService.open(content);
     this.EmpService.information({ 'msg_type': 'custom_field' }).subscribe(res => {
-      console.log('res=>', res);
       this.msg = res['message'];
     }, (err) => {
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });

@@ -29,7 +29,7 @@ export class GroupAddComponent implements OnInit {
   formData: FormData;
   show_spinner = false;
   Priority_Options = [
-    { label: 'Select Trigger', value: '' },
+    { label: 'Select Priority', value: '' },
     { label: 'High', value: 'High' },
     { label: 'Medium', value: 'Medium' },
     { label: 'Low', value: 'Low' }
@@ -127,7 +127,7 @@ export class GroupAddComponent implements OnInit {
       'trigger': '',
       'priority': '',
       'day': '',
-      'subject':'',
+      'subject': '',
       'message': '',
     };
 
@@ -228,17 +228,17 @@ export class GroupAddComponent implements OnInit {
       this.addGroup.controls['high_unopened'].setValue(parseFloat(this.addGroup.value[`high_unopened`]));
     }
   }
-  removeZero_high_notreplied(){
+  removeZero_high_notreplied() {
     if (this.addGroup.value.high_notreplied && this.addGroup.value.high_notreplied >= 0) {
       this.addGroup.controls['high_notreplied'].setValue(parseFloat(this.addGroup.value[`high_notreplied`]));
     }
   }
-  removeZero_medium_unopened(){
+  removeZero_medium_unopened() {
     if (this.addGroup.value.medium_unopened && this.addGroup.value.medium_unopened >= 0) {
       this.addGroup.controls['medium_unopened'].setValue(parseFloat(this.addGroup.value[`medium_unopened`]));
-    } 
+    }
   }
-  removeZero_medium_notreplied(){
+  removeZero_medium_notreplied() {
     if (this.addGroup.value.medium_notreplied && this.addGroup.value.medium_notreplied >= 0) {
       this.addGroup.controls['medium_notreplied'].setValue(parseFloat(this.addGroup.value[`medium_notreplied`]));
     }

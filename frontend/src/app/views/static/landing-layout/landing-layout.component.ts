@@ -13,7 +13,7 @@ export class LandingLayoutComponent implements OnInit {
   hostName: any = '';
   isProd: Boolean = false;
 
-  constructor() {
+  constructor(public router: Router) {
     this.isProd = environment.production;
     console.log('window.location.hostname => ', window.location.hostname);
     this.hostName = window.location.hostname;
@@ -24,6 +24,8 @@ export class LandingLayoutComponent implements OnInit {
     } else {
       if (this.isProd) {
         window.location.href = 'http://candidate.hirecommit.com/';
+      } else {
+        this.router.navigate(['/login']);
       }
     }
     // else if (this.hostName === 'candidate.hirecommit.com') {

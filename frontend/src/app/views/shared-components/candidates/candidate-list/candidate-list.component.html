@@ -7,7 +7,8 @@
                     {{candidate_type}} Candidate
                 </div>
                 <div class="card-body">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table"
+                        style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Candidate Name</th>
@@ -47,8 +48,8 @@
                                             class="icon-trash"></i></button>
 
                                     <button type="button" *ngIf="candidate_type === 'New'" tooltip='Approve'
-                                        class="btn btn-sm btn-primary" id="approve" (click)="onApproved(data.user_id)" [disabled]="isApproved"><i
-                                            class="icon-check"></i></button>
+                                        class="btn btn-sm btn-primary" id="approve" (click)="onApproved(data.user_id)"
+                                        [disabled]="isApproved"><i class="icon-check"></i></button>
                                 </td>
                             </tr>
                         </tbody>

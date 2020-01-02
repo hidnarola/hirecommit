@@ -67,7 +67,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   Candidate: HTMLElement;
   is_communication_added = false;
   cursorPos: any;
-  d :any;
+  d: any;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -125,7 +125,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   ];
 
   Priority_Options = [
-    { label: 'Select Trigger', value: '' },
+    { label: 'Select Priority', value: '' },
     { label: 'High', value: 'High' },
     { label: 'Medium', value: 'Medium' },
     { label: 'Low', value: 'Low' }
@@ -150,7 +150,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   isExpired = false;
   is_submitted = false;
   accept_btn = false;
-  isAcceptedView:any;
+  isAcceptedView: any;
   isCustomFieldView = false;
   astSalary = false;
   constructor(
@@ -435,7 +435,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.get_locations().subscribe(
         async res => {
           console.log('res[`data]=>', res[`data`]);
-          
+
           // this.location = await res[`data`].data;
           // this.locationList.push(res[`data`].data)
           if (res[`data`]) {
@@ -515,18 +515,20 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         if (res[`data`]) {
           this.spinner.hide();
           if (this.is_View) {
+
             if (!(res['data'].status === 'Accepted')) {
               res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
             }
             if (res[`data`][`AdHoc`].length > 0) {
+
               res[`data`][`AdHoc`].forEach(element => {
                 element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
               });
             }
             if (res[`data`][`communication`].length > 0) {
               this.isSetCommunication = true;
+
               res[`data`][`communication`].forEach(element => {
-                $('#editor').summernote('disable');
                 element.trigger =
                   (this.Trigger_Option.find(o => o.value === element.trigger).label);
               });
@@ -535,6 +537,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             } else {
               this.isSetCommunication = false;
             }
+
+            //disabled summernote
+            setTimeout(function () {
+              // $(".note-editable").attr("contenteditable", "false")
+              const len = document.getElementsByClassName('note-editable').length;
+              for (let p = 0; p < len; p++) {
+                document.getElementsByClassName('note-editable')[p].setAttribute('contenteditable', 'false');
+              }
+            }, 500);
 
           } else if (this.is_Edit) {
             this.d = moment(new Date(res[`data`].expirydate));
@@ -577,6 +588,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.form.controls['notes'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
+
+              //disabled summernote
+              setTimeout(function () {
+                const len = document.getElementsByClassName('note-editable').length;
+                for (let p = 0; p < len; p++) {
+                  document.getElementsByClassName('note-editable')[p].setAttribute('contenteditable', 'false');
+                }
+              }, 500);
             }
             // set communication
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
@@ -586,7 +605,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               let new_communication;
               this.communicationData.forEach((element, index) => {
                 if (element.open !== undefined && element.reply !== undefined && element.reply_date !== undefined && element.open_date !== undefined) {
-                   new_communication = {
+                  new_communication = {
                     'communicationname': element.communicationname,
                     'trigger': element.trigger,
                     'priority': element.priority,
@@ -596,12 +615,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     '_id': element._id,
                     'open': element.open,
                     'reply': element.reply,
-                     'open_date': element.open_date,
-                     'reply_date':element.reply_date
+                    'open_date': element.open_date,
+                    'reply_date': element.reply_date
                   };
                 } else if (element.open !== undefined && element.reply !== undefined && element.open_date !== undefined) {
-                
-                   new_communication = {
+
+                  new_communication = {
                     'communicationname': element.communicationname,
                     'trigger': element.trigger,
                     'priority': element.priority,
@@ -611,10 +630,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     '_id': element._id,
                     'open': element.open,
                     'reply': element.reply,
-                     'open_date': element.open_date
+                    'open_date': element.open_date
                   };
                 } else if (element.open !== undefined && element.reply !== undefined) {
-                 new_communication = {
+                  new_communication = {
                     'communicationname': element.communicationname,
                     'trigger': element.trigger,
                     'priority': element.priority,
@@ -636,7 +655,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     '_id': element._id
                   };
                 }
-               
+
                 this.communicationFieldItems.setControl(index, this.fb.group({
                   communicationname: ['', Validators.required],
                   trigger: ['', Validators.required],
@@ -659,7 +678,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               const _Adhoc_communication_array = [];
               this.AdHocCommunicationData.forEach((element, index) => {
                 let new_communication;
-                if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_reply_date !== undefined && element.AdHoc_open_date !== undefined){
+                if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_reply_date !== undefined && element.AdHoc_open_date !== undefined) {
                   new_communication = {
                     'AdHoc_communicationname': element.AdHoc_communicationname,
                     'AdHoc_trigger': element.AdHoc_trigger,
@@ -673,7 +692,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     'AdHoc_open_date': element.AdHoc_open_date,
                     'AdHoc_reply_date': element.AdHoc_reply_date
                   };
-                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_open_date !== undefined) { 
+                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_open_date !== undefined) {
                   new_communication = {
                     'AdHoc_communicationname': element.AdHoc_communicationname,
                     'AdHoc_trigger': element.AdHoc_trigger,
@@ -686,7 +705,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     'AdHoc_reply': element.AdHoc_reply,
                     'AdHoc_open_date': element.AdHoc_open_date
                   };
-               } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined ) { 
+                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined) {
                   new_communication = {
                     'AdHoc_communicationname': element.AdHoc_communicationname,
                     'AdHoc_trigger': element.AdHoc_trigger,
@@ -817,9 +836,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.resData.customfeild.map(res => {
           if (res.value) {
             this.isCustomFieldView = true;
-          } 
+          }
         })
-        
+
         this.candidateData = res['candidate_data']['data'];
         this.grpId = this.resData.user_id;
         this.socketService.joinGrp(this.resData.user_id);
@@ -834,7 +853,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.is_View = true;
         this.spinner.hide();
         this.resData = res[`data`][0];
-        
+
         if (this.is_View) {
           this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
         }
@@ -845,12 +864,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         } else {
           this.isExpired = false;
         }
-          this.userName = this.resData.employer_id.employer.companyname;
-        if (this.resData.acceptedAt){
-         this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
-       } else {
-         this.isAcceptedView = 'Date of Offer Acceptance';
-       }
+        this.userName = this.resData.employer_id.employer.companyname;
+        if (this.resData.acceptedAt) {
+          this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
+        } else {
+          this.isAcceptedView = 'Date of Offer Acceptance';
+        }
         this.resData.customfeild.map(res => {
           if (res.value) {
             this.isCustomFieldView = true;
@@ -959,7 +978,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.service.get_customfield().subscribe(
       res => {
         this.customfield = res['data'];
-     
+
         const _array = [];
         this.customfield.forEach((element, index) => {
           const new_customfield = {
@@ -1123,10 +1142,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   Accept(id, type) {
     // this.accept_btn = true;
     this.show_spinner = true;
-    if( this.is_View){
+    if (this.is_View) {
       type = (this.offer_type_optoins.find(o => o.label === this.resData.offertype).value);
     }
-    
+
     this.service.type_message({ 'type': type }).subscribe(res => {
       if (type === 'noCommit') {
         this.isNoCommit = true;
@@ -1415,7 +1434,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
   }
- 
+
 
   checkFrom(from, to) {
     this.ast = true;
@@ -1518,8 +1537,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           day: element.day,
           subject: element.subject,
           message: element.message,
-          _id : element._id,
-          open : element.open,
+          _id: element._id,
+          open: element.open,
           reply: element.reply,
           open_date: element.open_date,
           reply_date: element.reply_date
@@ -1544,7 +1563,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           AdHoc_open: element.AdHoc_open,
           AdHoc_reply: element.AdHoc_reply,
           AdHoc_open_date: element.AdHoc_open_date,
-          AdHoc_reply_date : element.AdHoc_reply_date
+          AdHoc_reply_date: element.AdHoc_reply_date
         });
       });
     } else {

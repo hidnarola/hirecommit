@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
@@ -35,7 +35,7 @@ export function getToken(): string {
 import { ConfirmationService } from 'primeng/api';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { TooltipModule } from 'ng2-tooltip-directive';
-
+import { ErrorInterceptor } from './shared/error-interceptor';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { LandingLayoutComponent } from './views/static/landing-layout/landing-layout.component';
 import { CandidateLandingComponent } from './views/static/candidate-landing/candidate-landing.component';
@@ -113,6 +113,7 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     RoleGuardService,
     JwtHelperService, ConfirmationService,
     { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
+    { provide: ErrorHandler, useClass: ErrorInterceptor },
   ],
   bootstrap: [AppComponent]
 })
