@@ -2824,7 +2824,7 @@ router.put('/', async (req, res) => {
         if (offer.data.status !== req.body.status) {
             obj.offer_id = offer_upadate.data._id;
             obj.employer_id = req.userInfo.id;
-            obj.message = `< span > { employer }</span > has ${req.body.status} this offer for <span>{candidate}</span>`
+            obj.message = `<span>{employer}</span> has ${req.body.status} this offer for <span>{candidate}</span>`
             var interest = await common_helper.insert(History, obj);
         }
 
