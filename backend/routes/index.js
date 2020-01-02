@@ -48,18 +48,6 @@ var captcha_secret = config.captcha_secret
 //get user
 router.get("/user", async (req, res) => {
   try {
-    console.log(' : req ==> ', req.headers.host);
-    let host_url = req.headers.host.split(':');
-    if (host_url[0] === "localhost") {
-      var url = config.WEBSITE_URL;
-      console.log(' : localhost ==> ', url);
-    } else if (host_url[0] === "hirecommit.com") {
-      var url = config.WEBSITE_URL;
-      console.log(' : hirecommit ==> ', url);
-    } else {
-      var url = config.WEBSITE_URL2;
-      console.log(' : tanubhasin ==> ', url);
-    }
     var response = await common_helper.find(User);
     res.status(config.OK_STATUS).send(response);
   } catch (error) {
@@ -195,6 +183,15 @@ router.post("/candidate_register", async (req, res) => {
         errorMessage: "captcha is required"
       }
     };
+    var web_url;
+    let host_url = req.headers.host.split(':');
+    if (host_url[0] === "localhost") {
+      web_url = config.WEBSITE_URL;
+    } else if (host_url[0] === "hirecommit.com") {
+      web_url = config.WEBSITE_URL;
+    } else {
+      web_url = config.WEBSITE_URL2;
+    }
 
     var validate = passwordValidatorSchema
       .is().min(8)
@@ -372,7 +369,7 @@ router.post("/candidate_register", async (req, res) => {
                         "name": interest_resp.firstname,
                         "upper_content": message.data.upper_content,
                         "lower_content": message.data.lower_content,
-                        "confirm_url": config.WEBSITE_URL + '/confirmation/' + reset_token
+                        "confirm_url": web_url + '/confirmation/' + reset_token
                       });
 
                       if (mail_resp.status === 0) {
@@ -508,6 +505,15 @@ router.post("/employer_register", async (req, res) => {
         errorMessage: "captcha is required"
       }
     };
+    var web_url;
+    let host_url = req.headers.host.split(':');
+    if (host_url[0] === "localhost") {
+      web_url = config.WEBSITE_URL;
+    } else if (host_url[0] === "hirecommit.com") {
+      web_url = config.WEBSITE_URL;
+    } else {
+      web_url = config.WEBSITE_URL2;
+    }
 
     var validate = passwordValidatorSchema
       .is().min(8)
@@ -592,7 +598,7 @@ router.post("/employer_register", async (req, res) => {
                   "name": employerfirstname,
                   "upper_content": upper_content,
                   "lower_content": lower_content,
-                  "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                  "confirm_url": web_url + "confirmation/" + reset_token
                 });
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
