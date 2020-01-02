@@ -49,6 +49,17 @@ var captcha_secret = config.captcha_secret
 router.get("/user", async (req, res) => {
   try {
     console.log(' : req ==> ', req.headers.host);
+    let host_url = req.headers.host.split(':');
+    if (host_url[0] === "localhost") {
+      var url = config.WEBSITE_URL;
+      console.log(' : localhost ==> ', url);
+    } else if (host_url[0] === "hirecommit.com") {
+      var url = config.WEBSITE_URL;
+      console.log(' : hirecommit ==> ', url);
+    } else {
+      var url = config.WEBSITE_URL2;
+      console.log(' : tanubhasin ==> ', url);
+    }
     var response = await common_helper.find(User);
     res.status(config.OK_STATUS).send(response);
   } catch (error) {
