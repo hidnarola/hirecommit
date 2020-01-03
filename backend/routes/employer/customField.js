@@ -92,7 +92,7 @@ router.put("/", async (req, res) => {
             var user_id = req.userInfo.id
         }
         const RE = { $regex: new RegExp(`^${req.body.key}$`, 'gi') };
-        console.log(RE);
+        // console.log(RE);
 
         var exist_customfield = await common_helper.findOne(CustomField, {
             is_del: false,
@@ -257,7 +257,12 @@ router.put("/delete/:id", async (req, res) => {
         };
 
         var resp_data = await common_helper.findOne(CustomField, { "_id": req.params.id });
+        // console.log(' :resp_data  ==> ', resp_data);
+
         var resp_data1 = await Offer.find({ "employer_id": req.userInfo.id, 'customfeild.key': resp_data.data.key });
+
+        // console.log(resp_data1, resp_data1.length); return false;
+
 
         if (resp_data1 && resp_data1.length > 0) {
             res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Custom Field can't be deleted because it is used in offer." });
