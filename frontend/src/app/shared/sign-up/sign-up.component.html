@@ -3,7 +3,7 @@
     <div class="d-flex">
       <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
       <div class="candidate-employer">
-        <a href="http://candidate.hirecommit.com">Candidate</a>
+        <a href="{{candidateURL}}">Candidate</a>
         <a class="active">Employer</a>
       </div>
       <div class="login-signup">
@@ -347,15 +347,16 @@
               </div>
               <div class="row">
                 <div class="col-6">
-                    <button type="submit" class="btn btn-primary" [disabled]="show_spinner" (click)="onSubmit(registerForm.valid)">Submit <i
-                        *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+                  <button type="submit" class="btn btn-primary" [disabled]="show_spinner"
+                    (click)="onSubmit(registerForm.valid)">Submit <i *ngIf="show_spinner"
+                      class="fa fa-spinner fa-spin"></i></button>
                 </div>
                 <div class="col-6 text-right back-div">
                   <button type="button" class="btn btn-link px-0" [routerLink]="['/login']"><i class="icon-logout"></i>
                     Back to Login</button>
                 </div>
               </div>
-            
+
             </div>
           </div>
         </form>
@@ -379,8 +380,8 @@
       </div>
       <div class="quick-link">
         <h3>Quick Links</h3>
-        <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
-        <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+        <a href="{{candidateURL}}" target="_blank">Candidate</a>
+        <a href="{{employerURL}}" target="_blank">Employer</a>
       </div>
       <div class="footer-media">
         <h3>Find Us Online</h3>

@@ -13,7 +13,9 @@ export class RegisterComponent implements OnInit {
   code: any = [];
   registerForm: FormGroup;
   documentImage: FormGroup;
-
+  employerURL: String;
+  candidateURL: String;
+  mainURL: String;
   public registerData: any;
   fileFormData = new FormData();
   file: File = null;
@@ -42,6 +44,10 @@ export class RegisterComponent implements OnInit {
     public fbb: FormBuilder,
     private cd: ChangeDetectorRef
   ) {
+
+    this.employerURL = environment.employerURL;
+    this.candidateURL = environment.candidateURL;
+    this.mainURL = environment.mainURL;
     this.registerData = {};
 
     this.registerForm = this.fb.group({
@@ -294,7 +300,7 @@ export class RegisterComponent implements OnInit {
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          window.location.href = 'https://candidate.hirecommit.com/login';
+          window.location.href = environment.candidateURL + '/login';
         }
       }, (err) => {
         this.show_spinner = false;

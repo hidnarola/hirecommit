@@ -15,7 +15,7 @@
                             </label>
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
-                                    autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name" >
+                                    autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
                                 <div class="cust_err_msg" *ngIf="!groupForm.controls['name'].valid && isFormSubmitted">
                                     <span
                                         *ngIf="groupForm.controls['name'].errors['required'] ||  groupForm.controls['name'].errors['whitespace']"
@@ -72,7 +72,7 @@
 
                         <div class="form-group row">
                             <label class="ml-4 col-md-3 " for="medium_unopened">Medium - UnOpened</label>
-                            <div class="input-group col-md-2" >
+                            <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="medium_unopened"
                                     formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
                                     id="medium_unopened" (blur)="removeZero_medium_unopened()">
@@ -192,7 +192,8 @@
                                                     <div class="col-md-7 no-gutters">
                                                         <input type="text" class="form-control" placeholder="Enter name"
                                                             formControlName="communicationname" id="communicationname"
-                                                            [(ngModel)]="customfield.communicationname" (blur)="removeZeroCommunication(index)">
+                                                            [(ngModel)]="customfield.communicationname"
+                                                            (blur)="removeZeroCommunication(index)">
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
                                                             class="cust_err_msg">
                                                             <div class="text-danger"
@@ -217,9 +218,10 @@
                                                             <option value="Medium">Medium</option>
                                                             <option value="Low">Low</option>
                                                         </select> -->
-                                                        <p-dropdown [options]="Priority_Options" [style]="{'width':'100%'}" formControlName="priority"
-                                                            placeholder="Select Priority" id="priority" id="priority" [(ngModel)]="customfield.priority"
-                                                            >
+                                                        <p-dropdown [options]="Priority_Options"
+                                                            [style]="{'width':'100%'}" formControlName="priority"
+                                                            placeholder="Select Priority" id="priority" id="priority"
+                                                            [(ngModel)]="customfield.priority">
                                                         </p-dropdown>
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors"
                                                             class="cust_err_msg">
@@ -246,8 +248,10 @@
                                                             <option value="afterExpiry">After Expiry</option>
                                                             <option value="afterAcceptance">After Acceptance</option>
                                                         </select> -->
-                                                        <p-dropdown [options]="Trigger_Option" [style]="{'width':'100%'}" formControlName="trigger" placeholder="Select Trigger"
-                                                            id="trigger" id="trigger" [(ngModel)]="customfield.trigger" >
+                                                        <p-dropdown [options]="Trigger_Option"
+                                                            [style]="{'width':'100%'}" formControlName="trigger"
+                                                            placeholder="Select Trigger" id="trigger" id="trigger"
+                                                            [(ngModel)]="customfield.trigger">
                                                         </p-dropdown>
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors"
                                                             class="cust_err_msg">
@@ -263,13 +267,14 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="number" id="day" name="day" class="form-control"
                                                             placeholder="Enter Days" formControlName="day"
-                                                            [(ngModel)]="customfield.day"   (blur) = "removeZeroCommunication(i)">
+                                                            [(ngModel)]="customfield.day"
+                                                            (blur)="removeZeroCommunication(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
 
                                                     </div>
-                                                    <div  *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
+                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
                                                         class="cust_err_msg offset-md-5">
                                                         <div class="text-danger"
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
@@ -280,17 +285,18 @@
                                                             class="text-danger">Only Positive
                                                             Number</span>
                                                     </div>
-                                                    
+
                                                 </div>
                                             </div>
                                             <div class="form-group no-gutters row">
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="subject">Subject</label>
                                                     <div class="input-group col-md-7">
-                                                        <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject"
+                                                        <input type="text" id="subject" name="subject"
+                                                            class="form-control" placeholder="Enter subject"
                                                             formControlName="subject" [(ngModel)]="customfield.subject">
-                                                
-                                                
+
+
                                                     </div>
                                                     <div class="offset-md-5"
                                                         *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors"
@@ -299,31 +305,33 @@
                                                             *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || groupForm.controls['communicationFieldItems'].controls[i].get('subject').errors['whitespace']">
                                                             This field is required.
                                                         </div>
-                                                
+
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form row">
-                                                <div class="col-md-8">
+                                                <div class="col-md-9">
                                                     <label class="col-form-label" for="message">Message</label>
                                                     <div>
                                                         <div>
                                                             <!-- (click)="getCursor($event)" (keyup)="getCursor($event)" -->
-                                                            <div  [ngxSummernote]="config" #editor
-                                                                [(summernoteModel)]="customfield.message" id="editor" formControlName="message" [(ngModel)]="customfield.message">
+                                                            <div [ngxSummernote]="config" #editor
+                                                                [(summernoteModel)]="customfield.message" id="editor"
+                                                                formControlName="message"
+                                                                [(ngModel)]="customfield.message">
                                                             </div>
                                                         </div>
                                                         <!-- [(ngModel)]="customfield.communicationname"> -->
-                                                    <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
-                                                         class="cust_err_msg">
-                                                        <div class="text-danger"
-                                                            *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || groupForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
-                                                            This field is required.
+                                                        <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
+                                                            class="cust_err_msg">
+                                                            <div class="text-danger"
+                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors['required'] || groupForm.controls['communicationFieldItems'].controls[i].get('message').errors['whitespace']">
+                                                                This field is required.
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    </div>
                                                 </div>
-                                                <div class="col-md-4 bunch-list">
+                                                <div class="col-md-3 bunch-list">
                                                     <label class="col-form-label">Title here</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>
@@ -337,9 +345,9 @@
                                                     <p style="color: grey;">If you want to use this content click on it
                                                         and paste it in
                                                         editor.</p>
-                                            
+
                                                 </div>
-                                            
+
                                             </div>
                                         </div>
                                     </div>

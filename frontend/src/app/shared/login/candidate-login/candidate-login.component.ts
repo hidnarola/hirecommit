@@ -19,13 +19,24 @@ export class CandidateLoginComponent implements OnInit {
   show_spinner = false;
   userData: any = {};
   role: any;
+  isProd: Boolean = false;
+  isStaging: Boolean = false;
   siteKey = environment.captcha_site_key;
+  employerURL: String;
+  candidateURL: String;
+  mainURL: String;
   constructor(
     public router: Router,
     private service: CommonService,
     public fb: FormBuilder,
     private toastr: ToastrService
   ) {
+
+    this.isProd = environment.production;
+    this.isStaging = environment.staging;
+    this.employerURL = environment.employerURL;
+    this.candidateURL = environment.candidateURL;
+    this.mainURL = environment.mainURL;
     this.formData = {};
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required,
@@ -73,8 +84,9 @@ export class CandidateLoginComponent implements OnInit {
         // localStorage.setItem('userid', res['id']);
         this.role = res['role'];
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-
-        window.location.href = `http://hirecommit.com/authorize?role=${this.role}&token=${token}`;
+        if (this.isProd || this.isStaging) {
+          window.location.href = this.mainURL + `/authorize?role=${this.role}&token=${token}`;
+        }
 
         // if (this.role === 'admin') {
         //   // this.router.navigate(['admin']);
@@ -104,7 +116,6 @@ export class CandidateLoginComponent implements OnInit {
 
       }, (err) => {
         this.show_spinner = false;
-        console.log('err here => ', err['error']['isApproved']);
         if (err['error']['isApproved'] === false) {
           Swal.fire(
             {

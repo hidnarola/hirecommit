@@ -36,8 +36,8 @@
                             <label class="ml-4 col-md-3 " for="high_unopened">High - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_unopened"
-                                    formControlName="high_unopened" (blur)="removeZero_high_unopened()" [(ngModel)]="groupData.high_unopened"
-                                    id="high_unopened">
+                                    formControlName="high_unopened" (blur)="removeZero_high_unopened()"
+                                    [(ngModel)]="groupData.high_unopened" id="high_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -53,8 +53,8 @@
                             <label class="ml-4 col-md-3 " for="high_notreplied">High - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
-                                    formControlName="high_notreplied" (blur)=" removeZero_high_notreplied()" [(ngModel)]="groupData.high_notreplied"
-                                    id="high_notreplied">
+                                    formControlName="high_notreplied" (blur)=" removeZero_high_notreplied()"
+                                    [(ngModel)]="groupData.high_notreplied" id="high_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -70,8 +70,8 @@
                             <label class="ml-4 col-md-3 " for="medium_unopened">Medium - UnOpened</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
-                                    formControlName="medium_unopened" (blur)="removeZero_medium_unopened()"  [(ngModel)]="groupData.medium_unopened"
-                                    id="medium_unopened">
+                                    formControlName="medium_unopened" (blur)="removeZero_medium_unopened()"
+                                    [(ngModel)]="groupData.medium_unopened" id="medium_unopened">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -87,8 +87,8 @@
                             <label class="ml-4 col-md-3 " for="medium_notreplied">Medium - NotReplied</label>
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="medium_notreplied"
-                                    formControlName="medium_notreplied" (blur)="removeZero_medium_notreplied()"  [(ngModel)]="groupData.medium_notreplied"
-                                    id="medium_notreplied">
+                                    formControlName="medium_notreplied" (blur)="removeZero_medium_notreplied()"
+                                    [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -218,9 +218,10 @@
                                                             <option value="Medium">Medium</option>
                                                             <option value="Low">Low</option>
                                                         </select> -->
-                                                        <p-dropdown [options]="Priority_Options" [style]="{'width':'100%'}" formControlName="priority"
-                                                            placeholder="Select Priority" id="priority" id="priority" [(ngModel)]="customfield.priority"
-                                                            >
+                                                        <p-dropdown [options]="Priority_Options"
+                                                            [style]="{'width':'100%'}" formControlName="priority"
+                                                            placeholder="Select Priority" id="priority" id="priority"
+                                                            [(ngModel)]="customfield.priority">
                                                         </p-dropdown>
                                                         <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors"
                                                             style="color: red;">
@@ -247,8 +248,10 @@
                                                             <option value="afterExpiry">After Expiry</option>
                                                             <option value="afterAcceptance">After Acceptance</option>
                                                         </select> -->
-                                                        <p-dropdown [options]="Trigger_Option" [style]="{'width':'100%'}" formControlName="trigger" placeholder="Select Trigger"
-                                                            id="trigger" id="trigger" [(ngModel)]="customfield.trigger" >
+                                                        <p-dropdown [options]="Trigger_Option"
+                                                            [style]="{'width':'100%'}" formControlName="trigger"
+                                                            placeholder="Select Trigger" id="trigger" id="trigger"
+                                                            [(ngModel)]="customfield.trigger">
                                                         </p-dropdown>
                                                         <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors"
                                                             style="color: red;">
@@ -264,13 +267,15 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="number" id="day" name="day" class="form-control"
                                                             placeholder="Enter Days" formControlName="day" min="0"
-                                                            [(ngModel)]="customfield.day" (blur)="removeZeroCommunication(i)">
+                                                            [(ngModel)]="customfield.day"
+                                                            (blur)="removeZeroCommunication(i)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
 
                                                     </div>
-                                                    <div class="offset-md-5" *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
+                                                    <div class="offset-md-5"
+                                                        *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors"
                                                         style="color: red;">
                                                         <div
                                                             *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['day'].errors['required']">
@@ -282,8 +287,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                                <!-- <div class="col-md-6 row no-gutters">
+
+                                            <!-- <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="subject">Subject</label>
                                                     <div class="input-group col-md-7">
                                                         <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject" formControlName="subject"
@@ -301,37 +306,38 @@
                                                         
                                                     </div>
                                                 </div> -->
-                                                <div class="form-group no-gutters row">
-                                                    <div class="col-md-6 row no-gutters">
-                                                        <label class="col-md-5 col-form-label" for="subject">Subject</label>
-                                                        <div class="input-group col-md-7">
-                                                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject"
-                                                                formControlName="subject" [(ngModel)]="customfield.subject">
-                                                
-                                                
+                                            <div class="form-group no-gutters row">
+                                                <div class="col-md-6 row no-gutters">
+                                                    <label class="col-md-5 col-form-label" for="subject">Subject</label>
+                                                    <div class="input-group col-md-7">
+                                                        <input type="text" id="subject" name="subject"
+                                                            class="form-control" placeholder="Enter subject"
+                                                            formControlName="subject" [(ngModel)]="customfield.subject">
+
+
+                                                    </div>
+                                                    <div class="offset-md-5"
+                                                        *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors"
+                                                        style="color: red;">
+                                                        <div
+                                                            *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('subject').errors['whitespace']">
+                                                            This field is required.
                                                         </div>
-                                                        <div class="offset-md-5"
-                                                            *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors"
-                                                            style="color: red;">
-                                                            <div
-                                                                *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('subject').errors['whitespace']">
-                                                                This field is required.
-                                                            </div>
-                                                        
-                                                        </div>
+
                                                     </div>
                                                 </div>
-                                           
+                                            </div>
+
                                             <div class="form row">
-                                                <div class="col-md-8">
+                                                <div class="col-md-9">
                                                     <label class="col-form-label" for="message">Message</label>
                                                     <div>
                                                         <!-- <ckeditor [editor]="Editor" formControlName="message"
                                                         [(ngModel)]="customfield.message" (ready)="onReady($event)">
                                                     </ckeditor> -->
                                                         <div>
-                                                            <div 
-                                                                [ngxSummernote]="config" #editor  [(ngModel)]="customfield.message"
+                                                            <div [ngxSummernote]="config" #editor
+                                                                [(ngModel)]="customfield.message"
                                                                 [(summernoteModel)]="customfield.message" id="editor"
                                                                 formControlName="message">
                                                             </div>
@@ -346,7 +352,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4 bunch-list">
+                                                <div class="col-md-3 bunch-list">
                                                     <label class="col-form-label">Title here</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>
@@ -364,7 +370,7 @@
                                                 </div>
 
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>

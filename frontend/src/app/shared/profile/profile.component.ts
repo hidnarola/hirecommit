@@ -48,6 +48,8 @@ export class ProfileComponent implements OnInit {
   userDetail: any = [];
   _profile_data: any;
   isProd: Boolean = false;
+  isStaging: Boolean = false;
+
   constructor(
     private service: CommonService,
     private router: ActivatedRoute,
@@ -58,7 +60,9 @@ export class ProfileComponent implements OnInit {
     private route: Router,
     private confirmationService: ConfirmationService,
     private commonService: CommonService) {
+
     this.isProd = environment.production;
+    this.isStaging = environment.staging;
     this.userDetail = this.service.getLoggedUserDetail();
     this.id = {
       'id': this.userDetail.id
@@ -190,15 +194,15 @@ export class ProfileComponent implements OnInit {
               localStorage.removeItem('userid');
               localStorage.clear();
               // localStorage.removeItem('user');
-              if (this.isProd) {
+              if (this.isProd || this.isStaging) {
                 if (this.userDetail.role === 'employer') {
-                  window.location.href = 'http://employer.hirecommit.com/';
+                  window.location.href = environment.employerURL;
                 } else if (this.userDetail.role === 'sub-employer') {
-                  window.location.href = 'http://employer.hirecommit.com/';
+                  window.location.href = environment.employerURL;
                 } else if (this.userDetail.role === 'candidate') {
-                  window.location.href = 'http://candidate.hirecommit.com/';
+                  window.location.href = environment.candidateURL;
                 } else if (this.userDetail.role === 'admin') {
-                  window.location.href = 'http://hirecommit.com/login';
+                  window.location.href = environment.mainURL + '/login';
                 }
               } else {
                 this.route.navigate(['/login']);
@@ -248,15 +252,15 @@ export class ProfileComponent implements OnInit {
               localStorage.removeItem('userid');
               localStorage.clear();
               // localStorage.removeItem('user');
-              if (this.isProd) {
+              if (this.isProd || this.isStaging) {
                 if (this.userDetail.role === 'employer') {
-                  window.location.href = 'http://employer.hirecommit.com/';
+                  window.location.href = environment.employerURL;
                 } else if (this.userDetail.role === 'sub-employer') {
-                  window.location.href = 'http://employer.hirecommit.com/';
+                  window.location.href = environment.employerURL;
                 } else if (this.userDetail.role === 'candidate') {
-                  window.location.href = 'http://candidate.hirecommit.com/';
+                  window.location.href = environment.candidateURL;
                 } else if (this.userDetail.role === 'admin') {
-                  window.location.href = 'http://hirecommit.com/login';
+                  window.location.href = environment.mainURL + '/login';
                 }
               } else {
                 this.route.navigate(['/login']);

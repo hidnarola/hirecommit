@@ -19,13 +19,20 @@ export class EmployerLoginComponent implements OnInit {
   show_spinner = false;
   userData: any = {};
   role: any;
-
+  employerURL: String;
+  candidateURL: String;
+  mainURL: String;
+  isProd: Boolean = false;
+  isStaging: Boolean = false;
   constructor(
     public router: Router,
     private service: CommonService,
     public fb: FormBuilder,
     private toastr: ToastrService
   ) {
+
+    this.isProd = environment.production;
+    this.isStaging = environment.staging;
     this.formData = {};
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required,
@@ -33,6 +40,10 @@ export class EmployerLoginComponent implements OnInit {
       password: new FormControl('', Validators.compose([Validators.required, this.noWhitespaceValidator, Validators.minLength(8)])),
       recaptcha: new FormControl('', [Validators.required]),
     });
+
+    this.employerURL = environment.employerURL;
+    this.candidateURL = environment.candidateURL;
+    this.mainURL = environment.mainURL;
 
   }
   checkMail() {
@@ -69,8 +80,9 @@ export class EmployerLoginComponent implements OnInit {
         // localStorage.setItem('userid', res['id']);
         this.role = res['role'];
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-
-        window.location.href = `http://hirecommit.com/authorize?role=${this.role}&token=${token}`;
+        if (this.isProd || this.isStaging) {
+          window.location.href = this.mainURL + `/authorize?role=${this.role}&token=${token}`;
+        }
 
         // if (this.role === 'admin') {
         //   // this.router.navigate(['admin']);

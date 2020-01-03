@@ -2,11 +2,11 @@
     <div class="container">
         <div class="d-flex">
             <div class="hirecommit-logo">
-                <a href="http://candidate.hirecommit.com"><img src="assets/img/new-logo.png" alt="" /></a>
+                <a href="{{candidateURL}}"><img src="assets/img/new-logo.png" alt="" /></a>
             </div>
             <div class="candidate-employer">
                 <a class="active">Candidate</a>
-                <a href="http://employer.hirecommit.com">Employer</a>
+                <a href="{{employerURL}}">Employer</a>
             </div>
             <div class="login-signup">
                 <a href="javascript:void(0)">Login</a>
@@ -29,8 +29,7 @@
             <input type="text" class="form-control" placeholder="Email" [(ngModel)]="formData.email" name="email"
                 formControlName="email" id="email" required (blur)="checkMail()">
             <div class="error" *ngIf="!loginForm.controls['email'].valid && isFormSubmitted">
-                <span
-                    *ngIf="loginForm.controls['email'].errors.required">This field is required.</span>
+                <span *ngIf="loginForm.controls['email'].errors.required">This field is required.</span>
             </div>
             <div class="error" *ngIf="!loginForm.controls['email'].valid">
                 <span *ngIf="loginForm.controls['email'].errors['pattern'] ">Email
@@ -45,9 +44,11 @@
                 name="password" formControlName="password" id="password" required>
             <div class="error" *ngIf="!loginForm.controls['password'].valid && isFormSubmitted">
                 <span
-                    *ngIf="loginForm.controls['password'].errors['whitespace'] || loginForm.controls['password'].errors['required'] ">This field is required.</span>
+                    *ngIf="loginForm.controls['password'].errors['whitespace'] || loginForm.controls['password'].errors['required'] ">This
+                    field is required.</span>
                 <span
-                    *ngIf="loginForm.controls['password'].errors['minlength'] && !loginForm.controls['password'].errors['whitespace']">Password should be 8 character long and must contain at least one lowercase and one number.</span>
+                    *ngIf="loginForm.controls['password'].errors['minlength'] && !loginForm.controls['password'].errors['whitespace']">Password
+                    should be 8 character long and must contain at least one lowercase and one number.</span>
             </div>
         </div>
         <!-- captcha -->
@@ -88,8 +89,8 @@
             </div>
             <div class="quick-link">
                 <h3>Quick Links</h3>
-                <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
-                <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+                <a href="{{candidateURL}}" target="_blank">Candidate</a>
+                <a href="{{employerURL}}" target="_blank">Employer</a>
             </div>
             <div class="footer-media">
                 <h3>Find Us Online</h3>

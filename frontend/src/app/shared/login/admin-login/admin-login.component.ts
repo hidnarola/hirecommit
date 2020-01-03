@@ -20,13 +20,19 @@ export class AdminLoginComponent implements OnInit {
   role: any;
   siteKey = environment.captcha_site_key;
   isProd: Boolean = false;
-
+  isStaging: Boolean = false;
+  employerURL: String;
+  candidateURL: String;
+  mainURL: String;
   constructor(
     public router: Router,
     private service: CommonService,
     public fb: FormBuilder,
     private toastr: ToastrService
   ) {
+    this.employerURL = environment.employerURL;
+    this.candidateURL = environment.candidateURL;
+    this.mainURL = environment.mainURL;
     this.formData = {};
     this.loginForm = this.fb.group({
       email: new FormControl('', [Validators.required,
@@ -36,7 +42,7 @@ export class AdminLoginComponent implements OnInit {
     });
 
     this.isProd = environment.production;
-    console.log('this.isProd=>', this.isProd);
+    this.isStaging = environment.staging;
   }
   checkMail() {
     if (this.loginForm.value.email.length > 0) {
@@ -71,8 +77,8 @@ export class AdminLoginComponent implements OnInit {
 
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
 
-        if (this.isProd) {
-          window.location.href = `http://hirecommit.com/authorize?role=${this.role}&token=${token}`;
+        if (this.isProd || this.isStaging) {
+          window.location.href = environment.mainURL + `/authorize?role=${this.role}&token=${token}`;
           // if (this.role === 'admin') {
           //   // this.router.navigate(['admin']);
           //   window.location.href = 'http://hirecommit.com/admin/employers/approved_employer';
@@ -112,7 +118,6 @@ export class AdminLoginComponent implements OnInit {
           if (res['role'] !== 'admin') {
             this.service.profileData().then(resp => {
               this.profile = resp[0];
-              console.log('profile => ', this.profile);
               if (this.role === 'employer') {
                 this.router.navigate(['employer']);
               } else if (this.role === 'sub-employer') {
@@ -129,7 +134,6 @@ export class AdminLoginComponent implements OnInit {
         }
       }, (err) => {
         this.show_spinner = false;
-        console.log('err => ', err['error']['isApproved']);
         if (err['error']['isApproved'] === false) {
           Swal.fire(
             {

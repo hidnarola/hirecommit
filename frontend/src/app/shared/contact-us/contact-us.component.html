@@ -3,11 +3,11 @@
         <div class="d-flex">
             <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
             <div class="candidate-employer">
-                <a href="http://candidate.hirecommit.com">Candidate</a>
-                <a href="http://employer.hirecommit.com">Employer</a>
+                <a href="{{candidateURL}}">Candidate</a>
+                <a href="{{employerURL}}">Employer</a>
             </div>
             <div class="login-signup">
-                <a href="http://hirecommit.com/login">Login</a>
+                <a href="{{mainURL + '/login'}}">Login</a>
                 <span>-</span>
                 <!-- <a  href="http://hirecommit.com/candidate_register">Sign up</a>
                 <a *ngIf="isEmployer" href="http://hirecommit.com/emp_register">Sign up</a> -->
@@ -59,8 +59,8 @@
             </div>
             <div class="quick-link">
                 <h3>Quick Links</h3>
-                <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
-                <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+                <a href="{{candidateURL}}" target="_blank">Candidate</a>
+                <a href="{{employerURL}}" target="_blank">Employer</a>
             </div>
             <div class="footer-media">
                 <h3>Find Us Online</h3>

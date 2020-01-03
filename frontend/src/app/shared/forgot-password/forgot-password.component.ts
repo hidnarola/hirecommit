@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
@@ -18,6 +18,10 @@ export class ForgotPasswordComponent implements OnInit {
   isEmployer: Boolean = false;
   isCandidate: Boolean = false;
   isAdmin: Boolean = false;
+  employerURL: String;
+  candidateURL: String;
+  mainURL: String;
+
   hostName: any = '';
 
   constructor(
@@ -25,15 +29,19 @@ export class ForgotPasswordComponent implements OnInit {
     private service: CommonService,
     private toastr: ToastrService
   ) {
+    this.employerURL = environment.employerURL;
+    this.candidateURL = environment.candidateURL;
+    this.mainURL = environment.mainURL;
     this.formData = {};
     this.form = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email])
     });
 
     this.hostName = window.location.hostname;
-    if (this.hostName === 'employer.hirecommit.com') {
+
+    if (this.hostName === 'employer.hirecommit.com' || this.hostName === 'employer.tanubhasin.com') {
       this.isEmployer = true;
-    } else if (this.hostName === 'candidate.hirecommit.com') {
+    } else if (this.hostName === 'candidate.hirecommit.com' || this.hostName === 'candidate.tanubhasin.com') {
       this.isCandidate = true;
     } else {
       this.isAdmin = true;

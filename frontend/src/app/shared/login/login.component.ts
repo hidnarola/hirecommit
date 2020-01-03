@@ -181,15 +181,14 @@ export class LoginComponent implements OnInit {
   isAdmin: Boolean = false;
   hostName: any = '';
   isProd: Boolean = false;
-
+  isStaging: Boolean = false;
   constructor() {
     this.isProd = environment.production;
-    console.log('this.isProd=>', this.isProd);
-    console.log('window.location.hostname => ', window.location.hostname);
+    this.isStaging = environment.staging;
     this.hostName = window.location.hostname;
-    if (this.hostName === 'employer.hirecommit.com') {
+    if (this.hostName === 'employer.hirecommit.com' || this.hostName === 'employer.tanubhasin.com') {
       this.isEmployer = true;
-    } else if (this.hostName === 'candidate.hirecommit.com') {
+    } else if (this.hostName === 'candidate.hirecommit.com' || this.hostName === 'candidate.tanubhasin.com') {
       this.isCandidate = true;
     } else {
       this.isAdmin = true;

@@ -180,7 +180,7 @@ export class CommonService {
 }
 
 const ngbModalOptions: NgbModalOptions = {
-  backdrop: 'static',
-  keyboard: false,
-  centered: true
+  // backdrop: 'static',
+  // keyboard: false,
+  // centered: true
 };
