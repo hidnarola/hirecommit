@@ -1548,7 +1548,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       communication_array.push();
     }
 
-    // AdHoc Communication 
+    // AdHoc Communication
     const AdHOc_communication_array = [];
     if (this.AdHocCommunicationData.length > 0) {
       this.AdHocCommunicationData.forEach(element => {
