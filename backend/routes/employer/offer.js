@@ -1869,7 +1869,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     companyname = contact_name.data.companyname;
                 }
 
-                var message = await common_helper.findOne(MailContent, { 'mail_type': "offer_expiring" });
+                var message = await common_helper.findOne(MailContent, { 'mail_type': "before_joining" });
 
                 var upper_content = message.data.upper_content;
                 var middel_content = message.data.middel_content;
@@ -1877,7 +1877,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 upper_content = upper_content.replace('{employername}', employername).replace('{joiningdate}', moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY'));
 
-                let mail_resp = await mail_helper.send("candidate_has_joined", {
+                let mail_resp = await mail_helper.send("prior_to_joining_date", {
                     "to": resp.user_id.email,
                     "subject": "Your start date at " + `${employername}` + " is here!!!!"
                 }, {
