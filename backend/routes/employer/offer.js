@@ -1869,7 +1869,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                     companyname = contact_name.data.companyname;
                 }
 
-                var message = await common_helper.findOne(MailContent, { 'mail_type': "offer_expiring" });
+                var message = await common_helper.findOne(MailContent, { 'mail_type': "before_joining" });
 
                 var upper_content = message.data.upper_content;
                 var middel_content = message.data.middel_content;
@@ -1877,7 +1877,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 upper_content = upper_content.replace('{employername}', employername).replace('{joiningdate}', moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY'));
 
-                let mail_resp = await mail_helper.send("candidate_has_joined", {
+                let mail_resp = await mail_helper.send("prior_to_joining_date", {
                     "to": resp.user_id.email,
                     "subject": "Your start date at " + `${employername}` + " is here!!!!"
                 }, {
@@ -2824,7 +2824,7 @@ router.put('/', async (req, res) => {
         if (offer.data.status !== req.body.status) {
             obj.offer_id = offer_upadate.data._id;
             obj.employer_id = req.userInfo.id;
-            obj.message = `< span > { employer }</span > has ${req.body.status} this offer for <span>{candidate}</span>`
+            obj.message = `<span>{employer}</span> has ${req.body.status} this offer for <span>{candidate}</span>`
             var interest = await common_helper.insert(History, obj);
         }
 
@@ -2849,7 +2849,7 @@ router.put('/', async (req, res) => {
                 let middel_content = message.data.middel_content;
                 let lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace('{employername}', companyname).replace("{expirydate}", moment(offer.data.expirydate).startOf('day').format('DD/MM/YYYY'));
+                upper_content = upper_content.replace('{employername}', companyname).replace("{expirydate}", moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY'));
                 var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
                 var name = user_name.data.firstname;
 
