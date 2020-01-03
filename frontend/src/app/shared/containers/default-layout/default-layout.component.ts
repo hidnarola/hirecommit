@@ -28,6 +28,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   _profile_data: any = [];
   link: string;
   isProd: Boolean = false;
+  isStaging: Boolean = false;
   isEmployer: Boolean = false;
   isCandidate: Boolean = false;
   isAdmin: Boolean = false;
@@ -63,6 +64,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.link = '/admin/employers/approved_employer';
     }
     this.isProd = environment.production;
+    this.isStaging = environment.staging;
   }
 
   ngOnInit() {
@@ -120,16 +122,17 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     localStorage.removeItem('userid');
     localStorage.clear();
     // this.toastr.info('Please Login Again', 'Session Expired!');
-    if (this.isProd) {
+    if (this.isProd || this.isStaging) {
       if (this.userDetail.role === 'employer') {
-        window.location.href = 'http://employer.hirecommit.com/';
+        window.location.href = environment.employerURL;
       } else if (this.userDetail.role === 'sub-employer') {
-        window.location.href = 'http://employer.hirecommit.com/';
+        window.location.href = environment.employerURL;
       } else if (this.userDetail.role === 'candidate') {
-        window.location.href = 'http://candidate.hirecommit.com/';
+        window.location.href = environment.candidateURL;
       } else if (this.userDetail.role === 'admin') {
-        window.location.href = 'http://hirecommit.com/login';
+        window.location.href = environment.mainURL + '/login';
       }
+
     } else {
       this.router.navigate(['/login']);
     }

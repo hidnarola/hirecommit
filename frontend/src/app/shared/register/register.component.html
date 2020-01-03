@@ -4,7 +4,7 @@
       <div class="hirecommit-logo"><a href=""><img src="assets/img/new-logo.png" alt="" /></a></div>
       <div class="candidate-employer">
         <a class="active">Candidate</a>
-        <a href="http://employer.hirecommit.com">Employer</a>
+        <a href="{{employerURL}}">Employer</a>
       </div>
       <div class="login-signup">
         <!-- <a href="http://hirecommit.com/login">Login</a> -->
@@ -192,7 +192,8 @@
             </span>
           </div>
           <input type="text" class="form-control" placeholder="Document Number" formControlName="documentNumber"
-            [(ngModel)]="registerData.documentNumber" name="documentNumber" required="required" id="documentNumber" (blur)="checkDocumentNumber($event)">
+            [(ngModel)]="registerData.documentNumber" name="documentNumber" required="required" id="documentNumber"
+            (blur)="checkDocumentNumber($event)">
           <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid && isFormSubmitted">
             <span *ngIf="registerForm.controls['documentNumber'].errors['required']">
               This field is required.
@@ -201,9 +202,9 @@
           <div class="error" *ngIf="!registerForm.controls['documentNumber'].valid">
             <span *ngIf="registerForm.controls['documentNumber'].errors['invalid'] ">
               Please enter valid number</span>
-              <span *ngIf="registerForm.controls['documentNumber'].errors['isExist'] ">
-                This Document Number is already registered.
-              </span>
+            <span *ngIf="registerForm.controls['documentNumber'].errors['isExist'] ">
+              This Document Number is already registered.
+            </span>
           </div>
         </div>
       </div>
@@ -252,7 +253,7 @@
           <div class="error" *ngIf="!registerForm.controls['password'].valid">
             <span
               *ngIf="registerForm.controls['password'].errors['minlength'] || registerForm.controls['password'].errors['pattern'] || !registerForm.controls['password'].errors['whitespace']">
-            Password should be 8 character long and must contain at least one lowercase and one number.</span>
+              Password should be 8 character long and must contain at least one lowercase and one number.</span>
           </div>
         </div>
       </div>
@@ -308,12 +309,12 @@
         </div>
       </label>
     </div>
-   
-      <!-- <p *ngIf="!form.valid"></p> -->
-      <div *ngIf="!registerForm.valid && isFormSubmitted" class="error">
-        Please review fields with error and Submit again.
-      </div>
-      <div class="row">
+
+    <!-- <p *ngIf="!form.valid"></p> -->
+    <div *ngIf="!registerForm.valid && isFormSubmitted" class="error">
+      Please review fields with error and Submit again.
+    </div>
+    <div class="row">
       <div class="col-6">
         <button type="submit" [disabled]="show_spinner" class="btn btn-block btn-primary">Create Account <i
             *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
@@ -342,8 +343,8 @@
       </div>
       <div class="quick-link">
         <h3>Quick Links</h3>
-        <a href="http://candidate.hirecommit.com" target="_blank">Candidate</a>
-        <a href="http://employer.hirecommit.com" target="_blank">Employer</a>
+        <a href="{{candidateURL}}" target="_blank">Candidate</a>
+        <a href="{{employerURL}}" target="_blank">Employer</a>
       </div>
       <div class="footer-media">
         <h3>Find Us Online</h3>

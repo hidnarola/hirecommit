@@ -39,6 +39,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   panelTitle = 'Add';
   user_detail: any = {};
   candidate: any = [];
+  isValid = false;
   candidateList: any = [];
   groupForm: FormGroup;
   date: any;
@@ -413,7 +414,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // key up event for email
   findEmail(value) {
-    console.log('find email=======>');
     for (let index = 0; index < this.candidate.length; index++) {
       const element = this.candidate[index];
       if (value.target.value.toLowerCase() === element.user.email) {
@@ -995,6 +995,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           _array.push(new_customfield);
         });
         this.offer_data.customfieldItem = _array;
+
       },
       err => {
         console.log(err);
@@ -1219,11 +1220,16 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   getExpiryDate(e) {
     // if ((this.resData !== 'Accepted')){
+
     const date = new Date(e);
     const month = date.getMonth() + 1;
     this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
     this.max_date = this.form.value.expirydate;
-    console.log('this.max_date=>', this.form.value.expirydate);
+    if (this.is_Edit) {
+      if (this.form.value.joiningdate < this.form.value.expirydate) {
+        this.form.controls['joiningdate'].setErrors({ 'isGreater': true });
+      }
+    }
     // }
   }
 
@@ -1361,7 +1367,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // blur event of salary range
   onSalaryRangeBlur() {
-    if ((this.form.value.salarybracket_from > 0) && this.form.value.salarybracket_to > 0) {
+    if (this.form.value.salarybracket_from > 0 && this.form.value.salarybracket_to > 0) {
       this.form.controls['salarybracket_from'].setValidators(
         [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
       );
@@ -1516,15 +1522,24 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
-    console.log('this.form.value.group=>', this.form);
+    if (this.form.value.salarybracket == '' && this.form.value.salarybracket_from == '' && this.form.value.salarybracket_to == '') {
+      this.form.controls['salarybracket'].setValidators([Validators.required]);
+      this.form.controls['salarybracket_from'].setValidators([Validators.required]);
+      this.form.controls['salarybracket_to'].setValidators([Validators.required]);
+      this.updateValidation();
+      console.log('this.updateValidation()=>');
+
+    }
     this.is_submitted = true;
     // customised fields
     const _coustomisedFieldsArray = [];
     this.form.value.customfieldItem.forEach(element => {
-      _coustomisedFieldsArray.push({
-        key: element.key,
-        value: element.value
-      });
+      if (element.value) {
+        _coustomisedFieldsArray.push({
+          key: element.key,
+          value: element.value
+        });
+      }
     });
     // communication records
     const communication_array = [];
@@ -1613,7 +1628,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
     if (this.form.value.group && this.route.snapshot.data.title === 'Add') {
-      console.log('this.form.value.group=>', this.form.value);
       this.formData.append('groups', this.form.value.group);
     } else if (this.route.snapshot.data.title === 'Edit') {
       this.formData.append('groups', this.form.value.group !== undefined && this.form.value.group !== null &&

@@ -10,26 +10,47 @@ import { environment } from '../../../../environments/environment';
 export class LandingLayoutComponent implements OnInit {
   isEmployer: Boolean = false;
   isCandidate: Boolean = false;
+  is_Stagging_Employer: boolean = false;
+  is_Stagging_Candidate: boolean = false;
   hostName: any = '';
   isProd: Boolean = false;
+  isStaging: Boolean = false;
 
   constructor(public router: Router) {
     this.isProd = environment.production;
+    this.isStaging = environment.staging;
     console.log('window.location.hostname => ', window.location.hostname);
     this.hostName = window.location.hostname;
-    if (this.hostName === 'employer.hirecommit.com') {
+    // if (this.hostName === 'candidate.hirecommit.com') {
+    if (this.hostName === 'employer.hirecommit.com' || this.hostName === 'employer.tanubhasin.com') {
       this.isEmployer = true;
-    } else if (this.hostName === 'candidate.hirecommit.com') {
+    } else if (this.hostName === 'candidate.hirecommit.com' || this.hostName === 'candidate.tanubhasin.com') {
       this.isCandidate = true;
     } else {
-      if (this.isProd) {
-        window.location.href = 'http://candidate.hirecommit.com/';
+      if (this.isProd || this.isStaging) {
+        window.location.href = environment.candidateURL;
       } else {
         this.router.navigate(['/login']);
       }
     }
     // else if (this.hostName === 'candidate.hirecommit.com') {
     //   this.isCandidate = true;
+    // }
+    // } else {
+    //   if (this.hostName === 'employer.tanubhasin.com') {
+    //     this.isEmployer = true;
+    //   } else if (this.hostName === 'candidate.tanubhasin.com') {
+    //     this.isCandidate = true;
+    //   } else {
+    //     if (this.isProd) {
+    //       window.location.href = 'http://candidate.tanubhasin.com/';
+    //     } else {
+    //       this.router.navigate(['/login']);
+    //     }
+    //   }
+    //   // else if (this.hostName === 'candidate.hirecommit.com') {
+    //   //   this.isCandidate = true;
+    //   // }
     // }
   }
 

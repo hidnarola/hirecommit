@@ -169,7 +169,6 @@
                                         <label class="custom-control-label" for="hourly">Hourly</label>
                                     </div>
                                 </div>
-
                                 <div class="cust_err_msg" *ngIf="form_validation && !form.controls['salarytype'].valid">
                                     <span *ngIf="form.controls['salarytype'].errors['required']" class="text-danger">
                                         This field is required.
@@ -183,6 +182,13 @@
                                     formControlName="salarybracket" id="salarybracket" (blur)="onSalaryBlur()"
                                     (keyup)="CheckAst()">
 
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation &&  !form.controls['salarybracket'].valid">
+                                    <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
+
+                                </div>
 
                                 <div class="cust_err_msg" *ngIf="!form.controls['salarybracket'].valid">
                                     <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
@@ -200,6 +206,16 @@
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Range From"
                                     formControlName="salarybracket_from" id="salarybracket_from"
                                     (keyup)="checkFrom($event,salaryto.value)" #salaryfrom (blur)="onSalaryRangeBlur()">
+
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salarybracket_from'].valid">
+                                    <span *ngIf="form.controls['salarybracket_from'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+
+
+                                </div>
                                 <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_from'].valid">
                                     <span *ngIf="form.controls['salarybracket_from'].errors['required']"
                                         class="text-danger">
@@ -219,6 +235,17 @@
                                 <input type="number" min="1" class="form-control" placeholder="Enter Salary Range To"
                                     formControlName="salarybracket_to" id="salarybracket_to"
                                     (blur)="onSalaryRangeBlur()" #salaryto (keyup)="checkTo($event,salaryfrom.value)">
+
+                                <div class="cust_err_msg"
+                                    *ngIf="form_validation && !form.controls['salarybracket_to'].valid">
+                                    <span *ngIf="form.controls['salarybracket_to'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+
+
+                                </div>
+
                                 <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_to'].valid">
                                     <span *ngIf="form.controls['salarybracket_to'].errors['required']"
                                         class="text-danger">
@@ -289,6 +316,11 @@
                                         This field is required.
                                     </span>
                                 </div>
+                                <div class="cust_err_msg" *ngIf="!form.controls['joiningdate'].valid">
+                                    <span *ngIf="form.controls['joiningdate'].errors['isGreater']" class="text-danger">
+                                        Please select Joining date greater than Expiry date.
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="col-md-6 form-group">
@@ -310,21 +342,15 @@
                                         This field is required.
                                     </span>
                                 </div>
+
+
                             </div>
                             <div *ngIf="is_Edit" class="col-md-6 form-group">
                                 <label class="col-form-label" for="expirydate">Acceptance Date</label>
-                                <!-- <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
-                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    
-                                   >
-                                </p-calendar> -->
+
                                 <input type="text" class="form-control" placeholder="Date of Offer Acceptance"
                                     formControlName="acceptanceDate" id="acceptanceDate" disabled>
-                                <!-- <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
-                                    <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div> -->
+
                             </div>
                             <!-- </div>
                         <div class="row add-offer-form-part">
@@ -658,7 +684,7 @@
 
                                             </div>
                                             <div class="form row">
-                                                <div class="col-md-8">
+                                                <div class="col-md-9">
                                                     <label class="col-form-label" for="message">Message</label>
                                                     <div>
                                                         <!-- <ckeditor [editor]="Editor" formControlName="message"
@@ -683,7 +709,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4 bunch-list">
+                                                <div class="col-md-3 bunch-list">
                                                     <label class="col-form-label">Title here</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>
@@ -870,7 +896,7 @@
 
                                             </div>
                                             <div class="form row">
-                                                <div class="col-md-8">
+                                                <div class="col-md-9 pr-20">
                                                     <label class="col-form-label" for="AdHoc_message">Message</label>
                                                     <!-- [(ngModel)]="customfield.AdHoc_message"  -->
                                                     <div>
@@ -893,7 +919,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4 bunch-list">
+                                                <div class="col-md-3 bunch-list">
                                                     <label class="col-form-label">Title here</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>

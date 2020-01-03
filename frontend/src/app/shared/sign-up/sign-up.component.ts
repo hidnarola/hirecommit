@@ -26,6 +26,9 @@ export class SignUpComponent implements OnInit {
   alldata: any;
   Business_Type: any = [];
   show_spinner = false;
+  employerURL: String;
+  candidateURL: String;
+  mainURL: String;
   // local
   // siteKey = '6LeZgbkUAAAAAIft5rRxJ27ODXKzH_44jCRJtdPU';
   // live
@@ -40,6 +43,11 @@ export class SignUpComponent implements OnInit {
     public fb: FormBuilder,
     public toastr: ToastrService
   ) {
+
+    this.employerURL = environment.employerURL;
+    this.candidateURL = environment.candidateURL;
+    this.mainURL = environment.mainURL;
+
     this.formData = {};
     this.registerForm = this.fb.group({
       email: new FormControl('', [
@@ -174,7 +182,7 @@ export class SignUpComponent implements OnInit {
             type: 'success',
             text: res['message']
           });
-          window.location.href = 'https://employer.hirecommit.com/login';
+          window.location.href = environment.employerURL + '/login';
         }
       }, (err) => {
         this.show_spinner = false;

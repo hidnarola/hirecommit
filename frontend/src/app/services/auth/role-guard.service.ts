@@ -7,8 +7,10 @@ import { environment } from '../../../environments/environment';
 export class RoleGuardService implements CanActivate {
 
   isProd: Boolean = false;
+  isStaging: Boolean = false;
   constructor(public auth: AuthService, public router: Router) {
     this.isProd = environment.production;
+    this.isStaging = environment.staging;
   }
   canActivate(route: ActivatedRouteSnapshot): boolean {
     // this will be passed from the route config
@@ -32,18 +34,17 @@ export class RoleGuardService implements CanActivate {
     //   this.router.navigate(['/login']);
     //   return false;
     // }
-    console.log('expectedRole=================>', expectedRole);
     if (!token || (tokenPayload.role !== expectedRole)) {
       if (expectedRole) {
-        if (this.isProd) {
+        if (this.isProd || this.isStaging) {
           if (expectedRole === 'employer') {
-            window.location.href = 'http://employer.hirecommit.com/';
+            window.location.href = environment.employerURL;
           } else if (expectedRole === 'sub-employer') {
-            window.location.href = 'http://employer.hirecommit.com/';
+            window.location.href = environment.employerURL;
           } else if (expectedRole === 'candidate') {
-            window.location.href = 'http://candidate.hirecommit.com/';
+            window.location.href = environment.candidateURL;
           } else if (expectedRole === 'admin') {
-            window.location.href = 'http://hirecommit.com/login';
+            window.location.href = environment.mainURL + '/login';
           }
         } else {
           this.router.navigate(['/login']);
