@@ -289,7 +289,7 @@ router.post("/", async (req, res) => {
                     } else {
                         let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                             "to": user.data.email,
-                            "reply_to1": `${reply_to.data.email}`,
+                            // "reply_to1": `${reply_to.data.email}`,
                             "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
                             "subject": "Offer",
                             "trackid": interest_resp.data._id
@@ -2903,7 +2903,7 @@ router.put('/', async (req, res) => {
                 var reply_to = await common_helper.findOne(User, { "_id": offer_upadate.data.created_by });
                 let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                     "to": user_email.data.email,
-                    "reply_to1": `${reply_to.data.email}`,
+                    // "reply_to1": `${reply_to.data.email}`,
                     "reply_to2": `${offer_upadate.data._id}@em7977.hirecommit.com`,
                     "subject": "You have received job offer from " + `${companyname}`,
                     "trackid": offer_upadate.data._id
