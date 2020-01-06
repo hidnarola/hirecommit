@@ -551,6 +551,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 result.push(data);
                             }
 
+                            // console.log(' : resp.reply === false ==> ', resp.reply === false);
                             if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
 
                                 const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
@@ -591,6 +592,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
         }
         // var notOpeneddata = notOpened;
         setTimeout(async () => {
+            console.log(' : result1 ==> ', result1);
             if (valuesmail == result.length || valuesmail1 == result1.length) {
                 var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
                 // console.log(' :  valuesmail==> ', valuesmail);
@@ -758,10 +760,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
             ]
         )
 
+        // console.log(' : resp_data.length ==> ', resp_data.length);
+
         var current_date = moment().startOf('day')
         for (const resp of resp_data) {
-            console.log(resp._id);
-
+            // console.log(resp._id);
             if (resp.communication !== undefined && resp.communication.length > 0) {
                 for (const comm of resp.communication) {
                     if (comm.open === false) {
@@ -781,6 +784,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                         "empid": resp.employer_id
                                     }
                                     communication_notopen.push(data);
+                                    console.log(' communication_notopen ==>:  ==> ', communication_notopen);
                                 }
                             } else if (comm.priority === "Medium" && (resp.medium_unopened !== 0 || resp.medium_unopened !== null)) {
                                 var NotOpenDay = moment(offer_date).startOf('day').add(resp.medium_unopened, 'day')
@@ -1532,10 +1536,12 @@ cron.schedule('00 00 * * *', async (req, res) => {
         }
 
 
-        console.log(' : communication_notreply ==> ', communication_notreply); return false;
+        // console.log(' : communication_notreply ==> ', communication_notreply); return false;
         var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
 
         if (all_employer.status == 1) {
+            // console.log(' : communication_notopen.length ==> ', communication_notopen);
+            // console.log(' : adhoc_notopen.length ==> ', adhoc_notopen); return false;
             for (const filterdata of all_employer.data) {
                 if (communication_notopen.length > 0 || adhoc_notopen.length > 0) {
                     let filtered = communication_notopen.filter(r => r.empid.toString() === filterdata._id.toString())
@@ -1658,7 +1664,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
         console.log('error=> ', error.message);
     }
 });
-
 
 // offers mail
 cron.schedule('00 00 * * *', async (req, res) => {

@@ -44,7 +44,6 @@ var captcha_secret = config.captcha_secret
 // var captcha_secret = "6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK"
 
 
-
 //get user
 router.get("/user", async (req, res) => {
   try {
@@ -1634,8 +1633,8 @@ router.post('/email_opened', async (req, res) => {
           var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
           reqBody = [];
         } else {
-          console.log('Offer is already opened..! Or offer is deleted..!');
           reqBody = [];
+          console.log('Offer is already opened..! Or offer is deleted..!');
         }
       }
     } else {
