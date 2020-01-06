@@ -1632,8 +1632,10 @@ router.post('/email_opened', async (req, res) => {
         }
         if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
           var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
+          reqBody = [];
         } else {
           console.log('Offer is already opened..! Or offer is deleted..!');
+          reqBody = [];
         }
       }
     } else {
