@@ -667,7 +667,8 @@ router.post('/login', async (req, res) => {
       await request(verificationURL, async (error, response, body) => {
         body = JSON.parse(body);
         if (body.success !== undefined && !body.success) {
-          res.json({ "status": 0, "responseError": "Failed captcha verification" });
+          // res.json({ "status": 0, "responseError": "Failed captcha verification" });
+          res.status(config.BAD_REQUEST).json({ message: "Failed captcha verification" });
         }
         else {
           let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
