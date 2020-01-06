@@ -515,7 +515,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         console.log(' :  new_resp.error==> ', new_resp.error);
                     } else if (new_resp && new_resp.messages) {
                         for (const newresp of new_resp.messages) {
-                            //   console.log('new ress =>', newresp);
+                            // console.log('new ress =>', newresp);
                             var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
                             var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
                             var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
@@ -591,7 +591,6 @@ cron.schedule('00 00 * * *', async (req, res) => {
         }
         // var notOpeneddata = notOpened;
         setTimeout(async () => {
-
             if (valuesmail == result.length || valuesmail1 == result1.length) {
                 var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
                 // console.log(' :  valuesmail==> ', valuesmail);
