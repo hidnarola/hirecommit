@@ -114,9 +114,9 @@ router.put('/', async (req, res) => {
         if (req.body.contactno && req.body.contactno != "") {
             obj.contactno = req.body.contactno
         }
-        if (req.body.firstname && req.body.firstname != "") {
-            obj.firstname = req.body.firstname
-        }
+        // if (req.body.firstname && req.body.firstname != "") {
+        //     obj.firstname = req.body.firstname
+        // }
 
         var candidate = await common_helper.findOne(User, { "_id": req.body.id }, obj)
         if (candidate.data.email !== req.body.email.toLowerCase()) {
@@ -132,7 +132,7 @@ router.put('/', async (req, res) => {
         }
         else if (sub_account_upadate.status == 1) {
             if (candidate.data.email !== sub_account_upadate.data.email) {
-                var reset_token = Buffer.from(jwt.sign({ "_id": sub_account_upadate.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": sub_account_upadate.data._id, "role": "candidate" },
                     config.ACCESS_TOKEN_SECRET_KEY, {
                     expiresIn: 60 * 60 * 24 * 3
                 }

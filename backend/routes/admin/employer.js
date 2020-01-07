@@ -722,7 +722,7 @@ router.put('/sub_account/details', async (req, res) => {
                 let lower_content = message.data.lower_content;
                 upper_content = upper_content.replace("{email}", `${resp_user_data.data.email}`);
 
-                var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id, "role": "sub-employer" },
                     config.ACCESS_TOKEN_SECRET_KEY, {
                     expiresIn: 60 * 60 * 24 * 3
                 }
@@ -850,7 +850,7 @@ router.put('/update', async (req, res) => {
                     let lower_content = message.data.lower_content;
                     upper_content = upper_content.replace("{email}", `${employer_upadate.data.email}`);
 
-                    var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
+                    var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id, "role": "employer" },
                         config.ACCESS_TOKEN_SECRET_KEY, {
                         expiresIn: 60 * 60 * 24 * 3
                     }

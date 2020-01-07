@@ -72,7 +72,7 @@ router.put('/', async (req, res) => {
         }
         else if (employer_upadate.status == 1) {
             if (employer.data.email !== employer_upadate.data.email) {
-                var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": employer_upadate.data._id, "role": "employer" },
                     config.ACCESS_TOKEN_SECRET_KEY, {
                     expiresIn: 60 * 60 * 24 * 3
                 }

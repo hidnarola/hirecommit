@@ -82,7 +82,7 @@ router.post("/", async (req, res) => {
                         subemployerfirstname = name;
                     }
 
-                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id },
+                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id, "role": "sub-employer" },
                         config.ACCESS_TOKEN_SECRET_KEY, {
                         expiresIn: 60 * 60 * 24 * 3
                     }
@@ -265,7 +265,7 @@ router.put('/details', async (req, res) => {
                 let lower_content = message.data.lower_content;
                 upper_content = upper_content.replace("{email}", `${resp_user_data.data.email}`);
 
-                var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id, "role": "sub-employer" },
                     config.ACCESS_TOKEN_SECRET_KEY, {
                     expiresIn: 60 * 60 * 24 * 3
                 }

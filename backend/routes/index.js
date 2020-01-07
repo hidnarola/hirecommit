@@ -339,12 +339,13 @@ router.post("/candidate_register", async (req, res) => {
                       logger.debug("Error = ", interest_resp.error);
                       res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
                     } else {
-                      var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id },
+                      var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id, "role": "candidate" },
                         config.ACCESS_TOKEN_SECRET_KEY, {
                         expiresIn: 60 * 60 * 24 * 3
                       }
                       )).toString('base64');
 
+                      console.log(' : reset_token candidate ==> ', reset_token);
                       var time = new Date();
                       time.setMinutes(time.getMinutes() + 20);
                       time = btoa(time);
@@ -549,7 +550,7 @@ router.post("/employer_register", async (req, res) => {
                 };
                 var interest_resp = await common_helper.insert(Employer_Detail, reg_obj);
 
-                var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id, "role": "employer" },
                   config.ACCESS_TOKEN_SECRET_KEY, {
                   expiresIn: 60 * 60 * 24 * 3
                 }
@@ -1076,7 +1077,7 @@ router.post('/email_verify', async (req, res) => {
               var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
             }
 
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified", "role": decoded.role });
 
             if (user_resp.data.role_id == "5d9d98a93a0c78039c6dd00d") {
               var user_name = await common_helper.findOne(Employer_Detail, { 'user_id': user_resp.data._id });
