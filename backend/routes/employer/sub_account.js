@@ -69,10 +69,12 @@ router.post("/", async (req, res) => {
                 } else {
 
                     var employername = await common_helper.findOne(Employer_Detail, { "user_id": interest_resp.data.emp_id });
+
                     var message = await common_helper.findOne(MailType, { 'mail_type': 'sub_employer_email_confirmation' });
+
                     let upper_content = message.data.upper_content;
                     let lower_content = message.data.lower_content;
-                    upper_content = upper_content.replace("{employername}", `${employername.data.username}`);
+                    upper_content = upper_content.replace("{employername}", `${employername.data.companyname}`);
 
                     var name = req.body.username;
                     var subemployerfirstname = name.substring(0, name.lastIndexOf(" "));
@@ -80,7 +82,7 @@ router.post("/", async (req, res) => {
                         subemployerfirstname = name;
                     }
 
-                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id },
+                    var reset_token = Buffer.from(jwt.sign({ "_id": interest_resps.data._id, "role": "sub-employer" },
                         config.ACCESS_TOKEN_SECRET_KEY, {
                         expiresIn: 60 * 60 * 24 * 3
                     }
@@ -263,7 +265,7 @@ router.put('/details', async (req, res) => {
                 let lower_content = message.data.lower_content;
                 upper_content = upper_content.replace("{email}", `${resp_user_data.data.email}`);
 
-                var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": resp_user_data.data._id, "role": "sub-employer" },
                     config.ACCESS_TOKEN_SECRET_KEY, {
                     expiresIn: 60 * 60 * 24 * 3
                 }

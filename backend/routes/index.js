@@ -44,7 +44,6 @@ var captcha_secret = config.captcha_secret
 // var captcha_secret = "6LfCebwUAAAAAKbmzPwPxLn0DWi6S17S_WQRPvnK"
 
 
-
 //get user
 router.get("/user", async (req, res) => {
   try {
@@ -340,7 +339,7 @@ router.post("/candidate_register", async (req, res) => {
                       logger.debug("Error = ", interest_resp.error);
                       res.status(config.INTERNAL_SERVER_ERROR).json(interest_resp);
                     } else {
-                      var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id },
+                      var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp._id, "role": "candidate" },
                         config.ACCESS_TOKEN_SECRET_KEY, {
                         expiresIn: 60 * 60 * 24 * 3
                       }
@@ -497,6 +496,7 @@ router.post("/employer_register", async (req, res) => {
       }
     };
 
+    console.log(' : req.body ==> ', req.body);
     var validate = passwordValidatorSchema
       .is().min(8)
       // .symbols()	                                 // Minimum length 8
@@ -550,11 +550,13 @@ router.post("/employer_register", async (req, res) => {
                 };
                 var interest_resp = await common_helper.insert(Employer_Detail, reg_obj);
 
-                var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id },
+                var reset_token = Buffer.from(jwt.sign({ "_id": interest_user_resp.data._id, "role": "employer" },
                   config.ACCESS_TOKEN_SECRET_KEY, {
                   expiresIn: 60 * 60 * 24 * 3
                 }
                 )).toString('base64');
+
+                console.log(' : reset_token ==> ', reset_token);
 
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
@@ -668,7 +670,8 @@ router.post('/login', async (req, res) => {
       await request(verificationURL, async (error, response, body) => {
         body = JSON.parse(body);
         if (body.success !== undefined && !body.success) {
-          res.json({ "status": 0, "responseError": "Failed captcha verification" });
+          // res.json({ "status": 0, "responseError": "Failed captcha verification" });
+          res.status(config.BAD_REQUEST).json({ message: "Failed captcha verification" });
         }
         else {
           let user_resp = await User.findOne({ "email": req.body.email.toLowerCase(), is_register: true }).populate("role_id").lean();
@@ -1076,7 +1079,7 @@ router.post('/email_verify', async (req, res) => {
               var user_update_resp = await User.updateOne({ "_id": new ObjectId(user_resp.data._id) }, { $set: { "email_verified": true } });
             }
 
-            res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified" });
+            res.status(config.OK_STATUS).json({ "status": 1, "message": "Email has been verified", "role": decoded.role });
 
             if (user_resp.data.role_id == "5d9d98a93a0c78039c6dd00d") {
               var user_name = await common_helper.findOne(Employer_Detail, { 'user_id': user_resp.data._id });
@@ -1570,10 +1573,10 @@ router.post('/get_email', async (req, res) => {
 
 router.post('/email_opened', async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
     const reqBody = req.body[0];
     console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
-    console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
+    // console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
     if (reqBody.trackid && reqBody.trackid !== "") {
       var open_id = reqBody.trackid;
       var length = open_id.length;
@@ -1632,7 +1635,9 @@ router.post('/email_opened', async (req, res) => {
         }
         if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
           var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
+          reqBody = [];
         } else {
+          reqBody = [];
           console.log('Offer is already opened..! Or offer is deleted..!');
         }
       }

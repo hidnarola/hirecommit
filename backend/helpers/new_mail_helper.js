@@ -33,7 +33,7 @@ new_mail_helper.send = async (template_id, options, data) => {
                         "name": ""
                     }
                 ],
-                "cc": [{ "email": options.reply_to1 }],
+                // "cc": [{ "email": options.reply_to1 }],
                 "dynamic_template_data": {
                     "message": "",
                     "subject": data.subject,
