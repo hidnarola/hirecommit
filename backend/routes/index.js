@@ -345,7 +345,6 @@ router.post("/candidate_register", async (req, res) => {
                       }
                       )).toString('base64');
 
-                      console.log(' : reset_token candidate ==> ', reset_token);
                       var time = new Date();
                       time.setMinutes(time.getMinutes() + 20);
                       time = btoa(time);
@@ -497,6 +496,7 @@ router.post("/employer_register", async (req, res) => {
       }
     };
 
+    console.log(' : req.body ==> ', req.body);
     var validate = passwordValidatorSchema
       .is().min(8)
       // .symbols()	                                 // Minimum length 8
@@ -555,6 +555,8 @@ router.post("/employer_register", async (req, res) => {
                   expiresIn: 60 * 60 * 24 * 3
                 }
                 )).toString('base64');
+
+                console.log(' : reset_token ==> ', reset_token);
 
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
