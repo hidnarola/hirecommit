@@ -19,6 +19,8 @@ const async = require('async');
 const mail_helper = require('./../helpers/mail_helper');
 const Role = require('./../models/role');
 const User = require('./../models/user');
+const Employer_Landing_Page = require('./../models/employer_landing_page');
+const Candidate_Landing_Page = require('./../models/candidate_landing_page');
 const Candidate_Detail = require('./../models/candidate-detail');
 const Employer_Detail = require('./../models/employer-detail');
 const SubEmployer_Detail = require('./../models/sub-employer-detail');
@@ -1658,5 +1660,30 @@ router.get('/check_query', async (req, res) => {
   }
 })
 
+router.get('/employer_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Employer_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
+
+router.get('/candidate_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Candidate_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
 
 module.exports = router;
