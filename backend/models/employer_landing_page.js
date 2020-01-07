@@ -47,6 +47,7 @@ const EmployerLandingPageSchema = new Schema({
     },
     data_security: {
         hading_1: { type: String },
+        hading_2: { type: String },
         content_1: { type: String }
     },
     transparency: {
