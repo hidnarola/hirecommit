@@ -27,7 +27,7 @@ export const environment = {
   // imageUrl: str + host + ':' + port + '/upload/'
   // imageUrl: ' http://13.235.235.178' + '/upload/'
   imageUrl: 'https://hirecommit.com:3000/' + '/upload/',
-  employerURL: 'https://employer.hirecommit.com/',
-  candidateURL: 'https://candidate.hirecommit.com/',
+  employerURL: 'http://localhost:4200/',
+  candidateURL: 'http://localhost:4200/',
   mainURL: 'http://localhost:4200/'
 };

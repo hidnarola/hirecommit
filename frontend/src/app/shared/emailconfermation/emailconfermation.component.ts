@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../services/common.service';
-
+import { environment } from '../../../environments/environment'
 @Component({
   selector: 'app-emailconfermation',
   templateUrl: './emailconfermation.component.html',
@@ -26,7 +26,16 @@ export class EmailconfermationComponent implements OnInit {
     this.service.verify_email(this.params_token).subscribe(res => {
       if (res['status'] === 1) {
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-        this.router.navigate(['/login']);
+        if (res['role'] === 'candidate') {
+          window.location.href = environment.candidateURL + '/login';
+        } else if (res['role'] === 'employer') {
+          window.location.href = environment.employerURL + '/login';
+        } else if (res['role'] === 'sub-employer') {
+          window.location.href = environment.employerURL + '/login';
+        } else {
+          this.router.navigate(['/login']);
+        }
+
       }
     }, (err) => {
       this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });

@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { ReCaptcha2Component } from 'ngx-captcha';
 @Component({
   selector: 'app-employer-login',
   templateUrl: './employer-login.component.html',
   styleUrls: ['./employer-login.component.scss']
 })
 export class EmployerLoginComponent implements OnInit {
+  @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
   profile: any = {};
   loginForm: FormGroup;
   public isFormSubmitted;
@@ -66,6 +68,10 @@ export class EmployerLoginComponent implements OnInit {
       return isValid ? null : { 'whitespace': true };
     }
   }
+  reset(): void {
+    this.captchaElem.resetCaptcha();
+  }
+
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
@@ -111,7 +117,6 @@ export class EmployerLoginComponent implements OnInit {
 
       }, (err) => {
         this.show_spinner = false;
-        console.log('err here => ', err['error']['isApproved']);
         if (err['error']['isApproved'] === false) {
           Swal.fire(
             {
@@ -119,10 +124,12 @@ export class EmployerLoginComponent implements OnInit {
               text: err['error']['message']
             }
           );
+          this.reset();
         }
         else {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          this.reset();
         }
       });
 

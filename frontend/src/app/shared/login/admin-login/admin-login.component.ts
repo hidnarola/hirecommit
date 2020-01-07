@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment';
 import Swal from 'sweetalert2';
+import { ReCaptcha2Component } from 'ngx-captcha';
 @Component({
   selector: 'app-admin-login',
   templateUrl: './admin-login.component.html',
   styleUrls: ['./admin-login.component.scss']
 })
 export class AdminLoginComponent implements OnInit {
+  @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
   profile: any = {};
   loginForm: FormGroup;
   public isFormSubmitted;
@@ -24,11 +26,15 @@ export class AdminLoginComponent implements OnInit {
   employerURL: String;
   candidateURL: String;
   mainURL: String;
+  public captchaIsLoaded = false;
+  public captchaIsExpired = false;
+  public captchaResponse?: string;
   constructor(
     public router: Router,
     private service: CommonService,
     public fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {
     this.employerURL = environment.employerURL;
     this.candidateURL = environment.candidateURL;
@@ -65,11 +71,18 @@ export class AdminLoginComponent implements OnInit {
     }
   }
 
+  reset(): void {
+    this.captchaElem.resetCaptcha();
+  }
+
   onSubmit(valid) {
     this.isFormSubmitted = true;
     if (valid) {
       this.show_spinner = true;
       this.service.login(this.loginForm.value).subscribe(res => {
+        if (!res) {
+          this.show_spinner = false
+        }
         this.isFormSubmitted = false;
         this.formData = {};
         const token = res['token'];
@@ -141,12 +154,15 @@ export class AdminLoginComponent implements OnInit {
               text: err['error']['message']
             }
           );
+          this.reset();
         }
         else {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          this.reset();
         }
-      });
+      }
+      );
       //   this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       // });
     }

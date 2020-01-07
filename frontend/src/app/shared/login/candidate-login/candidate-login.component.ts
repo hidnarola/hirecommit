@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment';
+import { ReCaptcha2Component } from 'ngx-captcha';
 @Component({
   selector: 'app-candidate-login',
   templateUrl: './candidate-login.component.html',
   styleUrls: ['./candidate-login.component.scss']
 })
 export class CandidateLoginComponent implements OnInit {
-
+  @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
   profile: any = {};
   loginForm: FormGroup;
   public isFormSubmitted;
@@ -46,6 +47,10 @@ export class CandidateLoginComponent implements OnInit {
     });
 
   }
+  reset(): void {
+    this.captchaElem.resetCaptcha();
+  }
+
 
   checkMail() {
     if (this.loginForm.value.email.length > 0) {
@@ -75,7 +80,6 @@ export class CandidateLoginComponent implements OnInit {
     if (valid) {
       this.show_spinner = true;
       this.service.login(this.loginForm.value).subscribe(res => {
-        console.log('res for login => ', res);
         this.isFormSubmitted = false;
         this.formData = {};
         const token = res['token'];
@@ -123,9 +127,11 @@ export class CandidateLoginComponent implements OnInit {
               text: err['error']['message']
             }
           );
+          this.reset();
         } else {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          this.reset();
         }
       });
     }

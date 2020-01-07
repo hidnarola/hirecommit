@@ -69,6 +69,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   is_communication_added = false;
   cursorPos: any;
   d: any;
+  isSalaryBracket: Boolean = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -152,6 +153,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   is_submitted = false;
   accept_btn = false;
   isAcceptedView: any;
+  isSalaryFrom_To: Boolean = false;
   isCustomFieldView = false;
   astSalary = false;
   constructor(
@@ -178,9 +180,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       salarytype: new FormControl('', [Validators.required]),
       salaryduration: new FormControl(''),
       location: new FormControl('', [Validators.required]),
-      salarybracket: new FormControl(''),
-      salarybracket_from: new FormControl(''),
-      salarybracket_to: new FormControl(''),
+      salarybracket: new FormControl('', [Validators.required]),
+      salarybracket_from: new FormControl('', [Validators.required]),
+      salarybracket_to: new FormControl('', [Validators.required]),
       expirydate: new FormControl('', [Validators.required]),
       joiningdate: new FormControl('', [Validators.required]),
       status: new FormControl(),
@@ -573,15 +575,24 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               // this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
               this.form.controls['title'].disable();
+
               if (res[`data`][`salary`]) {
-                // this.form.controls['salarybracket'].disable();
+
+                this.form.controls['salarybracket_from'].setValidators(null);
+                this.form.controls['salarybracket_to'].setValidators(null);
                 document.getElementById('salarybracket').setAttribute('disabled', 'true');
+                this.updateValidation();
+
               } else if (res[`data`][`salary_from`] && res[`data`][`salary_to`]) {
-                // this.form.controls['salarybracket_from'].disable();
-                // this.form.controls['salarybracket_to'].disable();
+
+                this.form.controls['salarybracket'].setValidators(null);
                 document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
                 document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
+                this.updateValidation();
+
               }
+
+
               document.getElementById('expirydate').removeAttribute('disabled')
               this.disabled = true;
               // this.form.controls['offertype'].disable();
@@ -657,12 +668,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 }
 
                 this.communicationFieldItems.setControl(index, this.fb.group({
-                  communicationname: ['', Validators.required],
+                  communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
                   trigger: ['', Validators.required],
                   priority: ['', Validators.required],
                   day: ['', Validators.required],
-                  subject: ['', Validators.required],
-                  message: ['', Validators.required]
+                  subject: ['', [Validators.required, this.noWhitespaceValidator]],
+                  message: ['', [Validators.required, this.noWhitespaceValidator]]
                 }));
                 _communication_array.push(new_communication);
               });
@@ -729,12 +740,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                   };
                 }
                 this.AdHocCommunication.setControl(index, this.fb.group({
-                  AdHoc_communicationname: ['', Validators.required],
+                  AdHoc_communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
                   AdHoc_trigger: ['', Validators.required],
                   AdHoc_priority: ['', Validators.required],
                   AdHoc_day: ['', Validators.required],
-                  AdHoc_subject: ['', Validators.required],
-                  AdHoc_message: ['', Validators.required]
+                  AdHoc_subject: ['', [Validators.required, this.noWhitespaceValidator]],
+                  AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
                 }));
                 _Adhoc_communication_array.push(new_communication);
               });
@@ -756,32 +767,41 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             );
             this.form.controls['title'].setValue(res[`data`].title);
             this.form.controls.salarytype.setValue(res['data'].salarytype);
-            this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
+            if (res['data'].salarytype === 'annual') {
+              document.getElementById('salaryduration').setAttribute('disabled', 'true');
+            } else {
+              this.form.controls['salaryduration'].setValue(res[`data`].salaryduration);
+            }
             this.form.controls['location'].setValue(res[`data`]['location'][`_id`]);
             this.form.controls['expirydate'].setValue(new Date(res[`data`].expirydate));
             this.form.controls['joiningdate'].setValue(new Date(res[`data`].joiningdate));
             this.form.controls['offertype'].setValue(res[`data`].offertype);
+
             if (res['data'].acceptedAt) {
               this.form.controls['acceptanceDate'].setValue(moment(new Date(res['data'].acceptedAt)).format('DD/MM/YYYY'));
             } else {
               this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
             }// this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
+
+
             this.form.controls['notes'].setValue(res[`data`].notes);
             this.form.controls['offerStatus']
               .setValue({ label: `${res[`data`][`status`]}`, value: `${res[`data`][`status`]}` });
+
             if (res[`data`].salary) {
               this.form.controls['salarybracket'].setValue(res[`data`].salary);
               document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
               document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
-              this.form.controls['salarybracket_from'].setErrors(null);
-              this.form.controls['salarybracket_to'].setErrors(null);
+              this.form.controls['salarybracket_from'].setValidators(null);
+              this.form.controls['salarybracket_to'].setValidators(null);
               this.updateValidation();
             }
+
             if (res[`data`].salary_from && res[`data`].salary_to) {
               this.form.controls['salarybracket_from'].setValue(res[`data`].salary_from);
               this.form.controls['salarybracket_to'].setValue(res[`data`].salary_to);
               document.getElementById('salarybracket').setAttribute('disabled', 'true');
-              this.form.controls['salarybracket'].setErrors(null);
+              this.form.controls['salarybracket'].setValidators(null);
               this.updateValidation();
             }
             // if (res['data'].groups) {
@@ -1066,9 +1086,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // On change of group
   groupChange(e) {
-    console.log('e.value=>', e.value);
-    console.log('this.form=>', this.form.controls.communicationFieldItems['controls']);
     if (e.value) {
+      if (this.form.value.salarybracket) {
+        this.form.controls['salarybracket_from'].setValidators(null);
+        this.form.controls['salarybracket_to'].setValidators(null);
+        this.updateValidation();
+      }
+      else if (this.form.value.salarybracket_from && this.form.value.salarybracket_to) {
+        this.form.controls['salarybracket'].setValidators(null);
+        this.updateValidation();
+      }
+
       this.Groupservice.get_detail(e.value).subscribe(res => {
         this.getGroupDetails = true;
         this.isSetCommunication = true;
@@ -1101,7 +1129,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               trigger: ['', Validators.required],
               priority: ['', Validators.required],
               day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
-              subject: ['', Validators.required],
+              subject: ['', [Validators.required, , this.noWhitespaceValidator]],
               message: ['', [Validators.required, this.noWhitespaceValidator]]
               // message: ['', Validators.required]
             }));
@@ -1305,7 +1333,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       AdHoc_trigger: ['', Validators.required],
       AdHoc_priority: ['', Validators.required],
       AdHoc_day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
-      AdHoc_subject: ['', Validators.required],
+      AdHoc_subject: ['', [Validators.required, this.noWhitespaceValidator]],
       AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
     }));
     this.AdHocCommunicationData.push(new_communication);
@@ -1348,39 +1376,73 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // blur event for salary input
   onSalaryBlur() {
     if (this.form.value.salarybracket > 0) {
+      this.isSalaryBracket = false;
+      this.isSalaryFrom_To = true;
       this.astSalary = true;
       this.ast = false;
       this.form.controls['salarybracket'].setValue(parseFloat(this.form.value.salarybracket));
-      this.form.controls['salarybracket'].setValidators([Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
+      this.form.controls['salarybracket'].setValidators([Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
 
       document.getElementById('salarybracket_to').setAttribute('disabled', 'true');
       document.getElementById('salarybracket_from').setAttribute('disabled', 'true');
+      this.form.controls.salarybracket_from.setValue('');
+      this.form.controls.salarybracket_to.setValue('');
       this.form.controls['salarybracket_from'].setErrors(null);
       this.form.controls['salarybracket_to'].setErrors(null);
       this.updateValidation();
-    } else {
-      // this.ast = false;
+    }
+    else {
+      // if (this.form.value.salarybracket == '') {
+      // this.isSalaryBracket = true;
+      // this.isSalaryFrom_To = false;
       document.getElementById('salarybracket_to').removeAttribute('disabled');
       document.getElementById('salarybracket_from').removeAttribute('disabled');
+
+      // } else {
+      this.isSalaryBracket = true;
+      this.isSalaryFrom_To = false;
+      this.form.controls['salarybracket'].setValidators([Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
+      this.updateValidation();
+      // this.ast = false;
+      // this.form.controls['salarybracket'].setValidators([Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
+      // }
     }
   }
 
   // blur event of salary range
   onSalaryRangeBlur() {
+    this.isSalaryFrom_To = false;
+    this.isSalaryBracket = true;
     if (this.form.value.salarybracket_from > 0 && this.form.value.salarybracket_to > 0) {
       this.form.controls['salarybracket_from'].setValidators(
-        [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
+        [Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
       );
       this.form.controls['salarybracket_to'].setValidators(
-        [Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
+        [Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
       );
       this.form.controls['salarybracket_from'].setValue(parseFloat(this.form.value.salarybracket_from));
       this.form.controls['salarybracket_to'].setValue(parseFloat(this.form.value.salarybracket_to));
       document.getElementById('salarybracket').setAttribute('disabled', 'true');
+      this.form.controls.salarybracket.setValue('');
       this.form.controls['salarybracket'].setErrors(null);
       this.updateValidation();
     } else {
+      this.isSalaryFrom_To = true;
+      this.isSalaryBracket = false;
+      // if (this.form.value.salarybracket_to == '' && this.form.value.salarybracket_from == '') {
       document.getElementById('salarybracket').removeAttribute('disabled');
+      // } else {
+      this.isSalaryFrom_To = true;
+      this.isSalaryBracket = false;
+      this.form.controls['salarybracket_from'].setValidators(
+        [Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
+      );
+      this.form.controls['salarybracket_to'].setValidators(
+        [Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]
+      );
+      this.updateValidation();
+      // }
+
       // this.form.controls['salarybracket'].setErrors(Validators.required);
     }
   }
@@ -1424,6 +1486,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   noWhitespaceValidator(control: FormControl) {
+    console.log('control=>', control.value);
+
     if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
       const isWhitespace = (control.value || '').trim().length === 0;
       const isValid = !isWhitespace;
@@ -1522,14 +1586,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   // submit offers
   onSubmit(flag) {
-    if (this.form.value.salarybracket == '' && this.form.value.salarybracket_from == '' && this.form.value.salarybracket_to == '') {
-      this.form.controls['salarybracket'].setValidators([Validators.required]);
-      this.form.controls['salarybracket_from'].setValidators([Validators.required]);
-      this.form.controls['salarybracket_to'].setValidators([Validators.required]);
-      this.updateValidation();
-      console.log('this.updateValidation()=>');
+    console.log('this.form=>', this.form);
 
-    }
     this.is_submitted = true;
     // customised fields
     const _coustomisedFieldsArray = [];
@@ -1635,6 +1693,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
 
     if (flag) {
+
       this.show_spinner = true;
       if (this.route.snapshot.data.title === 'Edit') {
 
