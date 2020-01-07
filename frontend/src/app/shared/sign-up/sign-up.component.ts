@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import Stepper from 'bs-stepper';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
+import { ReCaptcha2Component } from 'ngx-captcha';
 
 @Component({
   selector: 'app-sign-up',
@@ -13,6 +14,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit {
+  @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
   registerForm: FormGroup;
   protected aFormGroup: FormGroup;
   public isFormSubmitted;
@@ -163,6 +165,10 @@ export class SignUpComponent implements OnInit {
     this.marked = e;
     // this.isChecked = e;
   }
+  reset(): void {
+    this.captchaElem.resetCaptcha();
+  }
+
   onSubmit(valid) {
     this.is_submitted = true;
     this.isFormSubmitted = true;
@@ -186,7 +192,8 @@ export class SignUpComponent implements OnInit {
         }
       }, (err) => {
         this.show_spinner = false;
-        this.toastr.error(err['error'].message, 'Error!', { timeOut: 9000 });
+        this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });
+        this.reset();
       });
     } else {
       this.show_spinner = false;

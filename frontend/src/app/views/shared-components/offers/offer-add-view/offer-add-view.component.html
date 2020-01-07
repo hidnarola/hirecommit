@@ -183,21 +183,20 @@
                                     (keyup)="CheckAst()">
 
                                 <div class="cust_err_msg"
-                                    *ngIf="form_validation &&  !form.controls['salarybracket'].valid">
+                                    *ngIf="((form_validation || isSalaryBracket) && !form.controls['salarybracket'].valid)">
                                     <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
                                         This field is required.
                                     </span>
-
-                                </div>
-
-                                <div class="cust_err_msg" *ngIf="!form.controls['salarybracket'].valid">
-                                    <span *ngIf="form.controls['salarybracket'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                    <span
-                                        *ngIf="form.controls['salarybracket'].errors['pattern'] || !form.controls['salarybracket'].errors['required']"
+                                    <span *ngIf="form.controls['salarybracket'].errors['pattern']"
                                         class="text-danger">Enter valid value.</span>
                                 </div>
+
+                                <!-- <div class="cust_err_msg"
+                                    *ngIf="isSalaryBracket && !form.controls['salarybracket'].valid">
+
+                                    <span *ngIf="form.controls['salarybracket'].errors['pattern']"
+                                        class="text-danger">Enter valid value.</span>
+                                </div> -->
 
                             </div>
                             <div class="col-md-6 form-group">
@@ -208,15 +207,7 @@
                                     (keyup)="checkFrom($event,salaryto.value)" #salaryfrom (blur)="onSalaryRangeBlur()">
 
                                 <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket_from'].valid">
-                                    <span *ngIf="form.controls['salarybracket_from'].errors['required']"
-                                        class="text-danger">
-                                        This field is required.
-                                    </span>
-
-
-                                </div>
-                                <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_from'].valid">
+                                    *ngIf="(form_validation || isSalaryFrom_To)  && !form.controls['salarybracket_from'].valid">
                                     <span *ngIf="form.controls['salarybracket_from'].errors['required']"
                                         class="text-danger">
                                         This field is required.
@@ -226,6 +217,16 @@
                                         class="text-danger">Enter valid value.</span>
 
                                 </div>
+                                <!-- <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_from'].valid">
+                                    <span *ngIf="form.controls['salarybracket_from'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                    <span
+                                        *ngIf="form.controls['salarybracket_from'].errors['pattern'] || !form.controls['salarybracket_from'].errors['required']"
+                                        class="text-danger">Enter valid value.</span>
+
+                                </div> -->
                                 <span *ngIf="error" class="text-danger">{{err_from}}</span>
                                 <!-- {{error_msg1}} -->
                             </div>
@@ -237,16 +238,7 @@
                                     (blur)="onSalaryRangeBlur()" #salaryto (keyup)="checkTo($event,salaryfrom.value)">
 
                                 <div class="cust_err_msg"
-                                    *ngIf="form_validation && !form.controls['salarybracket_to'].valid">
-                                    <span *ngIf="form.controls['salarybracket_to'].errors['required']"
-                                        class="text-danger">
-                                        This field is required.
-                                    </span>
-
-
-                                </div>
-
-                                <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_to'].valid">
+                                    *ngIf="(form_validation || isSalaryFrom_To) && !form.controls['salarybracket_to'].valid">
                                     <span *ngIf="form.controls['salarybracket_to'].errors['required']"
                                         class="text-danger">
                                         This field is required.
@@ -256,6 +248,17 @@
                                         class="text-danger">Enter valid value.</span>
 
                                 </div>
+
+                                <!-- <div class="cust_err_msg" *ngIf="!form.controls['salarybracket_to'].valid">
+                                    <span *ngIf="form.controls['salarybracket_to'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                    <span
+                                        *ngIf="form.controls['salarybracket_to'].errors['pattern'] || !form.controls['salarybracket_to'].errors['required']"
+                                        class="text-danger">Enter valid value.</span>
+
+                                </div> -->
                                 <span *ngIf="error" class="text-danger">{{err_to}}</span>
                                 <!-- {{error_msg}} -->
                             </div>
@@ -566,7 +569,7 @@
                                                     </label>
                                                     <div class="col-md-7 no-gutters">
                                                         <input type="text" *ngIf="offerExpired" class="form-control"
-                                                            placeholder="Enter name" formControlName="communicationname"
+                                                            placeholder="Enter Name" formControlName="communicationname"
                                                             id="communicationname"
                                                             [(ngModel)]="customfield.communicationname" disabled>
 
@@ -625,6 +628,14 @@
                                                             placeholder="Select Trigger" id="trigger" id="trigger"
                                                             [(ngModel)]="customfield.trigger" [disabled]="offerExpired">
                                                         </p-dropdown>
+                                                        <div class="cust_err_msg"
+                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['trigger'].valid">
+                                                            <span
+                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['trigger'].errors['required']"
+                                                                class="text-danger">
+                                                                This field is required.
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 row no-gutters">
@@ -669,7 +680,7 @@
                                                             id="subject" [(ngModel)]="customfield.subject" disabled>
 
                                                         <input type="text" *ngIf="!offerExpired" class="form-control"
-                                                            placeholder="Enter name" formControlName="subject"
+                                                            placeholder="Enter Subject" formControlName="subject"
                                                             id="subject" [(ngModel)]="customfield.subject">
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['subject'].valid">
@@ -759,7 +770,7 @@
                                                     <!-- [(ngModel)]="customfield.communicationname" -->
                                                     <div class="col-md-7 no-gutters">
                                                         <input type="text" *ngIf="offerExpired" class="form-control"
-                                                            placeholder="Enter name"
+                                                            placeholder="Enter Name"
                                                             formControlName="AdHoc_communicationname"
                                                             id="AdHoc_communicationname"
                                                             [(ngModel)]="customfield.AdHoc_communicationname" disabled>
@@ -769,10 +780,11 @@
                                                             formControlName="AdHoc_communicationname"
                                                             id="AdHoc_communicationname"
                                                             [(ngModel)]="customfield.AdHoc_communicationname">
+
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_communicationname'].valid">
                                                             <span
-                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_communicationname'].errors['required'] || form.controls['AdHocCommunication'].controls[i].controls['communicationname'].errors['whitespace']"
+                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_communicationname'].errors['required'] || form.controls['AdHocCommunication'].controls[i].controls['AdHoc_communicationname'].errors['whitespace']"
                                                                 class="text-danger">
                                                                 This field is required.
                                                             </span>
@@ -884,9 +896,9 @@
                                                             id="AdHoc_subject" [(ngModel)]="customfield.AdHoc_subject">
 
                                                         <div class="cust_err_msg"
-                                                            *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].valid">
+                                                            *ngIf="form_validation && !form.controls['AdHocCommunication'].controls[i].controls['AdHoc_subject'].valid">
                                                             <span
-                                                                *ngIf="form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].errors['required'] || form.controls['communicationFieldItems'].controls[i].controls['AdHoc_subject'].errors['whitespace']"
+                                                                *ngIf="form.controls['AdHocCommunication'].controls[i].controls['AdHoc_subject'].errors['required'] || form.controls['AdHocCommunication'].controls[i].controls['AdHoc_subject'].errors['whitespace']"
                                                                 class="text-danger">
                                                                 This field is required.
                                                             </span>
@@ -1010,11 +1022,11 @@
                             <strong>Salary</strong>
                             <p>{{resData.salary}}</p>
                         </div>
-                        <div class="col-md-6 detail-label lbl" *ngIf="resData.salary_from">
+                        <div class="col-md-6" *ngIf="resData.salary_from">
                             <strong>Salary From</strong>
                             <p>{{resData.salary_from}}</p>
                         </div>
-                        <div class="col-md-6 detail-label lbl" *ngIf="resData.salary_to">
+                        <div class="col-md-6" *ngIf="resData.salary_to">
                             <strong>Salary To</strong>
                             <p>{{resData.salary_to}}</p>
                         </div>
