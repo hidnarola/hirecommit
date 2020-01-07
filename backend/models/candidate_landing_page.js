@@ -8,34 +8,34 @@ const CandidateLandingPageSchema = new Schema({
         content_2: { type: String }
     },
     signup_for_free: {
-        hading_1: { type: String },
+        heading_1: { type: String },
         content_1: { type: String }
     },
     receive_offers: {
-        hading_1: { type: String },
+        heading_1: { type: String },
         content_1: { type: String }
     },
     accept_offer: {
-        hading_1: { type: String },
+        heading_1: { type: String },
         content_1: { type: String }
     },
     join_company: {
-        hading_1: { type: String },
+        heading_1: { type: String },
         content_1: { type: String }
     },
     data_security: {
-        hading_1: { type: String },
+        heading_1: { type: String },
         content_1: { type: String }
     },
     transparency: {
-        hading_1: { type: String },
-        hading_2: { type: String },
+        heading_1: { type: String },
+        heading_2: { type: String },
         content_1: { type: String },
         content_2: { type: String }
     },
     support_identity: {
-        hading_1: { type: String },
-        hading_2: { type: String },
+        heading_1: { type: String },
+        heading_2: { type: String },
         content_1: { type: String }
     },
     is_del: {
