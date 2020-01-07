@@ -496,7 +496,7 @@ router.post("/employer_register", async (req, res) => {
       }
     };
 
-    console.log(' : req.body ==> ', req.body);
+    // console.log(' : req.body ==> ', req.body);
     var validate = passwordValidatorSchema
       .is().min(8)
       // .symbols()	                                 // Minimum length 8
@@ -571,9 +571,7 @@ router.post("/employer_register", async (req, res) => {
                 if (employerfirstname === "") {
                   employerfirstname = name;
                 }
-                console.log(' : config.WEBSITE_URL ==> ', config.WEBSITE_URL);
-                console.log(' : config.SENDGRID_USER ==> ', config.SENDGRID_USER);
-                console.log(' : config.SENDGRID_PASSWORD ==> ', config.SENDGRID_PASSWORD);
+
                 let mail_resp = await mail_helper.send("email_confirmation_template", {
                   "to": interest_user_resp.data.email,
                   "subject": "Welcome to HireCommit | Verify Email"
