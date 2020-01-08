@@ -1879,11 +1879,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
                 var middel_content = message.data.middel_content;
                 var lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace('{employername}', employername).replace('{joiningdate}', moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY'));
+                upper_content = upper_content.replace('{employername}', companyname).replace('{joiningdate}', moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY'));
 
                 let mail_resp = await mail_helper.send("prior_to_joining_date", {
                     "to": resp.user_id.email,
-                    "subject": "Your start date at " + `${employername}` + " is here!!!!"
+                    "subject": "Your start date at " + `${companyname}` + " is here!!!!"
                 }, {
                     "name": resp.candidate.firstname,
                     "upper_content": upper_content,
