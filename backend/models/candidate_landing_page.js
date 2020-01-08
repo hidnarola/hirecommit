@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 // Create Schema
 const CandidateLandingPageSchema = new Schema({
     header_bluepart: {
+        main_heading_1: { type: String },
+        main_heading_2: { type: String },
         content_1: { type: String },
         content_2: { type: String }
     },

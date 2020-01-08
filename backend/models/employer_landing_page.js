@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 // Create Schema
 const EmployerLandingPageSchema = new Schema({
     header_bluepart: {
+        main_heading_1: { type: String },
+        main_heading_2: { type: String },
+        main_heading_3: { type: String },
+        main_heading_4: { type: String },
         content_1: { type: String },
         content_2: { type: String }
     },
