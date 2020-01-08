@@ -565,7 +565,7 @@ router.post("/employer_register", async (req, res) => {
                 var upper_content = message.data.upper_content;
                 var lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace("{employername}", `${interest_resp.data.username} `);
+                upper_content = upper_content.replace("{employername}", `${interest_resp.data.companyname} `);
 
                 var name = interest_resp.data.username;
                 var employerfirstname = name.substring(0, name.lastIndexOf(" "));
@@ -587,7 +587,6 @@ router.post("/employer_register", async (req, res) => {
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                 } else {
-
                   res.json({ "message": "Employer Registration Successful, Confirmation mail send to your email", "data": interest_user_resp })
                 }
               } else {

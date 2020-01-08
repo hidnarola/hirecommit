@@ -2718,18 +2718,18 @@ router.put('/', async (req, res) => {
             obj.groups = req.body.groups
         }
 
-        // if (req.body.high_unopened && req.body.high_unopened != "") {
-        obj.high_unopened = req.body.high_unopened
-        // }
-        // if (req.body.high_notreplied && req.body.high_notreplied != "") {
-        obj.high_notreplied = req.body.high_notreplied
-        // }
-        // if (req.body.medium_unopened && req.body.medium_unopened != "") {
-        obj.medium_unopened = req.body.medium_unopened
-        // }
-        // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
-        obj.medium_notreplied = req.body.medium_notreplied
-        // }
+        if (req.body.high_unopened && req.body.high_unopened != "") {
+            obj.high_unopened = req.body.high_unopened
+        }
+        if (req.body.high_notreplied && req.body.high_notreplied != "") {
+            obj.high_notreplied = req.body.high_notreplied
+        }
+        if (req.body.medium_unopened && req.body.medium_unopened != "") {
+            obj.medium_unopened = req.body.medium_unopened
+        }
+        if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+            obj.medium_notreplied = req.body.medium_notreplied
+        }
 
         if (req.body.title && req.body.title != "") {
             obj.title = req.body.title

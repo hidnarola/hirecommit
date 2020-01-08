@@ -15,19 +15,19 @@ const GroupSchema = new Schema({
   },
   high_unopened: {
     type: Number,
-    // required: true
+    required: true
   },
   high_notreplied: {
     type: Number,
-    // required: true
+    required: true
   },
   medium_unopened: {
     type: Number,
-    // required: true
+    required: true
   },
   medium_notreplied: {
     type: Number,
-    // required: true
+    required: true
   },
   // low_unopened: {
   //   type: Number,

@@ -211,23 +211,32 @@ router.put('/', async (req, res) => {
         if (req.body.subject && req.body.subject != "") {
             obj.subject = req.body.subject
         }
-        // if (req.body.high_unopened && req.body.high_unopened != "") {
-        obj.high_unopened = req.body.high_unopened
-        // }
-        // if (req.body.high_notreplied && req.body.high_notreplied != "") {
-        obj.high_notreplied = req.body.high_notreplied
-        // }
-        // if (req.body.medium_unopened && req.body.medium_unopened != "") {
-        obj.medium_unopened = req.body.medium_unopened
-        // }
-        // if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
-        obj.medium_notreplied = req.body.medium_notreplied
-        // }
 
+        if (req.body.data && JSON.parse(req.body.data).length <= 0) {
+            obj.flag = "draft"
+        }
 
+        if (req.body.data && JSON.parse(req.body.data).length > 0) {
+            obj.flag = "undraft"
+        }
+
+        if (req.body.high_unopened && req.body.high_unopened != "") {
+            obj.high_unopened = req.body.high_unopened
+        }
+
+        if (req.body.high_notreplied && req.body.high_notreplied != "") {
+            obj.high_notreplied = req.body.high_notreplied
+        }
+
+        if (req.body.medium_unopened && req.body.medium_unopened != "") {
+            obj.medium_unopened = req.body.medium_unopened
+        }
+
+        if (req.body.medium_notreplied && req.body.medium_notreplied != "") {
+            obj.medium_notreplied = req.body.medium_notreplied
+        }
 
         var id = req.body.id;
-
 
         var user = await common_helper.findOne(User, { _id: new ObjectId(req.userInfo.id) })
 
@@ -251,12 +260,13 @@ router.put('/', async (req, res) => {
             name: RE, "emp_id": new ObjectId(user_id), _id: { $ne: new ObjectId(id) }
         })
 
-        // console.log(' : exist_group ==> ', exist_group)
+
+        // console.log(' : exist_group ==> ', exist_group.status)
         if (exist_group.status == 2) {
+            // console.log(' : obj ==> ', obj);
             var group_upadate = await common_helper.update(group, { "_id": new ObjectId(id) }, obj)
 
             const reqData = req.body.data;
-
             const grp_data = {
                 group_id: req.body.id,
                 communication: JSON.parse(reqData)
@@ -264,19 +274,18 @@ router.put('/', async (req, res) => {
             var find_communication = await common_helper.findOne(GroupDetail, { "group_id": req.body.id })
             if (find_communication.status == 1) {
                 var response = await common_helper.update(GroupDetail, { "group_id": req.body.id }, grp_data);
-                var obj = {
-                    flag: "undraft"
-                }
-                var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
+                // var obj = {
+                //     flag: "undraft"
+                // }
+                // var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
             }
             else {
                 var response = await common_helper.insert(GroupDetail, grp_data);
-                var obj = {
-                    flag: "undraft"
-                }
-                var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
+                // var obj = {
+                //     flag: "undraft"
+                // }
+                // var responses = await common_helper.update(group, { "_id": (req.body.id) }, obj);
             }
-
 
             if (group_upadate.status == 0) {
                 res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "No data found" });
@@ -522,8 +531,6 @@ router.put("/deactivate_communication/:id", async (req, res) => {
     }
 });
 
-
-
 router.get('/commit_status/:id', async (req, res) => {
     try {
         var group_details = await common_helper.find(GroupDetail, { "communication.is_del": false, group_id: new ObjectId(req.params.id) });
@@ -556,5 +563,7 @@ router.get('/commit_status/:id', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
+
+
 
 module.exports = router;
