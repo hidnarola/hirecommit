@@ -143,7 +143,7 @@ router.put('/', async (req, res) => {
                 time = btoa(time);
                 var message = await common_helper.findOne(MailType, { 'mail_type': 'updated_email_verification' });
                 let upper_content = message.data.upper_content;
-                let lower_content = message.data.lower;
+                let lower_content = message.data.lower_content;
 
                 upper_content = upper_content.replace("{email}", `${sub_account_upadate.data.email}`);
 

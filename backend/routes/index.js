@@ -32,6 +32,7 @@ const Offer = require('./../models/offer');
 const RepliedMail = require('./../models/replied_mail');
 const MailType = require('./../models/mail_content');
 const new_mail_helper = require('./../helpers/new_mail_helper');
+const test_mail_helper = require('./../helpers/testmail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
 const Group = require('./../models/group');
@@ -1410,20 +1411,20 @@ router.post('/match_old_password', async (req, res) => {
 
 router.post('/test_mail', async (req, res) => {
   try {
-    var content = req.body.content;
-
-    var trackid = req.body.trackid;
-
+    var message = "welcome";
+    var content = "<img style='width:1px; height:1px;' src='https://hirecommit.com:3000/user'/>";
+    var trackid = "test001";
     var obj = {
-      "trackid": content,
-      "content": trackid
+      "trackid": trackid,
+      "message": message,
+      "content": content
     }
 
 
 
-    let mail_resp = await new_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+    let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
       "to": req.body.email,
-      "reply_to": req.body.reply_to,
+      "reply_to": "vishalkanojiya9727@gmail.com",
       "subject": "Offer",
       "trackid": trackid
     }, obj);
