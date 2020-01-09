@@ -582,7 +582,7 @@ router.post("/employer_register", async (req, res) => {
                   "name": employerfirstname,
                   "upper_content": upper_content,
                   "lower_content": lower_content,
-                  "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                  "confirm_url": config.WEBSITE_URL + "/confirmation/" + reset_token
                 });
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
