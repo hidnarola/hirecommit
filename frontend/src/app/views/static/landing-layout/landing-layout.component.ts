@@ -19,7 +19,6 @@ export class LandingLayoutComponent implements OnInit {
   constructor(public router: Router) {
     this.isProd = environment.production;
     this.isStaging = environment.staging;
-    console.log('window.location.hostname => ', window.location.hostname);
     this.hostName = window.location.hostname;
     // if (this.hostName === 'candidate.hirecommit.com') {
     if (this.hostName === 'employer.hirecommit.com' || this.hostName === 'employer.tanubhasin.com') {
@@ -58,3 +57,7 @@ export class LandingLayoutComponent implements OnInit {
   }
 
 }
+
+//
+
+//

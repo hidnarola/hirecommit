@@ -24,25 +24,21 @@
             <div class="d-flex">
                 <div class="header-bluepart-l">
                     <h1>
-                        <small>Give yourself the edge, </small><strong> HireCommit edge</strong>
+                        <small> {{header_bluepart.main_heading_1}}</small><strong>
+                            {{header_bluepart.main_heading_2}}</strong>
                     </h1>
                     <div class="sign-up-form">
-                        <form class="d-flex">
-                            <input type="text" name="" placeholder="Enter your personal email" />
-                            <button type="submit">Sign up now</button>
+                        <form class="d-flex" [formGroup]="landingForm">
+                            <input type="text" name="" formControlName="email" name="email"
+                                placeholder="Enter your personal email" />
+                            <button type="submit" (click)="singup(landingForm.value)">Sign up now</button>
                         </form>
                     </div>
-                    <h4>Companies prefer candidates who are committed to joining after accepting offer. Once you
-                        HireCommit
-                        or you are willing to HireCommit it boosts your profile and results in favorable discussions
-                        with
-                        Companies looking to hire you.</h4>
-                    <h4>You can receive multiple offers on HireCommit, only once you accept an offer you are committing
-                        to
-                        that Company.</h4>
+                    <h4>{{header_bluepart.content_1}}</h4>
+                    <h4>{{header_bluepart.content_2}}</h4>
                 </div>
                 <div class="header-bluepart-r">
-                    <img src="assets/img/candidate-img01.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + header_bluepart.image}}" alt="" />
                 </div>
             </div>
         </div>
@@ -53,38 +49,30 @@
             <ul class="d-flex four-box">
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-01.png" alt="" /></span>
-                        <h3>Signup for free</h3>
-                        <p>Register online for free; all we need is a few necessary details. Once we have verified your
-                            identity documents, your profile will become active.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + signup_for_free.image}}" alt="" /></span>
+                        <h3>{{signup_for_free.heading_1}}</h3>
+                        <p>{{signup_for_free.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-02.png" alt="" /></span>
-                        <h3>Receive offers </h3>
-                        <p>Tell companies & recruiters you are HireCommit'd and give yourself an edge. Have favorable
-                            discussions and receive offers from companies via HireCommit. You can receive multiple
-                            offers on HireCommit; there is absolutely no restriction.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + receive_offers.image}}" alt="" /></span>
+                        <h3>{{receive_offers.heading_1}}</h3>
+                        <p>{{receive_offers.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-03.png" alt="" /></span>
-                        <h3>Accept offer</h3>
-                        <p>Review your offer(s) from companies and select one. Once you are ready to accept, you will
-                            have
-                            to consent to the terms if it's a HireLock offer. HireLock only comes into effect after you
-                            accept an offer. There is no restriction on no. of offers you can receive.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + accept_offer.image}}" alt="" /></span>
+                        <h3>{{accept_offer.heading_1}}</h3>
+                        <p>{{accept_offer.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-04.png" alt="" /></span>
-                        <h3>Join Company</h3>
-                        <p>That's it, join the company, and enjoy a rewarding career. HireCommit boosts your profile,
-                            and
-                            companies look at you in a different light.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + join_company.image}}" alt="" /></span>
+                        <h3>{{join_company.heading_1}}</h3>
+                        <p>{{join_company.content_1}}</p>
                     </div>
                 </li>
             </ul>
@@ -96,19 +84,15 @@
             <div class="d-flex">
                 <div class="data-security-l">
                     <h2 class="mobile-view">
-                        <strong>Confidentiality & Data Security</strong>
+                        <strong>{{data_security.heading_1}}</strong>
                     </h2>
-                    <img src="assets/img/employer-img04.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + data_security.image}}" alt="" />
                 </div>
                 <div class="data-security-r">
                     <h2 class="mobileview-none">
-                        <strong>Confidentiality & Data Security</strong>
+                        <strong>{{data_security.heading_1}}</strong>
                     </h2>
-                    <p>Receive multiple offers on HireCommit; no information shared with any company. Only once you
-                        accept a HireLock offer
-                        after consenting to terms and don’t join information is made available to future prospective
-                        employers on HireCommit
-                        platform.</p>
+                    <p>{{data_security.content_1}}</p>
                 </div>
             </div>
         </div>
@@ -117,10 +101,9 @@
     <section class="transparency">
         <div class="container">
             <div class="transparency-bg d-flex">
-                <h2><small>2-Way</small><strong> Transparency</strong></h2>
-                <p>Candidates fully briefed about terms and conditions, consent taken before candidate accepts <br />
-                    HireLock
-                    offer. System enables fair issue resolution in case of a conflict. </p>
+                <h2><small>{{transparency.heading_1}}</small><strong> {{transparency.heading_2}}</strong></h2>
+                <p>{{transparency.content_1}} <br />
+                    {{transparency.content_2}} </p>
             </div>
         </div>
     </section>
@@ -130,19 +113,17 @@
             <div class="d-flex">
                 <div class="support-identity-l">
                     <h2 class="mobile-view">
-                        <small>Continuous</small>
-                        <strong>support & identity verification</strong>
+                        <small>{{support_identity.heading_1}}</small>
+                        <strong>{{support_identity.heading_2}}</strong>
                     </h2>
-                    <img src="assets/img/employer-img06.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + support_identity.image}}" alt="" />
                 </div>
                 <div class="support-identity-r">
                     <h2 class="mobileview-none">
-                        <small>Continuous</small>
-                        <strong>support & identity verification</strong>
+                        <small>{{support_identity.heading_1}}</small>
+                        <strong>{{support_identity.heading_2}}</strong>
                     </h2>
-                    <p>HireCommit provides prompt redressal of issues to both candidates and organizations. Candidates
-                        and organizations need to provide documentary evidence in case of a dispute. We verify that
-                        multiple profiles of a candidate don’t exist. We vet organizations before they can send offers.
+                    <p>{{support_identity.content_1}}
                     </p>
                 </div>
             </div>

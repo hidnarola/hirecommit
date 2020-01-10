@@ -8,6 +8,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
 import { NgxSummernoteDirective } from 'ngx-summernote';
+import { variable } from '@angular/compiler/src/output/output_ast';
 @Component({
   selector: 'app-group-edit',
   templateUrl: './group-edit.component.html',
@@ -78,10 +79,10 @@ export class GroupEditComponent implements OnInit {
     // form controls
     this.groupForm = this.fb.group({
       name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
-      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
-      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
-      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
+      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
       // low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       // low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
       communicationFieldItems: this.fb.array([])
@@ -250,6 +251,10 @@ export class GroupEditComponent implements OnInit {
       }
     }
     this.communicationData = array;
+    if (this.communicationData.length === 0) {
+      console.log('Communication length=======>');
+
+    }
   }
 
   public onReady(editor) {
@@ -271,17 +276,17 @@ export class GroupEditComponent implements OnInit {
     }
   }
   removeZero_high_notreplied() {
-    if (this.groupForm.value.high_notreplied && this.groupForm.value.high_notreplied >= 0) {
+    if (this.groupForm.value.high_notreplied && (this.groupForm.value.high_notreplied >= 0)) {
       this.groupForm.controls['high_notreplied'].setValue(parseFloat(this.groupForm.value[`high_notreplied`]));
     }
   }
   removeZero_medium_unopened() {
-    if (this.groupForm.value.medium_unopened && this.groupForm.value.medium_unopened >= 0) {
+    if (this.groupForm.value.medium_unopened && (this.groupForm.value.medium_unopened >= 0)) {
       this.groupForm.controls['medium_unopened'].setValue(parseFloat(this.groupForm.value[`medium_unopened`]));
     }
   }
   removeZero_medium_notreplied() {
-    if (this.groupForm.value.medium_notreplied && this.groupForm.value.medium_notreplied >= 0) {
+    if (this.groupForm.value.medium_notreplied && (this.groupForm.value.medium_notreplied >= 0)) {
       this.groupForm.controls['medium_notreplied'].setValue(parseFloat(this.groupForm.value[`medium_notreplied`]));
     }
   }
@@ -312,10 +317,10 @@ export class GroupEditComponent implements OnInit {
         const obj = {
           id: this.id,
           name: this.groupData['name'],
-          high_unopened: this.groupData['high_unopened'] || this.groupData['high_unopened'] == 0 ? this.groupData['high_unopened'] : '',
-          high_notreplied: this.groupData['high_notreplied'] || this.groupData['high_notreplied'] == 0 ? this.groupData['high_notreplied'] : '',
-          medium_unopened: this.groupData['medium_unopened'] || this.groupData['medium_unopened'] == 0 ? this.groupData['medium_unopened'] : '',
-          medium_notreplied: this.groupData['medium_notreplied'] || this.groupData['medium_notreplied'] == 0 ? this.groupData['medium_notreplied'] : '',
+          high_unopened: this.groupData['high_unopened'],
+          high_notreplied: this.groupData['high_notreplied'],
+          medium_unopened: this.groupData['medium_unopened'],
+          medium_notreplied: this.groupData['medium_notreplied'],
           // low_unopened: this.groupData['low_unopened'],
           // low_notreplied: this.groupData['low_notreplied'],
           data: JSON.stringify(communication_array)

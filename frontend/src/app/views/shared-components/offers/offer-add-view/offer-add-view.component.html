@@ -470,14 +470,22 @@
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
-                                        <div class="cust_err_msg" *ngIf="!form.controls['high_unopened'].valid ">
+                                        <div class="cust_err_msg"
+                                            *ngIf="form_validation && !form.controls['high_unopened'].valid ">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['high_unopened'].errors['required']">
+                                                This field is required.
+                                            </span>
+                                        </div>
 
+                                        <div class="cust_err_msg" *ngIf="!form.controls['high_unopened'].valid ">
                                             <span class="text-danger"
                                                 *ngIf="form.controls['high_unopened'].errors['pattern']">
                                                 Enter valid data.
                                             </span>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="form-group row">
@@ -492,6 +500,13 @@
                                             (blur)="removeZero_high_notreplied()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
+                                        </div>
+                                        <div class="cust_err_msg"
+                                            *ngIf="form_validation && !form.controls['high_notreplied'].valid ">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['high_notreplied'].errors['required']">
+                                                This field is required.
+                                            </span>
                                         </div>
                                         <div class="cust_err_msg" *ngIf="!form.controls['high_notreplied'].valid ">
                                             <span class="text-danger"
@@ -515,6 +530,13 @@
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
+                                        <div class="cust_err_msg"
+                                            *ngIf="form_validation && !form.controls['medium_unopened'].valid ">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['medium_unopened'].errors['required']">
+                                                This field is required.
+                                            </span>
+                                        </div>
                                         <div class="cust_err_msg" *ngIf="!form.controls['medium_unopened'].valid">
                                             <span class="text-danger"
                                                 *ngIf="form.controls['medium_unopened'].errors['pattern']">
@@ -537,6 +559,13 @@
                                             *ngIf="!isAccepted" (blur)="removeZero_medium_notreplied()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
+                                        </div>
+                                        <div class="cust_err_msg"
+                                            *ngIf="form_validation && !form.controls['medium_notreplied'].valid ">
+                                            <span class="text-danger"
+                                                *ngIf="form.controls['medium_notreplied'].errors['required']">
+                                                This field is required.
+                                            </span>
                                         </div>
                                         <div class="cust_err_msg" *ngIf="!form.controls['medium_notreplied'].valid">
                                             <span class="text-danger"
@@ -597,16 +626,7 @@
                                                             [(ngModel)]="customfield.priority"
                                                             [disabled]="offerExpired">
                                                         </p-dropdown>
-                                                        <!-- <select id="priority" name="select1" class="form-control"
-                                                            formControlName="priority"
-                                                            [(ngModel)]="customfield.priority">
-                                                            <option value="" selected="selected" [disabled]="offerExpired">Please select
-                                                                priority
-                                                            </option>
-                                                            <option value="High">High</option>
-                                                            <option value="Medium">Medium</option>
-                                                            <option value="Low">Low</option>
-                                                        </select> -->
+
                                                         <div class="cust_err_msg"
                                                             *ngIf="form_validation && !form.controls['communicationFieldItems'].controls[i].controls['priority'].valid">
                                                             <span

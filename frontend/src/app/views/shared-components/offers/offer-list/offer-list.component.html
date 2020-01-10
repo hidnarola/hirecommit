@@ -111,7 +111,11 @@
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let offer of offerData; let i = index;">
+                            <!-- [ngClass]="{'expired': data.isExpired}" -->
+
+                            <tr *ngFor="let offer of offerData; let i = index;" id="offer-tr"
+                                [ngClass]="{'expired': offer.isExpired}">
+
                                 <td>{{offer.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td *ngIf="userDetail.role === 'employer' || userDetail.role === 'sub-employer'">
                                     {{offer.candidate.user.email}}</td>

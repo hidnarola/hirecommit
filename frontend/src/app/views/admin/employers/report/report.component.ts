@@ -6,7 +6,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { OfferService } from '../../../shared-components/offers/offer.service';
 import { SocketService } from '../../../../services/socket.service';
 import { ToastrService } from 'ngx-toastr';
-
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-report',
@@ -23,6 +23,7 @@ export class ReportComponent implements OnInit, OnDestroy, AfterViewInit {
   id: any;
   from: any;
   to: any;
+  d: any;
   StartToDate = new Date();
   first_custom_field = 'Custom Field';
   constructor(
@@ -44,7 +45,6 @@ export class ReportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.socketService.getOffer().subscribe(res => {
-      console.log('employer : res ==> ', res);
       this.rrerender();
     });
 
@@ -68,6 +68,16 @@ export class ReportComponent implements OnInit, OnDestroy, AfterViewInit {
         this.service.offer_report(this.id, dataTablesParameters).subscribe(res => {
           if (res['status'] === 1) {
             this.offerData = res['offer'];
+            this.offerData.forEach(element => {
+
+              this.d = moment(new Date(element.expirydate));
+              if (this.d < new Date()) {
+                element.isExpired = true;
+              } else {
+                element.isExpired = false;
+              }
+            }
+            );
             callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
           }
         }, err => {

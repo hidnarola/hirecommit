@@ -25,27 +25,24 @@
             <div class="d-flex">
                 <div class="header-bluepart-l">
                     <h1>
-                        <small>No More Candidate</small><strong> Back-outs,</strong> <br />
-                        <small>No More Last Minute</small><strong> Surprises</strong>
+                        <small>{{header_bluepart.main_heading_1}}</small><strong>
+                            {{header_bluepart.main_heading_2}}</strong> <br />
+                        <small>{{header_bluepart.main_heading_3}}</small><strong>
+                            {{header_bluepart.main_heading_4}}</strong>
                     </h1>
                     <div class="sign-up-form">
-                        <form class="d-flex">
-                            <input type="text" name="" placeholder="Enter your work email" />
-                            <button type="submit">Sign up now</button>
+                        <form class="d-flex" [formGroup]="landingForm">
+                            <input type="text" name="" formControlName="email" name="email"
+                                placeholder="Enter your work email" />
+                            <button type="submit" (click)="signup(landingForm.value)">Sign up now</button>
                         </form>
                     </div>
-                    <h4>Solve the problem of candidates backing out after accepting offer, use the path-breaking
-                        HireLock
-                        feature to enhance joining rates. HireLock offer can be designed to suit candidate profile.
-                        Choose
-                        from a one-way option for candidates to commit, or A two-way option enables both the company and
-                        candidate to commit. HireLock can be turned off or set for individual offers.</h4>
-                    <h4> Candidates who accept HireLock offer commit to join when they accept offer and give consent
-                        that if
-                        they back out their information made available to future prospective employers. </h4>
+                    <!-- {{response | json}} -->
+                    <h4>{{header_bluepart.content_1}}</h4>
+                    <h4> {{header_bluepart.content_2}}</h4>
                 </div>
                 <div class="header-bluepart-r">
-                    <img src="assets/img/employer-img01.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + header_bluepart.image}}" alt="" />
                 </div>
             </div>
         </div>
@@ -57,25 +54,20 @@
             <div class="d-flex">
                 <div class="structured-automated-l">
                     <h2 class="mobile-view">
-                        <strong>Structured & Automated </strong> <small> communication with candidates</small>
+                        <strong>{{structured_automated.heading_1}} </strong>
+                        <small>{{structured_automated.heading_2}}</small>
                     </h2>
-                    <img src="assets/img/employer-img02.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + structured_automated.image}}" alt="" />
                 </div>
                 <div class="structured-automated-r">
                     <h2 class="mobileview-none">
-                        <strong>Structured & Automated</strong>
-                        <small>communication with candidates</small>
+                        <strong>{{structured_automated.heading_1}}</strong>
+                        <small>{{structured_automated.heading_2}}</small>
                     </h2>
-                    <p>Streamline communication strategy to enhance the candidate experience, and automated
-                        communications
-                        remove the burden of unstructured tasks.
+                    <p>{{structured_automated.content_1}}
                     </p>
-                    <p>Companies can configure organization-specific communication for groups/ individuals and set
-                        emails to
-                        be fired on a fixed date/no. of days before or
-                        after a milestone.</p>
-                    <p>Post offer engagement builds company, candidate rapport, and encourages
-                        result-oriented engagement.</p>
+                    <p>{{structured_automated.content_2}}</p>
+                    <p>{{structured_automated.content_3}}</p>
                 </div>
             </div>
         </div>
@@ -84,11 +76,10 @@
     <section class="advance-alerts">
         <div class="container">
             <div class="advance-alerts-bg d-flex">
-                <h2><strong>Advance alerts</strong> <small>to warn of potential drop-outs</small></h2>
-                <p>AI-assisted candidate communication analysis, email alerts to warn <br />
-                    about the candidates who are at risk of not joining. Alert conditions fully customizable <br />
-                    based on
-                    business needs.</p>
+                <h2><strong>{{advance_alerts.heading_1}}</strong> <small>{{advance_alerts.heading_2}}</small></h2>
+                <p>{{advance_alerts.content_1}} <br />
+                    {{advance_alerts.content_2}}<br />
+                    {{advance_alerts.content_3}}</p>
             </div>
         </div>
     </section>
@@ -98,55 +89,46 @@
             <ul class="d-flex">
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-01.png" alt="" /></span>
-                        <h3>Signup for Free</h3>
-                        <p>Register online for free. All we need is a few necessary details, and we will get in touch
-                            with
-                            you for additional documents required.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + signup_for_free.image}}" alt="" /></span>
+                        <h3>{{signup_for_free.heading_1}}</h3>
+                        <p>{{signup_for_free.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-02.png" alt="" /></span>
-                        <h3>One-time setup</h3>
-                        <p>Enter various Locations. Configure optional items like communication for groups/subsets,
-                            custom fields, and create sub-accounts.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + one_time_setup.image}}" alt="" /></span>
+                        <h3>{{one_time_setup.heading_1}}</h3>
+                        <p>{{one_time_setup.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-03.png" alt="" /></span>
-                        <h3>Send offer to Candidate</h3>
-                        <p>Use HireCommit to enter the necessary details of the offer and send offer to candidates.
-                            Choose
-                            to use HireLock feature in which candidate or both candidate and you the company commit.
-                            Detailed offer can be sent outside the system.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + send_offer_to_candidate.image}}"
+                                alt="" /></span>
+                        <h3>{{send_offer_to_candidate.heading_1}}</h3>
+                        <p>{{send_offer_to_candidate.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-04.png" alt="" /></span>
-                        <h3>Candidate accepts</h3>
-                        <p>Candidate logs in or registers on HireCommit, reviews offer details and accepts offer after
-                            consenting to terms.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + candidate_accept.image}}" alt="" /></span>
+                        <h3>{{candidate_accept.heading_1}}</h3>
+                        <p>{{candidate_accept.content_1}}</p>
                     </div>
                 </li>
                 <li class="monitor-alerts-li">
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-05.png" alt="" /></span>
-                        <h3>Monitor alerts/communication</h3>
-                        <p>You, the company, can monitor Communication (s) sent to candidates. The system will warn if a
-                            particular candidate is at risk of not joining based on alerts set as per business
-                            needs.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + monitor_alert_communication.image}}"
+                                alt="" /></span>
+                        <h3>{{monitor_alert_communication.heading_1}}</h3>
+                        <p>{{monitor_alert_communication.content_1}}</p>
                     </div>
                 </li>
                 <li>
                     <div class="boxes-section-div">
-                        <span><img src="assets/img/icon-06.png" alt="" /></span>
-                        <h3>Candidate joins</h3>
-                        <p>That's it, no more last-minute surprises and no more candidate backing out after accepting
-                            your
-                            offer.</p>
+                        <span><img src="{{API_URL + 'images/landing_page/' + candidate_joins.image}}" alt="" /></span>
+                        <h3>{{candidate_joins.heading_1}}</h3>
+                        <p>{{candidate_joins.content_1}}</p>
                     </div>
                 </li>
             </ul>
@@ -158,18 +140,15 @@
             <div class="d-flex">
                 <div class="data-security-l">
                     <h2 class="mobile-view">
-                        <strong>Confidentiality & <br />Data Security</strong>
+                        <strong>{{data_security.heading_1}} <br />{{data_security.heading_2}}</strong>
                     </h2>
-                    <img src="assets/img/employer-img04.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + data_security.image}}" alt="" />
                 </div>
                 <div class="data-security-r">
                     <h2 class="mobileview-none">
-                        <strong>Confidentiality & <br />Data Security</strong>
+                        <strong>{{data_security.heading_1}}<br />{{data_security.heading_2}}</strong>
                     </h2>
-                    <p>Organizations remain custodians of all sensitive data. Send multiple offers on HireCommit, no
-                        information shared with any company. Only once candidate accepts a HireLock offer after
-                        consenting to terms and doesn't join information is made
-                        available to future prospective employers on HireCommit platform.</p>
+                    <p>{{data_security.content_1}}</p>
                 </div>
             </div>
         </div>
@@ -179,9 +158,9 @@
     <section class="transparency">
         <div class="container">
             <div class="transparency-bg d-flex">
-                <h2><small>2-Way</small><strong> Transparency</strong></h2>
-                <p>Candidates fully briefed about terms and conditions, consent taken before candidate accepts <br />
-                    HireLock offer. System enables fair issue resolution in case of a conflict. </p>
+                <h2><small>{{transparency.heading_1}}</small><strong> {{transparency.heading_2}}</strong></h2>
+                <p>{{transparency.content_1}} <br />
+                    {{transparency.content_2}} </p>
             </div>
         </div>
     </section>
@@ -191,19 +170,17 @@
             <div class="d-flex">
                 <div class="support-identity-l">
                     <h2 class="mobile-view">
-                        <small>Continuous</small>
-                        <strong> support & identity verification</strong>
+                        <small>{{support_identity.heading_1}}</small>
+                        <strong> {{support_identity.heading_2}}</strong>
                     </h2>
-                    <img src="assets/img/employer-img06.jpg" alt="" />
+                    <img src="{{API_URL + 'images/landing_page/' + support_identity.image}}" alt="" />
                 </div>
                 <div class="support-identity-r">
                     <h2 class="mobileview-none">
-                        <small>Continuous</small>
-                        <strong> support & identity verification</strong>
+                        <small>{{support_identity.heading_1}}</small>
+                        <strong> {{support_identity.heading_2}}</strong>
                     </h2>
-                    <p>HireCommit provides prompt redressal of issues to both candidates and organizations. Candidates
-                        and organizations need to provide documentary evidence in case of a dispute. We verify that
-                        multiple profiles of a candidate don’t exist. We vet organizations before they can send offers.
+                    <p>{{support_identity.content_1}}
                     </p>
                 </div>
             </div>

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../services/common.service';
-import { environment } from '../../../environments/environment'
+import { environment } from '../../../environments/environment';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-emailconfermation',
   templateUrl: './emailconfermation.component.html',
@@ -23,18 +24,26 @@ export class EmailconfermationComponent implements OnInit {
       this.params_token = params;
     });
 
+    const that = this;
     this.service.verify_email(this.params_token).subscribe(res => {
       if (res['status'] === 1) {
+
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-        if (res['role'] === 'candidate') {
-          window.location.href = environment.candidateURL + '/login';
-        } else if (res['role'] === 'employer') {
-          window.location.href = environment.employerURL + '/login';
-        } else if (res['role'] === 'sub-employer') {
-          window.location.href = environment.employerURL + '/login';
-        } else {
-          this.router.navigate(['/login']);
-        }
+        Swal.fire({
+          type: 'success',
+          text: 'Thank you for verifying your emails'
+
+        }).then(function (isConf) {
+          if (res['role'] === 'candidate') {
+            window.location.href = environment.candidateURL + '/login';
+          } else if (res['role'] === 'employer') {
+            window.location.href = environment.employerURL + '/login';
+          } else if (res['role'] === 'sub-employer') {
+            window.location.href = environment.employerURL + '/login';
+          } else {
+            that.router.navigate(['/login']);
+          }
+        });
 
       }
     }, (err) => {

@@ -30,7 +30,8 @@
                                 <td>{{data['document'].name}}</td>
                                 <td>{{data.documentNumber}}</td>
                                 <td>{{data.drivingLicenseState ? data.drivingLicenseState : '-'}}</td>
-                                <td>{{data.createdAt.split('T')[0] | date: 'dd/MM/yyyy': 'utc'}}</td>
+                                <!-- candidate_detail.createdAt | date: 'dd/MM/yyyy': 'utc' -->
+                                <td>{{data.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <!-- <td>{{data.status}}</td> -->
                                 <td>
                                     <button tooltip='View' type="button" *ngIf="candidate_type === 'Approved'"

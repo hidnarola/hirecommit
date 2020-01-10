@@ -16,7 +16,7 @@ import { ModalOptions } from '../../../../shared/modal_options';
 import { ToastrService } from 'ngx-toastr';
 // import { IfStmt } from '@angular/compiler';
 // import { AnyARecord } from 'dns';
-
+import * as moment from 'moment';
 @Component({
   selector: 'app-offer-list',
   templateUrl: './offer-list.component.html',
@@ -43,6 +43,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
   profileData: any = [];
   isNoCommit = false;
   message: any;
+  d: any;
   Canididate_message: any;
   isAccept = false;
   offerID: any;
@@ -98,7 +99,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.Canididate_message = res['message'];
         }
       }, (err) => {
-        console.log('err=>', err);        
+        console.log('err=>', err);
         // this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });
     }
@@ -119,7 +120,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         this.first_custom_field = '';
       }
-      console.log('first_custom_field=>', this.first_custom_field);
 
     }, (err) => {
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
@@ -210,8 +210,27 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+              this.offerData.forEach(element => {
 
-              console.log('offerData=>', this.offerData);
+                this.d = moment(new Date(element.expirydate));
+                if (this.d < new Date()) {
+                  element.isExpired = true;
+                } else {
+                  element.isExpired = false;
+                }
+              }
+              );
+              // this.d = moment(new Date(res[`offer`].expirydate));
+              // console.log('this.d < new Date()=>', res[`offer`].expirydate);
+              //
+
+
+              // console.log('document.getElementById(`offer-tr`)=>', document.getElementById('offer-tr'));
+
+              //
+
+              //
+              // }
               //  changed offer type valu to offer type label for display purpose only
               // this.offerData.forEach(offer => {
               //   offer.offertype = (this.offer_type_optoins
@@ -233,7 +252,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }, err => {
             // To hide spinner
             this.spinner.hide();
-            console.log('err => ', err);
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         },
@@ -315,6 +333,16 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               // To hide spinner
               this.spinner.hide();
               this.offerData = res['offer'];
+              this.offerData.forEach(element => {
+
+                this.d = moment(new Date(element.expirydate));
+                if (this.d < new Date()) {
+                  element.isExpired = true;
+                } else {
+                  element.isExpired = false;
+                }
+              }
+              );
               // if (this.offerData.status === 'Released' && this.offerData.expirydate > new Date()) {
               //   document.getElementById('accept').classList.add('d-0');
               // }
@@ -348,7 +376,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
                 //   this.userName = offer['employer_id']['employer'].username;
                 // }
               });
-              console.log('this.offerData=>', this.offerData);
 
               // if (this.offerData.length == 0) {
               //   var el = document.getElementById('DataTables_Table_0_paginate');
@@ -363,7 +390,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           }, err => {
             // To hide spinner
             this.spinner.hide();
-            console.log('err => ', err);
             this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           });
         },

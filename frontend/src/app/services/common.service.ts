@@ -141,7 +141,6 @@ export class CommonService {
 
   public changedProfileDetail(data: boolean) {
     // console.log('in observable');
-    console.log('data === changedProfileDetail === in service =====>', data);
 
     this.changed_profile_detail.next(data);
   }
@@ -163,6 +162,15 @@ export class CommonService {
       return moment(current_date + ' ' + current_time).toDate();
     }
     return '';
+  }
+
+
+  employer_landing(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + 'employer_landing_page');
+  }
+
+  candidate_landing(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}` + 'candidate_landing_page');
   }
 
   // myObservableArray: Observable<any[]> = new Observable<any[]>();

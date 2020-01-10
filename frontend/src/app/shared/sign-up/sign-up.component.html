@@ -65,6 +65,9 @@
                       *ngIf="registerForm.controls['email'].errors.required || registerForm.controls['email'].errors.whitespace">This
                       field
                       is required.</span>
+                    <!-- <span *ngIf="registerForm.controls['email'].errors['isExist']">
+                      This Email address is already registered.
+                    </span> -->
                   </div>
                   <div class="error" *ngIf="!registerForm.controls['email'].valid">
                     <span *ngIf="registerForm.controls['email'].errors.pattern">
