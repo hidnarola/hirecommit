@@ -19,6 +19,7 @@ const OfferTypeMessage = require('../../models/offer_type_message');
 const Location = require('../../models/location');
 const MailType = require('../../models/mail_content');
 const mail_helper = require('../../helpers/mail_helper');
+const communication_mail_helper = require('../../helpers/communication_mail_helper');
 
 
 router.post('/get', async (req, res) => {
@@ -354,8 +355,84 @@ router.put('/', async (req, res) => {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No data found" });
             }
             else if (sub_account_upadate.status == 1) {
-                var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
 
+                if (sub_account_upadate.data.communication !== undefined && sub_account_upadate.data.communication.length > 0) {
+                    var candidate_email = await common_helper.findOne(User, { "_id": sub_account_upadate.data.user_id })
+                    var candidate_name = await common_helper.findOne(Candidate, { "user_id": sub_account_upadate.data.user_id })
+                    var location = await common_helper.findOne(Location, { "_id": sub_account_upadate.data.location })
+                    for (const comm of sub_account_upadate.data.communication) {
+                        if (comm.trigger == "afterAcceptance" && comm.day == 0) {
+                            if (moment(sub_account_upadate.data.acceptedAt).startOf('day').isSame(moment(current_date).startOf('day'))) {
+                                var message = comm.message;
+                                message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                var obj = {
+                                    "message": message,
+                                    "subject": comm.subject
+                                }
+
+                                let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                    "to": candidate_email.data.email,
+                                    "reply_to": `${sub_account_upadate.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
+                                    "subject": comm.subject,
+                                    "trackid": sub_account_upadate.data._id + "_" + comm._id + "_" + "communication"
+                                }, obj);
+
+                                if (mail_resp.status == 1) {
+                                    var update_offer_communication = await common_helper.update(Offer,
+                                        { "_id": sub_account_upadate.data._id, "communication._id": comm._id },
+                                        {
+                                            $set: {
+                                                "communication.$.reply": false,
+                                                "communication.$.open": false
+                                            }
+                                        })
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (sub_account_upadate.data.AdHoc !== undefined && sub_account_upadate.data.AdHoc.length > 0) {
+                    var candidate_email = await common_helper.findOne(User, { "_id": sub_account_upadate.data.user_id })
+                    var candidate_name = await common_helper.findOne(Candidate, { "user_id": sub_account_upadate.data.user_id })
+                    var location = await common_helper.findOne(Location, { "_id": sub_account_upadate.data.location })
+
+                    for (const comm of sub_account_upadate.data.AdHoc) {
+                        if (comm.AdHoc_trigger == "afterAcceptance" && comm.AdHoc_day == 0) {
+                            if (moment(sub_account_upadate.data.acceptedAt).startOf('day').isSame(moment(current_date).startOf('day'))) {
+                                var message = comm.AdHoc_message;
+                                message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                console.log(' : message ==> ', message);
+                                var obj = {
+                                    "message": message,
+                                    "subject": comm.AdHoc_subject
+                                }
+                                let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                    "to": candidate_email.data.email,
+                                    "reply_to": `${sub_account_upadate.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
+                                    "subject": comm.AdHoc_subject,
+                                    "trackid": sub_account_upadate.data._id + "_" + comm._id + "_" + "adhoc"
+                                }, obj);
+                                console.log(' : mail_resp hi==> ', mail_resp);
+                                if (mail_resp.status == 1) {
+                                    var update_offer_communication = await common_helper.update(Offer,
+                                        { "_id": sub_account_upadate.data._id, "AdHoc._id": comm._id },
+                                        {
+                                            $set: {
+                                                "AdHoc.$.AdHoc_reply": false,
+                                                "AdHoc.$.AdHoc_open": false
+                                            }
+                                        })
+                                    console.log(' : update_offer_communication ==> ', update_offer_communication);
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                var offer = await common_helper.findOne(Offer, { _id: new ObjectId(req.body.id) })
                 var message = await common_helper.findOne(MailType, { 'mail_type': 'candidate-accept-offer' });
                 let upper_content = message.data.upper_content;
                 let lower_content = message.data.lower_content;

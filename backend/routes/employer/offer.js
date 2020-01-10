@@ -294,6 +294,297 @@ router.post("/", async (req, res) => {
                             "subject": "Offer",
                             "trackid": interest_resp.data._id
                         }, obj);
+
+                        if (mail_resp.status == 1) {
+                            var current_date = moment().startOf('day');
+                            var candidate_email = await common_helper.findOne(User, { "_id": interest_resp.data.user_id })
+                            var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": interest_resp.data.user_id })
+                            var location = await common_helper.findOne(Location, { "_id": interest_resp.data.location })
+
+                            if (interest_resp.data !== undefined && interest_resp.data.communication.length > 0) {
+                                for (const comm of interest_resp.data.communication) {
+                                    if (comm.trigger == "afterOffer" && comm.day == 0) {
+                                        if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
+                                            var message = comm.message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.subject
+                                            }
+
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
+                                                "subject": comm.subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
+                                            }, obj);
+
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "communication._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "communication.$.reply": false,
+                                                            "communication.$.open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.trigger == "beforeJoining" && comm.day == 0) {
+                                        if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
+                                            var message = comm.message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.subject
+                                            }
+
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
+                                                "subject": comm.subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
+                                            }, obj);
+
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "communication._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "communication.$.reply": false,
+                                                            "communication.$.open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.trigger == "afterJoining" && comm.day == 0) {
+                                        if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
+                                            var message = comm.message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.subject
+                                            }
+
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
+                                                "subject": comm.subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
+                                            }, obj);
+
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "communication._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "communication.$.reply": false,
+                                                            "communication.$.open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.trigger == "beforeExpiry" && comm.day == 0) {
+                                        if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
+                                            var message = comm.message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.subject
+                                            }
+
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
+                                                "subject": comm.subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
+                                            }, obj);
+
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "communication._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "communication.$.reply": false,
+                                                            "communication.$.open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
+                                        if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
+                                            var message = comm.message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.subject
+                                            }
+
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
+                                                "subject": comm.subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
+                                            }, obj);
+
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "communication._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "communication.$.reply": false,
+                                                            "communication.$.open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (interest_resp.data.AdHoc !== undefined && interest_resp.data.AdHoc.length > 0) {
+                                for (const comm of interest_resp.data.AdHoc) {
+                                    if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
+                                        if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
+                                            var message = comm.AdHoc_message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.AdHoc_subject
+                                            }
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
+                                                "subject": comm.AdHoc_subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
+                                            }, obj);
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "AdHoc._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "AdHoc.$.AdHoc_reply": false,
+                                                            "AdHoc.$.AdHoc_open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day == 0) {
+                                        if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
+                                            var message = comm.AdHoc_message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.AdHoc_subject
+                                            }
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
+                                                "subject": comm.AdHoc_subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
+                                            }, obj);
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "AdHoc._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "AdHoc.$.AdHoc_reply": false,
+                                                            "AdHoc.$.AdHoc_open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0) {
+                                        if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
+                                            var message = comm.AdHoc_message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.AdHoc_subject
+                                            }
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
+                                                "subject": comm.AdHoc_subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
+                                            }, obj);
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "AdHoc._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "AdHoc.$.AdHoc_reply": false,
+                                                            "AdHoc.$.AdHoc_open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day == 0) {
+                                        if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
+                                            var message = comm.AdHoc_message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.AdHoc_subject
+                                            }
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
+                                                "subject": comm.AdHoc_subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
+                                            }, obj);
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "AdHoc._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "AdHoc.$.AdHoc_reply": false,
+                                                            "AdHoc.$.AdHoc_open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
+                                        if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
+                                            var message = comm.AdHoc_message;
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+
+                                            var obj = {
+                                                "message": message,
+                                                "subject": comm.AdHoc_subject
+                                            }
+                                            let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
+                                                "to": candidate_email.data.email,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
+                                                "subject": comm.AdHoc_subject,
+                                                "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
+                                            }, obj);
+                                            if (mail_resp.status == 1) {
+                                                var update_offer_communication = await common_helper.update(Offer,
+                                                    { "_id": interest_resp.data._id, "AdHoc._id": comm._id },
+                                                    {
+                                                        $set: {
+                                                            "AdHoc.$.AdHoc_reply": false,
+                                                            "AdHoc.$.AdHoc_open": false
+                                                        }
+                                                    })
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
                     }
 
                     // {
