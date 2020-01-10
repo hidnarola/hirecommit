@@ -19,6 +19,8 @@ const async = require('async');
 const mail_helper = require('./../helpers/mail_helper');
 const Role = require('./../models/role');
 const User = require('./../models/user');
+const Employer_Landing_Page = require('./../models/employer_landing_page');
+const Candidate_Landing_Page = require('./../models/candidate_landing_page');
 const Candidate_Detail = require('./../models/candidate-detail');
 const Employer_Detail = require('./../models/employer-detail');
 const SubEmployer_Detail = require('./../models/sub-employer-detail');
@@ -30,6 +32,7 @@ const Offer = require('./../models/offer');
 const RepliedMail = require('./../models/replied_mail');
 const MailType = require('./../models/mail_content');
 const new_mail_helper = require('./../helpers/new_mail_helper');
+const test_mail_helper = require('./../helpers/testmail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
 const Group = require('./../models/group');
@@ -496,7 +499,7 @@ router.post("/employer_register", async (req, res) => {
       }
     };
 
-    console.log(' : req.body ==> ', req.body);
+    // console.log(' : req.body ==> ', req.body);
     var validate = passwordValidatorSchema
       .is().min(8)
       // .symbols()	                                 // Minimum length 8
@@ -556,8 +559,6 @@ router.post("/employer_register", async (req, res) => {
                 }
                 )).toString('base64');
 
-                console.log(' : reset_token ==> ', reset_token);
-
                 var time = new Date();
                 time.setMinutes(time.getMinutes() + 20);
                 time = btoa(time);
@@ -565,7 +566,7 @@ router.post("/employer_register", async (req, res) => {
                 var upper_content = message.data.upper_content;
                 var lower_content = message.data.lower_content;
 
-                upper_content = upper_content.replace("{employername}", `${interest_resp.data.username} `);
+                upper_content = upper_content.replace("{employername}", `${interest_resp.data.companyname} `);
 
                 var name = interest_resp.data.username;
                 var employerfirstname = name.substring(0, name.lastIndexOf(" "));
@@ -582,12 +583,11 @@ router.post("/employer_register", async (req, res) => {
                   "name": employerfirstname,
                   "upper_content": upper_content,
                   "lower_content": lower_content,
-                  "confirm_url": config.WEBSITE_URL + "confirmation/" + reset_token
+                  "confirm_url": config.WEBSITE_URL + "/confirmation/" + reset_token
                 });
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                 } else {
-
                   res.json({ "message": "Employer Registration Successful, Confirmation mail send to your email", "data": interest_user_resp })
                 }
               } else {
@@ -1411,20 +1411,20 @@ router.post('/match_old_password', async (req, res) => {
 
 router.post('/test_mail', async (req, res) => {
   try {
-    var content = req.body.content;
-
-    var trackid = req.body.trackid;
-
+    var message = "welcome";
+    var content = "<img style='width:1px; height:1px;' src='https://hirecommit.com:3000/user'/>";
+    var trackid = "test001";
     var obj = {
-      "trackid": content,
-      "content": trackid
+      "trackid": trackid,
+      "message": message,
+      "content": content
     }
 
 
 
-    let mail_resp = await new_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+    let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
       "to": req.body.email,
-      "reply_to": req.body.reply_to,
+      "reply_to": "vishalkanojiya9727@gmail.com",
       "subject": "Offer",
       "trackid": trackid
     }, obj);
@@ -1660,5 +1660,30 @@ router.get('/check_query', async (req, res) => {
   }
 })
 
+router.get('/employer_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Employer_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
+
+router.get('/candidate_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Candidate_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
 
 module.exports = router;

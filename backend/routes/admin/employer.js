@@ -14,7 +14,6 @@ const jwt = require('jsonwebtoken');
 const btoa = require('btoa');
 const async = require('async');
 
-
 const logger = config.logger;
 const User = require('../../models/user');
 const Employer = require('../../models/employer-detail');
@@ -101,7 +100,6 @@ router.post('/get_new', async (req, res) => {
         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
     }
 });
-
 
 router.post('/get_approved', async (req, res) => {
     try {
@@ -780,11 +778,14 @@ router.put('/', async (req, res) => {
             var employername = await common_helper.findOne(Employer, { "user_id": req.body.id })
             var name = employername.data.username;
             var employerfirstname = name.substring(0, name.lastIndexOf(" "));
+            if (employerfirstname === "") {
+                employerfirstname = name;
+            }
             var message = await common_helper.findOne(MailType, { 'mail_type': 'approve-employer' });
             var upper_content = message.data.upper_content;
             var lower_content = message.data.lower_content;
 
-            upper_content = upper_content.replace("{employername}", `${employername.data.username} `);
+            upper_content = upper_content.replace("{employername}", `${employername.data.companyname} `);
 
             logger.trace("sending mail");
             let mail_resp = await mail_helper.send("employer_approval_email", {
