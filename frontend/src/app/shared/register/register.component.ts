@@ -1,10 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 import { ReCaptcha2Component } from 'ngx-captcha';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-candidatelayout',
   templateUrl: './register.component.html',
@@ -44,7 +45,8 @@ export class RegisterComponent implements OnInit {
     private toastr: ToastrService,
     public fb: FormBuilder,
     public fbb: FormBuilder,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private activatedRoute: ActivatedRoute
   ) {
 
     this.employerURL = environment.employerURL;
@@ -94,6 +96,10 @@ export class RegisterComponent implements OnInit {
     });
     this.formData = new FormData();
 
+    if (this.activatedRoute.snapshot.queryParams.email) {
+      let decode_email = atob(this.activatedRoute.snapshot.queryParams.email);
+      this.registerData.email = decode_email;
+    }
   }
 
   checkEmail() {
@@ -103,6 +109,19 @@ export class RegisterComponent implements OnInit {
       this.registerForm.updateValueAndValidity();
     });
 
+  }
+
+  checkEmail2() {
+    let isExist;
+
+    if (this.registerForm.value.email.length > 0) {
+      this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
+        isExist = 'true';
+      }, (err) => {
+        isExist = 'false';
+      });
+    }
+    return isExist;
   }
 
   // Remove white spaces
@@ -126,11 +145,9 @@ export class RegisterComponent implements OnInit {
 
   checkPANCardNumber(control: FormControl) {
     const regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
-    console.log('control.value=>', control.value);
     if (control.value && control.value !== '' && control.valid !== null) {
       regpan.test(control.value)
       const isValid = control.value.match(regpan);
-      console.log('isValid=>', isValid);
       // valid pan card number
       return isValid ? null : { 'invalid': true };
     }
@@ -142,7 +159,6 @@ export class RegisterComponent implements OnInit {
     if (control.value && control.value !== '' && control.valid !== null) {
       pattern.test(control.value)
       const isValid = control.value.match(pattern);
-      console.log('isValid=>', isValid);
       // valid pan card number
       return isValid ? null : { 'invalid': true };
     }
@@ -186,9 +202,7 @@ export class RegisterComponent implements OnInit {
     const reader = new FileReader();
     if (e.target.files && e.target.files.length > 0) {
       this.file = e.target.files[0];
-      console.log('this.file => ', this.file.name);
       const fileName = this.file.name.split('.');
-      console.log('fileName[1]=>', fileName[1]);
       if (this.file.size < 5000000) {
         this.fileFormData.append('filename', this.file);
 
@@ -205,12 +219,9 @@ export class RegisterComponent implements OnInit {
           this.documentImage.controls['documentimage'].setErrors({ 'fileTypeValidation': true });
         }
       } else {
-        console.log('error => ');
         this.documentImage.controls['documentimage'].setErrors({ 'fileSizeValidation': true });
       }
       this.documentImage.updateValueAndValidity();
-      console.log('this.registerForm => ', this.documentImage.controls['documentimage']);
-
     }
 
 
@@ -285,8 +296,28 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(valid) {
     this.isFormSubmitted = true;
+
+    if (this.registerForm.value['email']) {
+      const reg = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+      if (reg.test(this.registerForm.value['email'])) {
+        // this.registerForm.controls['email'].setErrors({ 'isExist': true });
+        this.checkEmail();
+        this.registerForm.updateValueAndValidity();
+      }
+      else {
+        this.registerForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
+      }
+    }
     if (valid && this.marked) {
       this.show_spinner = true;
+
+
+
+      // else if (this.registerForm.value['email'].length > 0) {
+
+      // }
+
       this.formData = new FormData();
       for (const key in this.registerData) {
         const value = this.registerData[key];
@@ -304,7 +335,14 @@ export class RegisterComponent implements OnInit {
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
         } else if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          window.location.href = environment.candidateURL + '/login';
+          Swal.fire({
+            type: 'success',
+            text: res['message']
+          }).then(function (isConfirm) {
+            if (isConfirm) {
+              this.router.navigate([environment.candidateURL + 'login']);
+            }
+          });
         }
       }, (err) => {
         this.show_spinner = false;

@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import Stepper from 'bs-stepper';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 import { ReCaptcha2Component } from 'ngx-captcha';
+import { log } from 'util';
 
 @Component({
   selector: 'app-sign-up',
@@ -22,10 +23,12 @@ export class SignUpComponent implements OnInit {
   countryID: any;
   code: any;
   isChecked;
+  isExist: any;
   marked = false;
   step2 = false;
   step3 = false;
   alldata: any;
+  decoded_Email: String;
   Business_Type: any = [];
   show_spinner = false;
   employerURL: String;
@@ -43,8 +46,10 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private service: CommonService,
     public fb: FormBuilder,
-    public toastr: ToastrService
+    public toastr: ToastrService,
+    public activatedRoute: ActivatedRoute
   ) {
+
 
     this.employerURL = environment.employerURL;
     this.candidateURL = environment.candidateURL;
@@ -85,6 +90,10 @@ export class SignUpComponent implements OnInit {
       animation: true
     });
 
+    if (this.activatedRoute.snapshot.queryParams.email) {
+      this.decoded_Email = atob(this.activatedRoute.snapshot.queryParams.email);
+      this.formData.email = this.decoded_Email;
+    }
     this.service.country_registration().subscribe(res => {
       this.alldata = res['data'];
       res['data'].forEach(element => {
@@ -112,21 +121,45 @@ export class SignUpComponent implements OnInit {
 
   next1() {
     this.isFormSubmitted = true;
-    // tslint:disable-next-line: max-line-length
-    // this.checkEmail();
-    if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid
-      //  && this.registerForm.controls['recaptcha'].valid
-    ) {
+    // // tslint:disable-next-line: max-line-length
+    // const checkEmail = this.checkEmail2();
+    if (this.registerForm.value['email']) {
+
+      const reg = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+      if (reg.test(this.registerForm.value['email'])) {
+        // this.registerForm.controls['email'].setErrors({ 'isExist': true });
+        this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
+          if (res && this.registerForm.controls['password'].valid) {
+            this.isFormSubmitted = false;
+            this.step2 = true;
+            this.stepper.next();
+          }
+
+        }, (err) => {
+          this.registerForm.controls['email'].setErrors({ 'isExist': true });
+          this.registerForm.updateValueAndValidity();
+        });
+        this.registerForm.updateValueAndValidity();
+      }
+      else {
+        this.registerForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
+      }
+
+    }
+
+    else if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid) {
+
       this.isFormSubmitted = false;
       this.step2 = true;
       this.stepper.next();
     }
+
   }
 
   next2() {
     this.isFormSubmitted = true;
     // tslint:disable-next-line: max-line-length
-    console.log('this.registerForm.controls[`businesstype`]=>', this.registerForm.controls['businesstype']);
 
     if (this.registerForm.controls['country'].valid && this.registerForm.controls['businesstype'].valid) {
       this.isFormSubmitted = false;
@@ -152,7 +185,19 @@ export class SignUpComponent implements OnInit {
         this.registerForm.updateValueAndValidity();
       });
     }
-
+  }
+  checkEmail2() {
+    // let isExist;
+    if (this.registerForm.value.email.length > 0) {
+      this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
+        this.isExist = 'false';
+      }, (err) => {
+        this.isExist = 'true';
+      }
+      );
+    }
+    console.log('=>', this.isExist);
+    return this.isExist;
   }
   // }
 
@@ -183,12 +228,16 @@ export class SignUpComponent implements OnInit {
           this.toastr.error(res['responseError'], 'Error!', { timeOut: 3000 });
           // this.formData.recaptcha = '';
         } else if (res['data'].status === 1) {
+
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           Swal.fire({
             type: 'success',
             text: res['message']
+          }).then(function (isConfirm) {
+            if (isConfirm) {
+              this.router.navigate([environment.employerURL + 'login']);
+            }
           });
-          window.location.href = environment.employerURL + '/login';
         }
       }, (err) => {
         this.show_spinner = false;
@@ -205,8 +254,6 @@ export class SignUpComponent implements OnInit {
 
 
   getCode(e) {
-    console.log('e => country on change=>', e.value);
-    console.log('businesstype=>', this.registerForm.value.businesstype);
 
     this.countryID = this.alldata.find(x => x._id === e.value);
     this.Business_Type = [];
@@ -224,14 +271,12 @@ export class SignUpComponent implements OnInit {
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
     if (this.registerForm.value.businesstype) {
-      console.log('bussiness type found =======>');
 
       // this.registerForm.value.businesstype = '';
       this.registerForm.controls['businesstype'].setValue('');
       this.registerForm.controls['businesstype'].setValidators([Validators.required]);
       this.updateValidation();
     }
-    console.log('this.registerForm.=>', this.registerForm.value.businesstype);
 
 
     // this.code.forEach(element => {

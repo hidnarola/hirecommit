@@ -41,8 +41,14 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!groupForm.controls['high_unopened'].valid && isFormSubmitted">
+                                    <span *ngIf="groupForm.controls['high_unopened'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                                 <div class="cust_err_msg" *ngIf="!groupForm.controls['high_unopened'].valid">
-
                                     <span class="text-danger"
                                         *ngIf="groupForm.controls['high_unopened'].errors['pattern']">
                                         Enter valid data.
@@ -60,8 +66,15 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
-                                <div class="cust_err_msg" *ngIf="!groupForm.controls['high_notreplied'].valid ">
 
+                                <div class="cust_err_msg"
+                                    *ngIf="!groupForm.controls['high_notreplied'].valid && isFormSubmitted">
+                                    <span *ngIf="groupForm.controls['high_notreplied'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+                                <div class="cust_err_msg" *ngIf="!groupForm.controls['high_notreplied'].valid ">
                                     <span class="text-danger"
                                         *ngIf="groupForm.controls['high_notreplied'].errors['pattern']">
                                         Enter valid data.
@@ -79,10 +92,16 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!groupForm.controls['medium_unopened'].valid && isFormSubmitted">
+                                    <span *ngIf="groupForm.controls['medium_unopened'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                                 <div class="cust_err_msg" *ngIf="!groupForm.controls['medium_unopened'].valid ">
-
                                     <span class="text-danger"
-                                        *ngIf="roupForm.controls['medium_unopened'].errors['pattern']">
+                                        *ngIf="groupForm.controls['medium_unopened'].errors['pattern']">
                                         Enter valid data.
                                     </span>
                                 </div>
@@ -98,8 +117,14 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!groupForm.controls['medium_notreplied'].valid && isFormSubmitted">
+                                    <span *ngIf="groupForm.controls['medium_notreplied'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                                 <div class="cust_err_msg" *ngIf="!groupForm.controls['medium_notreplied'].valid ">
-
                                     <span class="text-danger"
                                         *ngIf="groupForm.controls['medium_notreplied'].errors['pattern']">
                                         Enter valid data.

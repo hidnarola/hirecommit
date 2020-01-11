@@ -83,7 +83,8 @@
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let offer of offerData; let i = index;">
+                            <tr *ngFor="let offer of offerData; let i = index;" id="offer-tr"
+                                [ngClass]="{'expired': offer.isExpired}">
                                 <!-- <td>{{offer.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
                                 <td>{{offer.title}}</td>
                                 <td>{{offer.salarytype|titlecase}}</td>

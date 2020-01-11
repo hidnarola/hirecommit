@@ -71,10 +71,10 @@ export class GroupAddComponent implements OnInit {
     // form controls
     this.addGroup = this.fb.group({
       name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
-      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
-      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)]),
-      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/)])
+      high_unopened: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
+      high_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
+      medium_unopened: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
+      medium_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)])
     });
 
     this.service.alert_days().subscribe(res => {
@@ -156,6 +156,11 @@ export class GroupAddComponent implements OnInit {
       }
     }
     this.communicationData = array;
+    if (this.communicationData.length === 0) {
+      console.log('Communication length=======>');
+
+    }
+
   }
 
   public onReady(editor) {
@@ -193,11 +198,10 @@ export class GroupAddComponent implements OnInit {
       this.show_spinner = true;
       const obj = {
         ...this.addGroup.value,
-        high_unopened: this.addGroup.controls[`high_unopened`].value || this.addGroup.controls[`high_unopened`].value == 0 ? this.addGroup.controls[`high_unopened`].value : undefined,
-        high_notreplied: this.addGroup.controls[`high_notreplied`].value || this.addGroup.controls[`high_notreplied`].value == 0 ? this.addGroup.controls[`high_notreplied`].value : undefined,
-        medium_unopened: this.addGroup.controls[`medium_unopened`].value || this.addGroup.controls[`medium_unopened`].value == 0 ? this.addGroup.controls[`medium_unopened`].value : undefined,
-        medium_notreplied: this.addGroup.controls[`medium_notreplied`].value || this.addGroup.controls[`medium_notreplied`].value == 0 ?
-          this.addGroup.controls[`medium_notreplied`].value : undefined,
+        high_unopened: this.addGroup.controls[`high_unopened`].value,
+        high_notreplied: this.addGroup.controls[`high_notreplied`].value,
+        medium_unopened: this.addGroup.controls[`medium_unopened`].value,
+        medium_notreplied: this.addGroup.controls[`medium_notreplied`].value,
       }
       this.service.addGroup(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
@@ -272,10 +276,10 @@ export class GroupAddComponent implements OnInit {
         const obj = {
           id: this.group_id,
           name: this.groupData['name'],
-          high_unopened: this.groupData['high_unopened'] ? this.groupData['high_unopened'] : '',
-          high_notreplied: this.groupData['high_notreplied'] ? this.groupData['high_notreplied'] : '',
-          medium_unopened: this.groupData['medium_unopened'] ? this.groupData['medium_unopened'] : '',
-          medium_notreplied: this.groupData['medium_notreplied'] ? this.groupData['medium_notreplied'] : '',
+          high_unopened: this.groupData['high_unopened'],
+          high_notreplied: this.groupData['high_notreplied'],
+          medium_unopened: this.groupData['medium_unopened'],
+          medium_notreplied: this.groupData['medium_notreplied'],
           // low_unopened: this.groupData['low_unopened'],
           // low_notreplied: this.groupData['low_notreplied'],
           data: JSON.stringify(communication_array)

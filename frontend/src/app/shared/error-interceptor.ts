@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../services/common.service';
 import { environment } from '../../environments/environment';
+import { log } from 'util';
 @Injectable()
 export class ErrorInterceptor implements ErrorHandler {
 
@@ -21,11 +22,11 @@ export class ErrorInterceptor implements ErrorHandler {
             if (this.hostName.includes('admin')) {
                 window.location.href = environment.mainURL + '/login';
             } else if (this.hostName.includes('candidate')) {
-                window.location.href = environment.candidateURL
+                window.location.href = environment.candidateURL;
             } else if (this.hostName.includes('employer')) {
-                window.location.href = environment.employerURL
+                window.location.href = environment.employerURL;
             } else if (this.hostName.includes('sub_employer')) {
-                window.location.href = environment.employerURL
+                window.location.href = environment.employerURL;
             } else {
                 window.location.href = environment.mainURL + 'login';
             }
@@ -39,6 +40,10 @@ export class ErrorInterceptor implements ErrorHandler {
             //     // if (this.isProd) {
             //     //     window.location.href = 'http://candidate.hirecommit.com/';
             //     // }
+        } else {
+            console.log('error=>', error);
+
+            // window.location.href = environment.mainURL + 'login';
         }
 
 

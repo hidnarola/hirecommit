@@ -26,4 +26,4 @@ export const environment = {
     employerURL: 'https://employer.tanubhasin.com/',
     candidateURL: 'https://candidate.tanubhasin.com/',
     mainURL: 'https://tanubhasin.com/'
-};
+}; 

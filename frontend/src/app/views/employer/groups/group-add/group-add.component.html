@@ -41,6 +41,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!addGroup.controls['high_unopened'].valid && isFormSubmitted">
+                                    <span *ngIf="addGroup.controls['high_unopened'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['high_unopened'].valid ">
 
                                     <span *ngIf="addGroup.controls['high_unopened'].errors['pattern']"
@@ -57,6 +64,13 @@
                                     [(ngModel)]="groupData.high_notreplied" id="high_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
+                                </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!addGroup.controls['high_notreplied'].valid && isFormSubmitted">
+                                    <span *ngIf="addGroup.controls['high_notreplied'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['high_notreplied'].valid ">
 
@@ -75,6 +89,13 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!addGroup.controls['medium_unopened'].valid && isFormSubmitted">
+                                    <span *ngIf="addGroup.controls['medium_unopened'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_unopened'].valid ">
 
                                     <span *ngIf="addGroup.controls['medium_unopened'].errors['pattern']"
@@ -91,6 +112,13 @@
                                     [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
+                                </div>
+                                <div class="cust_err_msg"
+                                    *ngIf="!addGroup.controls['medium_notreplied'].valid && isFormSubmitted">
+                                    <span *ngIf="addGroup.controls['medium_notreplied'].errors['required']"
+                                        class="text-danger">
+                                        This field is required.
+                                    </span>
                                 </div>
                                 <div class="cust_err_msg" *ngIf="!addGroup.controls['medium_notreplied'].valid">
 
