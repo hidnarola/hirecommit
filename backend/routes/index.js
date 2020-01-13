@@ -1565,11 +1565,14 @@ router.post('/get_email', async (req, res) => {
         var all_Employer = await User.find({ $or: [{ "_id": offer.employer_id }, { "emp_id": offer.employer_id }] })
 
         console.log(' : all_Employer ==> ', all_Employer);
-        if (all_Employer.status == 1) {
+        if (all_Employer) {
           for (let index = 0; index < all_Employer.data.length; index++) {
             const element = all_Employer.data[index];
             console.log(' : element ==> ', element);
           }
+        } else {
+          console.log("no employer");
+
         }
 
 
