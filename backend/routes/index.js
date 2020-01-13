@@ -1152,6 +1152,27 @@ router.post('/forgot_password', async (req, res) => {
         res.status(config.BAD_REQUEST).json({ "status": 0, "message": "No user available with given email" });
       } else if (user.status === 1) {
         if (user.data.is_del == false) {
+
+          var name;
+          if (user.data.role_id == "5d9d98a93a0c78039c6dd00d") {
+            var user_name = await common_helper.findOne(Employer_Detail, { "user_id": user.data._id });
+            name = user_name.data.username;
+            name = name.substring(0, name.lastIndexOf(" "));
+            if (!name) {
+              name = user_name.data.username;
+            }
+          } else if (user.data.role_id == "5d9d99003a0c78039c6dd00f") {
+            var user_name = await common_helper.findOne(SubEmployer_Detail, { "user_id": user.data._id });
+            name = user_name.data.username;
+            name = name.substring(0, name.lastIndexOf(" "));
+            if (!name) {
+              name = user_name.data.username;
+            }
+          } else if (user.data.role_id == "5d9d98e13a0c78039c6dd00e") {
+            var user_name = await common_helper.findOne(Candidate_Detail, { "user_id": user.data._id });
+            name = user_name.data.firstname;
+          }
+
           var reset_token = Buffer.from(jwt.sign({ "_id": user.data._id }, config.ACCESS_TOKEN_SECRET_KEY, {
             expiresIn: 60 * 60 * 24 * 3
           })).toString('base64');
@@ -1160,19 +1181,6 @@ router.post('/forgot_password', async (req, res) => {
           time = btoa(time);
           var up = {
             "flag": 0
-          }
-          var name;
-          if (user.data.role_id == "5d9d98a93a0c78039c6dd00d") {
-            var user_name = await common_helper.findOne(Employer_Detail, { "user_id": user.data._id });
-            name = user_name.data.username;
-            name = name.substring(0, name.lastIndexOf(" "));
-          } else if (user.data.role_id == "5d9d99003a0c78039c6dd00f") {
-            var user_name = await common_helper.findOne(SubEmployer_Detail, { "user_id": user.data._id });
-            name = user_name.data.username;
-            name = name.substring(0, name.lastIndexOf(" "));
-          } else if (user.data.role_id == "5d9d98e13a0c78039c6dd00e") {
-            var user_name = await common_helper.findOne(Candidate_Detail, { "user_id": user.data._id });
-            name = user_name.data.firstname;
           }
           var resp_data = await common_helper.update(User, { "_id": user.data._id }, up);
           var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-mail' });
@@ -1263,18 +1271,28 @@ router.post('/reset_password', async (req, res) => {
                     res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Error occured while reseting password of user" });
                   } else {
                     logger.trace("Password has been changed - ", decoded._id);
-
+                    var name;
+                    var role;
                     if (update_resp.data.role_id == "5d9d98a93a0c78039c6dd00d") {
                       var user_name = await common_helper.findOne(Employer_Detail, { "user_id": update_resp.data._id });
                       name = user_name.data.username;
                       name = name.substring(0, name.lastIndexOf(" "));
+                      if (!name) {
+                        name = user_name.data.username;
+                      }
+                      role = "employer";
                     } else if (update_resp.data.role_id == "5d9d99003a0c78039c6dd00f") {
                       var user_name = await common_helper.findOne(SubEmployer_Detail, { "user_id": update_resp.data._id });
                       name = user_name.data.username;
                       name = name.substring(0, name.lastIndexOf(" "));
+                      if (!name) {
+                        name = user_name.data.username;
+                      }
+                      role = "sub-employer";
                     } else if (update_resp.data.role_id == "5d9d98e13a0c78039c6dd00e") {
                       var user_name = await common_helper.findOne(Candidate_Detail, { "user_id": update_resp.data._id });
                       name = user_name.data.firstname;
+                      role = "candidate";
                     }
                     var message = await common_helper.findOne(MailType, { 'mail_type': 'forgot-password-success-mail' });
                     let upper_content = message.data.upper_content;
@@ -1288,7 +1306,7 @@ router.post('/reset_password', async (req, res) => {
                       "lower_content": lower_content,
                     });
 
-                    res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed" });
+                    res.status(config.OK_STATUS).json({ "status": 1, "message": "Password has been changed", "role": role });
                   }
                 }
               }
