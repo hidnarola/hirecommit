@@ -47,7 +47,7 @@ new_mail_helper.send = async (template_id, options, data) => {
         ],
         "from": {
             "email": "support@hirecommit.com",
-            "name": "Hire Commit"
+            "name": data.companyname
         },
         "reply_to": options.reply_to2,
         "template_id": template_id

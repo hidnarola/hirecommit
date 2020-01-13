@@ -25,6 +25,7 @@ const Status = require("../../models/status");
 const History = require('../../models/offer_history');
 const MailRecord = require('../../models/mail_record');
 const MailContent = require('../../models/mail_content');
+const DisplayMeaasge = require('../../models/display_messages');
 const request = require('request');
 communication_notopen = [];
 adhoc_notopen = [];
@@ -230,6 +231,7 @@ router.post("/", async (req, res) => {
 
                     var obj = {
                         "name": name,
+                        "companyname": companyname,
                         // "subject": "You have received job offer from " + employer.data.username
                         "subject": "You have received job offer from " + companyname,
                         "upper_content": upper_content,
@@ -310,7 +312,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.subject
+                                                "subject": comm.subject,
+                                                "companyname": companyname
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -338,7 +341,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.subject
+                                                "subject": comm.subject,
+                                                "companyname": companyname
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -366,7 +370,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.subject
+                                                "subject": comm.subject,
+                                                "companyname": companyname
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -394,7 +399,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.subject
+                                                "subject": comm.subject,
+                                                "companyname": companyname
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -422,7 +428,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.subject
+                                                "subject": comm.subject,
+                                                "companyname": companyname
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -456,7 +463,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.AdHoc_subject
+                                                "subject": comm.AdHoc_subject,
+                                                "companyname": companyname
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -482,7 +490,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.AdHoc_subject
+                                                "subject": comm.AdHoc_subject,
+                                                "companyname": companyname
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -508,7 +517,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.AdHoc_subject
+                                                "subject": comm.AdHoc_subject,
+                                                "companyname": companyname
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -534,7 +544,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.AdHoc_subject
+                                                "subject": comm.AdHoc_subject,
+                                                "companyname": companyname
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -560,7 +571,8 @@ router.post("/", async (req, res) => {
 
                                             var obj = {
                                                 "message": message,
-                                                "subject": comm.AdHoc_subject
+                                                "subject": comm.AdHoc_subject,
+                                                "companyname": companyname
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -631,7 +643,12 @@ router.post('/pastOffer', async (req, res) => {
                 });
 
             if (pastOffer.data.length > 0) {
-                pastOffer.displayMessage = "Below are List of offer(s) which the candidate accepted and Not Joined in the past.Offer will be created in Hold status, please manually change it to Released status if desired.";
+                var display_message = await common_helper.findOne(DisplayMeaasge, { "msg_type": "past_offer" })
+                if (display_message.status == 1) {
+                    pastOffer.displayMessage = display_message.data.content;
+                } else {
+                    pastOffer.displayMessage = "";
+                }
             }
 
             var previousOffer = await common_helper.find(Offer, {
@@ -647,7 +664,12 @@ router.post('/pastOffer', async (req, res) => {
             });
 
             if (previousOffer.data.length > 0) {
-                previousOffer.displayMessage = " Please check, this candidate already has offer in either Released, Accepted or On Hold status. You can use edit offer to make any changes to Released and On Hold offers.";
+                var display_message = await common_helper.findOne(DisplayMeaasge, { "msg_type": "previous_offer" })
+                if (display_message.status == 1) {
+                    previousOffer.displayMessage = display_message.data.content;
+                } else {
+                    previousOffer.displayMessage = "";
+                }
             }
 
 
@@ -665,7 +687,12 @@ router.post('/pastOffer', async (req, res) => {
             });
 
             if (ReleasedOffer.data.length > 0) {
-                ReleasedOffer.displayMessage = "There is already Relesed offer for this Candidate , So you can't create offer.";
+                var display_message = await common_helper.findOne(DisplayMeaasge, { "msg_type": "released_past_offer" })
+                if (display_message.status == 1) {
+                    ReleasedOffer.displayMessage = display_message.data.content;
+                } else {
+                    ReleasedOffer.displayMessage = "";
+                }
             }
         }
         else {
@@ -2252,6 +2279,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
         var current_date = moment().startOf('day')
 
         for (const resp of resp_data) {
+            var companyname_resp = await common_helper.findOne(EmployerDetail, { "user_id": resp.employer_id })
+            var companyname;
+            if (companyname_resp.status == 1) {
+                companyname = companyname_resp.data.companyname;
+            }
             if (resp.communication !== undefined && resp.communication.length > 0) {
                 for (const comm of resp.communication) {
                     if (comm.trigger == "afterOffer") {
@@ -2273,7 +2305,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             // logger.trace("sending mail");
                             var obj = {
                                 "message": message,
-                                "subject": comm.subject
+                                "subject": comm.subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2325,7 +2358,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.subject
+                                "subject": comm.subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2364,7 +2398,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.subject
+                                "subject": comm.subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2404,7 +2439,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.subject
+                                "subject": comm.subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2444,7 +2480,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.subject
+                                "subject": comm.subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2484,7 +2521,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.subject
+                                "subject": comm.subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2530,7 +2568,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_subject
+                                "subject": comm.AdHoc_subject,
+                                "companyname": companyname
                             }
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
@@ -2572,7 +2611,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_subject
+                                "subject": comm.AdHoc_subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2611,7 +2651,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_subject
+                                "subject": comm.AdHoc_subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2651,7 +2692,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_subject
+                                "subject": comm.AdHoc_subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2691,7 +2733,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_subject
+                                "subject": comm.AdHoc_subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -2731,7 +2774,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             var obj = {
                                 "message": message,
-                                "subject": comm.AdHoc_subject
+                                "subject": comm.AdHoc_subject,
+                                "companyname": companyname
                             }
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -3160,7 +3204,8 @@ router.put('/', async (req, res) => {
                     "name": name,
                     "upper_content": upper_content,
                     "middel_content": middel_content,
-                    "lower_content": lower_content
+                    "lower_content": lower_content,
+                    "companyname": companyname
                 });
 
             } else if (offer.data.status === "Accepted" && offer_upadate.data.status === "Not Joined" && offer_upadate.data.offertype !== "noCommit") {
@@ -3179,7 +3224,8 @@ router.put('/', async (req, res) => {
                 }, {
                     "name": name,
                     "upper_content": upper_content,
-                    "lower_content": lower_content
+                    "lower_content": lower_content,
+                    "companyname": companyname
                 });
             } else if (offer.data.status === "On Hold" && offer_upadate.data.status === "Released") {
                 var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
@@ -3194,6 +3240,7 @@ router.put('/', async (req, res) => {
 
                 var obj = {
                     "name": name,
+                    "companyname": companyname,
                     "subject": "You have received job offer from " + `${companyname}`,
                     "upper_content": upper_content,
                     "middel_content": middel_content,
@@ -3208,6 +3255,10 @@ router.put('/', async (req, res) => {
                     "subject": "You have received job offer from " + `${companyname}`,
                     "trackid": offer_upadate.data._id
                 }, obj);
+
+                if (mail_resp.status == 1) {
+                    var update_date = await common_helper.update(Offer, { "_id": offer_upadate.data._id }, { "createdAt": new Date() });
+                }
             }
 
             res.status(config.OK_STATUS).json({ "status": 1, "message": "Offer is Updated successfully", "data": offer_upadate });

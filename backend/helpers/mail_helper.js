@@ -28,8 +28,16 @@ const transporter = nodemailer.createTransport(
 );
 
 mail_helper.send = async (template_name, options, data) => {
+    var companyname;
+    if (data.companyname !== undefined && data.companyname !== "") {
+        companyname = data.companyname;
+    } else if (data.candidatename !== undefined && data.candidatename !== "") {
+        companyname = data.candidatename;
+    } else {
+        companyname = "Hire Commit";
+    }
     var template_sender = transporter.templateSender(new EmailTemplate('emails/' + template_name), {
-        from: "Hire Commit <support@hirecommit.com>"
+        from: companyname + " " + "<support@hirecommit.com>"
     });
     return template_sender({
         to: options.to,

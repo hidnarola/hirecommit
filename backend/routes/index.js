@@ -31,7 +31,6 @@ const DocumentType = require('./../models/document_type');
 const Offer = require('./../models/offer');
 const RepliedMail = require('./../models/replied_mail');
 const MailType = require('./../models/mail_content');
-const new_mail_helper = require('./../helpers/new_mail_helper');
 const test_mail_helper = require('./../helpers/testmail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
@@ -621,7 +620,6 @@ router.post("/check_employer_email", async (req, res) => {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
 });
-
 
 router.post("/email_exists", async (req, res) => {
   try {
@@ -1509,6 +1507,7 @@ router.post('/get_email', async (req, res) => {
             "communication.$.reply_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
+
         mail_helper.forwardRepliedMail({
           to: update_communication.created_by.email,
           from: reqBody.from,
@@ -1560,6 +1559,21 @@ router.post('/get_email', async (req, res) => {
         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
 
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
+
+        console.log(offer.employer_id);
+
+        var all_Employer = await common_helper.find(User, { $or: [{ "_id": offer.employer_id, "emp_id": offer.employer_id }] })
+
+        console.log(' : all_Employer ==> ', all_Employer);
+        if (all_Employer.status == 1) {
+          for (let index = 0; index < all_Employer.data.length; index++) {
+            const element = all_Employer.data[index];
+            console.log(' : element ==> ', element);
+          }
+        }
+
+
+
         mail_helper.forwardRepliedMail({
           to: offer.created_by.email,
           from: reqBody.from,

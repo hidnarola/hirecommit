@@ -357,6 +357,7 @@ router.put('/', async (req, res) => {
             else if (sub_account_upadate.status == 1) {
 
                 if (sub_account_upadate.data.communication !== undefined && sub_account_upadate.data.communication.length > 0) {
+                    var companyname_resp = await common_helper.findOne(Employer, { "user_id": sub_account_upadate.data.employer_id })
                     var candidate_email = await common_helper.findOne(User, { "_id": sub_account_upadate.data.user_id })
                     var candidate_name = await common_helper.findOne(Candidate, { "user_id": sub_account_upadate.data.user_id })
                     var location = await common_helper.findOne(Location, { "_id": sub_account_upadate.data.location })
@@ -368,7 +369,8 @@ router.put('/', async (req, res) => {
 
                                 var obj = {
                                     "message": message,
-                                    "subject": comm.subject
+                                    "subject": comm.subject,
+                                    "companyname": companyname_resp.data.companyname
                                 }
 
                                 let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -403,10 +405,11 @@ router.put('/', async (req, res) => {
                             if (moment(sub_account_upadate.data.acceptedAt).startOf('day').isSame(moment(current_date).startOf('day'))) {
                                 var message = comm.AdHoc_message;
                                 message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
-                                console.log(' : message ==> ', message);
+                                console.log(' : companyname_resp.data.companyname ==> ', companyname_resp.data.companyname);
                                 var obj = {
                                     "message": message,
-                                    "subject": comm.AdHoc_subject
+                                    "subject": comm.AdHoc_subject,
+                                    "companyname": companyname_resp.data.companyname
                                 }
                                 let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                     "to": candidate_email.data.email,
@@ -414,7 +417,7 @@ router.put('/', async (req, res) => {
                                     "subject": comm.AdHoc_subject,
                                     "trackid": sub_account_upadate.data._id + "_" + comm._id + "_" + "adhoc"
                                 }, obj);
-                                console.log(' : mail_resp hi==> ', mail_resp);
+                                // console.log(' : mail_resp hi==> ', mail_resp);
                                 if (mail_resp.status == 1) {
                                     var update_offer_communication = await common_helper.update(Offer,
                                         { "_id": sub_account_upadate.data._id, "AdHoc._id": comm._id },
@@ -455,7 +458,8 @@ router.put('/', async (req, res) => {
                 }, {
                     "name": candidate.data.firstname,
                     "upper_content": upper_content,
-                    "lower_content": lower_content
+                    "lower_content": lower_content,
+                    "companyname": companyname
                 });
 
 
@@ -501,7 +505,8 @@ router.put('/', async (req, res) => {
                         "name": name,
                         "upper_content": upper_content,
                         "middel_content": middel_content,
-                        "lower_content": lower_content
+                        "lower_content": lower_content,
+                        "candidatename": candidate.data.firstname + " " + candidate.data.lastname
                     });
                 }
 
