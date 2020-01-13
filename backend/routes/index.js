@@ -1487,13 +1487,52 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
+
+
+router.get('/check_query', async (req, res) => {
+  var obj = {};
+  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
+
+  if (resp_data) {
+    res.status(config.OK_STATUS).json(resp_data);
+  } else {
+    res.status(config.BAD_REQUEST).json("ERROR");
+  }
+})
+
+router.get('/employer_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Employer_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
+
+router.get('/candidate_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Candidate_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
+
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
-
+    console.log(' : length > 24 ==> ', length);
     if (length > 24) {
       var split_data = id.split("_");
       if (split_data.length == 3 && split_data[2] === "communication") {
@@ -1579,10 +1618,6 @@ router.post('/get_email', async (req, res) => {
         console.log("Already replied..! Or offer was deleted..!");
       }
     }
-
-
-
-
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -1663,43 +1698,6 @@ router.post('/email_opened', async (req, res) => {
     }
   } catch (error) {
     res.status(500).send(error.message);
-  }
-})
-
-router.get('/check_query', async (req, res) => {
-  var obj = {};
-  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
-
-  if (resp_data) {
-    res.status(config.OK_STATUS).json(resp_data);
-  } else {
-    res.status(config.BAD_REQUEST).json("ERROR");
-  }
-})
-
-router.get('/employer_landing_page', async (req, res) => {
-  try {
-    var landing_page_resp = await common_helper.findOne(Employer_Landing_Page, {});
-    if (landing_page_resp.status == 1) {
-      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
-    } else {
-      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
-    }
-  } catch (err) {
-    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-  }
-})
-
-router.get('/candidate_landing_page', async (req, res) => {
-  try {
-    var landing_page_resp = await common_helper.findOne(Candidate_Landing_Page, {});
-    if (landing_page_resp.status == 1) {
-      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
-    } else {
-      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
-    }
-  } catch (err) {
-    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
 })
 
