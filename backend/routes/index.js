@@ -1532,7 +1532,6 @@ router.post('/get_email', async (req, res) => {
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
-    console.log(' : length > 24 ==> ', length);
     if (length > 24) {
       var split_data = id.split("_");
       if (split_data.length == 3 && split_data[2] === "communication") {
@@ -1594,7 +1593,7 @@ router.post('/get_email', async (req, res) => {
       }
     } else {
       var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-      if (offer_resp.status == 1 && offer_resp.data.reply) {
+      if (offer_resp.status == 1 && offer_resp.data.reply === false) {
         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
 
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
