@@ -838,7 +838,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 notOpened.push(data);
                                 // console.log(' :  ==> notOpened', notOpened);
                                 valuesmail = notOpened.length
-                                console.log(' : valuesmail ==> ', notOpened.length, valuesmail);
+                                // console.log(' : valuesmail ==> ', notOpened.length, valuesmail);
                                 result.push(data);
                             }
 
@@ -867,7 +867,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                 notReplied.push(data);
                                 // console.log(' : notReplied ==> ', notReplied);
                                 valuesmail1 = notReplied.length
-                                console.log(' : valuesmail1 ==> ', notReplied.length, valuesmail1);
+                                // console.log(' : valuesmail1 ==> ', notReplied.length, valuesmail1);
                                 result1.push(data);
                             }
 
@@ -883,7 +883,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
         }
         // var notOpeneddata = notOpened;
         setTimeout(async () => {
-            console.log(' : result1 ==> ', result1);
+            // console.log(' : result ==> ', result);
+            // console.log(' : result1 ==> ', result1);
             if (valuesmail == result.length || valuesmail1 == result1.length) {
                 var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
                 // console.log(' :  valuesmail==> ', valuesmail);
@@ -891,8 +892,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
                 if (all_employer.status == 1) {
                     var new_data = all_employer.data;
                     for (const filterdata of all_employer.data) {
-                        const filtered = result.filter(r => r.empid.toString() === filterdata._id.toString())
-                        const filtered1 = result1.filter(r => r.empid.toString() === filterdata._id.toString())
+                        var filtered = result.filter(r => r.empid.toString() === filterdata._id.toString())
+                        var filtered1 = result1.filter(r => r.empid.toString() === filterdata._id.toString())
+
+                        // console.log(' : filtered ==> ', filtered);
+                        // console.log(' : filtered1 ==> ', filtered1);
 
                         var email_send_to = await common_helper.find(User, {
                             "isAllow": true,
@@ -932,9 +936,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "data": filtered
                                 });
                             }
-                            filtered = [];
-                            result = [];
-                            valuesmail = 0;
+
                         }
 
                         if (filtered1.length > 0 && email_send_to.status == 1) {
@@ -964,11 +966,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
                                     "data": filtered1
                                 });
                             }
-                            filtered1 = [];
-                            result1 = [];
-                            valuesmail1 = 0;
                         }
                     }
+                    filtered = [];
+                    result = [];
+                    valuesmail = 0;
+                    filtered1 = [];
+                    result1 = [];
+                    valuesmail1 = 0;
                 }
             }
         }, 10000);
