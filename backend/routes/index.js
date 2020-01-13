@@ -1569,30 +1569,27 @@ router.post('/get_email', async (req, res) => {
           for (let index = 0; index < all_Employer.data.length; index++) {
             const element = all_Employer.data[index];
             console.log(' : element ==> ', element);
+            mail_helper.forwardRepliedMail({
+              // to: offer.created_by.email,
+              to: element.email,
+              from: reqBody.from,
+              subject: reqBody.subject,
+              content: reqBody.email,
+              filename: `${mail.data._id}.eml`,
+              html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+            }, (err, info) => {
+              if (err) {
+                console.log(error);
+              }
+              else {
+                console.log('Message forwarded: ' + info.response);
+              }
+            });
+            res.status(200).send('success');
           }
         } else {
-          console.log("no employer");
-
+          console.log("no employer found");
         }
-
-
-
-        mail_helper.forwardRepliedMail({
-          to: offer.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
-        res.status(200).send('success');
       } else {
         console.log("Already replied..! Or offer was deleted..!");
       }
