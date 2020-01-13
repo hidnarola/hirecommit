@@ -1594,7 +1594,7 @@ router.post('/get_email', async (req, res) => {
       }
     } else {
       var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-      if (offer_resp.status == 1 && offer_resp.data.reply === false) {
+      if (offer_resp.status == 1 && offer_resp.data.reply) {
         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
 
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
