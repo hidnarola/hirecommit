@@ -1562,7 +1562,7 @@ router.post('/get_email', async (req, res) => {
 
         console.log(offer.employer_id);
 
-        var all_Employer = await common_helper.find(User, { $or: [{ "_id": offer.employer_id }, { "emp_id": offer.employer_id }] })
+        var all_Employer = await User.find({ $or: [{ "_id": offer.employer_id }, { "emp_id": offer.employer_id }] })
 
         console.log(' : all_Employer ==> ', all_Employer);
         if (all_Employer.status == 1) {
