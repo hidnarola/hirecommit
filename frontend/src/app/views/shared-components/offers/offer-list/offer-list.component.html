@@ -45,7 +45,7 @@
 
                         <h5 class="text-decoration">{{Info_msg}}
                         </h5>
-                        <a *ngIf="!isNoCommit" href="termsandcondition" target="_blank">Terms and Conditions</a><br>
+                        <!-- <a *ngIf="!isNoCommit" href="termsandcondition" target="_blank">Terms and Conditions</a><br> -->
                         <!-- <input type="radio" id="accept" value="accept" name="accept" formControlName="accept"
                             (click)="accept($event)"> -->
                         <p-radioButton name="accept" value="accept" [(ngModel)]="selectedValue"
@@ -197,7 +197,16 @@
 
                         <tbody *ngIf="offerData?.length == 0">
                             <tr>
-                                <td colspan="12" class="no-data-available">No Offers Available!</td>
+                                <td *ngIf="userDetail.role === 'employer'" colspan="12" class="no-data-available">No
+                                    Offers Available!</td>
+                                <td *ngIf="userDetail.role === 'candidate'" colspan="12" class="no-data-available">There
+                                    are no offers you have received via HireCommit. Tell companies & recruiters you are
+                                    HireCommit'd and give yourself
+                                    an edge.<br>
+                                    Have more favorable discussions and receive offers from companies via
+                                    HireCommit.
+                                    You can receive multiple offers on HireCommit; there is absolutely no restriction.
+                                </td>
                             </tr>
 
                         </tbody>

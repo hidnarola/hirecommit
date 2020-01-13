@@ -211,13 +211,31 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.spinner.hide();
               this.offerData = res['offer'];
               this.offerData.forEach(element => {
-
+                // console.log('element.status=>', this.d);
                 this.d = moment(new Date(element.expirydate));
-                if (this.d < new Date()) {
+                const current_date = moment();
+
+                // console.log(' this.d =>', this.d);
+
+                // if (element.status === 'Realesed') {
+
+
+                if ((element.status === 'Released') && (this.d.isBefore(current_date))) {
+
+                  console.log(element.status);
+
+                  // if (this.d.isBefore(current_date)) {
+                  // console.log('=>', (element.status === 'Realesed'));
+
                   element.isExpired = true;
+                  // } else {
+                  //   element.isExpired = false;
+                  // }
                 } else {
                   element.isExpired = false;
                 }
+                // // }
+                // console.log('element=>', element);
               }
               );
               // this.d = moment(new Date(res[`offer`].expirydate));

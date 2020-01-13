@@ -1245,10 +1245,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     const month = date.getMonth() + 1;
     this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
     this.max_date = this.form.value.expirydate;
-    if (this.is_Edit) {
-      if (this.form.value.joiningdate < this.form.value.expirydate) {
-        this.form.controls['joiningdate'].setErrors({ 'isGreater': true });
-      }
+    // if (this.is_Edit) {
+    if (this.form.value.joiningdate < this.form.value.expirydate) {
+      this.form.controls['joiningdate'].setErrors({ 'isGreater': true });
+      // }
     }
     // }
   }

@@ -31,7 +31,7 @@ export class EmailconfermationComponent implements OnInit {
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         Swal.fire({
           type: 'success',
-          text: 'Thank you for verifying your emails'
+          text: 'Thank you for verifying your email'
 
         }).then(function (isConf) {
           if (res['role'] === 'candidate') {

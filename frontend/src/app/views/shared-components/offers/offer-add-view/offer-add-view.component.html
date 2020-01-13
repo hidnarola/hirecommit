@@ -298,6 +298,28 @@
                                 <h3>Offer Dates & Type</h3>
                             </div>
                             <div class="col-md-6 form-group">
+                                <label class="col-form-label" for="expirydate">Expiry Date <p class="ast"> *</p></label>
+
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="offerExpired"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
+                                    [minDate]="min_date" (onSelect)="getExpiryDate($event)">
+                                </p-calendar>
+                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="!offerExpired"
+                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
+                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
+                                    [disabled]="is_View || isAccepted" [minDate]="min_date"
+                                    (onSelect)="getExpiryDate($event)">
+                                </p-calendar>
+                                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
+                                    <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
+                                        This field is required.
+                                    </span>
+                                </div>
+
+
+                            </div>
+                            <div class="col-md-6 form-group">
                                 <label class="col-form-label" for="joiningdate">Joining Date <p class="ast"> *</p>
                                 </label>
                                 <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}"
@@ -321,33 +343,13 @@
                                 </div>
                                 <div class="cust_err_msg" *ngIf="!form.controls['joiningdate'].valid">
                                     <span *ngIf="form.controls['joiningdate'].errors['isGreater']" class="text-danger">
-                                        Please select Joining date greater than Expiry date.
+                                        <!-- Please select Joining date greater than Expiry date. -->
+                                        Joining date should be greater than Expiry date
                                     </span>
                                 </div>
                             </div>
 
-                            <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="expirydate">Expiry Date <p class="ast"> *</p></label>
 
-                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="offerExpired"
-                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [minDate]="min_date" (onSelect)="getExpiryDate($event)">
-                                </p-calendar>
-                                <p-calendar dateFormat="dd/mm/yy" [style]="{'width':'100%'}" *ngIf="!offerExpired"
-                                    [inputStyle]="{'width':'100%'}" placeholder="DD/MM/YYYY"
-                                    formControlName="expirydate" id="expirydate" [readonlyInput]="is_View"
-                                    [disabled]="is_View || isAccepted" [minDate]="min_date"
-                                    (onSelect)="getExpiryDate($event)">
-                                </p-calendar>
-                                <div class="cust_err_msg" *ngIf="form_validation && !form.controls['expirydate'].valid">
-                                    <span *ngIf="form.controls['expirydate'].errors['required']" class="text-danger">
-                                        This field is required.
-                                    </span>
-                                </div>
-
-
-                            </div>
                             <div *ngIf="is_Edit" class="col-md-6 form-group">
                                 <label class="col-form-label" for="expirydate">Acceptance Date</label>
                                 <input type="text" class="form-control" placeholder="Date of Offer Acceptance"
@@ -444,7 +446,7 @@
                             <div class="col-md-6 form-group">
                                 <label> &nbsp; </label>
                                 <button class="btn btn-sm btn-primary" style="float: right;"
-                                    (click)="addMoreCommunication()" [disabled]="offerExpired">
+                                    (click)="addMoreCommunication()" [disabled]="offerExpired" type="button">
                                     Add AdHoc Communication
                                 </button>
                             </div>
@@ -585,7 +587,8 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
                                         <div class="card-header h5">Communication - {{i+1}}
-                                            <button class="btn btn-danger pull-right" (click)="remove_communication(i)"
+                                            <button type="button" class="btn btn-danger pull-right"
+                                                (click)="remove_communication(i)"
                                                 [disabled]="offerExpired">Delete</button>
 
                                         </div>
@@ -760,6 +763,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="text-right col-md-12 form-group">
+                                <label> &nbsp; </label>
+                                <button class="btn btn-sm btn-primary" (click)="addMoreCommunication()"
+                                    [disabled]="offerExpired" type="button">
+                                    Add AdHoc Communication
+                                </button>
+                            </div>
                         </ng-container>
                         <!-- communication -->
 
@@ -772,10 +782,10 @@
                                     <div class="card communication-fills">
                                         <div class="card-header h5">AdHoc Communication - {{i+1}}
 
-                                            <button class="btn btn-danger pull-right"
+                                            <button class="btn btn-danger pull-right" type="button"
                                                 (click)="remove_AdHoc_communication(i)"
                                                 [disabled]="offerExpired">Delete</button>
-                                            <button class=" btn btn-secondary  pull-right mr-2"
+                                            <button type="button" class=" btn btn-secondary  pull-right mr-2"
                                                 (click)="add_new_AdHoc_communication(i)" [disabled]="offerExpired">Add
                                                 AdHoc
                                                 Communication</button>
@@ -1341,7 +1351,7 @@
 
                     <h5 class="text-decoration">{{Info_msg}}
                     </h5>
-                    <a *ngIf="!isNoCommit" href="termsandcondition" target="_blank">Terms and Conditions</a><br>
+                    <!-- <a *ngIf="!isNoCommit" href="termsandcondition" target="_blank">Terms and Conditions</a><br> -->
                     <!-- <input type="radio" id="accept" value="accept" name="accept" formControlName="accept"
                                     (click)="accept($event)"> -->
                     <p-radioButton name="accept" value="accept" [(ngModel)]="selectedValue"
