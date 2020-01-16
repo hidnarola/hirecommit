@@ -796,8 +796,8 @@ router.post('/login', async (req, res) => {
                   res.status(config.UNAUTHORIZED).json({ "status": 0, "isApproved": false, "message": message.data.content });
                 }
               } else if (user_resp.role_id.role === "employer") {
-                if (user_resp.isAllow == true) {
-                  if (user_resp.email_verified == true) {
+                if (user_resp.email_verified == true) {
+                  if (user_resp.isAllow == true) {
                     var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
                     let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
 
@@ -905,17 +905,17 @@ router.post('/login', async (req, res) => {
                     ])
                     res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
                   } else {
-                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+                    var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'employer_not_approve' });
+                    res.status(config.UNAUTHORIZED).json({
+                      "status": 0, "isApproved": false, "message": message.data.content
+                    });
                   }
                 } else {
-                  var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'employer_not_approve' });
-                  res.status(config.UNAUTHORIZED).json({
-                    "status": 0, "isApproved": false, "message": message.data.content
-                  });
+                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
                 }
               } else {
-                if (user_resp.isAllow == true) {
-                  if (user_resp.email_verified == true) {
+                if (user_resp.email_verified == true) {
+                  if (user_resp.isAllow == true) {
                     var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
                     let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
 
@@ -1023,10 +1023,10 @@ router.post('/login', async (req, res) => {
                     ])
                     res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
                   } else {
-                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
                   }
                 } else {
-                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
+                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
                 }
               }
             }
@@ -1658,8 +1658,6 @@ async function getCountry(req, res) {
   }
 }
 
-
-
 router.get('/business_type/:country', async (req, res) => {
   try {
     const country = await BusinessType.find({ "country": req.params.country }).lean();
@@ -1675,8 +1673,6 @@ router.get('/business_type/:country', async (req, res) => {
     });
   }
 })
-
-
 
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
@@ -1718,9 +1714,5 @@ router.get('/candidate_landing_page', async (req, res) => {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
 })
-
-
-
-
 
 module.exports = router;
