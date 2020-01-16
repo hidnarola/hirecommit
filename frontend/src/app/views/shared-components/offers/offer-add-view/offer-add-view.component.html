@@ -362,7 +362,8 @@
                                 <h3>General Details</h3>
                             </div> -->
                             <div class="col-md-6 form-group">
-                                <label class="col-form-label" for="offertype">Offer Type <p class="ast"> *</p></label>
+                                <label class="col-form-label" for="offertype">HireLock Offer Type <p class="ast"> *</p>
+                                </label>
                                 <p-dropdown [options]="offer_type_optoins" [style]="{'width':'100%'}"
                                     formControlName="offertype" id="offertype" [disabled]="isAccepted">
                                 </p-dropdown>
@@ -399,7 +400,7 @@
                         </div>
 
                         <!-- Custom Field -->
-                        <ng-container formArrayName="customfieldItem">
+                        <ng-container formArrayName="customfieldItem" *ngIf="isCustomFieldAdd">
                             <div class="row add-offer-form-part">
                                 <div class="col-md-12">
                                     <h3>Custom Field Details</h3>
@@ -587,9 +588,9 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
                                         <div class="card-header h5">Communication - {{i+1}}
-                                            <button type="button" class="btn btn-danger pull-right"
+                                            <!-- <button type="button" class="btn btn-danger pull-right"
                                                 (click)="remove_communication(i)"
-                                                [disabled]="offerExpired">Delete</button>
+                                                [disabled]="offerExpired">Delete</button> -->
 
                                         </div>
                                         <div class="card-body">
@@ -728,7 +729,7 @@
                                                             <div [ngxSummernote]="config" #editor
                                                                 [(ngModel)]="customfield.message"
                                                                 [(summernoteModel)]="customfield.message" id="editor"
-                                                                formControlName="message" [disabled]="offerExpired">
+                                                                formControlName="message">
                                                             </div>
                                                         </div>
                                                         <div class="cust_err_msg"
@@ -743,7 +744,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 bunch-list">
-                                                    <label class="col-form-label">Title here</label>
+                                                    <label class="col-form-label">List of Dynamic Fields</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>
                                                         <li (click)="append('||candidate_name||')">candidate_name</li>
@@ -754,16 +755,22 @@
                                                         <li (click)="append('||acceptance_date||')">acceptance_date</li>
                                                     </ul>
                                                     <p style="color: grey;">If you want to use this content click on it
-                                                        and paste it in
-                                                        editor.</p>
+                                                        and paste it in editor or simply type it like ||offer_date||.
+                                                    </p>
 
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="card-footer text-right ">
+                                            <button type="button" class="btn btn-danger"
+                                                (click)="remove_communication(i)"
+                                                [disabled]="offerExpired">Delete</button>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-right col-md-12 form-group">
+                            <div class="text-right col-md-12 form-group" *ngIf="isAdHoc_ButtonShow || is_Edit">
                                 <label> &nbsp; </label>
                                 <button class="btn btn-sm btn-primary" (click)="addMoreCommunication()"
                                     [disabled]="offerExpired" type="button">
@@ -782,13 +789,13 @@
                                     <div class="card communication-fills">
                                         <div class="card-header h5">AdHoc Communication - {{i+1}}
 
-                                            <button class="btn btn-danger pull-right" type="button"
+                                            <!-- <button class="btn btn-danger pull-right" type="button"
                                                 (click)="remove_AdHoc_communication(i)"
                                                 [disabled]="offerExpired">Delete</button>
                                             <button type="button" class=" btn btn-secondary  pull-right mr-2"
                                                 (click)="add_new_AdHoc_communication(i)" [disabled]="offerExpired">Add
                                                 AdHoc
-                                                Communication</button>
+                                                Communication</button> -->
                                         </div>
                                         <div class="card-body">
                                             <div class="form-goup no-gutters row">
@@ -961,7 +968,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 bunch-list">
-                                                    <label class="col-form-label">Title here</label>
+                                                    <label class="col-form-label">List of Dynamic Fields</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>
                                                         <li (click)="append('||candidate_name||')">candidate_name</li>
@@ -972,12 +979,23 @@
                                                         <li (click)="append('||acceptance_date||')">acceptance_date</li>
                                                     </ul>
                                                     <p style="color: grey;">If you want to use this content click on it
-                                                        and paste it in
-                                                        editor.</p>
+                                                        and paste it in editor or simply type it like ||offer_date||.
+                                                    </p>
 
                                                 </div>
 
                                             </div>
+
+                                        </div>
+                                        <div class="card-footer text-right ">
+                                            <button type="button" class=" btn  btn-primary "
+                                                (click)="add_new_AdHoc_communication(i)" [disabled]="offerExpired">Add
+                                                AdHoc
+                                                Communication</button>
+                                            <button class="btn btn-danger  mr-2 " type="button"
+                                                (click)="remove_AdHoc_communication(i)"
+                                                [disabled]="offerExpired">Delete</button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -1082,7 +1100,7 @@
                             <p>{{isAcceptedView}}
                         </div>
                         <div class="col-md-6">
-                            <strong>Offer Type</strong>
+                            <strong>HireLock Offer Type</strong>
                             <p>{{resData.offertype}}</p>
                         </div>
                         <div class="col-md-6">
@@ -1118,11 +1136,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row viewoffers-info" *ngIf="resData.groupName">
+                    <div class="row viewoffers-info" *ngIf="resData.groupName || resData.AdHoc">
                         <div class="col-md-12">
                             <h3>Communication Details</h3>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12" *ngIf="resData.groupName">
                             <strong>Group</strong>
                             <p>{{resData.groupName ? resData.groupName : '-'}}</p>
                         </div>
@@ -1456,7 +1474,7 @@
                             <p>{{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</p>
                         </div>
                         <div class="col-md-6">
-                            <strong>Offer Type</strong>
+                            <strong>HireLock Offer Type</strong>
                             <p>{{resData.offertype}}</p>
                         </div>
                         <div class="col-md-6">

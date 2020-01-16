@@ -92,6 +92,7 @@ export class AdminLoginComponent implements OnInit {
 
         if (this.isProd || this.isStaging) {
           window.location.href = environment.mainURL + `/authorize?role=${this.role}&token=${token}`;
+          // this.router.navigate([environment.mainURL + `/authorize?role=${this.role}&token=${token}`]);
           // if (this.role === 'admin') {
           //   // this.router.navigate(['admin']);
           //   window.location.href = 'http://hirecommit.com/admin/employers/approved_employer';

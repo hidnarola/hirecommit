@@ -16,7 +16,7 @@
                         Add Custom Fields
                     </button>
 
-                    <button *ngIf="userDetail.role === 'sub-employer'  &&  adminRights"
+                    <button *ngIf="userDetail.role === 'sub-employer'"
                         class="pull-right btn btn-sm btn-primary custom-margin"
                         [routerLink]="['/sub_employer/custom_fields/add']">
                         <i class="icon-plus"></i>
@@ -78,13 +78,21 @@
                                         [routerLink]="['/sub_employer/custom_fields/view/',d._id]">
                                         <i class="icon-eye"></i></button>
 
-                                    <button *ngIf="adminRights" tooltip='Edit' type="button"
+                                    <!-- <button *ngIf="adminRights" tooltip='Edit' type="button"
                                         class="btn btn-sm btn-primary"
                                         [routerLink]="['/sub_employer/custom_fields/edit/',d._id]">
                                         <i class="icon-pencil"></i></button>
 
                                     <button *ngIf="adminRights" tooltip='Delete' type="button"
                                         class="btn btn-sm btn-danger" (click)="delete(d._id)">
+                                        <i class="icon-trash"></i></button> -->
+
+                                    <button tooltip='Edit' type="button" class="btn btn-sm btn-primary"
+                                        [routerLink]="['/sub_employer/custom_fields/edit/',d._id]">
+                                        <i class="icon-pencil"></i></button>
+
+                                    <button tooltip='Delete' type="button" class="btn btn-sm btn-danger"
+                                        (click)="delete(d._id)">
                                         <i class="icon-trash"></i></button>
                                 </td>
                             </tr>

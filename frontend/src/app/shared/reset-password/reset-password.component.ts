@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { CommonService } from '../../services/common.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -67,24 +68,40 @@ export class ResetPasswordComponent implements OnInit {
         token: new FormControl(this.params_token.token),
         password: new FormControl(this.form.value.password)
       });
+      const that = this;
       this.service.reset_password(this.submitform.value).subscribe(res => {
         this.isFormSubmitted = false;
         this.formData = {};
         if (res['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
-          if (res['role'] === 'candidate') {
-            window.location.href = environment.candidateURL + '/login';
-          } else if (res['role'] === 'employer') {
-            window.location.href = environment.employerURL + '/login';
-          } else if (res['role'] === 'sub-employer') {
-            window.location.href = environment.employerURL + '/login';
-          }
-          else if (res['role'] === 'admin') {
-            window.location.href = environment.mainURL + '/login';
-          } else {
-            this.router.navigate(['/login']);
-          }
-          // this.router.navigate(['/login']);
+          Swal.fire({
+            type: 'success',
+            text: 'Password has been reset successfully'
+
+          }).then(function (isConf) {
+            if (res['role'] === 'candidate') {
+              window.location.href = environment.candidateURL + '/login';
+            } else if (res['role'] === 'employer') {
+              window.location.href = environment.employerURL + '/login';
+            } else if (res['role'] === 'sub-employer') {
+              window.location.href = environment.employerURL + '/login';
+            } else {
+              that.router.navigate(['/login']);
+            }
+            // if (res['role'] === 'candidate') {
+            //   window.location.href = environment.candidateURL + '/login';
+            // } else if (res['role'] === 'employer') {
+            //   window.location.href = environment.employerURL + '/login';
+            // } else if (res['role'] === 'sub-employer') {
+            //   window.location.href = environment.employerURL + '/login';
+            // }
+            // else if (res['role'] === 'admin') {
+            //   window.location.href = environment.mainURL + '/login';
+            // } else {
+            //   this.router.navigate(['/login']);
+            // }
+            // this.router.navigate(['/login']);
+          });
         }
       }, (err) => {
         this.toastr.error(err['error'].message, 'Error!', { timeOut: 3000 });

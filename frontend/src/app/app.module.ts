@@ -49,7 +49,7 @@ import { ContactUSComponent } from './shared/contact-us/contact-us.component';
 // import { HeaderComponent } from './views/static/header/header.component';
 // import { FooterComponent } from './views/static/footer/footer.component';
 
-console.log('url', environment.API_URL);
+
 
 const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
 
@@ -78,7 +78,7 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     }),
     NgxCaptchaModule,
     ToastrModule.forRoot({
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-center-center',
       preventDuplicates: true
     }),
     SocketIoModule.forRoot(config)

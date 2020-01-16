@@ -90,6 +90,7 @@ export class CandidateLoginComponent implements OnInit {
         this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
         if (this.isProd || this.isStaging) {
           window.location.href = this.mainURL + `/authorize?role=${this.role}&token=${token}`;
+          // this.router.navigate([this.mainURL + `/authorize?role=${this.role}&token=${token}`]);
         }
 
         // if (this.role === 'admin') {

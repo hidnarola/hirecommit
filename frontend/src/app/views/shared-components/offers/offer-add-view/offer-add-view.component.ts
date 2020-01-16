@@ -58,11 +58,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   isAccept = false;
   pastDetails: any;
   msg: any;
+  offer: any;
   offerExpired = false;
   err_msg: any;
   isShow = false;
   valueForEditor: any;
   details: any;
+  isPopup_Show = false;
   groupData: any = {};
   selectedValue: string;
   Candidate: HTMLElement;
@@ -70,6 +72,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   cursorPos: any;
   d: any;
   isSalaryBracket: Boolean = false;
+  isAdHoc_ButtonShow = false;
   locationList: any = [
     { label: 'Select Location', value: '' }
   ];
@@ -155,6 +158,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   isAcceptedView: any;
   isSalaryFrom_To: Boolean = false;
   isCustomFieldView = false;
+  isCustomFieldAdd = false;
   astSalary = false;
   constructor(
     private fb: FormBuilder,
@@ -512,6 +516,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.service.offer_detail(this.id).subscribe((res) => {
         if (res[`data`]) {
           this.spinner.hide();
+
+          //viwe offer
           if (this.is_View) {
 
             if (!(res['data'].status === 'Accepted')) {
@@ -544,9 +550,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 document.getElementsByClassName('note-editable')[p].setAttribute('contenteditable', 'false');
               }
             }, 500);
-
+            // edit offer
           } else if (this.is_Edit) {
             this.d = moment(new Date(res[`data`].expirydate));
+            //offer is accepted
             if (res['data'].status === 'Accepted') {
               this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
@@ -566,7 +573,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
               this.updateValidation();
-            } else if (this.d < new Date()) {
+            }
+            // offer is expired
+            else if (this.d < new Date()) {
               this.offerExpired = true;
               // this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
@@ -853,7 +862,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           if (res.value) {
             this.isCustomFieldView = true;
           }
-        })
+        });
 
         this.candidateData = res['candidate_data']['data'];
         this.grpId = this.resData.user_id;
@@ -900,29 +909,40 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     } else if (this.userDetail.role === 'admin') {
 
-
-
       //  do code here for admin side - offer detail
       this.adminService.offer_detail_admin(this.id).subscribe((res) => {
         this.spinner.hide();
+
+
+
         // res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
         if (res[`data`][`AdHoc`].length > 0) {
-
           res[`data`][`AdHoc`].forEach(element => {
             element.AdHoc_trigger = (this.Trigger_Option.find(o => o.value === element.AdHoc_trigger).label);
           });
-
         }
+
         if (res[`data`][`communication`].length > 0) {
           res[`data`][`communication`].forEach(element => {
             element.trigger =
               (this.Trigger_Option.find(o => o.value === element.trigger).label);
-
           });
           // res[`data`][`communication`][0].trigger =
           //   (this.Trigger_Option.find(o => o.value === res[`data`][`communication`][0].trigger).label);
         }
+
+
+        //disabled summernote
+        setTimeout(function () {
+          const len = document.getElementsByClassName('note-editable').length;
+          for (let p = 0; p < len; p++) {
+            document.getElementsByClassName('note-editable')[p].setAttribute('contenteditable', 'false');
+          }
+        }, 500);
+
+
         this.resData = res[`data`];
+        this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
         if (this.resData.acceptedAt) {
           this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
         } else {
@@ -938,16 +958,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           if (res.value) {
             this.isCustomFieldView = true;
           }
-        })
+        });
         this.candidateData = res['candidate_data']['data'];
         this.spinner.hide();
         this.is_View = true;
         this.resData.groupName = res['data']['groups']['name'];
         this.groupDetail(res[`data`].groups);
+
       });
-
-
-
 
     }
   }
@@ -993,6 +1011,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   async customFieldList() {
     this.service.get_customfield().subscribe(
       res => {
+
+        if (res[`data`].length > 0) {
+          this.isCustomFieldAdd = true;
+        }
         this.customfield = res['data'];
 
         const _array = [];
@@ -1022,7 +1044,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   // get group list
   async groupList() {
     this.service.get_groups().subscribe(res => {
-      console.log('res=>', res);
+
       if (res[`data`].data) {
         res[`data`].data.forEach(element => {
           this.group_optoins.push({ label: element.name, value: element._id });
@@ -1062,10 +1084,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   //  set controls for group form
   setGroupFormControl() {
-    this.form.setControl('high_unopened', new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]));
-    this.form.setControl('high_notreplied', new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]));
-    this.form.setControl('medium_unopened', new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]));
-    this.form.setControl('medium_notreplied', new FormControl('', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]));
+    this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required
+    ]));
+    this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
+    this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
+    this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
     this.form.updateValueAndValidity();
   }
 
@@ -1107,6 +1130,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.groupData = res['data']['data'][0];
         if (res['communication']['data'] && res['communication']['data'].length > 0) {
           this.communicationData = res['communication']['data'][0]['communication'];
+
+          this.isAdHoc_ButtonShow = true;
+
         }
 
         // set communication
@@ -1382,6 +1408,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       }
     }
     this.communicationData = array;
+    console.log('this.communicationData.length=>', this.communicationData.length);
+
+    if (this.communicationData.length == 0) {
+      this.isAdHoc_ButtonShow = false;
+      this.is_Edit = false;
+    } else {
+      this.isAdHoc_ButtonShow = true;
+    }
   }
 
   // Remove AdHOC
@@ -1594,22 +1628,22 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   removeZero_high_unopened() {
-    if (this.form.value.high_unopened && this.form.value.high_unopened > 0) {
+    if (this.form.value.high_unopened && this.form.value.high_unopened >= 0) {
       this.form.controls['high_unopened'].setValue(parseFloat(this.form.value[`high_unopened`]));
     }
   }
   removeZero_high_notreplied() {
-    if (this.form.value.high_notreplied && this.form.value.high_notreplied > 0) {
+    if (this.form.value.high_notreplied && this.form.value.high_notreplied >= 0) {
       this.form.controls['high_notreplied'].setValue(parseFloat(this.form.value[`high_notreplied`]));
     }
   }
   removeZero_medium_unopened() {
-    if (this.form.value.medium_unopened && this.form.value.medium_unopened > 0) {
+    if (this.form.value.medium_unopened && this.form.value.medium_unopened >= 0) {
       this.form.controls['medium_unopened'].setValue(parseFloat(this.form.value[`medium_unopened`]));
     }
   }
   removeZero_medium_notreplied() {
-    if (this.form.value.medium_notreplied && this.form.value.medium_notreplied > 0) {
+    if (this.form.value.medium_notreplied && this.form.value.medium_notreplied >= 0) {
       this.form.controls['medium_notreplied'].setValue(parseFloat(this.form.value[`medium_notreplied`]));
     }
   }
@@ -1826,8 +1860,19 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
     this.form_validation = !flag;
   }
+  ngAfterViewInit(): void {
+
+  }
 
   ngOnDestroy(): void {
+    // this.offer = this.form.value;
+    // Object.keys(this.form.controls).forEach((v, key) => {
+    //   if (this.form.controls[v].value) {
+    //     this.commonService.setUnSavedData(true);
+    //     return;
+    //   }
+    // });
+
     this.socketService.leaveGrp(this.grpId);
   }
 
