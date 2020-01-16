@@ -25,7 +25,8 @@ router.get("/groups_list", async (req, res) => {
         else {
             var user_id = req.userInfo.id
         }
-        var group_list = await common_helper.find(group, { is_del: false, flag: "undraft", "emp_id": new ObjectId(user_id) });
+        // flag: "undraft",
+        var group_list = await common_helper.find(group, { is_del: false, "emp_id": new ObjectId(user_id) });
         if (group_list.status === 1) {
             return res.status(config.OK_STATUS).json({ 'message': "group List", "status": 1, data: group_list });
         }
