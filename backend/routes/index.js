@@ -1508,9 +1508,9 @@ router.post('/get_email', async (req, res) => {
             "communication.$.reply_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
-        console.log(' : update_communication ==> ', update_communication); return false;
-        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication._id }, { "emp_id": update_communication.employer_id }] });
 
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication._id }, { "emp_id": update_communication.employer_id }] });
+        console.log(' : all_employer ==> ', all_employer); return false;
         mail_helper.forwardRepliedMail({
           to: update_communication.created_by.email,
           from: reqBody.from,
