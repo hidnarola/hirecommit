@@ -1486,55 +1486,13 @@ router.get('/business_type/:country', async (req, res) => {
   }
 })
 
-router.get('/country', getCountry);
-router.get('/country/:id', getCountry);
-
-
-
-router.get('/check_query', async (req, res) => {
-  var obj = {};
-  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
-
-  if (resp_data) {
-    res.status(config.OK_STATUS).json(resp_data);
-  } else {
-    res.status(config.BAD_REQUEST).json("ERROR");
-  }
-})
-
-router.get('/employer_landing_page', async (req, res) => {
-  try {
-    var landing_page_resp = await common_helper.findOne(Employer_Landing_Page, {});
-    if (landing_page_resp.status == 1) {
-      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
-    } else {
-      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
-    }
-  } catch (err) {
-    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-  }
-})
-
-router.get('/candidate_landing_page', async (req, res) => {
-  try {
-    var landing_page_resp = await common_helper.findOne(Candidate_Landing_Page, {});
-    if (landing_page_resp.status == 1) {
-      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
-    } else {
-      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
-    }
-  } catch (err) {
-    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-  }
-})
-
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
-    console.log(reqBody);
+    // console.log(reqBody);
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
-    console.log(' : id ==> ', id);
+    // console.log(' : id ==> ', id);
     var length = id.length;
     console.log(' :  length ==> ', length);
     if (length > 24) {
@@ -1600,8 +1558,9 @@ router.post('/get_email', async (req, res) => {
       var offer_resp = await common_helper.findOne(Offer, { "_id": id });
       //  && offer_resp.data.reply === false
       if (offer_resp.status == 1) {
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": offer_resp.data.employer_id }, { "emp_id": offer_resp.data.employer_id }] });
+        console.log(' :all_employer  ==> ', all_employer); return false;
         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
-
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
         mail_helper.forwardRepliedMail({
           to: offer.created_by.email,
@@ -1618,6 +1577,7 @@ router.post('/get_email', async (req, res) => {
             console.log('Message forwarded: ' + info.response);
           }
         });
+
         res.status(200).send('success');
       } else {
         console.log("Already replied..! Or offer was deleted..!");
@@ -1627,6 +1587,50 @@ router.post('/get_email', async (req, res) => {
     res.status(500).send(error.message);
   }
 })
+
+router.get('/country', getCountry);
+router.get('/country/:id', getCountry);
+
+
+
+router.get('/check_query', async (req, res) => {
+  var obj = {};
+  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
+
+  if (resp_data) {
+    res.status(config.OK_STATUS).json(resp_data);
+  } else {
+    res.status(config.BAD_REQUEST).json("ERROR");
+  }
+})
+
+router.get('/employer_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Employer_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
+
+router.get('/candidate_landing_page', async (req, res) => {
+  try {
+    var landing_page_resp = await common_helper.findOne(Candidate_Landing_Page, {});
+    if (landing_page_resp.status == 1) {
+      res.status(config.OK_STATUS).json({ "status": 1, "data": landing_page_resp.data, "message": "" });
+    } else {
+      res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Something faild while featching data from database." });
+    }
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
+
+
 
 // router.post('/email_opened', async (req, res) => {
 //   try {
