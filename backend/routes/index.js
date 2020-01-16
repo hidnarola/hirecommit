@@ -31,7 +31,6 @@ const DocumentType = require('./../models/document_type');
 const Offer = require('./../models/offer');
 const RepliedMail = require('./../models/replied_mail');
 const MailType = require('./../models/mail_content');
-const new_mail_helper = require('./../helpers/new_mail_helper');
 const test_mail_helper = require('./../helpers/testmail_helper');
 
 const DisplayMessage = require('./../models/display_messages');
@@ -368,7 +367,9 @@ router.post("/candidate_register", async (req, res) => {
                       if (mail_resp.status === 0) {
                         res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                       } else {
-                        res.json({ "status": 1, "message": "Candidate Registration Successful, Confirmation mail send to your email", "data": interest_user_resp })
+                        res.json({
+                          "status": 1, "message": "Candidate registration successful, confirmation mail sent to your email.", "data": interest_user_resp
+                        })
                       }
                     }
 
@@ -588,7 +589,7 @@ router.post("/employer_register", async (req, res) => {
                 if (mail_resp.status === 0) {
                   res.status(config.INTERNAL_SERVER_ERROR).json({ "status": 0, "message": "Error occured while sending confirmation email", "error": mail_resp.error });
                 } else {
-                  res.json({ "message": "Employer Registration Successful, Confirmation mail send to your email", "data": interest_user_resp })
+                  res.json({ "message": "Employer registration successful, confirmation mail sent to your email.", "data": interest_user_resp })
                 }
               } else {
                 res.status(config.BAD_REQUEST).json({ "status": 0, "message": "Registration Faild." })
@@ -621,7 +622,6 @@ router.post("/check_employer_email", async (req, res) => {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
 });
-
 
 router.post("/email_exists", async (req, res) => {
   try {
@@ -796,8 +796,8 @@ router.post('/login', async (req, res) => {
                   res.status(config.UNAUTHORIZED).json({ "status": 0, "isApproved": false, "message": message.data.content });
                 }
               } else if (user_resp.role_id.role === "employer") {
-                if (user_resp.isAllow == true) {
-                  if (user_resp.email_verified == true) {
+                if (user_resp.email_verified == true) {
+                  if (user_resp.isAllow == true) {
                     var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
                     let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
 
@@ -905,17 +905,17 @@ router.post('/login', async (req, res) => {
                     ])
                     res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
                   } else {
-                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+                    var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'employer_not_approve' });
+                    res.status(config.UNAUTHORIZED).json({
+                      "status": 0, "isApproved": false, "message": message.data.content
+                    });
                   }
                 } else {
-                  var message = await common_helper.findOne(DisplayMessage, { 'msg_type': 'employer_not_approve' });
-                  res.status(config.UNAUTHORIZED).json({
-                    "status": 0, "isApproved": false, "message": message.data.content
-                  });
+                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
                 }
               } else {
-                if (user_resp.isAllow == true) {
-                  if (user_resp.email_verified == true) {
+                if (user_resp.email_verified == true) {
+                  if (user_resp.isAllow == true) {
                     var refreshToken = jwt.sign({ id: user_resp._id }, config.REFRESH_TOKEN_SECRET_KEY, {});
                     let update_resp = await common_helper.update(User, { "_id": user_resp._id }, { "refresh_token": refreshToken, "last_login": Date.now() });
 
@@ -1023,10 +1023,10 @@ router.post('/login', async (req, res) => {
                     ])
                     res.status(config.OK_STATUS).json({ "status": 1, "message": "Logged in successfully", "data": user_resp, "token": token, "refresh_token": refreshToken, "userDetails": userDetails, "role": user_resp.role_id.role, id: user_resp._id });
                   } else {
-                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
+                    res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
                   }
                 } else {
-                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "This user is not approved." });
+                  res.status(config.UNAUTHORIZED).json({ "status": 0, "message": "Email address not verified" });
                 }
               }
             }
@@ -1454,141 +1454,6 @@ router.post('/test_mail', async (req, res) => {
   }
 })
 
-async function getCountry(req, res) {
-  try {
-
-    const country = await CountryData.find({ $or: [{ "country": "India" }, { "country": "United States" }] }).lean();
-    return res.status(config.OK_STATUS).json({
-      success: true, message: 'country list fetched successfully.',
-      data: country
-    });
-  } catch (error) {
-    return res.status(config.INTERNAL_SERVER_ERROR).send({
-      success: false,
-      message: 'Error in Fetching country data', data: country
-    });
-  }
-}
-
-router.get('/business_type/:country', async (req, res) => {
-  try {
-    const country = await BusinessType.find({ "country": req.params.country }).lean();
-    const document = await DocumentType.find({ "country": req.params.country }).lean();
-    return res.status(config.OK_STATUS).json({
-      success: true, message: 'country list fetched successfully.',
-      data: country, document
-    });
-  } catch (error) {
-    return res.status(config.INTERNAL_SERVER_ERROR).send({
-      success: false,
-      message: 'Error in Fetching country data', data: country
-    });
-  }
-})
-
-router.get('/country', getCountry);
-router.get('/country/:id', getCountry);
-
-router.post('/get_email', async (req, res) => {
-  try {
-    const reqBody = req.body;
-    var receive_id = reqBody.to;
-    var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
-    var length = id.length;
-
-    if (length > 24) {
-      var split_data = id.split("_");
-      if (split_data.length == 3 && split_data[2] === "communication") {
-        var offer_id = split_data[0];
-        var communication_id = split_data[1];
-        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
-
-        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
-          $set: {
-            "communication.$.reply": true,
-            "communication.$.reply_date": new Date()
-          }
-        }).populate('created_by', { email: 1 }).lean();
-        mail_helper.forwardRepliedMail({
-          to: update_communication.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
-      }
-
-      if (split_data.length == 3 && split_data[2] === "adhoc") {
-        console.log("adhoc");
-        var offer_id = split_data[0];
-        var adhoc_id = split_data[1];
-        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
-
-        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
-          $set: {
-            "AdHoc.$.AdHoc_reply": true,
-            "AdHoc.$.AdHoc_reply_date": new Date()
-          }
-        }).populate('created_by', { email: 1 }).lean();
-        mail_helper.forwardRepliedMail({
-          to: update_communication.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
-      }
-    } else {
-      var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-      if (offer_resp.status == 1 && offer_resp.data.reply === false) {
-        var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
-
-        var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
-        mail_helper.forwardRepliedMail({
-          to: offer.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
-        res.status(200).send('success');
-      } else {
-        console.log("Already replied..! Or offer was deleted..!");
-      }
-    }
-
-
-
-
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-})
-
 router.post('/email_opened', async (req, res) => {
   try {
     console.log(req.body);
@@ -1666,6 +1531,152 @@ router.post('/email_opened', async (req, res) => {
     res.status(500).send(error.message);
   }
 })
+
+router.post('/get_email', async (req, res) => {
+  try {
+    const reqBody = req.body;
+    var receive_id = reqBody.to;
+    var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
+    var length = id.length;
+    if (length > 24) {
+      var split_data = id.split("_");
+      if (split_data.length == 3 && split_data[2] === "communication") {
+        var offer_id = split_data[0];
+        var communication_id = split_data[1];
+        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
+        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+          $set: {
+            "communication.$.reply": true,
+            "communication.$.reply_date": new Date()
+          }
+        }).populate('created_by', { email: 1 }).lean();
+
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
+        for (const emp of all_employer.data) {
+          mail_helper.forwardRepliedMail({
+            // update_communication.created_by.email
+            to: emp.email,
+            from: reqBody.from,
+            subject: reqBody.subject,
+            content: reqBody.email,
+            filename: `${mail.data._id}.eml`,
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          }, (err, info) => {
+            if (err) {
+              console.log(error);
+            }
+            else {
+              console.log('Message forwarded: ' + info.response);
+            }
+          });
+        }
+        res.status(200).send('success');
+      }
+
+      if (split_data.length == 3 && split_data[2] === "adhoc") {
+        console.log("adhoc");
+        var offer_id = split_data[0];
+        var adhoc_id = split_data[1];
+        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
+
+        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+          $set: {
+            "AdHoc.$.AdHoc_reply": true,
+            "AdHoc.$.AdHoc_reply_date": new Date()
+          }
+        }).populate('created_by', { email: 1 }).lean();
+
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
+        for (const emp of all_employer.data) {
+          mail_helper.forwardRepliedMail({
+            // update_communication.created_by.email
+            to: emp.email,
+            from: reqBody.from,
+            subject: reqBody.subject,
+            content: reqBody.email,
+            filename: `${mail.data._id}.eml`,
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          }, (err, info) => {
+            if (err) {
+              console.log(error);
+            }
+            else {
+              console.log('Message forwarded: ' + info.response);
+            }
+          });
+        }
+        res.status(200).send('success');
+      }
+    } else {
+      var offer_resp = await common_helper.findOne(Offer, { "_id": id });
+      //  && offer_resp.data.reply === false
+      if (offer_resp.status == 1) {
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": offer_resp.data.employer_id }, { "emp_id": offer_resp.data.employer_id }] });
+        var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
+        var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
+        for (const emp of all_employer.data) {
+          mail_helper.forwardRepliedMail({
+            // offer.created_by.email
+            to: emp.email,
+            from: reqBody.from,
+            subject: reqBody.subject,
+            content: reqBody.email,
+            filename: `${mail.data._id}.eml`,
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          }, (err, info) => {
+            if (err) {
+              console.log(error);
+            }
+            else {
+              console.log('Message forwarded: ' + info.response);
+            }
+          });
+        }
+        res.status(200).send('success');
+      } else {
+        console.log("Already replied..! Or offer was deleted..!");
+      }
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
+
+async function getCountry(req, res) {
+  try {
+
+    const country = await CountryData.find({ $or: [{ "country": "India" }, { "country": "United States" }] }).lean();
+    return res.status(config.OK_STATUS).json({
+      success: true, message: 'country list fetched successfully.',
+      data: country
+    });
+  } catch (error) {
+    return res.status(config.INTERNAL_SERVER_ERROR).send({
+      success: false,
+      message: 'Error in Fetching country data', data: country
+    });
+  }
+}
+
+router.get('/business_type/:country', async (req, res) => {
+  try {
+    const country = await BusinessType.find({ "country": req.params.country }).lean();
+    const document = await DocumentType.find({ "country": req.params.country }).lean();
+    return res.status(config.OK_STATUS).json({
+      success: true, message: 'country list fetched successfully.',
+      data: country, document
+    });
+  } catch (error) {
+    return res.status(config.INTERNAL_SERVER_ERROR).send({
+      success: false,
+      message: 'Error in Fetching country data', data: country
+    });
+  }
+})
+
+router.get('/country', getCountry);
+router.get('/country/:id', getCountry);
+
 
 router.get('/check_query', async (req, res) => {
   var obj = {};

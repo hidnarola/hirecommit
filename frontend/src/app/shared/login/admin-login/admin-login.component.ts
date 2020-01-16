@@ -81,7 +81,7 @@ export class AdminLoginComponent implements OnInit {
       this.show_spinner = true;
       this.service.login(this.loginForm.value).subscribe(res => {
         if (!res) {
-          this.show_spinner = false
+          this.show_spinner = false;
         }
         this.isFormSubmitted = false;
         this.formData = {};
@@ -156,8 +156,7 @@ export class AdminLoginComponent implements OnInit {
             }
           );
           this.reset();
-        }
-        else {
+        } else {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           this.reset();
@@ -166,8 +165,7 @@ export class AdminLoginComponent implements OnInit {
       );
       //   this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       // });
-    }
-    else {
+    } else {
       this.isFormSubmitted = true;
     }
   }
