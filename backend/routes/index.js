@@ -1497,6 +1497,7 @@ router.post('/get_email', async (req, res) => {
     console.log(' :  length ==> ', length);
     if (length > 24) {
       var split_data = id.split("_");
+      console.log(' : split_data.length  ==> ', split_data.length == 3 && split_data[2] === "communication");
       if (split_data.length == 3 && split_data[2] === "communication") {
         var offer_id = split_data[0];
         var communication_id = split_data[1];
@@ -1508,7 +1509,7 @@ router.post('/get_email', async (req, res) => {
             "communication.$.reply_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
-
+        console.log(' : update_communication ==> ', update_communication);
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
         for (const emp of all_employer.data) {
           mail_helper.forwardRepliedMail({
