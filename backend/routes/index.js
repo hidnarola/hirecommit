@@ -1510,22 +1510,25 @@ router.post('/get_email', async (req, res) => {
         }).populate('created_by', { email: 1 }).lean();
 
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
-        console.log(' : all_employer ==> ', all_employer); return false;
-        mail_helper.forwardRepliedMail({
-          to: update_communication.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
+        for (const emp of all_employer.data) {
+          mail_helper.forwardRepliedMail({
+            // update_communication.created_by.email
+            to: emp.email,
+            from: reqBody.from,
+            subject: reqBody.subject,
+            content: reqBody.email,
+            filename: `${mail.data._id}.eml`,
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          }, (err, info) => {
+            if (err) {
+              console.log(error);
+            }
+            else {
+              console.log('Message forwarded: ' + info.response);
+            }
+          });
+        }
+        res.status(200).send('success');
       }
 
       if (split_data.length == 3 && split_data[2] === "adhoc") {
@@ -1540,21 +1543,27 @@ router.post('/get_email', async (req, res) => {
             "AdHoc.$.AdHoc_reply_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
-        mail_helper.forwardRepliedMail({
-          to: update_communication.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
+
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
+        for (const emp of all_employer.data) {
+          mail_helper.forwardRepliedMail({
+            // update_communication.created_by.email
+            to: emp.email,
+            from: reqBody.from,
+            subject: reqBody.subject,
+            content: reqBody.email,
+            filename: `${mail.data._id}.eml`,
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          }, (err, info) => {
+            if (err) {
+              console.log(error);
+            }
+            else {
+              console.log('Message forwarded: ' + info.response);
+            }
+          });
+        }
+        res.status(200).send('success');
       }
     } else {
       var offer_resp = await common_helper.findOne(Offer, { "_id": id });
