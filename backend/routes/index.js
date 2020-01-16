@@ -1560,27 +1560,25 @@ router.post('/get_email', async (req, res) => {
       if (offer_resp.status == 1) {
         var all_employer = await common_helper.find(User, { $or: [{ "_id": offer_resp.data.employer_id }, { "emp_id": offer_resp.data.employer_id }] });
         for (const emp of all_employer.data) {
-          console.log(' : emp ==> ', emp);
+          var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
+          var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
+          mail_helper.forwardRepliedMail({
+            // offer.created_by.email
+            to: emp.email,
+            from: reqBody.from,
+            subject: reqBody.subject,
+            content: reqBody.email,
+            filename: `${mail.data._id}.eml`,
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          }, (err, info) => {
+            if (err) {
+              console.log(error);
+            }
+            else {
+              console.log('Message forwarded: ' + info.response);
+            }
+          });
         }
-        console.log(' :all_employer  ==> ', all_employer); return false;
-        var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
-        var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
-        mail_helper.forwardRepliedMail({
-          to: offer.created_by.email,
-          from: reqBody.from,
-          subject: reqBody.subject,
-          content: reqBody.email,
-          filename: `${mail.data._id}.eml`,
-          html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-        }, (err, info) => {
-          if (err) {
-            console.log(error);
-          }
-          else {
-            console.log('Message forwarded: ' + info.response);
-          }
-        });
-
         res.status(200).send('success');
       } else {
         console.log("Already replied..! Or offer was deleted..!");
