@@ -41,7 +41,7 @@ export class ErrorInterceptor implements ErrorHandler {
             //     //     window.location.href = 'http://candidate.hirecommit.com/';
             //     // }
         } else {
-            console.log('error=>', error);
+            // // console.log('error=>', error);
 
             // window.location.href = environment.mainURL + 'login';
         }

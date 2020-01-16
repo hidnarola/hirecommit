@@ -211,31 +211,13 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.spinner.hide();
               this.offerData = res['offer'];
               this.offerData.forEach(element => {
-                // console.log('element.status=>', this.d);
                 this.d = moment(new Date(element.expirydate));
                 const current_date = moment();
-
-                // console.log(' this.d =>', this.d);
-
-                // if (element.status === 'Realesed') {
-
-
                 if ((element.status === 'Released') && (this.d.isBefore(current_date))) {
-
-                  console.log(element.status);
-
-                  // if (this.d.isBefore(current_date)) {
-                  // console.log('=>', (element.status === 'Realesed'));
-
                   element.isExpired = true;
-                  // } else {
-                  //   element.isExpired = false;
-                  // }
                 } else {
                   element.isExpired = false;
                 }
-                // // }
-                // console.log('element=>', element);
               }
               );
               // this.d = moment(new Date(res[`offer`].expirydate));
@@ -295,12 +277,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           {
             data: 'location.city'
           },
-          // {
-          //   data: 'salarytype'
-          // },
-          // {
-          //   data: 'salarybracket.from'
-          // },
           {
             data: 'expirydate'
           },
@@ -310,27 +286,9 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           {
             data: 'acceptedAt'
           },
-          // {
-          //   data: 'status'
-          // },
-          // {
-          //   data: 'offertype'
-          // },
-          // {
-          //   data: 'group.name'
-          // },
-          // {
-          //   data: 'status'
-          // },
           {
             data: 'status'
           },
-          // {
-          //   data: 'commitstatus'
-          // },
-          // {
-          //   data: 'customfeild[0].key'
-          // },
           {
             data: 'actions'
           }
@@ -496,7 +454,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.message = res['message'];
         }
       }, (err) => {
-        console.log('err=>', err);
         // this.hide_list = true;
         this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
       });

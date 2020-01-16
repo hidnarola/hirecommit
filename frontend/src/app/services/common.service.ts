@@ -23,10 +23,12 @@ export class CommonService {
   private profileDetail = new BehaviorSubject(null);
   public changed_profile_detail = new BehaviorSubject(null);
   private firstLoginDetail = new BehaviorSubject(null);
+  private unSavedData = new BehaviorSubject(false);
 
   getprofileDetail = this.profileDetail.asObservable();
   getChangedProfileDetail = this.changed_profile_detail.asObservable();
   getFirstLogin = this.firstLoginDetail.asObservable();
+  getunSavedData = this.unSavedData.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -136,6 +138,9 @@ export class CommonService {
   }
   public firstLogin(data: boolean) {
     this.firstLoginDetail.next(data);
+  }
+  public setUnSavedData(data: boolean) {
+    this.unSavedData.next(data);
   }
 
 

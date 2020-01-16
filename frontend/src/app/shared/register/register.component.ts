@@ -319,6 +319,7 @@ export class RegisterComponent implements OnInit {
       // }
 
       this.formData = new FormData();
+      // tslint:disable-next-line: forin
       for (const key in this.registerData) {
         const value = this.registerData[key];
         this.formData.append(key, value);

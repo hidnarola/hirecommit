@@ -201,15 +201,12 @@
                                     <div class="card communication-fills">
 
                                         <div class="card-header h5">Record - {{i+1}}
-                                            <button type="button" class="btn btn-danger pull-right"
+                                            <!-- <button type="button" class="btn btn-danger pull-right"
                                                 (click)="remove_communication(i)">Delete</button>
                                             <button type="button" class=" btn btn-secondary  pull-right mr-2"
-                                                (click)="add_new_communication(i)">Add Communication</button>
+                                                (click)="add_new_communication(i)">Add Communication</button> -->
 
-                                            <!-- <span class="input-group-text pull-right"
-                                                (click)="remove_communication(i)"><i class="icon-close"></i></span>
-                                            <span class="input-group-text pull-right"
-                                                (click)="add_new_communication(i)"><i class="icon-plus"></i></span> -->
+
 
 
                                         </div>
@@ -381,7 +378,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 bunch-list">
-                                                    <label class="col-form-label">Title here</label>
+                                                    <label class="col-form-label">List of Dynamic Fields</label>
                                                     <ul>
                                                         <li (click)="append('||offer_date||')">offer_date</li>
                                                         <li (click)="append('||candidate_name||')">candidate_name</li>
@@ -392,12 +389,24 @@
                                                         <li (click)="append('||acceptance_date||')">acceptance_date</li>
                                                     </ul>
                                                     <p style="color: grey;">If you want to use this content click on it
-                                                        and paste it in
-                                                        editor.</p>
+                                                        and paste it in editor or simply type it like ||offer_date||.
+                                                    </p>
 
                                                 </div>
 
                                             </div>
+
+                                        </div>
+                                        <div class="card-footer text-right ">
+
+                                            <button type="button" class=" btn btn-primary"
+                                                (click)="add_new_communication(i)">Add
+                                                Communication</button>
+
+                                            <button type="button" class="btn btn-danger"
+                                                (click)="remove_communication(i)">Delete</button>
+
+
 
                                         </div>
                                     </div>
