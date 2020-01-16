@@ -1508,6 +1508,8 @@ router.post('/get_email', async (req, res) => {
             "communication.$.reply_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
+        console.log(' : update_communication ==> ', update_communication); return false;
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication._id }, { "emp_id": update_communication.employer_id }] });
 
         mail_helper.forwardRepliedMail({
           to: update_communication.created_by.email,
@@ -1562,7 +1564,6 @@ router.post('/get_email', async (req, res) => {
         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
         for (const emp of all_employer.data) {
-          console.log(' : emp ==> ', emp);
           mail_helper.forwardRepliedMail({
             // offer.created_by.email
             to: emp.email,
