@@ -1531,9 +1531,12 @@ router.get('/candidate_landing_page', async (req, res) => {
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
+    console.log(reqBody);
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
+    console.log(' : id ==> ', id);
     var length = id.length;
+    console.log(' :  length ==> ', length);
     if (length > 24) {
       var split_data = id.split("_");
       if (split_data.length == 3 && split_data[2] === "communication") {
