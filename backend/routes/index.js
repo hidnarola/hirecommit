@@ -1560,6 +1560,7 @@ router.post('/get_email', async (req, res) => {
       if (offer_resp.status == 1) {
         var all_employer = await common_helper.find(User, { $or: [{ "_id": offer_resp.data.employer_id }, { "emp_id": offer_resp.data.employer_id }] });
         for (const emp of all_employer.data) {
+          console.log(' : emp ==> ', emp);
           var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
           var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
           mail_helper.forwardRepliedMail({
