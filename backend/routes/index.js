@@ -1535,6 +1535,7 @@ router.post('/email_opened', async (req, res) => {
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
+    console.log(' : reqBody ==> ', reqBody);
     var receive_id = reqBody.to;
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
