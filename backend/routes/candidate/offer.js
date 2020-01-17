@@ -505,8 +505,7 @@ router.put('/', async (req, res) => {
                         "name": name,
                         "upper_content": upper_content,
                         "middel_content": middel_content,
-                        "lower_content": lower_content,
-                        "candidatename": candidate.data.firstname + " " + candidate.data.lastname
+                        "lower_content": lower_content
                     });
                 }
 
