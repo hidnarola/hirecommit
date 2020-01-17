@@ -1536,11 +1536,17 @@ router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
     // console.log(' : reqBody ==> ', reqBody);
-
-    var receive_id = reqBody.to;
+    // var receive_id = reqBody.to;
     str = `${reqBody.to}`;
     result = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-    console.log(' : result ==> ', result);
+    var receive_id;
+    if (result) {
+      console.log(' : result ==> ', result);
+      var receive_id = result;
+    } else {
+      console.log(' : result ==> ', 0);
+      var receive_id = reqBody.to;
+    }
     console.log(' :receive_id  ==> ', receive_id);
     console.log(' :  ==> receive_id.length', receive_id.length);
     console.log(' :  ==> receive_id[0]', receive_id[0]);
