@@ -54,7 +54,7 @@ mail_helper.forwardRepliedMail = async (data, cb) => {
         to: data.to,
         from: data.from,
         subject: data.subject,
-        html: data.html || '<p>Here’s an attachment of replied mail of candidate for you!</p>',
+        // html: data.html || '<p>Here’s an attachment of replied mail of candidate for you!</p>',
         attachments: [
             {
                 content: data.content,

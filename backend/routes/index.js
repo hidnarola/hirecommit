@@ -1574,7 +1574,7 @@ router.post('/get_email', async (req, res) => {
       }
 
       if (split_data.length == 3 && split_data[2] === "adhoc") {
-        console.log("adhoc");
+        // console.log("adhoc");
         var offer_id = split_data[0];
         var adhoc_id = split_data[1];
         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
