@@ -1538,6 +1538,8 @@ router.post('/get_email', async (req, res) => {
     // console.log(' : reqBody ==> ', reqBody);
     var receive_id = reqBody.to;
     console.log(' :receive_id  ==> ', receive_id);
+    console.log(' :  ==> receive_id.length', receive_id.length);
+    console.log(' :  ==> receive_id[0]', receive_id[0]);
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
     if (length > 24) {
