@@ -1541,15 +1541,15 @@ router.post('/get_email', async (req, res) => {
     result = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
     var receive_id;
     if (result) {
-      console.log(' : result ==> ', result);
+      // console.log(' : result ==> ', result);
       var receive_id = result;
     } else {
-      console.log(' : result ==> ', 0);
+      // console.log(' : result ==> ', 0);
       var receive_id = reqBody.to;
     }
-    console.log(' :receive_id  ==> ', receive_id);
-    console.log(' :  ==> receive_id.length', receive_id.length);
-    console.log(' :  ==> receive_id[0]', receive_id[0]);
+    // console.log(' :receive_id  ==> ', receive_id);
+    // console.log(' :  ==> receive_id.length', receive_id.length);
+    // console.log(' :  ==> receive_id[0]', receive_id[0]);
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
     if (length > 24) {
