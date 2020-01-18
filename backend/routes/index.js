@@ -1437,15 +1437,33 @@ router.post('/test_mail', async (req, res) => {
       "message": message,
       "content": content
     }
-
-
-
-    let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
-      "to": req.body.email,
-      "reply_to": "vishalkanojiya9727@gmail.com",
-      "subject": "Offer",
-      "trackid": trackid
-    }, obj);
+    // 5e20d38377f6383d969aceb1
+    var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e218faff9951d4b99c5b98e" });
+    console.log(' :  ==> ', reqBody);
+    let mail_resp = await mail_helper.forwardRepliedMail({
+      // update_communication.created_by.email
+      to: req.body.email,
+      from: reqBody.data.message.from,
+      subject: "Offer",
+      content: reqBody.data.message.email,
+      filename: `${reqBody.data.offerid}.eml`,
+      // html: reqBody.data.message.email
+      html: reqBody.data.message.email
+    }, (err, info) => {
+      if (err) {
+        console.log(error);
+      }
+      else {
+        console.log('Message forwarded: ' + info.response);
+      }
+    });
+    console.log(' : mail_resp ==> ', mail_resp);
+    // let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+    //   "to": req.body.email,
+    //   "reply_to": "vishalkanojiya9727@gmail.com",
+    //   "subject": "Offer",
+    //   "trackid": trackid
+    // }, obj);
 
 
     res.json({ "message": "success" })
@@ -1574,7 +1592,7 @@ router.post('/get_email', async (req, res) => {
             subject: reqBody.subject,
             content: reqBody.email,
             filename: `${mail.data._id}.eml`,
-            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+            html: reqBody.email
           }, (err, info) => {
             if (err) {
               console.log(error);
