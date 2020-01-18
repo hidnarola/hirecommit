@@ -55,14 +55,14 @@ mail_helper.forwardRepliedMail = async (data, cb) => {
         from: data.from,
         subject: data.subject,
         html: data.html || '<p>Here’s an attachment of replied mail of candidate for you!</p>',
-        // attachments: [
-        //     {
-        //         content: data.content,
-        //         filename: data.filename,
-        //         type: 'message/rfc822',
-        //         disposition: 'attachment'
-        //     },
-        // ],
+        attachments: [
+            {
+                content: data.content,
+                filename: data.filename,
+                type: 'message/rfc822',
+                disposition: 'attachment'
+            },
+        ],
     };
     transporter.sendMail(msg, function (err, info) {
         if (err) {

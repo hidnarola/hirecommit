@@ -1592,7 +1592,7 @@ router.post('/get_email', async (req, res) => {
             subject: reqBody.subject,
             content: reqBody.email,
             filename: `${mail.data._id}.eml`,
-            html: reqBody.email
+            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
           }, (err, info) => {
             if (err) {
               console.log(error);
