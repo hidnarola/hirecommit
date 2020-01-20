@@ -9,6 +9,8 @@ import { ConfirmationService } from 'primeng/api';
 import { CommonService } from '../../../../services/common.service';
 import { NgxSummernoteDirective } from 'ngx-summernote';
 import { variable } from '@angular/compiler/src/output/output_ast';
+import { EmployerService } from '../../employer.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-group-edit',
   templateUrl: './group-edit.component.html',
@@ -23,12 +25,14 @@ export class GroupEditComponent implements OnInit {
   isFormSubmitted = false;
   cancel_link = '/employer/groups/list';
   id: any;
+  group: any;
   groupData: any = [];
   communicationData: any = [];
   panelTitle = 'View Group';
   editedData: any;
   isEdit: Boolean = false;
   arr: FormArray;
+  msg: any;
   is_communication_added: boolean = false;
   formData: FormData;
   Comm_Flag: boolean = true;
@@ -70,7 +74,9 @@ export class GroupEditComponent implements OnInit {
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private EmpService: EmployerService,
+    private modalService: NgbModal,
   ) {
 
     this.userDetail = this.commonService.getLoggedUserDetail();
@@ -362,6 +368,29 @@ export class GroupEditComponent implements OnInit {
       this.show_spinner = false;
     }
 
+  }
+  open(content) {
+    this.modalService.open(content);
+    this.EmpService.information({ 'msg_type': 'groups' }).subscribe(res => {
+      this.msg = res['message'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+    });
+  }
+
+  ngOnDestroy(): void {
+    // console.log('this.userDetail=>', this.userDetail);
+
+    //   if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+
+    //     this.group = this.groupForm.value;
+    //     Object.keys(this.groupForm.controls).forEach((v, key) => {
+    //       if (this.groupForm.controls[v].value) {
+    //         this.commonService.setUnSavedData(true);
+    //         return;
+    //       }
+    //     });
+    //   }
   }
 
 }

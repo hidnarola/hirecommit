@@ -3,9 +3,30 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
+                    <i class="fa fa-info-circle icon-size" style="cursor: pointer;" (click)="open(content)"></i>
                     <strong style="font-size: 20px;">{{panelTitle}}</strong>
                 </div>
+                <!-- popup -->
+                <ng-template #content let-c="close" let-d="dismiss">
+                    <div class="modal-header instructions-popup-head">
+                        <h4 class="modal-title" id="modal-basic-title"><i class="icon-info"></i>
+                            Information</h4>
+                        <button type="button" id="closeBtn" class="close" aria-label="Close"
+                            (click)="d('Cross click')"><i class="fa fa-times"> </i></button>
+                    </div>
+                    <div class="modal-body instructions-popup-body">
+                        <h5>Groups(Optional):</h5>
+                        <h6>{{msg}}
+                        </h6>
 
+                    </div>
+                    <!-- <div class="modal-footer instructions-popup-footer">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="setup(_profile_data[0].user_id._id)">Let's
+                                                Setup</button>
+                                        </div> -->
+                </ng-template>
+                <!-- popup -->
                 <!-- group form -->
                 <form class="form-horizontal" [formGroup]="groupForm" (ngSubmit)="onSubmit(groupForm.valid)">
                     <div class="card-body">
@@ -132,6 +153,13 @@
                                 </div>
                             </div>
                         </div>
+                        <p style="color:grey; size: 8px;">*UnOpened - No. of days after email is sent and not opened.
+                        </p>
+                        <p style="color:grey;  size: 8px;">*NotReplied - No. of days after email is opened and not
+                            replied.</p>
+
+                        <p style="color:grey;  size: 8px;">** The default days are just a recommendation, please change
+                            them as per your needs.</p>
 
                         <!-- <div class="form-group row">
                             <label class="ml-4 col-md-3" for="low_unopened">Low - UnOpened</label>

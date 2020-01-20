@@ -19,6 +19,7 @@ export class SubAccountAddViewComponent implements OnInit {
   addAccount: FormGroup;
   submitted = false;
   admin_rights = false;
+  sub_account: any;
   id: any;
   panelTitle: string;
   is_Edit: boolean = false;
@@ -28,7 +29,7 @@ export class SubAccountAddViewComponent implements OnInit {
   obj: any;
   userDetail: any;
   show_spinner = false;
-  employerID:any;
+  employerID: any;
   cancel_link = '/employer/sub_accounts/list';
   // cancel_link1 = '/admin/employers/approved_employer/'+ this.employerID +'/sub_accounts/list';
   constructor(
@@ -185,7 +186,7 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
-              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
+              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID + '/sub_accounts/list']);
             }
           }, (err) => {
             this.show_spinner = false;
@@ -213,7 +214,7 @@ export class SubAccountAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
-         
+
           this.employerService.edit_sub_employer(this.update_data_id, this.obj).subscribe(res => {
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
@@ -222,7 +223,7 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
-              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
+              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID + '/sub_accounts/list']);
             }
           }, (err) => {
             this.show_spinner = false;
@@ -263,7 +264,7 @@ export class SubAccountAddViewComponent implements OnInit {
             } else if (this.userDetail.role === 'sub-employer') {
               this.router.navigate(['/sub_employer/sub_accounts/list']);
             } else if (this.userDetail.role === 'admin') {
-              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID +'/sub_accounts/list']);
+              this.router.navigate(['/admin/employers/approved_employer/' + this.employerID + '/sub_accounts/list']);
             }
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
           }
@@ -283,6 +284,22 @@ export class SubAccountAddViewComponent implements OnInit {
       this.addAccount.controls['email'].setErrors({ 'isExist': true });
       this.addAccount.updateValueAndValidity();
     });
+  }
+  ngOnDestroy(): void {
+    // console.log('this.userDetail=>', this.userDetail);
+
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      if (!this.is_View) {
+        this.sub_account = this.addAccount.value;
+        Object.keys(this.addAccount.controls).forEach((v, key) => {
+          if (this.addAccount.controls[v].value) {
+            this.commonService.setUnSavedData(true);
+            return;
+          }
+        });
+      }
+    }
+
   }
 
 }

@@ -7,6 +7,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CommonService } from '../../../../services/common.service';
 import { NgxSummernoteDirective } from 'ngx-summernote';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmployerService } from '../../employer.service';
 @Component({
   selector: 'app-group-add',
   templateUrl: './group-add.component.html',
@@ -19,6 +21,8 @@ export class GroupAddComponent implements OnInit {
   addGroup: FormGroup;
   communicationForm: FormGroup;
   isFormSubmitted = false;
+  group: any;
+  msg: any;
   isSubmitted = false;
   cancel_link = '/employer/groups/list';
   groupData: any = {};
@@ -63,7 +67,9 @@ export class GroupAddComponent implements OnInit {
     private service: GroupService,
     private toastr: ToastrService,
     private router: Router,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private modalService: NgbModal,
+    private EmpService: EmployerService
 
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
@@ -309,7 +315,32 @@ export class GroupAddComponent implements OnInit {
           this.toastr.error(err['error']['message'][0].msg, 'Error!', { timeOut: 3000 });
         });
       }
+
     }
   }
+  open(content) {
+    this.modalService.open(content);
+    this.EmpService.information({ 'msg_type': 'groups' }).subscribe(res => {
+      this.msg = res['message'];
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+    });
+  }
+
+  ngOnDestroy(): void {
+    // console.log('this.userDetail=>', this.userDetail);
+
+    //   if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+
+    //     this.group = this.addGroup.value;
+    //     Object.keys(this.addGroup.controls).forEach((v, key) => {
+    //       if (this.addGroup.controls[v].value) {
+    //         this.commonService.setUnSavedData(true);
+    //         return;
+    //       }
+    //     });
+    //   }
+  }
+
 
 }

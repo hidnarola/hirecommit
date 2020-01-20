@@ -24,11 +24,13 @@ export class CommonService {
   public changed_profile_detail = new BehaviorSubject(null);
   private firstLoginDetail = new BehaviorSubject(null);
   private unSavedData = new BehaviorSubject(false);
+  private value_Popup = new BehaviorSubject(false);
 
   getprofileDetail = this.profileDetail.asObservable();
   getChangedProfileDetail = this.changed_profile_detail.asObservable();
   getFirstLogin = this.firstLoginDetail.asObservable();
   getunSavedData = this.unSavedData.asObservable();
+  getvalue = this.value_Popup.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -141,6 +143,10 @@ export class CommonService {
   }
   public setUnSavedData(data: boolean) {
     this.unSavedData.next(data);
+  }
+
+  public value_popup(data: boolean) {
+    this.value_Popup.next(data);
   }
 
 

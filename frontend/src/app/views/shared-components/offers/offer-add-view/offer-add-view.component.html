@@ -454,9 +454,9 @@
 
 
                             <!-- group details -->
-                            <div *ngIf="getGroupDetails">
+                            <div>
                                 <div class="col-md-12 form-group">
-                                    <label class="d-block text-left col-form-label" for="commitStatus">
+                                    <label class="d-block text-left col-form-label">
                                         <h5>Set no. of days after which alert email will be sent.</h5>
                                     </label>
                                 </div>
@@ -467,9 +467,11 @@
                                         <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                             formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
                                             id="high_unopened" disabled *ngIf="isAccepted">
+
                                         <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                             formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
-                                            id="high_unopened" *ngIf="!isAccepted" (blur)="removeZero_high_unopened()">
+                                            id="high_unopened" *ngIf="!isAccepted " (blur)="removeZero_high_unopened()">
+
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -494,13 +496,19 @@
                                 <div class="form-group row">
                                     <label class="ml-4 col-md-6" for="high_notreplied">High - NotReplied</label>
                                     <div class="input-group col-md-4">
+
                                         <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
                                             id="high_notreplied" disabled *ngIf="isAccepted">
+
                                         <input type="number" min="0" class="form-control" autocomplete="high_notreplied"
                                             formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                            id="high_notreplied" *ngIf="!isAccepted"
+                                            id="high_notreplied" *ngIf="!isAccepted "
                                             (blur)="removeZero_high_notreplied()">
+
+
+
+
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -523,13 +531,18 @@
                                 <div class="form-group row">
                                     <label class="ml-4 col-md-6" for="medium_unopened">Medium - UnOpened</label>
                                     <div class="input-group col-md-4">
+
                                         <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
                                             id="medium_unopened" disabled *ngIf="isAccepted">
+
                                         <input type="number" min="0" class="form-control" autocomplete="medium_unopened"
                                             formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                            id="medium_unopened" *ngIf="!isAccepted"
+                                            id="medium_unopened" *ngIf="!isAccepted "
                                             (blur)="removeZero_medium_unopened()">
+
+
+
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -556,10 +569,14 @@
                                             autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied" disabled
                                             *ngIf="isAccepted">
+
                                         <input type="number" min="0" class="form-control"
                                             autocomplete="medium_notreplied" formControlName="medium_notreplied"
                                             [(ngModel)]="groupData.medium_notreplied" id="medium_notreplied"
-                                            *ngIf="!isAccepted" (blur)="removeZero_medium_notreplied()">
+                                            *ngIf="!isAccepted " (blur)="removeZero_medium_notreplied()">
+
+
+
                                         <div class="input-group-append">
                                             <span class="input-group-text">Days</span>
                                         </div>
@@ -1088,6 +1105,10 @@
                             <h3>Offer Dates & Type</h3>
                         </div>
                         <div class="col-md-6">
+                            <strong>Offer Date</strong>
+                            <p>{{resData.createdAt | date: 'dd/MM/yyyy': 'utc'}}</p>
+                        </div>
+                        <div class="col-md-6">
                             <strong>Joining Date</strong>
                             <p>{{resData.joiningdate | date: 'dd/MM/yyyy': 'utc'}}</p>
                         </div>
@@ -1147,7 +1168,7 @@
                     </div>
                     <!-- group details -->
 
-                    <div class="row viewoffers-info" *ngIf="getGroupDetails">
+                    <div class="row viewoffers-info">
                         <div class="col-md-3">
                             <strong>High - UnOpened</strong>
                             <div class="input-group  mb-3">
