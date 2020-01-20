@@ -334,7 +334,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.trigger == "beforeJoining" && comm.day == 0) {
+                                    } else if (comm.trigger == "beforeJoining" && comm.day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -363,7 +363,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.trigger == "afterJoining" && comm.day == 0) {
+                                    } else if (comm.trigger == "afterJoining" && comm.day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -483,7 +483,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day == 0) {
+                                    } else if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -510,7 +510,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0) {
+                                    } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -737,277 +737,277 @@ router.post('/check_is_candidate', async (req, res) => {
 })
 
 // unopen and not replied offer mail
-cron.schedule('00 00 * * *', async (req, res) => {
-    try {
-        var resp_data = await Offer.aggregate(
-            [
-                {
-                    $match: {
-                        status: { $ne: 'On Hold' }
-                    }
-                },
-                {
-                    $lookup:
-                    {
-                        from: "user",
-                        localField: "created_by",
-                        foreignField: "_id",
-                        as: "created_by"
-                    }
-                },
-                {
-                    $unwind: {
-                        path: "$created_by",
-                        preserveNullAndEmptyArrays: true
-                    },
-                },
-                {
-                    $lookup:
-                    {
-                        from: "group",
-                        localField: "groups",
-                        foreignField: "_id",
-                        as: "group"
-                    }
-                },
-                {
-                    $unwind: {
-                        path: "$group",
-                        preserveNullAndEmptyArrays: true
-                    },
-                },
-                {
-                    $lookup:
-                    {
-                        from: "user",
-                        localField: "user_id",
-                        foreignField: "_id",
-                        as: "user_id"
-                    }
-                },
-                {
-                    $unwind: {
-                        path: "$user_id",
-                        preserveNullAndEmptyArrays: true
-                    },
-                },
-                {
-                    $lookup:
-                    {
-                        from: "candidateDetail",
-                        localField: "user_id._id",
-                        foreignField: "user_id",
-                        as: "candidate"
-                    }
-                },
-                {
-                    $unwind: {
-                        path: "$candidate",
-                        preserveNullAndEmptyArrays: true
-                    },
-                }
+// cron.schedule('00 00 * * *', async (req, res) => {
+//     try {
+//         var resp_data = await Offer.aggregate(
+//             [
+//                 {
+//                     $match: {
+//                         status: { $ne: 'On Hold' }
+//                     }
+//                 },
+//                 {
+//                     $lookup:
+//                     {
+//                         from: "user",
+//                         localField: "created_by",
+//                         foreignField: "_id",
+//                         as: "created_by"
+//                     }
+//                 },
+//                 {
+//                     $unwind: {
+//                         path: "$created_by",
+//                         preserveNullAndEmptyArrays: true
+//                     },
+//                 },
+//                 {
+//                     $lookup:
+//                     {
+//                         from: "group",
+//                         localField: "groups",
+//                         foreignField: "_id",
+//                         as: "group"
+//                     }
+//                 },
+//                 {
+//                     $unwind: {
+//                         path: "$group",
+//                         preserveNullAndEmptyArrays: true
+//                     },
+//                 },
+//                 {
+//                     $lookup:
+//                     {
+//                         from: "user",
+//                         localField: "user_id",
+//                         foreignField: "_id",
+//                         as: "user_id"
+//                     }
+//                 },
+//                 {
+//                     $unwind: {
+//                         path: "$user_id",
+//                         preserveNullAndEmptyArrays: true
+//                     },
+//                 },
+//                 {
+//                     $lookup:
+//                     {
+//                         from: "candidateDetail",
+//                         localField: "user_id._id",
+//                         foreignField: "user_id",
+//                         as: "candidate"
+//                     }
+//                 },
+//                 {
+//                     $unwind: {
+//                         path: "$candidate",
+//                         preserveNullAndEmptyArrays: true
+//                     },
+//                 }
 
-            ]
-        )
+//             ]
+//         )
 
-        var current_date = moment().startOf('day')
-        var notOpened = [];
-        var notReplied = [];
+//         var current_date = moment().startOf('day')
+//         var notOpened = [];
+//         var notReplied = [];
 
-        var i = 0;
-        for (const resp of resp_data) {
+//         var i = 0;
+//         for (const resp of resp_data) {
 
-            var index = i;
-            let element = resp;
-            var options = {
-                method: 'GET',
-                url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
-                headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
-            };
+//             var index = i;
+//             let element = resp;
+//             var options = {
+//                 method: 'GET',
+//                 url: "https://api.sendgrid.com/v3/messages?limit=10&query=(unique_args%5B'trackid'%5D%3D%22" + element._id + "%22)",
+//                 headers: { authorization: 'Bearer ' + config.SENDGRID_API_KEY },
+//             };
 
-            request(options, function (error, response, body) {
-                try {
-                    if (error) throw new Error(error);
-                    var new_resp = JSON.parse(response.body);
-                    if (new_resp && new_resp.error) {
-                        console.log(' :  new_resp.error==> ', new_resp.error);
-                    } else if (new_resp && new_resp.messages) {
-                        for (const newresp of new_resp.messages) {
-                            // console.log('new ress =>', newresp);
-                            var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
-                            var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
-                            var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
-                            var medium_notreplied = moment(resp.createdAt).startOf('day').add(resp.medium_notreplied, 'day')
-                            high_unopened = moment(high_unopened)
-                            medium_unopened = moment(medium_unopened)
-                            high_notreplied = moment(high_notreplied)
-                            medium_notreplied = moment(medium_notreplied)
+//             request(options, function (error, response, body) {
+//                 try {
+//                     if (error) throw new Error(error);
+//                     var new_resp = JSON.parse(response.body);
+//                     if (new_resp && new_resp.error) {
+//                         console.log(' :  new_resp.error==> ', new_resp.error);
+//                     } else if (new_resp && new_resp.messages) {
+//                         for (const newresp of new_resp.messages) {
+//                             // console.log('new ress =>', newresp);
+//                             var high_unopened = moment(resp.createdAt).startOf('day').add(resp.high_unopened, 'day');
+//                             var medium_unopened = moment(resp.createdAt).startOf('day').add(resp.medium_unopened, 'day')
+//                             var high_notreplied = moment(resp.createdAt).startOf('day').add(resp.high_notreplied, 'day');
+//                             var medium_notreplied = moment(resp.createdAt).startOf('day').add(resp.medium_notreplied, 'day')
+//                             high_unopened = moment(high_unopened)
+//                             medium_unopened = moment(medium_unopened)
+//                             high_notreplied = moment(high_notreplied)
+//                             medium_notreplied = moment(medium_notreplied)
 
-                            if ((resp.email_open === false && newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
-                                const total_days = moment(current_date).isSame(high_unopened) == true ? resp.high_unopened : moment(current_date).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
+//                             if ((resp.email_open === false && newresp.opens_count === 0 && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_unopened) === true || moment(current_date).isSame(medium_unopened) === true)) {
+//                                 const total_days = moment(current_date).isSame(high_unopened) == true ? resp.high_unopened : moment(current_date).isSame(medium_unopened) == true ? resp.medium_unopened : 0;
 
-                                if (moment(current_date).isSame(high_unopened) === true) {
-                                    var priority = "High";
-                                } else if (moment(current_date).isSame(medium_unopened) === true) {
-                                    var priority = "Medium";
-                                }
+//                                 if (moment(current_date).isSame(high_unopened) === true) {
+//                                     var priority = "High";
+//                                 } else if (moment(current_date).isSame(medium_unopened) === true) {
+//                                     var priority = "Medium";
+//                                 }
 
-                                // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+//                                 // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
-                                var data = {
-                                    "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
-                                    "candidateemail": newresp.to_email,
-                                    "subject": newresp.subject,
-                                    "not_unopened_days": total_days,
-                                    "priority": priority,
-                                    "empid": resp.employer_id
-                                }
-                                notOpened.push(data);
-                                // console.log(' :  ==> notOpened', notOpened);
-                                valuesmail = notOpened.length
-                                // console.log(' : valuesmail ==> ', notOpened.length, valuesmail);
-                                result.push(data);
-                            }
+//                                 var data = {
+//                                     "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+//                                     "candidateemail": newresp.to_email,
+//                                     "subject": newresp.subject,
+//                                     "not_unopened_days": total_days,
+//                                     "priority": priority,
+//                                     "empid": resp.employer_id
+//                                 }
+//                                 notOpened.push(data);
+//                                 // console.log(' :  ==> notOpened', notOpened);
+//                                 valuesmail = notOpened.length
+//                                 // console.log(' : valuesmail ==> ', notOpened.length, valuesmail);
+//                                 result.push(data);
+//                             }
 
-                            // console.log(' : resp.reply === false ==> ', resp.reply === false);
-                            if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
+//                             // console.log(' : resp.reply === false ==> ', resp.reply === false);
+//                             if ((resp.reply === false && newresp.to_email === resp.user_id.email) && (moment(current_date).isSame(high_notreplied) === true || moment(current_date).isSame(medium_notreplied) === true)) {
 
-                                const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
+//                                 const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
 
-                                // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
+//                                 // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
-                                if (moment(current_date).isSame(high_notreplied) === true) {
-                                    var priority = "High";
-                                } else if (moment(current_date).isSame(medium_notreplied) == true) {
-                                    var priority = "Medium";
-                                }
+//                                 if (moment(current_date).isSame(high_notreplied) === true) {
+//                                     var priority = "High";
+//                                 } else if (moment(current_date).isSame(medium_notreplied) == true) {
+//                                     var priority = "Medium";
+//                                 }
 
-                                var data = {
-                                    "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
-                                    "candidateemail": newresp.to_email,
-                                    "subject": newresp.subject,
-                                    "not_replied_days": total_days,
-                                    "priority": priority,
-                                    "empid": resp.employer_id
-                                }
+//                                 var data = {
+//                                     "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
+//                                     "candidateemail": newresp.to_email,
+//                                     "subject": newresp.subject,
+//                                     "not_replied_days": total_days,
+//                                     "priority": priority,
+//                                     "empid": resp.employer_id
+//                                 }
 
-                                notReplied.push(data);
-                                // console.log(' : notReplied ==> ', notReplied);
-                                valuesmail1 = notReplied.length
-                                // console.log(' : valuesmail1 ==> ', notReplied.length, valuesmail1);
-                                result1.push(data);
-                            }
+//                                 notReplied.push(data);
+//                                 // console.log(' : notReplied ==> ', notReplied);
+//                                 valuesmail1 = notReplied.length
+//                                 // console.log(' : valuesmail1 ==> ', notReplied.length, valuesmail1);
+//                                 result1.push(data);
+//                             }
 
-                        }
+//                         }
 
-                    }
-                } catch (error) {
-                    console.log('error=> ', error.message);
-                }
-            });
-            i++;
+//                     }
+//                 } catch (error) {
+//                     console.log('error=> ', error.message);
+//                 }
+//             });
+//             i++;
 
-        }
-        // var notOpeneddata = notOpened;
-        setTimeout(async () => {
-            // console.log(' : result ==> ', result);
-            // console.log(' : result1 ==> ', result1);
-            if (valuesmail == result.length || valuesmail1 == result1.length) {
-                var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
-                // console.log(' :  valuesmail==> ', valuesmail);
-                // console.log(' : valuesmail1==> ', valuesmail1);
-                if (all_employer.status == 1) {
-                    var new_data = all_employer.data;
-                    for (const filterdata of all_employer.data) {
-                        var filtered = result.filter(r => r.empid.toString() === filterdata._id.toString())
-                        var filtered1 = result1.filter(r => r.empid.toString() === filterdata._id.toString())
+//         }
+//         // var notOpeneddata = notOpened;
+//         setTimeout(async () => {
+//             // console.log(' : result ==> ', result);
+//             // console.log(' : result1 ==> ', result1);
+//             if (valuesmail == result.length || valuesmail1 == result1.length) {
+//                 var all_employer = await common_helper.find(User, { "role_id": "5d9d98a93a0c78039c6dd00d" })
+//                 // console.log(' :  valuesmail==> ', valuesmail);
+//                 // console.log(' : valuesmail1==> ', valuesmail1);
+//                 if (all_employer.status == 1) {
+//                     var new_data = all_employer.data;
+//                     for (const filterdata of all_employer.data) {
+//                         var filtered = result.filter(r => r.empid.toString() === filterdata._id.toString())
+//                         var filtered1 = result1.filter(r => r.empid.toString() === filterdata._id.toString())
 
-                        // console.log(' : filtered ==> ', filtered);
-                        // console.log(' : filtered1 ==> ', filtered1);
+//                         // console.log(' : filtered ==> ', filtered);
+//                         // console.log(' : filtered1 ==> ', filtered1);
 
-                        var email_send_to = await common_helper.find(User, {
-                            "isAllow": true,
-                            "is_del": false,
-                            $or: [
-                                { "_id": new ObjectId(filterdata._id) },
-                                { "emp_id": new ObjectId(filterdata._id) },
-                            ]
-                        })
+//                         var email_send_to = await common_helper.find(User, {
+//                             "isAllow": true,
+//                             "is_del": false,
+//                             $or: [
+//                                 { "_id": new ObjectId(filterdata._id) },
+//                                 { "emp_id": new ObjectId(filterdata._id) },
+//                             ]
+//                         })
 
-                        // console.log(' : filtered ==> ', filtered);
-                        // console.log(' : filtered1 ==> ', filtered1);
-                        if (filtered.length > 0 && email_send_to.status == 1) {
-                            for (const sendto of email_send_to.data) {
-                                const element = sendto;
-                                if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
-                                    var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
-                                    var email = emp_name.data.username;
-                                    var name = email.substring(0, email.lastIndexOf(" "));
-                                    if (name === "") {
-                                        name = email;
-                                    }
-                                } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
-                                    var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
-                                    var email = emp_name.data.username;
-                                    var name = email.substring(0, email.lastIndexOf(" "));
-                                    if (name === "") {
-                                        name = email;
-                                    }
-                                }
+//                         // console.log(' : filtered ==> ', filtered);
+//                         // console.log(' : filtered1 ==> ', filtered1);
+//                         if (filtered.length > 0 && email_send_to.status == 1) {
+//                             for (const sendto of email_send_to.data) {
+//                                 const element = sendto;
+//                                 if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+//                                     var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+//                                     var email = emp_name.data.username;
+//                                     var name = email.substring(0, email.lastIndexOf(" "));
+//                                     if (name === "") {
+//                                         name = email;
+//                                     }
+//                                 } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+//                                     var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+//                                     var email = emp_name.data.username;
+//                                     var name = email.substring(0, email.lastIndexOf(" "));
+//                                     if (name === "") {
+//                                         name = email;
+//                                     }
+//                                 }
 
-                                let mail_resp = await mail_helper.send("not_opened_mail_report", {
-                                    "to": element.email,
-                                    "subject": "Report of Not Opend candidate"
-                                }, {
-                                    "name": name,
-                                    "data": filtered
-                                });
-                            }
+//                                 let mail_resp = await mail_helper.send("not_opened_mail_report", {
+//                                     "to": element.email,
+//                                     "subject": "Report of Not Opend candidate"
+//                                 }, {
+//                                     "name": name,
+//                                     "data": filtered
+//                                 });
+//                             }
 
-                        }
+//                         }
 
-                        if (filtered1.length > 0 && email_send_to.status == 1) {
-                            for (const sendto of email_send_to.data) {
-                                const element = sendto;
-                                if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
-                                    var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
-                                    var email = emp_name.data.username;
-                                    var name = email.substring(0, email.lastIndexOf(" "));
-                                    if (name === "") {
-                                        name = email;
-                                    }
-                                } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
-                                    var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
-                                    var email = emp_name.data.username;
-                                    var name = email.substring(0, email.lastIndexOf(" "));
-                                    if (name === "") {
-                                        name = email;
-                                    }
-                                }
+//                         if (filtered1.length > 0 && email_send_to.status == 1) {
+//                             for (const sendto of email_send_to.data) {
+//                                 const element = sendto;
+//                                 if (element.role_id == ("5d9d99003a0c78039c6dd00f")) {
+//                                     var emp_name = await common_helper.findOne(SubEmployerDetail, { "user_id": new ObjectId(element._id) })
+//                                     var email = emp_name.data.username;
+//                                     var name = email.substring(0, email.lastIndexOf(" "));
+//                                     if (name === "") {
+//                                         name = email;
+//                                     }
+//                                 } else if (element.role_id == ("5d9d98a93a0c78039c6dd00d")) {
+//                                     var emp_name = await common_helper.findOne(EmployerDetail, { "user_id": new ObjectId(element._id) })
+//                                     var email = emp_name.data.username;
+//                                     var name = email.substring(0, email.lastIndexOf(" "));
+//                                     if (name === "") {
+//                                         name = email;
+//                                     }
+//                                 }
 
-                                let mail_resp = await mail_helper.send("not_replied_mail_report", {
-                                    "to": element.email,
-                                    "subject": "Report of Not Replied candidate"
-                                }, {
-                                    "name": name,
-                                    "data": filtered1
-                                });
-                            }
-                        }
-                    }
-                    filtered = [];
-                    result = [];
-                    valuesmail = 0;
-                    filtered1 = [];
-                    result1 = [];
-                    valuesmail1 = 0;
-                }
-            }
-        }, 10000);
-    } catch (error) {
-        return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-    }
-})
+//                                 let mail_resp = await mail_helper.send("not_replied_mail_report", {
+//                                     "to": element.email,
+//                                     "subject": "Report of Not Replied candidate"
+//                                 }, {
+//                                     "name": name,
+//                                     "data": filtered1
+//                                 });
+//                             }
+//                         }
+//                     }
+//                     filtered = [];
+//                     result = [];
+//                     valuesmail = 0;
+//                     filtered1 = [];
+//                     result1 = [];
+//                     valuesmail1 = 0;
+//                 }
+//             }
+//         }, 10000);
+//     } catch (error) {
+//         return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+//     }
+// })
 
 // unopen and not replied communication mail
 cron.schedule('00 00 * * *', async (req, res) => {
@@ -2340,7 +2340,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             // }, message);
                         }
                     }
-                    if (comm.trigger == "beforeJoining") {
+                    if (comm.trigger == "beforeJoining" && resp.status == "Accepted") {
                         var days = comm.day
                         var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
                         offer_date = moment(offer_date)
@@ -2381,7 +2381,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             }
                         }
                     }
-                    if (comm.trigger == "afterJoining") {
+                    if (comm.trigger == "afterJoining" && resp.status == "Accepted") {
                         var days = comm.day
                         var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
                         offer_date = moment(offer_date)
@@ -2504,7 +2504,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         }
 
                     }
-                    if (comm.trigger == "afterAcceptance") {
+                    if (comm.trigger == "afterAcceptance" && resp.status == "Accepted") {
                         var days = comm.day
                         var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
                         offer_date = moment(offer_date)
@@ -2593,7 +2593,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         }
                     }
-                    if (comm.AdHoc_trigger == "beforeJoining") {
+                    if (comm.AdHoc_trigger == "beforeJoining" && resp.status == "Accepted") {
                         var days = comm.AdHoc_day;
                         var offer_date = moment(resp.joiningdate).startOf('day').subtract(days, 'day')
                         offer_date = moment(offer_date)
@@ -2634,7 +2634,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             }
                         }
                     }
-                    if (comm.AdHoc_trigger == "afterJoining") {
+                    if (comm.AdHoc_trigger == "afterJoining" && resp.status == "Accepted") {
                         var days = comm.AdHoc_day;
                         var offer_date = moment(resp.joiningdate).startOf('day').add(days, 'day')
                         offer_date = moment(offer_date)
@@ -2757,7 +2757,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         }
 
                     }
-                    if (comm.AdHoc_trigger == "afterAcceptance") {
+                    if (comm.AdHoc_trigger == "afterAcceptance" && resp.status == "Accepted") {
                         var days = comm.AdHoc_day
                         var offer_date = moment(resp.acceptedAt).startOf('day').add(days, 'day')
                         offer_date = moment(offer_date)

@@ -1437,15 +1437,33 @@ router.post('/test_mail', async (req, res) => {
       "message": message,
       "content": content
     }
-
-
-
-    let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
-      "to": req.body.email,
-      "reply_to": "vishalkanojiya9727@gmail.com",
-      "subject": "Offer",
-      "trackid": trackid
-    }, obj);
+    // 5e20d38377f6383d969aceb1
+    var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e218faff9951d4b99c5b98e" });
+    console.log(' :  ==> ', reqBody);
+    let mail_resp = await mail_helper.forwardRepliedMail({
+      // update_communication.created_by.email
+      to: req.body.email,
+      from: reqBody.data.message.from,
+      subject: "Offer",
+      content: reqBody.data.message.email,
+      filename: `${reqBody.data.offerid}.eml`,
+      // html: reqBody.data.message.email
+      html: reqBody.data.message.email
+    }, (err, info) => {
+      if (err) {
+        console.log(error);
+      }
+      else {
+        console.log('Message forwarded: ' + info.response);
+      }
+    });
+    console.log(' : mail_resp ==> ', mail_resp);
+    // let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+    //   "to": req.body.email,
+    //   "reply_to": "vishalkanojiya9727@gmail.com",
+    //   "subject": "Offer",
+    //   "trackid": trackid
+    // }, obj);
 
 
     res.json({ "message": "success" })
@@ -1535,7 +1553,21 @@ router.post('/email_opened', async (req, res) => {
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
-    var receive_id = reqBody.to;
+    // console.log(' : reqBody ==> ', reqBody);
+    // var receive_id = reqBody.to;
+    str = `${reqBody.to}`;
+    result = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+    var receive_id;
+    if (result) {
+      // console.log(' : result ==> ', result);
+      var receive_id = result;
+    } else {
+      // console.log(' : result ==> ', 0);
+      var receive_id = reqBody.to;
+    }
+    // console.log(' :receive_id  ==> ', receive_id);
+    // console.log(' :  ==> receive_id.length', receive_id.length);
+    // console.log(' :  ==> receive_id[0]', receive_id[0]);
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
     if (length > 24) {
@@ -1574,7 +1606,7 @@ router.post('/get_email', async (req, res) => {
       }
 
       if (split_data.length == 3 && split_data[2] === "adhoc") {
-        console.log("adhoc");
+        // console.log("adhoc");
         var offer_id = split_data[0];
         var adhoc_id = split_data[1];
         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
