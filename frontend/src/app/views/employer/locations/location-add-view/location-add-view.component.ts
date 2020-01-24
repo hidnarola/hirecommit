@@ -31,6 +31,7 @@ export class LocationAddViewComponent implements OnInit {
   is_View: boolean = false;
   show_spinner = false;
   userDetail: any;
+  // currentUrl = '';
   constructor(private router: Router,
     private toastr: ToastrService,
     private commonService: CommonService,
@@ -39,12 +40,15 @@ export class LocationAddViewComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
   ) {
-
+    // this.currentUrl = this.router.url;
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
 
   ngOnInit() {
     this.spinner.show();
+    // this.commonService.getuserdata.subscribe(res => {
+    //   this.detail.city = res.city;
+    // });
     this.addLocation = new FormGroup({
       // country: new FormControl('', [Validators.required]),
       city: new FormControl('', [Validators.required, this.noWhitespaceValidator])
@@ -181,19 +185,19 @@ export class LocationAddViewComponent implements OnInit {
     }
   }
   ngOnDestroy(): void {
-    // console.log('this.userDetail=>', this.userDetail);
+    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+    //   if (!(this.is_View)) {
+    //     this.location_popup = this.addLocation.value;
+    //     Object.keys(this.addLocation.controls).forEach((v, key) => {
+    //       if (this.addLocation.controls[v].value) {
+    //         this.commonService.setuserData(this.detail);
+    //         this.router.navigate([this.currentUrl]);
+    //         this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
 
-    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-      if (!(this.is_View)) {
-        this.location_popup = this.addLocation.value;
-        Object.keys(this.addLocation.controls).forEach((v, key) => {
-          if (this.addLocation.controls[v].value) {
-            this.commonService.setUnSavedData(true);
-            return;
-          }
-        });
-      }
+    //       }
+    //     });
+    //   }
 
-    }
+    // }
   }
 }

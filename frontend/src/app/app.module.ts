@@ -65,6 +65,7 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     CheckboxModule,
     FileUploadModule,
     NgxSpinnerModule,
+
     NgbModule,
     ConfirmDialogModule,
     TooltipModule.forRoot({
@@ -114,6 +115,7 @@ const config: SocketIoConfig = { url: `${environment.API_URL}`, options: {} };
     JwtHelperService, ConfirmationService,
     { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
     { provide: ErrorHandler, useClass: ErrorInterceptor },
+
   ],
   bootstrap: [AppComponent]
 })
