@@ -229,7 +229,6 @@ router.post("/", async (req, res) => {
 
                     upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
-                    // var open_url = "https://hirecommit.com:3000/open_mail/" + `${interest_resp.data._id}`;
                     var obj = {
                         "name": name,
                         "companyname": companyname,
@@ -238,7 +237,6 @@ router.post("/", async (req, res) => {
                         "upper_content": upper_content,
                         "middel_content": middel_content,
                         "lower_content": lower_content,
-                        // "open_url": open_url
                     }
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
@@ -278,11 +276,10 @@ router.post("/", async (req, res) => {
                             var middel_content = mailcontent.data.middel_content;
                             var lower_content = mailcontent.data.lower_content;
 
-                            upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname + " " + candidate.data.lastname
-                                } `);
+                            upper_content = upper_content.replace('{candidatename}', `${candidate.data.firstname + " " + candidate.data.lastname}`);
                             let mail_resp = await mail_helper.send("on_hold_offer", {
                                 "to": element.email,
-                                "subject": `${candidate.data.firstname + " " + candidate.data.lastname} ` + " offer created in On Hold status"
+                                "subject": `${candidate.data.firstname + " " + candidate.data.lastname}` + " offer created in On Hold status"
                             }, {
                                 "name": name,
                                 "upper_content": upper_content,
@@ -292,15 +289,14 @@ router.post("/", async (req, res) => {
                         }
 
                     } else {
-                        console.log(' : hiii ==> ', "hiii");
                         let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                             "to": user.data.email,
-                            // "reply_to1": `${ reply_to.data.email } `,
-                            "reply_to2": `${interest_resp.data._id} @em7977.hirecommit.com`,
+                            // "reply_to1": `${reply_to.data.email}`,
+                            "reply_to2": `${interest_resp.data._id}@em7977.hirecommit.com`,
                             "subject": "Offer",
                             "trackid": interest_resp.data._id
                         }, obj);
-                        console.log(' : mail_resp ==> ', mail_resp);
+
                         if (mail_resp.status == 1) {
                             var current_date = moment().startOf('day');
                             var candidate_email = await common_helper.findOne(User, { "_id": interest_resp.data.user_id })
@@ -309,28 +305,24 @@ router.post("/", async (req, res) => {
 
                             if (interest_resp.data !== undefined && interest_resp.data.communication.length > 0) {
                                 for (const comm of interest_resp.data.communication) {
-                                    console.log(' :  comm.trigger == "afterOffer" && comm.day == 0 ==> ', comm.trigger == "afterOffer" && comm.day == 0);
                                     if (comm.trigger == "afterOffer" && comm.day == 0) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            // var open_url = `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
-                                                "companyname": companyname,
-                                                // "open_url": open_url
+                                                "companyname": companyname
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                                 "subject": comm.subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
 
-                                            console.log(' : mail_resp ==> ', mail_resp);
                                             if (mail_resp.status == 1) {
                                                 var update_offer_communication = await common_helper.update(Offer,
                                                     { "_id": interest_resp.data._id, "communication._id": comm._id },
@@ -345,7 +337,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.trigger == "beforeJoining" && comm.day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -355,7 +347,7 @@ router.post("/", async (req, res) => {
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                                 "subject": comm.subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
@@ -374,7 +366,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.trigger == "afterJoining" && comm.day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -384,7 +376,7 @@ router.post("/", async (req, res) => {
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                                 "subject": comm.subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
@@ -403,7 +395,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.trigger == "beforeExpiry" && comm.day == 0) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -413,7 +405,7 @@ router.post("/", async (req, res) => {
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                                 "subject": comm.subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
@@ -432,7 +424,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -442,7 +434,7 @@ router.post("/", async (req, res) => {
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                                 "subject": comm.subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
@@ -467,7 +459,7 @@ router.post("/", async (req, res) => {
                                     if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -476,7 +468,7 @@ router.post("/", async (req, res) => {
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                                 "subject": comm.AdHoc_subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
                                             }, obj);
@@ -494,7 +486,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -503,7 +495,7 @@ router.post("/", async (req, res) => {
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                                 "subject": comm.AdHoc_subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
                                             }, obj);
@@ -521,7 +513,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0 && interest_resp.data.status == "Accepted") {
                                         if (moment(interest_resp.data.joiningdate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -530,7 +522,7 @@ router.post("/", async (req, res) => {
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                                 "subject": comm.AdHoc_subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
                                             }, obj);
@@ -548,7 +540,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day == 0) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -557,7 +549,7 @@ router.post("/", async (req, res) => {
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                                 "subject": comm.AdHoc_subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
                                             }, obj);
@@ -575,7 +567,7 @@ router.post("/", async (req, res) => {
                                     } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -584,7 +576,7 @@ router.post("/", async (req, res) => {
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
-                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                                "reply_to": `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                                 "subject": comm.AdHoc_subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "adhoc"
                                             }, obj);
@@ -641,16 +633,13 @@ router.post('/pastOffer', async (req, res) => {
             } else {
                 employer_id = req.userInfo.id;
             }
-
             var pastOffer = await common_helper.find(Offer,
                 {
-                    // "employer_id": ObjectId(req.userInfo.id)
                     "employer_id": new ObjectId(employer_id),
                     // $or: [
                     //     { "employer_id": new ObjectId(employer_id) },
                     // ],
-                    "user_id": ObjectId(user.data._id),
-                    "status": "Not Joined"
+                    "user_id": ObjectId(user.data._id), status: "Not Joined"
                 });
 
             if (pastOffer.data.length > 0) {
@@ -865,7 +854,7 @@ router.post('/check_is_candidate', async (req, res) => {
 //                                     var priority = "Medium";
 //                                 }
 
-//                                 // content = "We have send " + `${ resp.title } ` + " offer mail to the " + `${ resp.candidate.firstname } ` + " " + `${ resp.candidate.lastname } ` + " but he has not open this email for " + `${ total_days } ` + " days. Please get in touch with the candidate."
+//                                 // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not open this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
 //                                 var data = {
 //                                     "candidatename": resp.candidate.firstname + " " + resp.candidate.lastname,
@@ -887,7 +876,7 @@ router.post('/check_is_candidate', async (req, res) => {
 
 //                                 const total_days = moment(current_date).isSame(high_notreplied) == true ? resp.high_notreplied : moment(current_date).isSame(medium_notreplied) == true ? resp.medium_notreplied : 0;
 
-//                                 // content = "We have send " + `${ resp.title } ` + " offer mail to the " + `${ resp.candidate.firstname } ` + " " + `${ resp.candidate.lastname } ` + " but he has not reply for this email for " + `${ total_days } ` + " days. Please get in touch with the candidate."
+//                                 // content = "We have send " + `${resp.title} ` + " offer mail to the " + `${resp.candidate.firstname} ` + " " + `${resp.candidate.lastname} ` + " but he has not reply for this email for " + `${total_days} ` + " days. Please get in touch with the candidate."
 
 //                                 if (moment(current_date).isSame(high_notreplied) === true) {
 //                                     var priority = "High";
@@ -2107,11 +2096,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                     var location = await common_helper.findOne(Location, { '_id': resp.location });
 
-                    upper_content = upper_content.replace('{candidatename}', `${resp.candidate.firstname + " " + resp.candidate.lastname} `).replace("{title}", resp.title).replace("{location}", location.data.city);
+                    upper_content = upper_content.replace('{candidatename}', `${resp.candidate.firstname + " " + resp.candidate.lastname}`).replace("{title}", resp.title).replace("{location}", location.data.city);
 
                     let mail_resp = await mail_helper.send("candidate_has_joined", {
                         "to": element.email,
-                        "subject": `${resp.candidate.firstname + " " + resp.candidate.lastname} ` + " has joined"
+                        "subject": `${resp.candidate.firstname + " " + resp.candidate.lastname}` + " has joined"
                     }, {
                         "name": name,
                         "upper_content": upper_content,
@@ -2142,7 +2131,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 let mail_resp = await mail_helper.send("offer_expiring", {
                     "to": resp.user_id.email,
-                    "subject": "Your offer from " + `${companyname} ` + " is expiring soon!!"
+                    "subject": "Your offer from " + `${companyname}` + " is expiring soon!!"
                 }, {
                     "name": resp.candidate.firstname,
                     "upper_content": upper_content,
@@ -2184,11 +2173,11 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                     var location = await common_helper.findOne(Location, { '_id': resp.location });
 
-                    upper_content = upper_content.replace('{candidatename}', `${resp.candidate.firstname + " " + resp.candidate.lastname} `).replace("{title}", resp.title).replace("{location}", location.data.city);
+                    upper_content = upper_content.replace('{candidatename}', `${resp.candidate.firstname + " " + resp.candidate.lastname}`).replace("{title}", resp.title).replace("{location}", location.data.city);
 
                     let mail_resp = await mail_helper.send("offer_expiring", {
                         "to": element.email,
-                        "subject": `${resp.candidate.firstname + " " + resp.candidate.lastname} ` + " offer expired"
+                        "subject": `${resp.candidate.firstname + " " + resp.candidate.lastname}` + " offer expired"
                     }, {
                         "name": name,
                         "upper_content": upper_content,
@@ -2219,7 +2208,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                 let mail_resp = await mail_helper.send("prior_to_joining_date", {
                     "to": resp.user_id.email,
-                    "subject": "Your start date at " + `${companyname} ` + " is here!!!!"
+                    "subject": "Your start date at " + `${companyname}` + " is here!!!!"
                 }, {
                     "name": resp.candidate.firstname,
                     "upper_content": upper_content,
@@ -2312,7 +2301,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             // var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterOffer', "offer_id": resp._id })
                             // logger.trace("sending mail");
@@ -2324,8 +2313,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -2367,7 +2356,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2377,8 +2366,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -2407,7 +2396,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2417,8 +2406,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -2448,7 +2437,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2458,8 +2447,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -2489,7 +2478,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2499,8 +2488,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -2530,7 +2519,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2540,8 +2529,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                 "subject": comm.subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "communication"
                             }, obj);
@@ -2576,7 +2565,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
 
                             var obj = {
@@ -2586,10 +2575,10 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             }
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                "reply_to": `${resp.created_by.email} `,
+                                "reply_to": `${resp.created_by.email}`,
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -2620,7 +2609,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2630,8 +2619,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -2660,7 +2649,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2670,8 +2659,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -2701,7 +2690,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2711,8 +2700,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -2742,7 +2731,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2752,8 +2741,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -2783,7 +2772,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2793,8 +2782,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                 "to": resp.candidate.email,
-                                // "reply_to": `${ resp.created_by.email } `,
-                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                // "reply_to": `${resp.created_by.email}`,
+                                "reply_to": `${resp._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                 "subject": comm.AdHoc_subject,
                                 "trackid": resp._id + "_" + comm._id + "_" + "adhoc"
                             }, obj);
@@ -3181,7 +3170,7 @@ router.put('/', async (req, res) => {
         if (offer.data.status !== req.body.status) {
             obj.offer_id = offer_upadate.data._id;
             obj.employer_id = req.userInfo.id;
-            obj.message = `< span > { employer }</span > has ${req.body.status} this offer for <span>{candidate}</span>`
+            obj.message = `<span>{employer}</span> has ${req.body.status} this offer for <span>{candidate}</span>`
             var interest = await common_helper.insert(History, obj);
         }
 
@@ -3212,7 +3201,7 @@ router.put('/', async (req, res) => {
 
                 let mail_resp = await mail_helper.send("update_offer", {
                     "to": user_email.data.email,
-                    "subject": "Offer from " + `${companyname} ` + " has been updated"
+                    "subject": "Offer from " + `${companyname}` + " has been updated"
                 }, {
                     "name": name,
                     "upper_content": upper_content,
@@ -3249,12 +3238,12 @@ router.put('/', async (req, res) => {
                 var middel_content = mailcontent.data.middel_content;
                 var lower_content = mailcontent.data.lower_content;
 
-                upper_content = upper_content.replace("{employername}", `${companyname} `).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')} `);
+                upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
                 var obj = {
                     "name": name,
                     "companyname": companyname,
-                    "subject": "You have received job offer from " + `${companyname} `,
+                    "subject": "You have received job offer from " + `${companyname}`,
                     "upper_content": upper_content,
                     "middel_content": middel_content,
                     "lower_content": lower_content,
@@ -3263,9 +3252,9 @@ router.put('/', async (req, res) => {
                 var reply_to = await common_helper.findOne(User, { "_id": offer_upadate.data.created_by });
                 let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                     "to": user_email.data.email,
-                    // "reply_to1": `${ reply_to.data.email } `,
-                    "reply_to2": `${offer_upadate.data._id} @em7977.hirecommit.com`,
-                    "subject": "You have received job offer from " + `${companyname} `,
+                    // "reply_to1": `${reply_to.data.email}`,
+                    "reply_to2": `${offer_upadate.data._id}@em7977.hirecommit.com`,
+                    "subject": "You have received job offer from " + `${companyname}`,
                     "trackid": offer_upadate.data._id
                 }, obj);
 
@@ -3282,7 +3271,7 @@ router.put('/', async (req, res) => {
                             if (comm.trigger == "afterOffer" && comm.day == 0) {
                                 if (moment(update_date.data.createdAt).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3292,7 +3281,7 @@ router.put('/', async (req, res) => {
 
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                         "subject": comm.subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "communication"
                                     }, obj);
@@ -3311,7 +3300,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.trigger == "beforeJoining" && comm.day == 0) {
                                 if (moment(update_date.data.joiningdate).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3321,7 +3310,7 @@ router.put('/', async (req, res) => {
 
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                         "subject": comm.subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "communication"
                                     }, obj);
@@ -3340,7 +3329,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.trigger == "afterJoining" && comm.day == 0) {
                                 if (moment(update_date.data.joiningdate).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3350,7 +3339,7 @@ router.put('/', async (req, res) => {
 
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                         "subject": comm.subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "communication"
                                     }, obj);
@@ -3369,7 +3358,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.trigger == "beforeExpiry" && comm.day == 0) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3379,7 +3368,7 @@ router.put('/', async (req, res) => {
 
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                         "subject": comm.subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "communication"
                                     }, obj);
@@ -3398,7 +3387,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3408,7 +3397,7 @@ router.put('/', async (req, res) => {
 
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "communication"}@em7977.hirecommit.com`,
                                         "subject": comm.subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "communication"
                                     }, obj);
@@ -3433,7 +3422,7 @@ router.put('/', async (req, res) => {
                             if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
                                 if (moment(update_date.data.createdAt).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3442,7 +3431,7 @@ router.put('/', async (req, res) => {
                                     }
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                         "subject": comm.AdHoc_subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "adhoc"
                                     }, obj);
@@ -3460,7 +3449,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day == 0) {
                                 if (moment(update_date.data.joiningdate).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3469,7 +3458,7 @@ router.put('/', async (req, res) => {
                                     }
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                         "subject": comm.AdHoc_subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "adhoc"
                                     }, obj);
@@ -3487,7 +3476,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0) {
                                 if (moment(update_date.data.joiningdate).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3496,7 +3485,7 @@ router.put('/', async (req, res) => {
                                     }
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                         "subject": comm.AdHoc_subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "adhoc"
                                     }, obj);
@@ -3514,7 +3503,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day == 0) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3523,7 +3512,7 @@ router.put('/', async (req, res) => {
                                     }
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                         "subject": comm.AdHoc_subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "adhoc"
                                     }, obj);
@@ -3541,7 +3530,7 @@ router.put('/', async (req, res) => {
                             } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3550,7 +3539,7 @@ router.put('/', async (req, res) => {
                                     }
                                     let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                         "to": candidate_email.data.email,
-                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"} @em7977.hirecommit.com`,
+                                        "reply_to": `${update_date.data._id + "_" + comm._id + "_" + "adhoc"}@em7977.hirecommit.com`,
                                         "subject": comm.AdHoc_subject,
                                         "trackid": update_date.data._id + "_" + comm._id + "_" + "adhoc"
                                     }, obj);
