@@ -1711,7 +1711,8 @@ router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
 router.get('/open_mail/:id', async (req, res) => {
-  console.log(' :  req ==> ', req);
+  console.log(' :  req ==> ', req.params.id);
+  res.status(200).send('success');
 })
 
 router.get('/check_query', async (req, res) => {
