@@ -3242,6 +3242,7 @@ router.put('/', async (req, res) => {
 
                 upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
+                var open_url = 'https://hirecommit.com:3000/open_mail/' + `${offer_upadate.data._id}`;
                 var obj = {
                     "name": name,
                     "companyname": companyname,
@@ -3249,6 +3250,7 @@ router.put('/', async (req, res) => {
                     "upper_content": upper_content,
                     "middel_content": middel_content,
                     "lower_content": lower_content,
+                    "open_url": open_url
                 }
 
                 var reply_to = await common_helper.findOne(User, { "_id": offer_upadate.data.created_by });
