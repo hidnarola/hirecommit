@@ -5,6 +5,7 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
 import { ProfileComponent } from '../../shared/profile/profile.component';
 import { RoleGuardService } from '../../services/auth/role-guard.service';
+
 const routes: Routes = [
   {
     path: '',
@@ -21,6 +22,7 @@ const routes: Routes = [
       {
         path: 'offers',
         canActivate: [RoleGuardService],
+
         data: {
           expectedRole: 'employer'
         },
@@ -29,6 +31,7 @@ const routes: Routes = [
       {
         path: 'sub_accounts',
         canActivate: [RoleGuardService],
+
         data: {
           expectedRole: 'employer'
         },
@@ -37,6 +40,7 @@ const routes: Routes = [
       {
         path: 'groups',
         canActivate: [RoleGuardService],
+
         data: {
           expectedRole: 'employer'
         },
@@ -53,6 +57,7 @@ const routes: Routes = [
       {
         path: 'candidates',
         canActivate: [RoleGuardService],
+
         data: {
           expectedRole: 'employer'
         },
@@ -61,6 +66,7 @@ const routes: Routes = [
       {
         path: 'locations',
         canActivate: [RoleGuardService],
+
         data: {
           expectedRole: 'employer'
         },
@@ -69,6 +75,7 @@ const routes: Routes = [
       {
         path: 'custom_fields',
         canActivate: [RoleGuardService],
+
         data: {
           expectedRole: 'employer'
         },

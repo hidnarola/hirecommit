@@ -213,7 +213,7 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.offerData.forEach(element => {
                 this.d = moment(new Date(element.expirydate));
                 const current_date = moment();
-                if ((element.status === 'Released') && (this.d.isBefore(current_date))) {
+                if ((element.status === 'Released') && (this.d.isBefore(current_date, 'day'))) {
                   element.isExpired = true;
                 } else {
                   element.isExpired = false;

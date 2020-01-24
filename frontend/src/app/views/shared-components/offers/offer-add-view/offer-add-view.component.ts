@@ -34,17 +34,20 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   userName: any;
   public Editor = ClassicEditor;
   resData: any;
+  isPopup = false;
   form: FormGroup;
   form_validation = false;
   offer_data: any = {};
   panelTitle = 'Add';
   user_detail: any = {};
+  // currentUrl = '';
   candidate: any = [];
   isValid = false;
   candidateList: any = [];
   groupForm: FormGroup;
   date: any;
   ast = false;
+  isJoiningDate = false;
   country: any = [];
   isSetCommunication = false;
   countryList: any = [];
@@ -57,6 +60,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   joiningdate: any;
   isAccepted = false;
   isAccept = false;
+  istouchedArray = [];
   pastDetails: any;
   msg: any;
   offer: any;
@@ -72,6 +76,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   is_communication_added = false;
   cursorPos: any;
   d: any;
+  joining_Date; any;
   isSalaryBracket: Boolean = false;
   isAdHoc_ButtonShow = false;
   locationList: any = [
@@ -175,6 +180,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     private socketService: SocketService,
     private modalService: NgbModal,
   ) {
+
     this.spinner.show();
     // Form Controls
     this.form = this.fb.group({
@@ -212,6 +218,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.commonService.profileData().then(res => {
         this.profileData = res;
       });
+      // this.currentUrl = this.router.url;
     }
 
     // check for add or edit
@@ -435,6 +442,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         document.getElementById('candidate_name').removeAttribute('disabled');
       }
     }
+    this.isTouched(value.target.value);
   }
 
   // get location
@@ -459,6 +467,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   //  On change of salary type
   getSalaryType() {
+    this.isTouched(this.form.value.salarytype);
     if (this.form.value.salarytype === 'hourly') {
       this.disabled = false;
       this.form.controls['salaryduration'].setValidators([Validators.required, Validators.pattern(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/)]);
@@ -474,6 +483,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.updateValidation();
     this.form.controls['salaryduration'].updateValueAndValidity();
   }
+  getGroupdays() {
+    this.Groupservice.alert_days().subscribe(res => {
+      // this.days = res[`data`];
+      this.groupData = res[`data`];
+
+    }, (err) => {
+      this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+    });
+  }
 
   ngOnInit() {
     this.userDetail = this.commonService.getLoggedUserDetail();
@@ -485,6 +503,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           this.groupList();
           this.setGroupFormControl();
           this.customFieldList();
+          this.getGroupdays();
         })
         .then(res => {
           if (this.route.snapshot.data.title !== 'Edit' && this.route.snapshot.data.title !== 'View') {
@@ -508,7 +527,55 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             this.spinner.hide();
           }
 
-        });
+        })
+      // .then(res => {
+      //   this.commonService.getuserdata.subscribe(res => {
+      //     console.log('res=>', res);
+      //     console.log('this.form.controls=>', this.form.controls);
+
+      //     if (res.ispopup) {
+      //       this.form.controls['email'].setValue(res['offer'].email);
+      //       this.form.controls['candidate_name'].setValue(res['offer'].candidate_name);
+      //       this.form.controls['title'].setValue(res['offer'].title);
+      //       this.form.controls.salarytype.setValue(res['offer'].salarytype);
+
+      //       this.form.controls['salaryduration'].setValue(res['offer'].salaryduration);
+
+      //       this.form.controls['location'].setValue(res['offer'].location);
+      //       this.form.controls['expirydate'].setValue(new Date(res['offer'].expirydate));
+      //       this.form.controls['joiningdate'].setValue(new Date(res['offer'].joiningdate));
+      //       this.form.controls['offertype'].setValue(res['offer'].offertype);
+      //       this.form.controls['salarybracket_from'].setValue(res['offer'].salarybracket_from);
+      //       this.form.controls['salarybracket_to'].setValue(res['offer'].salarybracket_to);
+      //       this.form.controls['salarybracket'].setValue(res['offer'].salarybracket);
+
+
+
+      //       this.form.controls['notes'].setValue(res['offer'].notes);
+
+
+      //       this.form.controls['high_unopened'].setValue(res[`offer`].high_unopened);
+      //       this.form.controls['high_notreplied'].setValue(res[`offer`].high_notreplied);
+      //       this.form.controls['medium_unopened'].setValue(res[`offer`].medium_unopened);
+      //       this.form.controls['medium_notreplied'].setValue(res[`offer`].medium_notreplied);
+
+      //       if (this.is_Edit) {
+      //         this.form.controls['offerStatus'].setValue(res['offer'].status);
+      //         if (res['offer'].acceptedAt) {
+      //           this.form.controls['acceptanceDate'].setValue(moment(new Date(res['offer'].acceptedAt)).format('DD/MM/YYYY'));
+      //         } else {
+      //           this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
+      //         }// this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
+      //       }
+
+      //     }
+
+      //   })
+      // });
+
+
+
+
     } else if (this.userDetail.role === 'candidate' || this.userDetail.role === 'admin') {
       this.spinner.hide();
       this.getDetail();
@@ -557,11 +624,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             }, 500);
             // edit offer
           } else if (this.is_Edit) {
+            const current_date = moment();
             this.d = moment(new Date(res[`data`].expirydate));
+            this.joining_Date = moment(new Date(res[`data`].joiningdate));
             //offer is accepted
             if (res['data'].status === 'Accepted') {
-              this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
+              this.max_date = new Date(res[`data`].expirydate);
               this.form.controls['title'].disable();
               if (res[`data`][`salary`]) {
                 // this.form.controls['salarybracket'].disable();
@@ -577,10 +646,17 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.form.controls['notes'].disable();
               document.getElementById('annual').setAttribute('disabled', 'true');
               document.getElementById('hourly').setAttribute('disabled', 'true');
+
+              if (!(this.joining_Date.isBefore(current_date, 'day'))) {
+                this.isJoiningDate = true;
+              }
+              else {
+                this.isJoiningDate = false;
+              }
               this.updateValidation();
             }
             // offer is expired
-            else if (this.d < new Date()) {
+            else if (this.d.isBefore(current_date, 'day')) {
               this.offerExpired = true;
               // this.max_date = new Date(res[`data`].expirydate);
               this.isAccepted = true;
@@ -619,7 +695,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               }, 500);
             }
             // set communication
-            this.isAccepted = false;
+            // this.isAccepted = false;
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
               this.isSetCommunication = true;
               this.communicationData = res['data']['communication'];
@@ -758,6 +834,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                   AdHoc_subject: ['', [Validators.required, this.noWhitespaceValidator]],
                   AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
                 }));
+
                 _Adhoc_communication_array.push(new_communication);
               });
               this.AdHocCommunicationData = _Adhoc_communication_array;
@@ -1099,8 +1176,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   //  set controls for group form
   setGroupFormControl() {
-    this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required
-    ]));
+    this.form.setControl('high_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
     this.form.setControl('high_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
     this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
     this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
@@ -1130,6 +1206,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.form.controls['salarybracket'].setValidators(null);
         this.updateValidation();
       }
+
       this.Groupservice.get_detail(e.value).subscribe(res => {
 
         if (res) {
@@ -1206,6 +1283,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       // this.form.controls.communicationFieldItems.reset();
       // this.communicationFieldItems.removeAt
     }
+    this.isTouched(e.value);
   }
 
   Accept(id, type) {
@@ -1287,7 +1365,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   getExpiryDate(e) {
     // if ((this.resData !== 'Accepted')){
-
     const date = new Date(e);
     const month = date.getMonth() + 1;
     this.expirydate = date.getFullYear() + '-' + month + '-' + date.getDate();
@@ -1298,6 +1375,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       // }
     }
     // }
+    this.isTouched(e);
   }
 
   // add more communication
@@ -1306,6 +1384,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     this.add_new_AdHoc_communication();
     //  $('#summernote').summernote();
+
 
 
   }
@@ -1593,6 +1672,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
 
   checkFrom(from, to) {
+    this.isTouched(from);
     this.ast = true;
     this.astSalary = false;
     this.from = parseInt(from.target.value, 10);
@@ -1608,12 +1688,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.error = false;
     }
   }
-  CheckAst() {
+  CheckAst(value) {
+    this.isTouched(value);
     this.ast = false;
     this.astSalary = true;
   }
 
   checkTo(from, to) {
+    this.isTouched(from);
     this.to = parseInt(from.target.value, 10);
     this.from = parseInt(to, 10);
     if (this.from > this.to) {
@@ -1669,6 +1751,19 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  isTouched(value) {
+    if (value) {
+      this.istouchedArray.push(value);
+    }
+  }
+  // setRequired() {
+  //   this.form.controls['high_unopened'].setValidators([Validators.required]);
+  //   this.form.controls['high_notreplied'].setValidators([Validators.required]);
+  //   this.form.controls['medium_unopened'].setValidators([Validators.required]);
+  //   this.form.controls['medium_notreplied'].setValidators([Validators.required]);
+  //   this.form.updateValueAndValidity();
+  // }
+
 
   // submit offers
   onSubmit(flag) {
@@ -1711,6 +1806,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             reply_date: element.reply_date
           });
         });
+        // this.setRequired();
       } else {
         communication_array.push();
       }
@@ -1735,6 +1831,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           AdHoc_reply_date: element.AdHoc_reply_date
         });
       });
+      // this.setRequired();
     } else {
       AdHOc_communication_array.push();
     }
@@ -1888,26 +1985,27 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // console.log('this.userDetail=>', this.userDetail);
 
-    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-      if (!this.is_View) {
-        this.offer = this.form.value;
-        Object.keys(this.form.controls).map((v, key) => {
-          if (this.form.controls[v].value) {
-            this.commonService.setUnSavedData(true);
-            console.log('QQQQQQ=======>');
-            return;
-          }
-        });
-      }
-    }
+    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+    //   if (!this.is_View) {
+    //     this.offer = this.form.value;
+    //     this.isPopup = true;
+    //     if (this.istouchedArray.length > 0) {
+    //       console.log('AAAAAA=======>', this.offer);
+    //       let obj = {
+    //         offer: this.offer,
+    //         ispopup: true
+    //       }
+    //       this.commonService.setuserData(obj);
+    //       this.router.navigate([this.currentUrl]);
+    //       this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url })
+
+    //     }
+
+    //   }
+    // }
     this.socketService.leaveGrp(this.grpId);
   }
 
-  // @HostListener('window:beforeunload', ['$event'])
-  // canLeavePage($event: any): Observable<void> | void {
-  //   if (prompt('You data is loading. Are you sure you want to leave?')) {
-  //     $event.preventDefault();
-  //   }
-  // }
+
 
 }

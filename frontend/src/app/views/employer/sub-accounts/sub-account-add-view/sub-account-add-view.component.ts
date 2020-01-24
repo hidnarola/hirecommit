@@ -8,6 +8,7 @@ import { ThemeService } from 'ng2-charts';
 import { ConfirmationService } from 'primeng/components/common/confirmationservice';
 import { CommonService } from '../../../../services/common.service';
 import { EmployerService } from '../../../admin/employers/employer.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-sub-account-add-view',
@@ -19,6 +20,7 @@ export class SubAccountAddViewComponent implements OnInit {
   addAccount: FormGroup;
   submitted = false;
   admin_rights = false;
+
   sub_account: any;
   id: any;
   panelTitle: string;
@@ -30,6 +32,7 @@ export class SubAccountAddViewComponent implements OnInit {
   userDetail: any;
   show_spinner = false;
   employerID: any;
+  // currentUrl = '';
   cancel_link = '/employer/sub_accounts/list';
   // cancel_link1 = '/admin/employers/approved_employer/'+ this.employerID +'/sub_accounts/list';
   constructor(
@@ -40,18 +43,26 @@ export class SubAccountAddViewComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
     private commonService: CommonService,
-    private employerService: EmployerService
+    private employerService: EmployerService,
+    private location: Location
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     this.employerID = this.route.snapshot.params['eid'];
   }
 
   ngOnInit() {
+    // this.commonService.getuserdata.subscribe(res => {
+    //   this.detail.username = res.username;
+    //   this.detail.email = res.email;
+    //   this.detail.admin_rights = res.admin_rights;
+    // });
+
     this.addAccount = new FormGroup({
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       admin_rights: new FormControl(false)
     });
+    // this.currentUrl = this.router.url;
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
@@ -286,19 +297,24 @@ export class SubAccountAddViewComponent implements OnInit {
     });
   }
   ngOnDestroy(): void {
-    // console.log('this.userDetail=>', this.userDetail);
+    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+    //   if (!this.is_View) {
+    //     this.sub_account = this.addAccount.value;
+    //     Object.keys(this.addAccount.controls).forEach((v, key) => {
+    //       if (this.addAccount.controls[v].value) {
+    //         // this.detail = {
+    //         //   username: this.addAccount.controls.username.value,
+    //         //   email: this.addAccount.controls.email.value,
+    //         //   admin_rights: this.addAccount.controls.admin_rights.value
+    //         // };
+    //         this.commonService.setuserData(this.detail);
+    //         this.router.navigate([this.currentUrl]);
+    //         this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
 
-    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-      if (!this.is_View) {
-        this.sub_account = this.addAccount.value;
-        Object.keys(this.addAccount.controls).forEach((v, key) => {
-          if (this.addAccount.controls[v].value) {
-            this.commonService.setUnSavedData(true);
-            return;
-          }
-        });
-      }
-    }
+    //       }
+    //     });
+    //   }
+    // }
 
   }
 

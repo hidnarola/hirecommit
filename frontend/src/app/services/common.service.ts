@@ -15,28 +15,42 @@ import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 })
 export class CommonService {
   details: any;
+  data: {
+    value: false,
+    url: string,
+    newurl: string
+  }
+
   // profile_data: any = [];
   candidate_Profile: any = [];
+  userformdata: any = {};
   // private url = 'http://localhost:3000';
   private url = env.environment.API_URL;
   private secretKey = 'myhardpassword';
   private profileDetail = new BehaviorSubject(null);
   public changed_profile_detail = new BehaviorSubject(null);
   private firstLoginDetail = new BehaviorSubject(null);
-  private unSavedData = new BehaviorSubject(false);
+  private unSavedData = new BehaviorSubject(this.data);
   private value_Popup = new BehaviorSubject(false);
+
+  private setuserdata = new BehaviorSubject(this.userformdata);
 
   getprofileDetail = this.profileDetail.asObservable();
   getChangedProfileDetail = this.changed_profile_detail.asObservable();
   getFirstLogin = this.firstLoginDetail.asObservable();
-  getunSavedData = this.unSavedData.asObservable();
-  getvalue = this.value_Popup.asObservable();
+  // getunSavedData = this.unSavedData.asObservable();
+  // getvalue = this.value_Popup.asObservable();
+  // getuserdata = this.setuserdata.asObservable();
 
   constructor(
     private http: HttpClient,
     private route: Router,
     private empService: EmployerService,
     private candidateServcie: CandidateService) { }
+
+  // setuserData(data: any) {
+  //   this.setuserdata.next(data);
+  // }
 
   employer_signup(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + 'employer_register', data);
@@ -141,13 +155,13 @@ export class CommonService {
   public firstLogin(data: boolean) {
     this.firstLoginDetail.next(data);
   }
-  public setUnSavedData(data: boolean) {
-    this.unSavedData.next(data);
-  }
+  // public setUnSavedData(data: any) {
+  //   this.unSavedData.next(data);
+  // }
 
-  public value_popup(data: boolean) {
-    this.value_Popup.next(data);
-  }
+  // public value_popup(data: boolean) {
+  //   this.value_Popup.next(data);
+  // }
 
 
   public changedProfileDetail(data: boolean) {

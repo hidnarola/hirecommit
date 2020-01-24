@@ -13,8 +13,11 @@ import { MglTimelineModule } from 'angular-mgl-timeline';
     ReactiveFormsModule,
     DefaultLayoutModule,
     MglTimelineModule,
+
   ],
-  providers: []
+  providers: [
+
+  ]
 
 })
 

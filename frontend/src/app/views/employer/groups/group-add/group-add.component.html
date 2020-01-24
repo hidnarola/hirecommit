@@ -249,7 +249,7 @@
                                                         <div *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
                                                             style="color: red;">
                                                             <div
-                                                                *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] 
+                                                                *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required']
                                                             || communicationForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']">
                                                                 This field is required.
                                                             </div>
@@ -344,8 +344,8 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject" formControlName="subject"
                                                             [(ngModel)]="customfield.subject">
-                                                        
-                                            
+
+
                                                     </div>
                                                     <div class="offset-md-5"
                                                         *ngIf="isSubmitted && communicationForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors"
@@ -354,7 +354,7 @@
                                                             *ngIf="communicationForm.controls['communicationFieldItems'].controls[i].controls['subject'].errors['required'] || communicationForm.controls['communicationFieldItems'].controls[i].get('subject').errors['whitespace']">
                                                             This field is required.
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div> -->
                                             <div class="form-group no-gutters row">

@@ -25,7 +25,7 @@ export class GroupAddComponent implements OnInit {
   msg: any;
   isSubmitted = false;
   cancel_link = '/employer/groups/list';
-  groupData: any = {};
+  groupData: any = [];
   editedData: any;
   show_communication: Boolean = false;
   communicationData: any = [];
@@ -62,6 +62,7 @@ export class GroupAddComponent implements OnInit {
   userDetail: any;
   cursorPos: any;
   days: any;
+  // currentUrl = '';
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -72,6 +73,7 @@ export class GroupAddComponent implements OnInit {
     private EmpService: EmployerService
 
   ) {
+    // this.currentUrl = this.router.url;
     this.userDetail = this.commonService.getLoggedUserDetail();
 
     // form controls
@@ -97,9 +99,33 @@ export class GroupAddComponent implements OnInit {
 
   }
 
-  ngOnInit() { }
-
   get f() { return this.addGroup.controls; }
+
+  ngOnInit() {
+    // this.commonService.getuserdata.subscribe(res => {
+    //   console.log('res=>', res[`group`]);
+    //   //
+    //   if (res.ispopup) {
+
+    //     this.addGroup.controls['name'].setValue(res[`group`].name);
+    //     // this.groupData.name = res[`group`].name;
+    //     this.groupData.medium_notreplied = res[`group`].medium_notreplied;
+    //     this.groupData.medium_unopened = res[`group`].medium_unopened;
+    //     this.groupData.high_notreplied = res[`group`].high_notreplied;
+    //     this.groupData.high_unopened = res[`group`].high_unopened;
+    //   }
+
+
+    //   // this.communicationData.communicationname = res[`communication`].communicationname;
+    //   // this.communicationData.priority = res[`communication`].priority;
+    //   // this.communicationData.trigger = res[`communication`].trigger;
+    //   // this.communicationData.day = res[`communication`].day;
+    //   // this.communicationData.subject = res[`communication`].subject;
+    //   // this.communicationData.message = res[`communication`].message;
+    // });
+  }
+
+
 
   // communbication field items controls
   get communicationFieldItems() {
@@ -108,10 +134,6 @@ export class GroupAddComponent implements OnInit {
   getCursor = (e) => {
     const selection = document.getSelection();
     this.cursorPos = selection.anchorOffset;
-    console.log('pos=>', e, this.cursorPos, this.summernote.nativeElement.selectionStart);
-    // console.log('values=>', this.form.value);
-    // console.log('this.form.controls[`AdHoc_message`].value=>',
-    //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
   }
 
   // add new communication
@@ -227,7 +249,7 @@ export class GroupAddComponent implements OnInit {
       this.show_spinner = false;
     }
   }
-  //remove zero 
+  //remove zero
   removeZeroCommunication(index) {
     if (this.communicationForm.controls['communicationFieldItems'].value[index].day >= 0) {
       this.communicationForm.controls['communicationFieldItems'][`controls`][index].controls['day'].setValue(parseFloat(this.communicationForm.value[`communicationFieldItems`][index].day));
@@ -328,18 +350,22 @@ export class GroupAddComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // console.log('this.userDetail=>', this.userDetail);
+    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
 
-    //   if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-
-    //     this.group = this.addGroup.value;
-    //     Object.keys(this.addGroup.controls).forEach((v, key) => {
-    //       if (this.addGroup.controls[v].value) {
-    //         this.commonService.setUnSavedData(true);
-    //         return;
-    //       }
-    //     });
-    //   }
+    //   this.group = this.addGroup.value;
+    //   Object.keys(this.addGroup.controls).forEach((v, key) => {
+    //     if (this.addGroup.controls[v].value) {
+    //       const obj = {
+    //         group: this.groupData,
+    //         communication: this.communicationData,
+    //         ispopup: true
+    //       };
+    //       this.commonService.setuserData(obj);
+    //       this.router.navigate([this.currentUrl]);
+    //       this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+    //     }
+    //   });
+    // }
   }
 
 

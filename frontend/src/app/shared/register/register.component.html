@@ -223,7 +223,7 @@
             name="drivingLicenseState" required="required" id="drivingLicenseState">
           <div class="error" *ngIf="!registerForm.controls['drivingLicenseState'].valid && isFormSubmitted">
             <span
-              *ngIf="registerForm.controls['drivingLicenseState'].errors['required'] || registerForm.controls['confirmpassword'].errors['whitespace']">
+              *ngIf="registerForm.controls['drivingLicenseState'].errors['required'] || registerForm.controls['drivingLicenseState'].errors['whitespace']">
               This field is required.
             </span>
           </div>
