@@ -628,19 +628,23 @@ router.post('/pastOffer', async (req, res) => {
         var user = await common_helper.findOne(User, { "email": value })
 
         if (user.status == 1) {
+            console.log(' :  ==> ', req.userInfo.id);
             let role = await common_helper.findOne(User, { "_id": req.userInfo.id });
             if (role.data.role_id == "5d9d99003a0c78039c6dd00f") {
                 employer_id = role.data.emp_id;
             } else {
                 employer_id = req.userInfo.id;
             }
+            console.log(' employer_id :  ==> ', employer_id);
             var pastOffer = await common_helper.find(Offer,
                 {
                     // "employer_id": ObjectId(req.userInfo.id)
-                    $or: [
-                        { "employer_id": new ObjectId(employer_id) },
-                    ],
-                    "user_id": ObjectId(user.data._id), status: "Not Joined"
+                    "employer_id": new ObjectId(employer_id),
+                    // $or: [
+                    //     { "employer_id": new ObjectId(employer_id) },
+                    // ],
+                    "user_id": ObjectId(user.data._id),
+                    "status": "Not Joined"
                 });
 
             if (pastOffer.data.length > 0) {
@@ -654,15 +658,17 @@ router.post('/pastOffer', async (req, res) => {
 
             var previousOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
-                $or: [
-                    { "employer_id": new ObjectId(employer_id) },
-                ],
+                "employer_id": new ObjectId(employer_id),
+                // $or: [
+                //     { "employer_id": new ObjectId(employer_id) },
+                // ],
                 // "created_by": req.userInfo.id,
                 $or: [
                     { status: { $eq: "Accepted" } },
                     { status: { $eq: "On Hold" } }
                 ]
             });
+            console.log(' : previousOffer ==> ', previousOffer);
 
             if (previousOffer.data.length > 0) {
                 var display_message = await common_helper.findOne(DisplayMeaasge, { "msg_type": "previous_offer" })
@@ -676,9 +682,10 @@ router.post('/pastOffer', async (req, res) => {
 
             var ReleasedOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
-                $or: [
-                    { "employer_id": new ObjectId(employer_id) },
-                ],
+                "employer_id": new ObjectId(employer_id),
+                // $or: [
+                //     { "employer_id": new ObjectId(employer_id) },
+                // ],
                 // "created_by": req.userInfo.id,
                 $and:
                     [
