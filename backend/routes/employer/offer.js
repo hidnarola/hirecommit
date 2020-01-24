@@ -238,7 +238,7 @@ router.post("/", async (req, res) => {
                         "upper_content": upper_content,
                         "middel_content": middel_content,
                         "lower_content": lower_content,
-                        "opne_url": opne_url
+                        "open_url": open_url
                     }
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
