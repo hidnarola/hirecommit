@@ -229,7 +229,7 @@ router.post("/", async (req, res) => {
 
                     upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
-                    var open_url = "https://hirecommit.com:3000/open_mail/" + `${interest_resp.data._id}`;
+                    // var open_url = "https://hirecommit.com:3000/open_mail/" + `${interest_resp.data._id}`;
                     var obj = {
                         "name": name,
                         "companyname": companyname,
@@ -238,7 +238,7 @@ router.post("/", async (req, res) => {
                         "upper_content": upper_content,
                         "middel_content": middel_content,
                         "lower_content": lower_content,
-                        "open_url": open_url
+                        // "open_url": open_url
                     }
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
@@ -315,12 +315,12 @@ router.post("/", async (req, res) => {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
+                                            // var open_url = `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {

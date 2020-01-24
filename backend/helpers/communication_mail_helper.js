@@ -36,7 +36,7 @@ communication_mail_helper.send = async (template_id, options, data) => {
                 "dynamic_template_data": {
                     "message": data.message,
                     "subject": data.subject,
-                    "open_url": data.open_url
+                    // "open_url": data.open_url
                 },
                 "subject": options.subject
             }
