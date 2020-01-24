@@ -292,7 +292,7 @@ router.post("/", async (req, res) => {
                         }
 
                     } else {
-                        console.log(' : hiii ==> ', hiii);
+                        console.log(' : hiii ==> ', "hiii");
                         let mail_resp = await new_mail_helper.send('d-96c1114e4fbc45458f2039f9fbe14390', {
                             "to": user.data.email,
                             // "reply_to1": `${ reply_to.data.email } `,
