@@ -1675,16 +1675,6 @@ router.post('/get_email', async (req, res) => {
   }
 })
 
-router.post('/open_mail/:id', async (req, res) => {
-  try {
-    console.log(' :  req ==> ', req.params.id);
-    res.status(200).send('success');
-  } catch (err) {
-    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-  }
-
-})
-
 async function getCountry(req, res) {
   try {
 
@@ -1720,7 +1710,15 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
+router.get('/open_mail/:id', async (req, res) => {
+  try {
+    console.log(' :  req ==> ', req.params.id);
+    res.status(200).send('success');
+  } catch (err) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
 
+})
 
 router.get('/check_query', async (req, res) => {
   var obj = {};
