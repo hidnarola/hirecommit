@@ -1732,7 +1732,8 @@ router.get('/open_mail/:id', async (req, res) => {
                   "communication.$.open_date": new Date()
                 }
               })
-            console.log(' : success comm ==> ');
+            res.status(200).json({ "message": "Open success" })
+            console.log("Success ==>", "Open success");
           } else if (previous_status.status == 2) {
             res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
           } else {
@@ -1741,7 +1742,6 @@ router.get('/open_mail/:id', async (req, res) => {
         } else if (split_data.length == 3 && split_data[2] === "adhoc") {
           var offer_id = split_data[0];
           var adhoc_id = split_data[1];
-          console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
           if (previous_status.status == 1) {
@@ -1753,7 +1753,8 @@ router.get('/open_mail/:id', async (req, res) => {
                   "AdHoc.$.AdHoc_open_date": new Date()
                 }
               })
-            console.log('success  ==> success');
+            res.status(200).json({ "message": "Open success" })
+            console.log("Success ==>", "Open success");
           } else if (previous_status.status == 2) {
             res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
           } else {
