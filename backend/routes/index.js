@@ -1711,8 +1711,8 @@ router.get('/country/:id', getCountry);
 
 router.get('/open_mail/:id', async (req, res) => {
   try {
+    console.log(' : req.params.id ==> ', req.params.id);
     var id = req.params.id;
-
     if (id && id !== "") {
       var langth = id.length;
       if (length > 24) {
@@ -1761,13 +1761,17 @@ router.get('/open_mail/:id', async (req, res) => {
           }
         }
       } else {
+        console.log(' : hi ==> ', "offer");
         var offer_resp = await common_helper.findOne(Offer, { "_id": id });
+        console.log(' :  offer_resp ==> ', offer_resp);
         var obj = {
           email_open: true,
           open_At: new Date()
         }
         if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
+
           var offer_update_resp = await common_helper.update(Offer, { "_id": id }, obj);
+          console.log(' : offer_update_resp ==> ', offer_update_resp);
           reqBody = [];
         } else {
           reqBody = [];
