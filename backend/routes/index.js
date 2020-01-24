@@ -1714,10 +1714,7 @@ router.get('/open_mail/:id', async (req, res) => {
     console.log(' : req.params.id ==> ', req.params.id);
     var id = req.params.id;
     if (id && id !== "") {
-      console.log(' : inside ==> ', "inside");
       var len = id.length;
-      console.log(' :  ==> ', len);
-      console.log(' :  is_grater==> ', len > 24);
       if (len > 24) {
         var split_data = id.split("_");
         if (split_data.length == 3 && split_data[2] === "communication") {
@@ -1764,7 +1761,6 @@ router.get('/open_mail/:id', async (req, res) => {
           }
         }
       } else {
-        console.log(' : hi ==> ', "offer");
         var offer_resp = await common_helper.findOne(Offer, { "_id": id });
         // console.log(' :  offer_resp ==> ', offer_resp);
         var obj = {
@@ -1773,7 +1769,7 @@ router.get('/open_mail/:id', async (req, res) => {
         }
         if (offer_resp.status == 1 && offer_resp.data.email_open === false) {
           var offer_update_resp = await common_helper.update(Offer, { "_id": id }, obj);
-          console.log(' : offer_update_resp ==> ', offer_update_resp);
+          res.json({ "message": "Open success" })
         } else {
           console.log('Offer is already opened..! Or offer is deleted..!');
         }
