@@ -1476,19 +1476,19 @@ router.post('/email_opened', async (req, res) => {
   try {
     console.log(req.body);
     const reqBody = req.body[0];
-    console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
+    // console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
     // console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
     if (reqBody.trackid && reqBody.trackid !== "") {
       var open_id = reqBody.trackid;
       var length = open_id.length;
       if (length > 24) {
         var split_data = open_id.split("_");
-        console.log(' : split_data.length == 3 && split_data[2] === "communication" ==> ', split_data.length == 3 && split_data[2] === "communication");
-        console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
+        // console.log(' : split_data.length == 3 && split_data[2] === "communication" ==> ', split_data.length == 3 && split_data[2] === "communication");
+        // console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
         if (split_data.length == 3 && split_data[2] === "communication") {
           var offer_id = split_data[0];
           var communication_id = split_data[1];
-          console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
+          // console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
           if (previous_status.status == 1) {
@@ -1709,6 +1709,78 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
+router.get('/open_mail/:id', async (req, res) => {
+  try {
+    var id = req.params.id;
+
+    if (id && id !== "") {
+      var langth = id.length;
+      if (length > 24) {
+        var split_data = id.split("_");
+        if (split_data.length == 3 && split_data[2] === "communication") {
+          var offer_id = split_data[0];
+          var communication_id = split_data[1];
+          // console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
+          var previous_status = await common_helper.findOne(Offer,
+            { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
+          if (previous_status.status == 1) {
+            var update_offer_communication = await common_helper.update(Offer,
+              { "_id": offer_id, "communication._id": communication_id },
+              {
+                $set: {
+                  "communication.$.open": true,
+                  "communication.$.open_date": new Date()
+                }
+              })
+            console.log(' : success comm ==> ');
+          } else if (previous_status.status == 2) {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
+          } else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
+          }
+        } else if (split_data.length == 3 && split_data[2] === "adhoc") {
+          var offer_id = split_data[0];
+          var adhoc_id = split_data[1];
+          console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
+          var previous_status = await common_helper.findOne(Offer,
+            { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
+          if (previous_status.status == 1) {
+            var update_offer_communication = await common_helper.update(Offer,
+              { "_id": offer_id, "AdHoc._id": adhoc_id },
+              {
+                $set: {
+                  "AdHoc.$.AdHoc_open": true,
+                  "AdHoc.$.AdHoc_open_date": new Date()
+                }
+              })
+            console.log('success  ==> success');
+          } else if (previous_status.status == 2) {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
+          } else {
+            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
+          }
+        }
+      } else {
+        var offer_resp = await common_helper.findOne(Offer, { "_id": id });
+        var obj = {
+          email_open: true,
+          open_At: new Date()
+        }
+        if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
+          var offer_update_resp = await common_helper.update(Offer, { "_id": id }, obj);
+          reqBody = [];
+        } else {
+          reqBody = [];
+          console.log('Offer is already opened..! Or offer is deleted..!');
+        }
+      }
+    } else {
+      console.log("No Track Id Found..!");
+    }
+  } catch (error) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
 
 router.get('/check_query', async (req, res) => {
   var obj = {};

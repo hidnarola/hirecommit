@@ -40,7 +40,8 @@ new_mail_helper.send = async (template_id, options, data) => {
                     "name": data.name,
                     "upper_content": data.upper_content,
                     "middel_content": data.middel_content,
-                    "lower_content": data.lower_content
+                    "lower_content": data.lower_content,
+                    "open_url": data.open_url
                 },
                 "subject": options.subject
             }
