@@ -1429,41 +1429,42 @@ router.post('/match_old_password', async (req, res) => {
 
 router.post('/test_mail', async (req, res) => {
   try {
+    id = "123456";
     var message = "welcome";
-    var content = "<img style='width:1px; height:1px;' src='https://hirecommit.com:3000/user'/>";
+    var open_url = "https://hirecommit.com:3000/opem_mail/" + `${id}`;
     var trackid = "test001";
     var obj = {
       "trackid": trackid,
       "message": message,
-      "content": content
+      "open_url": open_url
     }
-    // 5e20d38377f6383d969aceb1
-    var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e218faff9951d4b99c5b98e" });
-    console.log(' :  ==> ', reqBody);
-    let mail_resp = await mail_helper.forwardRepliedMail({
-      // update_communication.created_by.email
-      to: req.body.email,
-      from: reqBody.data.message.from,
-      subject: "Offer",
-      content: reqBody.data.message.email,
-      filename: `${reqBody.data.offerid}.eml`,
-      // html: reqBody.data.message.email
-      html: reqBody.data.message.email
-    }, (err, info) => {
-      if (err) {
-        console.log(error);
-      }
-      else {
-        console.log('Message forwarded: ' + info.response);
-      }
-    });
-    console.log(' : mail_resp ==> ', mail_resp);
-    // let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
-    //   "to": req.body.email,
-    //   "reply_to": "vishalkanojiya9727@gmail.com",
-    //   "subject": "Offer",
-    //   "trackid": trackid
-    // }, obj);
+
+    // var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e218faff9951d4b99c5b98e" });
+    // console.log(' :  ==> ', reqBody);
+    // let mail_resp = await mail_helper.forwardRepliedMail({
+    //   // update_communication.created_by.email
+    //   to: req.body.email,
+    //   from: reqBody.data.message.from,
+    //   subject: "Offer",
+    //   content: reqBody.data.message.email,
+    //   filename: `${reqBody.data.offerid}.eml`,
+    //   // html: reqBody.data.message.email
+    //   html: reqBody.data.message.email
+    // }, (err, info) => {
+    //   if (err) {
+    //     console.log(error);
+    //   }
+    //   else {
+    //     console.log('Message forwarded: ' + info.response);
+    //   }
+    // });
+    // console.log(' : mail_resp ==> ', mail_resp);
+    let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
+      "to": req.body.email,
+      "reply_to": "vishalkanojiya9727@gmail.com",
+      "subject": "Offer",
+      "trackid": trackid
+    }, obj);
 
 
     res.json({ "message": "success" })
@@ -1474,21 +1475,21 @@ router.post('/test_mail', async (req, res) => {
 
 router.post('/email_opened', async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const reqBody = req.body[0];
-    console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
+    // console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
     // console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
     if (reqBody.trackid && reqBody.trackid !== "") {
       var open_id = reqBody.trackid;
       var length = open_id.length;
       if (length > 24) {
         var split_data = open_id.split("_");
-        console.log(' : split_data.length == 3 && split_data[2] === "communication" ==> ', split_data.length == 3 && split_data[2] === "communication");
-        console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
+        // console.log(' : split_data.length == 3 && split_data[2] === "communication" ==> ', split_data.length == 3 && split_data[2] === "communication");
+        // console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
         if (split_data.length == 3 && split_data[2] === "communication") {
           var offer_id = split_data[0];
           var communication_id = split_data[1];
-          console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
+          // console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
           if (previous_status.status == 1) {
@@ -1509,7 +1510,7 @@ router.post('/email_opened', async (req, res) => {
         } else if (split_data.length == 3 && split_data[2] === "adhoc") {
           var offer_id = split_data[0];
           var adhoc_id = split_data[1];
-          console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
+          // console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
           if (previous_status.status == 1) {
@@ -1709,6 +1710,9 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
+router.get('/open_mail/:id', async (req, res) => {
+  console.log(' :  req ==> ', req);
+})
 
 router.get('/check_query', async (req, res) => {
   var obj = {};
