@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Params, ActivatedRouteSnapshot } from '@angular/router';
 import { OfferService } from '../offer.service';
@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { environment } from '../../../../../environments/environment';
 import { NgxSummernoteDirective } from 'ngx-summernote';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 declare const $: any;
 @Component({
@@ -217,6 +218,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
+
+
 
   }
 
@@ -476,9 +479,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.userDetail = this.commonService.getLoggedUserDetail();
     //   To get candidates list
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+
       this.getCandidateList()
         .then(res => {
           this.groupList();
+          this.setGroupFormControl();
           this.customFieldList();
         })
         .then(res => {
@@ -520,9 +525,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           //viwe offer
           if (this.is_View) {
 
-            if (!(res['data'].status === 'Accepted')) {
-              res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
-            }
+            // if (!(res['data'].status === 'Accepted')) {
+            res[`data`].offertype = (this.offer_type_optoins.find(o => o.value === res[`data`].offertype).label);
+            // }
             if (res[`data`][`AdHoc`].length > 0) {
 
               res[`data`][`AdHoc`].forEach(element => {
@@ -614,6 +619,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               }, 500);
             }
             // set communication
+            this.isAccepted = false;
             if (res['data']['communication'] && res['data']['communication'].length > 0) {
               this.isSetCommunication = true;
               this.communicationData = res['data']['communication'];
@@ -815,6 +821,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             //   this.form.controls['high_notreplied'].setValue(res[`data`].high_notreplied);
             //   this.form.controls['medium_unopened'].setValue(res[`data`].medium_unopened);
             //   this.form.controls['medium_notreplied'].setValue(res[`data`].medium_notreplied);
+
             // }
             const _array = [];
             const test = res[`data`]['customfeild'];
@@ -847,6 +854,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         }
 
         this.resData = res[`data`];
+        this.groupData.high_unopened = this.resData.high_unopened;
+        this.groupData.high_notreplied = this.resData.high_notreplied;
+        this.groupData.medium_unopened = this.resData.medium_unopened;
+        this.groupData.medium_notreplied = this.resData.medium_notreplied;
         if (this.resData.acceptedAt) {
           this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
         } else {
@@ -942,6 +953,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
 
         this.resData = res[`data`];
+        this.groupData.high_unopened = this.resData.high_unopened;
+        this.groupData.high_notreplied = this.resData.high_notreplied;
+        this.groupData.medium_unopened = this.resData.medium_unopened;
+        this.groupData.medium_notreplied = this.resData.medium_notreplied;
         this.resData.offertype = (this.offer_type_optoins.find(o => o.value === this.resData.offertype).label);
         if (this.resData.acceptedAt) {
           this.isAcceptedView = moment(new Date(this.resData.acceptedAt)).format('DD/MM/YYYY');
@@ -1090,17 +1105,18 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     this.form.setControl('medium_unopened', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
     this.form.setControl('medium_notreplied', new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]));
     this.form.updateValueAndValidity();
+
   }
 
   //unset controls for group form
-  unset_GroupFormControl() {
-    this.form.removeControl('high_unopened');
-    this.form.removeControl('high_notreplied');
-    this.form.removeControl('medium_unopened');
-    this.form.removeControl('medium_notreplied');
+  // unset_GroupFormControl() {
+  //   this.form.removeControl('high_unopened');
+  //   this.form.removeControl('high_notreplied');
+  //   this.form.removeControl('medium_unopened');
+  //   this.form.removeControl('medium_notreplied');
 
-    this.form.updateValueAndValidity();
-  }
+  //   this.form.updateValueAndValidity();
+  // }
 
   // On change of group
   groupChange(e) {
@@ -1114,16 +1130,21 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.form.controls['salarybracket'].setValidators(null);
         this.updateValidation();
       }
-
       this.Groupservice.get_detail(e.value).subscribe(res => {
+
         if (res) {
-          this.getGroupDetails = true;
+
+          // this.getGroupDetails = true;
           this.isSetCommunication = true;
           this.setGroupFormControl();
+          this.form.controls['high_unopened'].setValue(res[`data`][`data`][0].high_unopened);
+          this.form.controls['high_notreplied'].setValue(res[`data`][`data`][0].high_notreplied);
+          this.form.controls['medium_unopened'].setValue(res[`data`][`data`][0].medium_unopened);
+          this.form.controls['medium_notreplied'].setValue(res[`data`][`data`][0].medium_notreplied);
         } else {
-          this.getGroupDetails = false;
+          // this.getGroupDetails = false;
           this.isSetCommunication = false;
-          this.unset_GroupFormControl();
+          // this.unset_GroupFormControl();
           this.unset_communication();
         }
 
@@ -1173,7 +1194,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     } else {
       this.getGroupDetails = false;
       this.isSetCommunication = false;
-      this.unset_GroupFormControl();
+      // this.unset_GroupFormControl();s
       this.communicationData = null;
       this.unset_communication();
 
@@ -1518,7 +1539,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     if (this.userDetail.role === 'employer') {
       if (!this.is_View) {
         this.confirmationService.confirm({
-          message: 'Are you sure you want to cancel?',
+          message: 'Are you sure you want to leave this page?',
           accept: () => {
             this.show_spinner = true;
             this.router.navigate([this.cancel_link]);
@@ -1865,15 +1886,28 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // this.offer = this.form.value;
-    // Object.keys(this.form.controls).forEach((v, key) => {
-    //   if (this.form.controls[v].value) {
-    //     this.commonService.setUnSavedData(true);
-    //     return;
-    //   }
-    // });
+    // console.log('this.userDetail=>', this.userDetail);
 
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      if (!this.is_View) {
+        this.offer = this.form.value;
+        Object.keys(this.form.controls).map((v, key) => {
+          if (this.form.controls[v].value) {
+            this.commonService.setUnSavedData(true);
+            console.log('QQQQQQ=======>');
+            return;
+          }
+        });
+      }
+    }
     this.socketService.leaveGrp(this.grpId);
   }
+
+  // @HostListener('window:beforeunload', ['$event'])
+  // canLeavePage($event: any): Observable<void> | void {
+  //   if (prompt('You data is loading. Are you sure you want to leave?')) {
+  //     $event.preventDefault();
+  //   }
+  // }
 
 }

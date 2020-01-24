@@ -21,6 +21,7 @@ export class LocationAddViewComponent implements OnInit {
   location: any;
   locations: any;
   id: any;
+  location_popup: any;
   detail: any = [];
   panelTitle = 'Add Location';
   buttonTitle: string;
@@ -133,7 +134,7 @@ export class LocationAddViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to Update this record?',
         accept: () => {
-         
+
           this.service.edit_location(res_data).subscribe(res => {
             if (res['data']['status'] === 1) {
               this.submitted = false;
@@ -177,6 +178,22 @@ export class LocationAddViewComponent implements OnInit {
       } else {
         this.show_spinner = false;
       }
+    }
+  }
+  ngOnDestroy(): void {
+    // console.log('this.userDetail=>', this.userDetail);
+
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      if (!(this.is_View)) {
+        this.location_popup = this.addLocation.value;
+        Object.keys(this.addLocation.controls).forEach((v, key) => {
+          if (this.addLocation.controls[v].value) {
+            this.commonService.setUnSavedData(true);
+            return;
+          }
+        });
+      }
+
     }
   }
 }

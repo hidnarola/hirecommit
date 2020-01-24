@@ -59,10 +59,7 @@ export const routes: Routes = [
   {
     path: 'employer',
     loadChildren: () => import('./views/employer/employer.module').then(m => m.EmployerModule),
-    canActivate: [RoleGuardService],
-    data: {
-      expectedRole: 'employer'
-    }
+
   },
   {
     path: 'candidate',
