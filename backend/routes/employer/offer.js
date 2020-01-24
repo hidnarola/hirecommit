@@ -299,7 +299,7 @@ router.post("/", async (req, res) => {
                             "subject": "Offer",
                             "trackid": interest_resp.data._id
                         }, obj);
-
+                        console.log(' : mail_resp ==> ', mail_resp);
                         if (mail_resp.status == 1) {
                             var current_date = moment().startOf('day');
                             var candidate_email = await common_helper.findOne(User, { "_id": interest_resp.data.user_id })
@@ -308,6 +308,7 @@ router.post("/", async (req, res) => {
 
                             if (interest_resp.data !== undefined && interest_resp.data.communication.length > 0) {
                                 for (const comm of interest_resp.data.communication) {
+                                    console.log(' :  comm.trigger == "afterOffer" && comm.day == 0 ==> ', comm.trigger == "afterOffer" && comm.day == 0);
                                     if (comm.trigger == "afterOffer" && comm.day == 0) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
@@ -328,6 +329,7 @@ router.post("/", async (req, res) => {
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
 
+                                            console.log(' : mail_resp ==> ', mail_resp);
                                             if (mail_resp.status == 1) {
                                                 var update_offer_communication = await common_helper.update(Offer,
                                                     { "_id": interest_resp.data._id, "communication._id": comm._id },
