@@ -1770,9 +1770,10 @@ router.get('/open_mail/:id', async (req, res) => {
         if (offer_resp.status == 1 && offer_resp.data.email_open === false) {
           var offer_update_resp = await common_helper.update(Offer, { "_id": id }, obj);
           res.status(200).json({ "message": "Open success" })
+          console.log(res);
         } else {
           res.status(400).json({ "message": "Offer is already opened..! Or offer is deleted..!" })
-          // console.log('Offer is already opened..! Or offer is deleted..!');
+          console.log(res);
         }
       }
     } else {
