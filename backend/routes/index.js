@@ -1715,8 +1715,9 @@ router.get('/open_mail/:id', async (req, res) => {
     var id = req.params.id;
     if (id && id !== "") {
       console.log(' : inside ==> ', "inside");
-      var langth = id.length;
+      var length = id.length;
       console.log(' :  ==> ', langth);
+      console.log(' :  is_grater==> ', langth > 24);
       if (length > 24) {
         var split_data = id.split("_");
         if (split_data.length == 3 && split_data[2] === "communication") {
