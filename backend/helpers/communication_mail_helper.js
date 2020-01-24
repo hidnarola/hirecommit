@@ -20,7 +20,6 @@ const transporter = nodemailer.createTransport(
 
 communication_mail_helper.send = async (template_id, options, data) => {
     sgMail.setApiKey(mail_api_key);
-    // console.log(' : data ==> ', data);
     const msg = {
         "customArgs": {
             "trackid": options.trackid
@@ -36,8 +35,7 @@ communication_mail_helper.send = async (template_id, options, data) => {
                 ],
                 "dynamic_template_data": {
                     "message": data.message,
-                    "subject": data.subject,
-                    // "open_url": data.open_url
+                    "subject": data.subject
                 },
                 "subject": options.subject
             }
