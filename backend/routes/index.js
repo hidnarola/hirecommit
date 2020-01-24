@@ -1766,18 +1766,15 @@ router.get('/open_mail/:id', async (req, res) => {
       } else {
         console.log(' : hi ==> ', "offer");
         var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-        console.log(' :  offer_resp ==> ', offer_resp);
+        // console.log(' :  offer_resp ==> ', offer_resp);
         var obj = {
           email_open: true,
           open_At: new Date()
         }
-        if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
-
+        if (offer_resp.status == 1 && offer_resp.data.email_open === false) {
           var offer_update_resp = await common_helper.update(Offer, { "_id": id }, obj);
           console.log(' : offer_update_resp ==> ', offer_update_resp);
-          reqBody = [];
         } else {
-          reqBody = [];
           console.log('Offer is already opened..! Or offer is deleted..!');
         }
       }
