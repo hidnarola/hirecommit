@@ -635,10 +635,10 @@ router.post('/pastOffer', async (req, res) => {
             }
             var pastOffer = await common_helper.find(Offer,
                 {
-                    // "employer_id": ObjectId(req.userInfo.id)
-                    $or: [
-                        { "employer_id": new ObjectId(employer_id) },
-                    ],
+                    "employer_id": new ObjectId(employer_id),
+                    // $or: [
+                    //     { "employer_id": new ObjectId(employer_id) },
+                    // ],
                     "user_id": ObjectId(user.data._id), status: "Not Joined"
                 });
 
@@ -653,9 +653,10 @@ router.post('/pastOffer', async (req, res) => {
 
             var previousOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
-                $or: [
-                    { "employer_id": new ObjectId(employer_id) },
-                ],
+                "employer_id": new ObjectId(employer_id),
+                // $or: [
+                //     { "employer_id": new ObjectId(employer_id) },
+                // ],
                 // "created_by": req.userInfo.id,
                 $or: [
                     { status: { $eq: "Accepted" } },
@@ -675,9 +676,10 @@ router.post('/pastOffer', async (req, res) => {
 
             var ReleasedOffer = await common_helper.find(Offer, {
                 "user_id": ObjectId(user.data._id),
-                $or: [
-                    { "employer_id": new ObjectId(employer_id) },
-                ],
+                "employer_id": new ObjectId(employer_id),
+                // $or: [
+                //     { "employer_id": new ObjectId(employer_id) },
+                // ],
                 // "created_by": req.userInfo.id,
                 $and:
                     [
