@@ -229,7 +229,7 @@ router.post("/", async (req, res) => {
 
                     upper_content = upper_content.replace("{employername}", `${companyname}`).replace('{offer_expiry_date}', `${moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')}`);
 
-                    var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id}`;
+                    // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id}`;
                     var obj = {
                         "name": name,
                         "companyname": companyname,
@@ -238,7 +238,7 @@ router.post("/", async (req, res) => {
                         "upper_content": upper_content,
                         "middel_content": middel_content,
                         "lower_content": lower_content,
-                        "open_url": open_url
+                        // "open_url": open_url
                     }
 
                     var reply_to = await common_helper.findOne(User, { "_id": interest_resp.data.created_by });
@@ -312,13 +312,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`
-
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`
+                                            // console.log(' : open_url ==> ', open_url);
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -328,7 +328,7 @@ router.post("/", async (req, res) => {
                                                 "subject": comm.subject,
                                                 "trackid": interest_resp.data._id + "_" + comm._id + "_" + "communication"
                                             }, obj);
-
+                                            console.log(' : mail_resp ==> ', mail_resp);
                                             if (mail_resp.status == 1) {
                                                 var update_offer_communication = await common_helper.update(Offer,
                                                     { "_id": interest_resp.data._id, "communication._id": comm._id },
@@ -345,13 +345,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -377,13 +377,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -409,12 +409,12 @@ router.post("/", async (req, res) => {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -440,13 +440,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "communication"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
 
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
@@ -478,13 +478,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.AdHoc_subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -508,13 +508,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.AdHoc_subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -538,13 +538,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.AdHoc_subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -568,13 +568,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.AdHoc_subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -598,13 +598,13 @@ router.post("/", async (req, res) => {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname} `).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
-                                            var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
+                                            // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${interest_resp.data._id + "_" + comm._id + "_" + "adhoc"}`;
 
                                             var obj = {
                                                 "message": message,
                                                 "subject": comm.AdHoc_subject,
                                                 "companyname": companyname,
-                                                "open_url": open_url
+                                                // "open_url": open_url
                                             }
                                             let mail_resp = await communication_mail_helper.send('d-e3cb56d304e1461d957ffd8fe141819c', {
                                                 "to": candidate_email.data.email,
@@ -3272,7 +3272,7 @@ router.put('/', async (req, res) => {
 
                 upper_content = upper_content.replace("{employername}", `${companyname} `).replace('{offer_expiry_date}', `${moment(offer_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')} `);
 
-                var open_url = 'https://hirecommit.com:3000/open_mail/' + `${offer_upadate.data._id} `;
+                // var open_url = 'https://hirecommit.com:3000/open_mail/' + `${offer_upadate.data._id} `;
                 var obj = {
                     "name": name,
                     "companyname": companyname,
@@ -3280,7 +3280,7 @@ router.put('/', async (req, res) => {
                     "upper_content": upper_content,
                     "middel_content": middel_content,
                     "lower_content": lower_content,
-                    "open_url": open_url
+                    // "open_url": open_url
                 }
 
                 var reply_to = await common_helper.findOne(User, { "_id": offer_upadate.data.created_by });
