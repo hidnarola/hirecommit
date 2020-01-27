@@ -231,7 +231,7 @@ router.post("/", async (req, res) => {
 
                     var obj = {
                         "name": name,
-                        "companyname": companyname,
+                        // "companyname": companyname,
                         // "subject": "You have received job offer from " + employer.data.username
                         "subject": "You have received job offer from " + companyname,
                         "upper_content": upper_content,
@@ -3207,8 +3207,8 @@ router.put('/', async (req, res) => {
                     "name": name,
                     "upper_content": upper_content,
                     "middel_content": middel_content,
-                    "lower_content": lower_content,
-                    "companyname": companyname
+                    "lower_content": lower_content
+                    // "companyname": companyname
                 });
 
             } else if (offer.data.status === "Accepted" && offer_upadate.data.status === "Not Joined" && offer_upadate.data.offertype !== "noCommit") {
@@ -3227,8 +3227,8 @@ router.put('/', async (req, res) => {
                 }, {
                     "name": name,
                     "upper_content": upper_content,
-                    "lower_content": lower_content,
-                    "companyname": companyname
+                    "lower_content": lower_content
+                    // "companyname": companyname
                 });
             } else if (offer.data.status === "On Hold" && offer_upadate.data.status === "Released") {
                 var user_name = await common_helper.findOne(CandidateDetail, { "user_id": offer_upadate.data.user_id })
@@ -3243,7 +3243,7 @@ router.put('/', async (req, res) => {
 
                 var obj = {
                     "name": name,
-                    "companyname": companyname,
+                    // "companyname": companyname,
                     "subject": "You have received job offer from " + `${companyname}`,
                     "upper_content": upper_content,
                     "middel_content": middel_content,

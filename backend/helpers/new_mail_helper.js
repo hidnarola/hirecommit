@@ -20,6 +20,12 @@ const transporter = nodemailer.createTransport(
 
 new_mail_helper.send = async (template_id, options, data) => {
     sgMail.setApiKey(mail_api_key);
+    var companyname;
+    if (data.companyname !== undefined && data.companyname !== "") {
+        companyname = data.companyname;
+    } else {
+        companyname = "Hire Commit";
+    }
     const msg = {
         "customArgs": {
             "trackid": options.trackid
@@ -47,7 +53,7 @@ new_mail_helper.send = async (template_id, options, data) => {
         ],
         "from": {
             "email": "support@hirecommit.com",
-            "name": data.companyname
+            "name": companyname
         },
         "reply_to": options.reply_to2,
         "template_id": template_id
