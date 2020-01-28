@@ -1585,31 +1585,31 @@ router.post('/get_email', async (req, res) => {
         var communication_id = split_data[1];
         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
 
-        var previous_status = await common_helper.findOne(Offer,
-          { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
+        // var previous_status = await common_helper.findOne(Offer,
+        //   { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
 
-        var previous_status1 = await common_helper.findOne(Offer,
-          { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+        // var previous_status = await common_helper.findOne(Offer,
+        //   { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
 
-        console.log(' : previous_status ==> ', previous_status.status);
-        console.log(' : previous_status1 ==> ', previous_status.status1);
+        // console.log(' : previous_status ==> ', previous_status.status);
+        // console.log(' : previous_status1 ==> ', previous_status.status1);
 
-        if (previous_status.status == 1) {
-          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
-            $set: {
-              "communication.$.reply": true,
-              "communication.$.reply_date": new Date(),
-              "communication.$.open": true,
-              "communication.$.open_date": new Date()
-            }
-          }).populate('created_by', { email: 1 }).lean();
-        } else if (previous_status1.status == 1) {
-          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
-            $set: {
-              "communication.$.reply": true
-            }
-          }).populate('created_by', { email: 1 }).lean();
-        }
+        // if (previous_status.status == 1) {
+        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+          $set: {
+            "communication.$.reply": true,
+            "communication.$.reply_date": new Date(),
+            "communication.$.open": true,
+            "communication.$.open_date": new Date()
+          }
+        }).populate('created_by', { email: 1 }).lean();
+        // } else if (previous_status1.status == 1) {
+        //   var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+        //     $set: {
+        //       "communication.$.reply": true
+        //     }
+        //   }).populate('created_by', { email: 1 }).lean();
+        // }
 
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
         for (const emp of all_employer.data) {
@@ -1743,9 +1743,9 @@ router.get('/country/:id', getCountry);
 router.get('/check_query', async (req, res) => {
   var obj = {};
   // var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
-  var offer_id = "5e2fde5415ade769a9a9995b";
-  var communication_id = "5e2fde5415ade769a9a9995e";
-  var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id });
+  var offer_id = ObjectId("5e2fde5415ade769a9a9995b");
+  var communication_id = ObjectId("5e2fde5415ade769a9a9995d");
+  var resp_data = await Offer.findOne({ "_id": offer_id, "communication._id": communication_id });
 
   if (resp_data) {
     res.status(config.OK_STATUS).json(resp_data);
