@@ -1476,19 +1476,19 @@ router.post('/email_opened', async (req, res) => {
   try {
     console.log(req.body);
     const reqBody = req.body[0];
-    console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
+    // console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
     // console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
     if (reqBody.trackid && reqBody.trackid !== "") {
       var open_id = reqBody.trackid;
       var length = open_id.length;
       if (length > 24) {
         var split_data = open_id.split("_");
-        console.log(' : split_data.length == 3 && split_data[2] === "communication" ==> ', split_data.length == 3 && split_data[2] === "communication");
-        console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
+        // console.log(' : split_data.length == 3 && split_data[2] === "communication" ==> ', split_data.length == 3 && split_data[2] === "communication");
+        // console.log(' : split_data.length == 3 && split_data[2] === "adhoc" ==> ', split_data.length == 3 && split_data[2] === "adhoc");
         if (split_data.length == 3 && split_data[2] === "communication") {
           var offer_id = split_data[0];
           var communication_id = split_data[1];
-          console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
+          // console.log(' : offer_id ==> ', split_data[2], offer_id, communication_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
           if (previous_status.status == 1) {
@@ -1509,7 +1509,7 @@ router.post('/email_opened', async (req, res) => {
         } else if (split_data.length == 3 && split_data[2] === "adhoc") {
           var offer_id = split_data[0];
           var adhoc_id = split_data[1];
-          console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
+          // console.log(' : offer_id ==> ', split_data[2], offer_id, adhoc_id);
           var previous_status = await common_helper.findOne(Offer,
             { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
           if (previous_status.status == 1) {
@@ -1579,7 +1579,8 @@ router.post('/get_email', async (req, res) => {
         var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
           $set: {
             "communication.$.reply": true,
-            "communication.$.reply_date": new Date()
+            "communication.$.reply_date": new Date(),
+            "communication.$.open_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
 
@@ -1614,7 +1615,8 @@ router.post('/get_email', async (req, res) => {
         var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
           $set: {
             "AdHoc.$.AdHoc_reply": true,
-            "AdHoc.$.AdHoc_reply_date": new Date()
+            "AdHoc.$.AdHoc_reply_date": new Date(),
+            "AdHoc.$.AdHoc_open_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
 
