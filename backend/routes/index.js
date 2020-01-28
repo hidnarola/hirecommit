@@ -1580,6 +1580,7 @@ router.post('/get_email', async (req, res) => {
           $set: {
             "communication.$.reply": true,
             "communication.$.reply_date": new Date(),
+            "communication.$.open": true,
             "communication.$.open_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
@@ -1616,6 +1617,7 @@ router.post('/get_email', async (req, res) => {
           $set: {
             "AdHoc.$.AdHoc_reply": true,
             "AdHoc.$.AdHoc_reply_date": new Date(),
+            "AdHoc.$.AdHoc_open": true,
             "AdHoc.$.AdHoc_open_date": new Date()
           }
         }).populate('created_by', { email: 1 }).lean();
