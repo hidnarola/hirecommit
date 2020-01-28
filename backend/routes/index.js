@@ -1572,15 +1572,10 @@ router.post('/get_email', async (req, res) => {
     result = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
     var receive_id;
     if (result) {
-      // console.log(' : result ==> ', result);
       var receive_id = result;
     } else {
-      // console.log(' : result ==> ', 0);
       var receive_id = reqBody.to;
     }
-    // console.log(' :receive_id  ==> ', receive_id);
-    // console.log(' :  ==> receive_id.length', receive_id.length);
-    // console.log(' :  ==> receive_id[0]', receive_id[0]);
     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
     var length = id.length;
     if (length > 24) {
@@ -1593,7 +1588,12 @@ router.post('/get_email', async (req, res) => {
         var previous_status = await common_helper.findOne(Offer,
           { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
 
+        var previous_status1 = await common_helper.findOne(Offer,
+          { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+
         console.log(' : previous_status ==> ', previous_status.status);
+        console.log(' : previous_status ==> ', previous_status.status1);
+
         if (previous_status.status == 1) {
           var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
             $set: {
@@ -1603,7 +1603,7 @@ router.post('/get_email', async (req, res) => {
               "communication.$.open_date": new Date()
             }
           }).populate('created_by', { email: 1 }).lean();
-        } else {
+        } else if (previous_status.status1 == 1) {
           var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
             $set: {
               "communication.$.reply": true
@@ -1742,7 +1742,10 @@ router.get('/country/:id', getCountry);
 
 router.get('/check_query', async (req, res) => {
   var obj = {};
-  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
+  // var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
+  var offer_id = "5e2fde5415ade769a9a9995b";
+  var communication_id = "5e2fde5415ade769a9a9995e";
+  var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id });
 
   if (resp_data) {
     res.status(config.OK_STATUS).json(resp_data);
