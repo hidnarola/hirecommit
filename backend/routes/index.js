@@ -1585,14 +1585,18 @@ router.post('/get_email', async (req, res) => {
         var communication_id = split_data[1];
         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
 
+        var previous_status = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
+
+        var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+
         // var previous_status = await common_helper.findOne(Offer,
         //   { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
 
         // var previous_status = await common_helper.findOne(Offer,
         //   { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
 
-        // console.log(' : previous_status ==> ', previous_status.status);
-        // console.log(' : previous_status1 ==> ', previous_status.status1);
+        console.log(' : previous_status ==> ', previous_status.status);
+        console.log(' : previous_status1 ==> ', previous_status1.status);
 
         // if (previous_status.status == 1) {
         var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
@@ -1745,7 +1749,9 @@ router.get('/check_query', async (req, res) => {
   // var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
   var offer_id = ObjectId("5e2fde5415ade769a9a9995b");
   var communication_id = ObjectId("5e2fde5415ade769a9a9995d");
-  var resp_data = await Offer.findOne({ "_id": offer_id, "communication._id": communication_id });
+  // var resp_data = await common_helper.findOne(Offer,
+  //   { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
+  var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
 
   if (resp_data) {
     res.status(config.OK_STATUS).json(resp_data);
