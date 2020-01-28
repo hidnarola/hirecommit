@@ -1589,31 +1589,22 @@ router.post('/get_email', async (req, res) => {
 
         var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
 
-        // var previous_status = await common_helper.findOne(Offer,
-        //   { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
-
-        // var previous_status = await common_helper.findOne(Offer,
-        //   { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
-
-        console.log(' : previous_status ==> ', previous_status.status);
-        console.log(' : previous_status1 ==> ', previous_status1.status);
-
-        // if (previous_status.status == 1) {
-        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
-          $set: {
-            "communication.$.reply": true,
-            "communication.$.reply_date": new Date(),
-            "communication.$.open": true,
-            "communication.$.open_date": new Date()
-          }
-        }).populate('created_by', { email: 1 }).lean();
-        // } else if (previous_status1.status == 1) {
-        //   var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
-        //     $set: {
-        //       "communication.$.reply": true
-        //     }
-        //   }).populate('created_by', { email: 1 }).lean();
-        // }
+        if (previous_status.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+            $set: {
+              "communication.$.reply": true,
+              "communication.$.reply_date": new Date(),
+              "communication.$.open": true,
+              "communication.$.open_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status1.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+            $set: {
+              "communication.$.reply": true
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        }
 
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
         for (const emp of all_employer.data) {
@@ -1643,14 +1634,25 @@ router.post('/get_email', async (req, res) => {
         var adhoc_id = split_data[1];
         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
 
-        var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
-          $set: {
-            "AdHoc.$.AdHoc_reply": true,
-            "AdHoc.$.AdHoc_reply_date": new Date(),
-            "AdHoc.$.AdHoc_open": true,
-            "AdHoc.$.AdHoc_open_date": new Date()
-          }
-        }).populate('created_by', { email: 1 }).lean();
+        var previous_status = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_reply": false });
+        var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_reply": true });
+
+        if (previous_status.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+            $set: {
+              "AdHoc.$.AdHoc_reply": true,
+              "AdHoc.$.AdHoc_reply_date": new Date(),
+              "AdHoc.$.AdHoc_open": true,
+              "AdHoc.$.AdHoc_open_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status1.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+            $set: {
+              "AdHoc.$.AdHoc_reply": true
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        }
 
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
         for (const emp of all_employer.data) {
