@@ -1592,7 +1592,7 @@ router.post('/get_email', async (req, res) => {
           { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
 
         console.log(' : previous_status ==> ', previous_status.status);
-        console.log(' : previous_status ==> ', previous_status.status1);
+        console.log(' : previous_status1 ==> ', previous_status.status1);
 
         if (previous_status.status == 1) {
           var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
@@ -1603,7 +1603,7 @@ router.post('/get_email', async (req, res) => {
               "communication.$.open_date": new Date()
             }
           }).populate('created_by', { email: 1 }).lean();
-        } else if (previous_status.status1 == 1) {
+        } else if (previous_status1.status == 1) {
           var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
             $set: {
               "communication.$.reply": true
