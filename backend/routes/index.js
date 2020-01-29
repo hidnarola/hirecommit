@@ -1567,6 +1567,7 @@ router.post('/email_opened', async (req, res) => {
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
+
     // console.log(' : reqBody ==> ', reqBody);
     // var receive_id = reqBody.to;
     str = `${reqBody.to}`;
@@ -1728,37 +1729,38 @@ router.post('/get_email', async (req, res) => {
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
         for (const emp of all_employer.data) {
 
-          // var reply_data = reqBody.data.message.email;
+
           // console.log(' : reply_data ==> ', reqBody);
-          mail_helper.forwardRepliedMail({
-            // offer.created_by.email
-            to: emp.email,
-            from: reqBody.from,
-            subject: reqBody.subject,
-            content: reqBody.email,
-            filename: `${mail.data._id}.eml`,
-            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-          }, (err, info) => {
-            if (err) {
-              console.log(error);
-            }
-            else {
-              console.log('Message forwarded: ' + info.response);
-            }
+          // mail_helper.forwardRepliedMail({
+          //   // offer.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
+          var reply_data = reqBody;
+          console.log(' : reply_data ==> ', reply_data);
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
           });
 
-          // mailparser.on("end", function (reply_data) {
-          //   let mail_resp = mail_helper.reply_mail_send("forword_email", {
-          //     "to": emp.email,
-          //     "from": reply_data.from,
-          //     "subject": reply_data.subject
-          //   }, {
-          //     'html': reply_data.html
-          //   });
-          // });
-
-          // mailparser.write(reply_data);
-          // mailparser.end();
+          mailparser.write(reply_data);
+          mailparser.end();
         }
         res.status(200).send('success');
       } else {
