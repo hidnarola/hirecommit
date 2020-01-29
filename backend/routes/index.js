@@ -6,9 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const ObjectId = require('mongodb').ObjectID;
 const btoa = require('btoa');
-// var handlebars = require('handlebars');
-// var nodemailer = require('nodemailer');
-// const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 
 const _ = require('underscore');
@@ -20,6 +17,10 @@ const logger = config.logger;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const async = require('async');
+
+var MailParser = require("mailparser-mit").MailParser;
+var mailparser = new MailParser();
+
 const mail_helper = require('./../helpers/mail_helper');
 const Role = require('./../models/role');
 const User = require('./../models/user');
@@ -1431,59 +1432,59 @@ router.post('/match_old_password', async (req, res) => {
   }
 })
 
-// router.post('/test_mail', async (req, res) => {
-//   try {
-//     var message = "welcome";
-//     var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e2ff578c040dfcd7bea0d78" });
+router.post('/test_mail', async (req, res) => {
+  try {
+    var message = "welcome";
+    var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e2ff578c040dfcd7bea0d78" });
 
-//     var reply_data = reqBody.data.message.email;
-//     var template = handlebars.compile(reply_data);
-//     var subject = reqBody.data.message.subject;
+    var reply_data = reqBody.data.message.email;
+    // var template = handlebars.compile(reply_data);
+    var subject = reqBody.data.message.subject;
 
-//     const transporter = nodemailer.createTransport(
-//       sendgridTransport({
-//         auth: {
-//           api_user: config.SENDGRID_USER,
-//           api_key: config.SENDGRID_PASSWORD
-//         }
-//       })
-//     );
+    mailparser.on("end", function (reply_data) {
+      reply_data;
+      // console.log(' : reply_data ==> ', reply_data);
+      let mail_resp = mail_helper.reply_mail_send("forword_email", {
+        "to": req.body.email,
+        "from": reply_data.from,
+        "subject": reply_data.subject
+      }, {
+        'html': reply_data.html
+      });
+    });
 
-//     const msg = {
-//       to: 'vishalkanojiya9727@gmail.com',
-//       from: req.body.email,
-//       subject: subject,
-//       html: '<p>Here’s an attachment of replied mail of candidate for you!</p>',
-//       alternatives: [
-//         {
-//           contentType: 'message/rfc822',
-//           filename: "Candidate_Reply.eml",
-//           content: reply_data,
-//         }
-//       ],
-//       // attachments: [
-//       //   {
-//       //     content: reply_data,
-//       //     filename: "Candidate_Reply.eml",
-//       //     type: 'message/rfc822',
-//       //     disposition: 'attachment'
-//       //   },
-//       // ],
-//     };
-//     transporter.sendMail(msg, function (err, info) {
-//       if (err) {
-//         console.log(err);
-//       }
-//       else {
-//         console.log('Message sent: ' + info.response);
-//       }
-//     })
+    mailparser.write(reply_data);
+    mailparser.end();
 
-//     res.status(200).send('success');
-//   } catch (error) {
-//     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
-//   }
-// })
+    // console.log(' : reply_data ==> ', reply_data);
+    // const msg = {
+    //   to: 'vishalkanojiya9727@gmail.com',
+    //   from: req.body.email,
+    //   subject: subject,
+    //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>',
+    //   alternatives: [
+    //     {
+    //       contentType: 'message/rfc822',
+    //       filename: "Candidate_Reply.eml",
+    //       content: reply_data,
+    //     }
+    //   ],
+    //   // attachments: [
+    //   //   {
+    //   //     content: reply_data,
+    //   //     filename: "Candidate_Reply.eml",
+    //   //     type: 'message/rfc822',
+    //   //     disposition: 'attachment'
+    //   //   },
+    //   // ],
+    // };
+
+
+    res.status(200).send('success');
+  } catch (error) {
+    return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
+  }
+})
 
 router.post('/email_opened', async (req, res) => {
   try {
@@ -1615,22 +1616,35 @@ router.post('/get_email', async (req, res) => {
 
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
         for (const emp of all_employer.data) {
-          mail_helper.forwardRepliedMail({
-            // update_communication.created_by.email
-            to: emp.email,
-            from: reqBody.from,
-            subject: reqBody.subject,
-            content: reqBody.email,
-            filename: `${mail.data._id}.eml`,
-            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-          }, (err, info) => {
-            if (err) {
-              console.log(error);
-            }
-            else {
-              console.log('Message forwarded: ' + info.response);
-            }
+          // mail_helper.forwardRepliedMail({
+          //   // update_communication.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
+          var reply_data = reqBody.data.message.email;
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
           });
+
+          mailparser.write(reply_data);
+          mailparser.end();
         }
         res.status(200).send('success');
       }
@@ -1671,22 +1685,35 @@ router.post('/get_email', async (req, res) => {
 
         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
         for (const emp of all_employer.data) {
-          mail_helper.forwardRepliedMail({
-            // update_communication.created_by.email
-            to: emp.email,
-            from: reqBody.from,
-            subject: reqBody.subject,
-            content: reqBody.email,
-            filename: `${mail.data._id}.eml`,
-            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-          }, (err, info) => {
-            if (err) {
-              console.log(error);
-            }
-            else {
-              console.log('Message forwarded: ' + info.response);
-            }
+          // mail_helper.forwardRepliedMail({
+          //   // update_communication.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
+          var reply_data = reqBody.data.message.email;
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
           });
+
+          mailparser.write(reply_data);
+          mailparser.end();
         }
         res.status(200).send('success');
       }
@@ -1698,22 +1725,35 @@ router.post('/get_email', async (req, res) => {
         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
         for (const emp of all_employer.data) {
-          mail_helper.forwardRepliedMail({
-            // offer.created_by.email
-            to: emp.email,
-            from: reqBody.from,
-            subject: reqBody.subject,
-            content: reqBody.email,
-            filename: `${mail.data._id}.eml`,
-            html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-          }, (err, info) => {
-            if (err) {
-              console.log(error);
-            }
-            else {
-              console.log('Message forwarded: ' + info.response);
-            }
+          var reply_data = reqBody.data.message.email;
+          // mail_helper.forwardRepliedMail({
+          //   // offer.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
           });
+
+          mailparser.write(reply_data);
+          mailparser.end();
         }
         res.status(200).send('success');
       } else {
