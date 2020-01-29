@@ -1566,9 +1566,10 @@ router.post('/email_opened', async (req, res) => {
 
 router.post('/get_email', async (req, res) => {
   try {
-    var mailparser = new MailParser();
+
     const reqBody = req.body;
-    var reply_data;
+    // var reply_data;
+    var reply_data = reqBody.email;
     // console.log(' : reqBody ==> ', reqBody);
     // var receive_id = reqBody.to;
     str = `${reqBody.to}`;
@@ -1749,7 +1750,8 @@ router.post('/get_email', async (req, res) => {
           //   }
           // });
           // console.log(' : reply_data ==> ', reply_data);
-          var reply_data = reqBody.email;
+          var mailparser = new MailParser();
+
           mailparser.on("end", function (reply_data) {
             console.log(' : reply_data ==> ', reply_data);
             let mail_resp = mail_helper.reply_mail_send("forword_email", {
