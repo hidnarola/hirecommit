@@ -1566,7 +1566,6 @@ router.post('/email_opened', async (req, res) => {
 
 router.post('/get_email', async (req, res) => {
   try {
-
     const reqBody = req.body;
     // var reply_data;
     var reply_data = reqBody.email;
