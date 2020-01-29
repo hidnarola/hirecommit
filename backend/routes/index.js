@@ -1748,19 +1748,20 @@ router.post('/get_email', async (req, res) => {
           //   }
           // });
           var reply_data = reqBody.email;
-          console.log(' : reply_data ==> ', reply_data);
-          // mailparser.on("end", function (reply_data) {
-          //   let mail_resp = mail_helper.reply_mail_send("forword_email", {
-          //     "to": emp.email,
-          //     "from": reply_data.from,
-          //     "subject": reply_data.subject
-          //   }, {
-          //     'html': reply_data.html
-          //   });
-          // });
+          // console.log(' : reply_data ==> ', reply_data);
+          mailparser.on("end", function (reply_data) {
+            console.log(' : reply_data ==> ', reply_data);
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
+          });
 
-          // mailparser.write(reply_data);
-          // mailparser.end();
+          mailparser.write(reply_data);
+          mailparser.end();
         }
         res.status(200).send('success');
       } else {
