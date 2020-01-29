@@ -19,7 +19,7 @@ const jwt = require('jsonwebtoken');
 const async = require('async');
 
 var MailParser = require("mailparser-mit").MailParser;
-var mailparser = new MailParser();
+
 
 const mail_helper = require('./../helpers/mail_helper');
 const Role = require('./../models/role');
@@ -1566,6 +1566,7 @@ router.post('/email_opened', async (req, res) => {
 
 router.post('/get_email', async (req, res) => {
   try {
+    var mailparser = new MailParser();
     const reqBody = req.body;
     var reply_data;
     // console.log(' : reqBody ==> ', reqBody);
