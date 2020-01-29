@@ -573,8 +573,7 @@ router.put('/', async (req, res) => {
                 }, {
                     "name": candidate.data.firstname,
                     "upper_content": upper_content,
-                    "lower_content": lower_content,
-                    "companyname": companyname
+                    "lower_content": lower_content
                 });
 
 
