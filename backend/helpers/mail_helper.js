@@ -90,6 +90,4 @@ mail_helper.forwardRepliedMail = async (data, cb) => {
     })
 }
 
-
-
 module.exports = mail_helper;
