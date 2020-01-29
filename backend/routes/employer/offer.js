@@ -79,6 +79,7 @@ router.post("/", async (req, res) => {
             var employer;
             var company;
             if (user && user.data.role_id == ("5d9d99003a0c78039c6dd00f")) {
+                var requested_user = user.data.emp_id;
                 employer = await common_helper.findOne(SubEmployerDetail, { emp_id: user.data.emp_id });
 
                 var company_resp = await common_helper.findOne(EmployerDetail, { user_id: user.data.emp_id });
@@ -112,6 +113,7 @@ router.post("/", async (req, res) => {
                 }
             }
             else {
+                var requested_user = req.userInfo.id;
                 employer = await common_helper.findOne(EmployerDetail, { user_id: req.userInfo.id });
                 company = employer.data.companyname;
                 var obj = {
@@ -188,7 +190,7 @@ router.post("/", async (req, res) => {
             if (role.data.role !== 'candidate') {
                 res.status(config.BAD_REQUEST).json({ message: "You can not send offer to this user." });
             } else {
-                var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined" })
+                var pastOffer = await common_helper.find(Offer, { "user_id": ObjectId(obj.user_id), status: "Not Joined", $or: [{ "employer_id": new ObjectId(requested_user) }, { "employer_id": new ObjectId(requested_user) }] })
 
                 if (pastOffer.data.length > 0) {
                     obj.status = "On Hold"

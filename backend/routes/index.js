@@ -1726,6 +1726,7 @@ router.post('/get_email', async (req, res) => {
         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
         for (const emp of all_employer.data) {
           var reply_data = reqBody.data.message.email;
+          console.log(' : reply_data ==> ', reply_data);
           // mail_helper.forwardRepliedMail({
           //   // offer.created_by.email
           //   to: emp.email,
@@ -1804,11 +1805,12 @@ router.get('/country/:id', getCountry);
 router.get('/check_query', async (req, res) => {
   var obj = {};
   // var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
-  var offer_id = ObjectId("5e2fde5415ade769a9a9995b");
-  var communication_id = ObjectId("5e2fde5415ade769a9a9995d");
+  var offer_id = "5e31345c912f26254c22b931";
+  var communication_id = "5e31345c912f26254c22b933";
   // var resp_data = await common_helper.findOne(Offer,
   //   { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
-  var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+  // var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+  var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
 
   if (resp_data) {
     res.status(config.OK_STATUS).json(resp_data);
