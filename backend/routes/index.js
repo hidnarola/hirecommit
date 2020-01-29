@@ -1586,16 +1586,23 @@ router.post('/get_email', async (req, res) => {
         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
 
         var previous_status = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
-
         var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+        var previous_status2 = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.open": false });
 
-        if (previous_status.status == 1) {
+        if (previous_status2.status == 1) {
           var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
             $set: {
               "communication.$.reply": true,
               "communication.$.reply_date": new Date(),
               "communication.$.open": true,
               "communication.$.open_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+            $set: {
+              "communication.$.reply": true,
+              "communication.$.reply_date": new Date()
             }
           }).populate('created_by', { email: 1 }).lean();
         } else if (previous_status1.status == 1) {
@@ -1636,14 +1643,22 @@ router.post('/get_email', async (req, res) => {
 
         var previous_status = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_reply": false });
         var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_reply": true });
+        var previous_status2 = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false });
 
-        if (previous_status.status == 1) {
+        if (previous_status2.status == 1) {
           var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
             $set: {
               "AdHoc.$.AdHoc_reply": true,
               "AdHoc.$.AdHoc_reply_date": new Date(),
               "AdHoc.$.AdHoc_open": true,
               "AdHoc.$.AdHoc_open_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+            $set: {
+              "AdHoc.$.AdHoc_reply": true,
+              "AdHoc.$.AdHoc_reply_date": new Date()
             }
           }).populate('created_by', { email: 1 }).lean();
         } else if (previous_status1.status == 1) {
