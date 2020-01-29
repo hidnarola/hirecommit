@@ -1567,7 +1567,7 @@ router.post('/email_opened', async (req, res) => {
 router.post('/get_email', async (req, res) => {
   try {
     const reqBody = req.body;
-
+    var reply_data;
     // console.log(' : reqBody ==> ', reqBody);
     // var receive_id = reqBody.to;
     str = `${reqBody.to}`;
@@ -1747,8 +1747,8 @@ router.post('/get_email', async (req, res) => {
           //     console.log('Message forwarded: ' + info.response);
           //   }
           // });
-          var reply_data = reqBody.email;
           // console.log(' : reply_data ==> ', reply_data);
+          var reply_data = reqBody.email;
           mailparser.on("end", function (reply_data) {
             console.log(' : reply_data ==> ', reply_data);
             let mail_resp = mail_helper.reply_mail_send("forword_email", {
