@@ -1812,12 +1812,20 @@ router.get('/country/:id', getCountry);
 router.get('/check_query', async (req, res) => {
   var obj = {};
   // var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
-  var offer_id = "5e31345c912f26254c22b931";
-  var communication_id = "5e31345c912f26254c22b933";
+  var offer_id = "5e329abd5683722f3027fabc";
+  // var AdHoc_id = "5e329e7c28182a20106d41e5";
+  var AdHoc_id = "5e329e7c28182a20106d41e6";
   // var resp_data = await common_helper.findOne(Offer,
   //   { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
   // var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
-  var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
+  // var resp_data = await common_helper.findOne(Offer, {
+  //   "_id": offer_id, "AdHoc._id": AdHoc_id,
+  //   $or: [{ "AdHoc.AdHoc_open": false }, { "AdHoc.AdHoc_open": true }]
+  // })
+
+  var resp_data = await common_helper.findOne(Offer, {
+    "_id": offer_id, "AdHoc._id": AdHoc_id, "AdHoc.AdHoc_mail_send": { $exists: true }
+  })
 
   if (resp_data) {
     res.status(config.OK_STATUS).json(resp_data);
