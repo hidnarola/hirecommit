@@ -363,7 +363,7 @@ router.put('/', async (req, res) => {
                     var location = await common_helper.findOne(Location, { "_id": sub_account_upadate.data.location })
 
                     for (const comm of sub_account_upadate.data.communication) {
-                        if (comm.trigger == "beforeJoining" && comm.day >= 0 && sub_account_upadate.data.status == "Accepted") {
+                        if (comm.trigger == "beforeJoining" && comm.day >= 0 && comm.mail_send == false && sub_account_upadate.data.status == "Accepted") {
                             var offer_date = moment(sub_account_upadate.data.joiningdate).startOf('day').subtract(comm.day, 'day');
                             offer_date = moment(offer_date);
                             if (moment(offer_date).startOf('day') <= current_date) {
@@ -395,7 +395,7 @@ router.put('/', async (req, res) => {
                                         })
                                 }
                             }
-                        } else if (comm.trigger == "afterJoining" && comm.day == 0 && sub_account_upadate.data.status == "Accepted") {
+                        } else if (comm.trigger == "afterJoining" && comm.day == 0 && comm.mail_send == false && sub_account_upadate.data.status == "Accepted") {
                             if (moment(sub_account_upadate.data.joiningdate).startOf('day').isSame(moment(current_date).startOf('day'))) {
                                 var message = comm.message;
                                 message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -425,7 +425,7 @@ router.put('/', async (req, res) => {
                                         })
                                 }
                             }
-                        } else if (comm.trigger == "afterAcceptance" && comm.day == 0 && sub_account_upadate.data.status == "Accepted") {
+                        } else if (comm.trigger == "afterAcceptance" && comm.day == 0 && comm.mail_send == false && sub_account_upadate.data.status == "Accepted") {
                             if (moment(sub_account_upadate.data.acceptedAt).startOf('day').isSame(moment(current_date).startOf('day'))) {
                                 var message = comm.message;
                                 message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -465,7 +465,7 @@ router.put('/', async (req, res) => {
                     var location = await common_helper.findOne(Location, { "_id": sub_account_upadate.data.location })
 
                     for (const comm of sub_account_upadate.data.AdHoc) {
-                        if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day >= 0 && sub_account_upadate.data.status == "Accepted") {
+                        if (comm.AdHoc_trigger == "beforeJoining" && comm.AdHoc_day >= 0 && comm.AdHoc_mail_send == false && sub_account_upadate.data.status == "Accepted") {
                             var offer_date = moment(sub_account_upadate.data.joiningdate).startOf('day').subtract(comm.AdHoc_day, 'day');
                             offer_date = moment(offer_date);
                             if (moment(offer_date).startOf('day') <= current_date) {
@@ -496,7 +496,7 @@ router.put('/', async (req, res) => {
                                         })
                                 }
                             }
-                        } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0 && sub_account_upadate.data.status == "Accepted") {
+                        } else if (comm.AdHoc_trigger == "afterJoining" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false && sub_account_upadate.data.status == "Accepted") {
                             if (moment(sub_account_upadate.data.joiningdate).startOf('day').isSame(moment(current_date).startOf('day'))) {
                                 var message = comm.AdHoc_message;
                                 message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -524,7 +524,7 @@ router.put('/', async (req, res) => {
                                         })
                                 }
                             }
-                        } else if (comm.AdHoc_trigger == "afterAcceptance" && comm.AdHoc_day == 0 && sub_account_upadate.data.status == "Accepted") {
+                        } else if (comm.AdHoc_trigger == "afterAcceptance" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false && sub_account_upadate.data.status == "Accepted") {
                             if (moment(sub_account_upadate.data.acceptedAt).startOf('day').isSame(moment(current_date).startOf('day'))) {
                                 var message = comm.AdHoc_message;
                                 message = message.replace('||offer_date||', moment(sub_account_upadate.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", sub_account_upadate.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(sub_account_upadate.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(sub_account_upadate.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(sub_account_upadate.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));

@@ -307,7 +307,7 @@ router.post("/", async (req, res) => {
 
                             if (interest_resp.data !== undefined && interest_resp.data.communication.length > 0) {
                                 for (const comm of interest_resp.data.communication) {
-                                    if (comm.trigger == "afterOffer" && comm.day == 0) {
+                                    if (comm.trigger == "afterOffer" && comm.day == 0 && comm.mail_send == false) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -337,7 +337,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.trigger == "beforeExpiry" && comm.day >= 0) {
+                                    } else if (comm.trigger == "beforeExpiry" && comm.day >= 0 && comm.mail_send == false) {
                                         var offer_date = moment(interest_resp.data.expirydate).startOf('day').subtract(comm.day, 'day');
                                         offer_date = moment(offer_date);
                                         if (moment(offer_date).startOf('day') <= current_date) {
@@ -369,7 +369,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
+                                    } else if (comm.trigger == "afterExpiry" && comm.day == 0 && comm.mail_send == false) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -405,7 +405,7 @@ router.post("/", async (req, res) => {
 
                             if (interest_resp.data.AdHoc !== undefined && interest_resp.data.AdHoc.length > 0) {
                                 for (const comm of interest_resp.data.AdHoc) {
-                                    if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
+                                    if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -433,7 +433,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0) {
+                                    } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0 && comm.AdHoc_mail_send == false) {
                                         var offer_date = moment(interest_resp.data.expirydate).startOf('day').subtract(comm.AdHoc_day, 'day');
                                         offer_date = moment(offer_date);
                                         if (moment(offer_date).startOf('day') <= current_date) {
@@ -463,7 +463,7 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
+                                    } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
                                             message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -3188,7 +3188,7 @@ router.put('/', async (req, res) => {
 
                     if (update_date.data !== undefined && update_date.data.communication.length > 0) {
                         for (const comm of update_date.data.communication) {
-                            if (comm.trigger == "afterOffer" && comm.day == 0) {
+                            if (comm.trigger == "afterOffer" && comm.day == 0 && comm.mail_send == false) {
                                 if (moment(update_date.data.createdAt).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
                                     message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -3218,7 +3218,7 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.trigger == "beforeExpiry" && comm.day >= 0) {
+                            } else if (comm.trigger == "beforeExpiry" && comm.day >= 0 && comm.mail_send == false) {
                                 var offer_date = moment(update_date.data.expirydate).startOf('day').subtract(comm.day, 'day');
                                 offer_date = moment(offer_date);
                                 if (moment(offer_date).startOf('day') <= current_date) {
@@ -3250,7 +3250,7 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
+                            } else if (comm.trigger == "afterExpiry" && comm.day == 0 && comm.mail_send == false) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
                                     message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -3286,7 +3286,7 @@ router.put('/', async (req, res) => {
 
                     if (update_date.data.AdHoc !== undefined && update_date.data.AdHoc.length > 0) {
                         for (const comm of update_date.data.AdHoc) {
-                            if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
+                            if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                 if (moment(update_date.data.createdAt).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
                                     message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
@@ -3314,7 +3314,7 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0) {
+                            } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0 && comm.AdHoc_mail_send == false) {
                                 var offer_date = moment(update_date.data.expirydate).startOf('day').subtract(comm.AdHoc_day, 'day');
                                 offer_date = moment(offer_date);
                                 if (moment(offer_date).startOf('day') <= current_date) {
@@ -3344,7 +3344,7 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
+                            } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
                                     message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
