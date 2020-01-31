@@ -23,7 +23,7 @@ export const environment = {
   // API_URL: 'http://192.168.100.11:3000/',
   // API_URL: ' https://13.235.2/35.178:3000/',
   // API_URL: 'https://hirecommit.com:3000/',
-  // API_URL: 'https://tanubhasin.com:3000/',
+  API_URL: 'https://tanubhasin.com:3000/',
   // API_URL: 'localhost:3000/',
   // imageUrl: str + host + ':' + port + '/upload/'
   // imageUrl: ' http://13.235.235.178' + '/upload/'

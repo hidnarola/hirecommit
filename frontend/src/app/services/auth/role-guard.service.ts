@@ -24,28 +24,36 @@ export class RoleGuardService implements CanActivate {
 
     this.isProd = environment.production;
     this.isStaging = environment.staging;
-    // this.service.getunSavedData.subscribe(res => {
-    //   this.fromPopup = true;
+    this.service.getunSavedData.subscribe(res => {
+      this.fromPopup = true;
+      // console.log('res role guard=>', res);
+      console.log('this.redirect=>', this.redirect);
 
-    //   if (res) {
+      if (res) {
+        if (this.redirect) {
+          this.router.navigate([res.newurl]);
+        }
+        if (!this.redirect) {
+          this.confirmationService.confirm({
+            message: 'Are you sure you want to leave this page?',
+            accept: () => {
+              this.router.navigate([res.newurl]);
+              this.redirect = true;
+              this.removeData();
+            }, reject: () => {
+              this.router.navigate([res.url]);
+              this.redirect = false;
+            }
+          });
+        }
 
-    //     if (this.redirect) {
-    //       this.router.navigate([res.newurl]);
-    //     }
-    //     if (!this.redirect) {
-    //       this.confirmationService.confirm({
-    //         message: 'Are you sure you want to leave this page?',
-    //         accept: () => {
-    //           this.router.navigate([res.newurl]);
-    //           this.redirect = true;
-    //         }, reject: () => {
-    //           this.router.navigate([res.url]);
-    //           this.redirect = false;
-    //         }
-    //       });
-    //     }
-    //   }
-    // });
+      }
+      this.redirect = false;
+    });
+  }
+
+  removeData() {
+    this.service.setuserData('');
   }
   canActivate(route: ActivatedRouteSnapshot): boolean {
     // this will be passed from the route config

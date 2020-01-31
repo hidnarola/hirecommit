@@ -62,7 +62,7 @@ export class GroupAddComponent implements OnInit {
   userDetail: any;
   cursorPos: any;
   days: any;
-  // currentUrl = '';
+  currentUrl = '';
   constructor(
     public fb: FormBuilder,
     private service: GroupService,
@@ -73,7 +73,7 @@ export class GroupAddComponent implements OnInit {
     private EmpService: EmployerService
 
   ) {
-    // this.currentUrl = this.router.url;
+    this.currentUrl = this.router.url;
     this.userDetail = this.commonService.getLoggedUserDetail();
 
     // form controls
@@ -102,27 +102,37 @@ export class GroupAddComponent implements OnInit {
   get f() { return this.addGroup.controls; }
 
   ngOnInit() {
-    // this.commonService.getuserdata.subscribe(res => {
-    //   console.log('res=>', res[`group`]);
-    //   //
-    //   if (res.ispopup) {
 
-    //     this.addGroup.controls['name'].setValue(res[`group`].name);
-    //     // this.groupData.name = res[`group`].name;
-    //     this.groupData.medium_notreplied = res[`group`].medium_notreplied;
-    //     this.groupData.medium_unopened = res[`group`].medium_unopened;
-    //     this.groupData.high_notreplied = res[`group`].high_notreplied;
-    //     this.groupData.high_unopened = res[`group`].high_unopened;
-    //   }
+    this.commonService.getuserdata.subscribe(res => {
+      console.log('res=>', res);
+      //
+
+      setTimeout(() => {
+        this.groupData.name = res[`group`].name;
+        this.groupData.medium_notreplied = res[`group`].medium_notreplied;
+        this.groupData.medium_unopened = res[`group`].medium_unopened;
+        this.groupData.high_notreplied = res[`group`].high_notreplied;
+        this.groupData.high_unopened = res[`group`].high_unopened;
+        if (res[`communication`].length > 0) {
+
+          console.log('res[`communication`]=>', res[`communication`]);
+          this.communicationData = res[`communication`];
+          // this.communicationData.communicationname = res[`communication`].communicationname;
+          // this.communicationData.priority = res[`communication`].priority;
+          // this.communicationData.trigger = res[`communication`].trigger;
+          // this.communicationData.day = res[`communication`].day;
+          // this.communicationData.subject = res[`communication`].subject;
+          // this.communicationData.message = res[`communication`].message;
+          this.add_new_communication();
+          this.show_communication = true;
+        }
+
+      }, 1000);
+      // this.addGroup.controls['name'].setValue(res[`group`].name);
 
 
-    //   // this.communicationData.communicationname = res[`communication`].communicationname;
-    //   // this.communicationData.priority = res[`communication`].priority;
-    //   // this.communicationData.trigger = res[`communication`].trigger;
-    //   // this.communicationData.day = res[`communication`].day;
-    //   // this.communicationData.subject = res[`communication`].subject;
-    //   // this.communicationData.message = res[`communication`].message;
-    // });
+
+    });
   }
 
 
@@ -168,9 +178,14 @@ export class GroupAddComponent implements OnInit {
       message: ['', [Validators.required, this.noWhitespaceValidator]]
       // message: ['', Validators.required]
     }));
+    if (this.communicationData.length === 1) {
+      this.communicationForm.updateValueAndValidity();
+    } else {
+      this.communicationData.push(new_communication);
+      this.communicationForm.updateValueAndValidity();
 
-    this.communicationData.push(new_communication);
-    this.communicationForm.updateValueAndValidity();
+    }
+
   }
 
   // Remove communication
@@ -350,22 +365,35 @@ export class GroupAddComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      this.group = this.addGroup.value;
 
-    //   this.group = this.addGroup.value;
-    //   Object.keys(this.addGroup.controls).forEach((v, key) => {
-    //     if (this.addGroup.controls[v].value) {
-    //       const obj = {
-    //         group: this.groupData,
-    //         communication: this.communicationData,
-    //         ispopup: true
-    //       };
-    //       this.commonService.setuserData(obj);
-    //       this.router.navigate([this.currentUrl]);
-    //       this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
-    //     }
-    //   });
-    // }
+
+      Object.keys(this.addGroup.controls).forEach((v, key) => {
+        if (this.addGroup.controls[v].value) {
+          // const obj = {
+          //   group: this.groupData,
+          //   communication: this.communicationData,
+          //   ispopup: true
+          // };
+          // this.commonService.setuserData(obj);
+          // this.router.navigate([this.currentUrl]);
+          // this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+        }
+      });
+      console.log('this.co=>', this.communicationData);
+      if (this.group.name != null) {
+        const obj = {
+          group: this.group,
+          communication: this.communicationData,
+          ispopup: true
+        };
+        this.router.navigate([this.currentUrl]);
+        this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+        this.commonService.setuserData(obj);
+      }
+
+    }
   }
 
 

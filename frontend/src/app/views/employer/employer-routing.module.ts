@@ -22,7 +22,6 @@ const routes: Routes = [
       {
         path: 'offers',
         canActivate: [RoleGuardService],
-
         data: {
           expectedRole: 'employer'
         },
@@ -31,7 +30,6 @@ const routes: Routes = [
       {
         path: 'sub_accounts',
         canActivate: [RoleGuardService],
-
         data: {
           expectedRole: 'employer'
         },
@@ -40,7 +38,6 @@ const routes: Routes = [
       {
         path: 'groups',
         canActivate: [RoleGuardService],
-
         data: {
           expectedRole: 'employer'
         },

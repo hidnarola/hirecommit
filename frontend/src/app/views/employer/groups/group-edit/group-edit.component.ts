@@ -35,7 +35,7 @@ export class GroupEditComponent implements OnInit {
   msg: any;
   is_communication_added: boolean = false;
   formData: FormData;
-  // currentUrl = '';
+  currentUrl = '';
   Comm_Flag: boolean = true;
   show_spinner = false;
   cursorPos: any;
@@ -79,7 +79,7 @@ export class GroupEditComponent implements OnInit {
     private EmpService: EmployerService,
     private modalService: NgbModal,
   ) {
-    // this.currentUrl = this.router.url;
+    this.currentUrl = this.router.url;
     this.userDetail = this.commonService.getLoggedUserDetail();
     // show spinner
     this.spinner.show();
@@ -151,13 +151,13 @@ export class GroupEditComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.commonService.getuserdata.subscribe(res => {
-    //   this.groupData.name = res.name;
-    //   this.groupData.medium_notreplied = res.medium_notreplied;
-    //   this.groupData.medium_unopened = res.medium_unopened;
-    //   this.groupData.high_notreplied = res.high_notreplied;
-    //   this.groupData.high_unopened = res.high_unopened;
-    // });
+    this.commonService.getuserdata.subscribe(res => {
+      this.groupData.name = res.name;
+      this.groupData.medium_notreplied = res.medium_notreplied;
+      this.groupData.medium_unopened = res.medium_unopened;
+      this.groupData.high_notreplied = res.high_notreplied;
+      this.groupData.high_unopened = res.high_unopened;
+    });
   }
 
   get f() { return this.groupForm.controls; }
@@ -388,17 +388,17 @@ export class GroupEditComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
 
-    //   this.group = this.groupForm.value;
-    //   Object.keys(this.groupForm.controls).forEach((v, key) => {
-    //     if (this.groupForm.controls[v].value) {
-    //       this.commonService.setuserData(this.groupForm.controls[v].value);
-    //       this.router.navigate([this.currentUrl]);
-    //       this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
-    //     }
-    //   });
-    // }
+      this.group = this.groupForm.value;
+      Object.keys(this.groupForm.controls).forEach((v, key) => {
+        if (this.groupForm.controls[v].value) {
+          this.commonService.setuserData(this.groupForm.controls[v].value);
+          this.router.navigate([this.currentUrl]);
+          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+        }
+      });
+    }
   }
 
 }

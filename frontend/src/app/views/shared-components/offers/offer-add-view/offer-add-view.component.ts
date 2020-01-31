@@ -40,7 +40,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   offer_data: any = {};
   panelTitle = 'Add';
   user_detail: any = {};
-  // currentUrl = '';
+  currentUrl = '';
   candidate: any = [];
   isValid = false;
   candidateList: any = [];
@@ -218,7 +218,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.commonService.profileData().then(res => {
         this.profileData = res;
       });
-      // this.currentUrl = this.router.url;
+      this.currentUrl = this.router.url;
     }
 
     // check for add or edit
@@ -528,50 +528,248 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           }
 
         })
-      // .then(res => {
-      //   this.commonService.getuserdata.subscribe(res => {
-      //     console.log('res=>', res);
-      //     console.log('this.form.controls=>', this.form.controls);
+        .then(res => {
+          this.commonService.getuserdata.subscribe(res => {
+            console.log('res=>', res[`offer`]);
+            console.log('this.form.controls=>', this.form.controls[`customfieldItem`]);
 
-      //     if (res.ispopup) {
-      //       this.form.controls['email'].setValue(res['offer'].email);
-      //       this.form.controls['candidate_name'].setValue(res['offer'].candidate_name);
-      //       this.form.controls['title'].setValue(res['offer'].title);
-      //       this.form.controls.salarytype.setValue(res['offer'].salarytype);
+            setTimeout(() => {
+              this.form.controls['email'].setValue(res['offer'].email);
+              this.form.controls['candidate_name'].setValue(res['offer'].candidate_name);
+              this.form.controls['title'].setValue(res['offer'].title);
+              this.form.controls.salarytype.setValue(res['offer'].salarytype);
 
-      //       this.form.controls['salaryduration'].setValue(res['offer'].salaryduration);
+              this.form.controls['salaryduration'].setValue(res['offer'].salaryduration);
 
-      //       this.form.controls['location'].setValue(res['offer'].location);
-      //       this.form.controls['expirydate'].setValue(new Date(res['offer'].expirydate));
-      //       this.form.controls['joiningdate'].setValue(new Date(res['offer'].joiningdate));
-      //       this.form.controls['offertype'].setValue(res['offer'].offertype);
-      //       this.form.controls['salarybracket_from'].setValue(res['offer'].salarybracket_from);
-      //       this.form.controls['salarybracket_to'].setValue(res['offer'].salarybracket_to);
-      //       this.form.controls['salarybracket'].setValue(res['offer'].salarybracket);
-
-
-
-      //       this.form.controls['notes'].setValue(res['offer'].notes);
+              this.form.controls['location'].setValue(res['offer'].location);
+              if (res['offer'].expirydate != null || res['offer'].joiningdate !== null) {
+                this.form.controls['expirydate'].setValue(new Date(res['offer'].expirydate));
+                this.form.controls['joiningdate'].setValue(new Date(res['offer'].joiningdate));
+              }
+              this.form.controls['offertype'].setValue(res['offer'].offertype);
+              this.form.controls['salarybracket_from'].setValue(res['offer'].salarybracket_from);
+              this.form.controls['salarybracket_to'].setValue(res['offer'].salarybracket_to);
+              this.form.controls['salarybracket'].setValue(res['offer'].salarybracket);
 
 
-      //       this.form.controls['high_unopened'].setValue(res[`offer`].high_unopened);
-      //       this.form.controls['high_notreplied'].setValue(res[`offer`].high_notreplied);
-      //       this.form.controls['medium_unopened'].setValue(res[`offer`].medium_unopened);
-      //       this.form.controls['medium_notreplied'].setValue(res[`offer`].medium_notreplied);
 
-      //       if (this.is_Edit) {
-      //         this.form.controls['offerStatus'].setValue(res['offer'].status);
-      //         if (res['offer'].acceptedAt) {
-      //           this.form.controls['acceptanceDate'].setValue(moment(new Date(res['offer'].acceptedAt)).format('DD/MM/YYYY'));
-      //         } else {
-      //           this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
-      //         }// this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
-      //       }
+              this.form.controls['notes'].setValue(res['offer'].notes);
 
-      //     }
 
-      //   })
-      // });
+              this.form.controls['high_unopened'].setValue(res[`offer`].high_unopened);
+              this.form.controls['high_notreplied'].setValue(res[`offer`].high_notreplied);
+              this.form.controls['medium_unopened'].setValue(res[`offer`].medium_unopened);
+              this.form.controls['medium_notreplied'].setValue(res[`offer`].medium_notreplied);
+
+              //set custome fields
+              const _array = [];
+              const test = res[`offer`]['customfieldItem'];
+              this.service.get_customfield().subscribe(
+                resp => {
+                  this.customfield = resp['data'];
+                  this.customfield.forEach((element, index) => {
+                    const value = test.find(c => c.key === element.key) ?
+                      test.find(c => c.key === element.key).value : '';
+                    const new_customfield = {
+                      key: element.key,
+                      value,
+                    };
+                    this.customfieldItem.setControl(
+                      index,
+                      this.fb.group({
+                        value: [value, [this.noWhitespaceValidatorForNotRequired]],
+                        key: [element.key]
+                      })
+                    );
+                    this.customfieldItem.updateValueAndValidity();
+                    _array.push(new_customfield);
+                  });
+                  this.offer_data.customfieldItem = _array;
+                },
+                err => {
+                  console.log(err);
+                });
+
+              //set group
+              const groupById = this.group_optoins.find(x => x.value === res.offer[`group`]);
+              if (groupById) {
+                this.form.controls.group.setValue(groupById.value);
+              }
+
+              //set communication
+
+              if (res['offer']['communicationFieldItems'] && res['data']['communicationFieldItems'].length > 0) {
+                this.isSetCommunication = true;
+                this.communicationData = res['data']['communication'];
+
+                const _communication_array = [];
+                let new_communication;
+
+                this.communicationData.forEach((element, index) => {
+                  if (element.open !== undefined && element.reply !== undefined && element.reply_date !== undefined && element.open_date !== undefined && element.mail_send !== undefined) {
+                    new_communication = {
+                      'communicationname': element.communicationname,
+                      'trigger': element.trigger,
+                      'priority': element.priority,
+                      'day': element.day,
+                      'subject': element.subject,
+                      'message': element.message,
+                      '_id': element._id,
+                      'open': element.open,
+                      'reply': element.reply,
+                      'open_date': element.open_date,
+                      'reply_date': element.reply_date,
+                      'mail_send': element.mail_send
+                    };
+                  } else if (element.open !== undefined && element.reply !== undefined && element.open_date !== undefined && element.mail_send !== undefined) {
+
+                    new_communication = {
+                      'communicationname': element.communicationname,
+                      'trigger': element.trigger,
+                      'priority': element.priority,
+                      'day': element.day,
+                      'subject': element.subject,
+                      'message': element.message,
+                      '_id': element._id,
+                      'open': element.open,
+                      'reply': element.reply,
+                      'open_date': element.open_date,
+                      'mail_send': element.mail_send
+                    };
+                  } else if (element.open !== undefined && element.reply !== undefined && element.mail_send !== undefined) {
+                    new_communication = {
+                      'communicationname': element.communicationname,
+                      'trigger': element.trigger,
+                      'priority': element.priority,
+                      'day': element.day,
+                      'subject': element.subject,
+                      'message': element.message,
+                      '_id': element._id,
+                      'open': element.open,
+                      'reply': element.reply,
+                      'mail_send': element.mail_send
+                    };
+                  } else {
+                    new_communication = {
+                      'communicationname': element.communicationname,
+                      'trigger': element.trigger,
+                      'priority': element.priority,
+                      'day': element.day,
+                      'subject': element.subject,
+                      'message': element.message,
+                      '_id': element._id
+                    };
+                  }
+
+
+                  this.communicationFieldItems.setControl(index, this.fb.group({
+                    communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+                    trigger: ['', Validators.required],
+                    priority: ['', Validators.required],
+                    day: ['', Validators.required],
+                    subject: ['', [Validators.required, this.noWhitespaceValidator]],
+                    message: ['', [Validators.required, this.noWhitespaceValidator]]
+                  }));
+                  _communication_array.push(new_communication);
+
+
+                });
+                this.communicationData = _communication_array;
+              } else {
+                this.isSetCommunication = false;
+              }
+              this.add_new_communication();
+              this.isSetCommunication = true;
+              //set adhoc
+              if (res['data']['AdHocCommunication'] && res['data']['AdHocCommunication'].length > 0) {
+                this.AdHocCommunicationData = res['data']['AdHoc'];
+
+                console.log('AdHocCommunicationData=>', this.AdHocCommunicationData);
+
+                const _Adhoc_communication_array = [];
+                this.AdHocCommunicationData.forEach((element, index) => {
+                  let new_communication;
+                  if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_reply_date !== undefined && element.AdHoc_open_date !== undefined && element.AdHoc_mail_send !== undefined) {
+                    new_communication = {
+                      'AdHoc_communicationname': element.AdHoc_communicationname,
+                      'AdHoc_trigger': element.AdHoc_trigger,
+                      'AdHoc_priority': element.AdHoc_priority,
+                      'AdHoc_day': element.AdHoc_day,
+                      'AdHoc_subject': element.AdHoc_subject,
+                      'AdHoc_message': element.AdHoc_message,
+                      '_id': element._id,
+                      'AdHoc_open': element.AdHoc_open,
+                      'AdHoc_reply': element.AdHoc_reply,
+                      'AdHoc_open_date': element.AdHoc_open_date,
+                      'AdHoc_reply_date': element.AdHoc_reply_date,
+                      'AdHoc_mail_send': element.AdHoc_mail_send
+                    };
+                  } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_open_date !== undefined && element.AdHoc_mail_send !== undefined) {
+                    new_communication = {
+                      'AdHoc_communicationname': element.AdHoc_communicationname,
+                      'AdHoc_trigger': element.AdHoc_trigger,
+                      'AdHoc_priority': element.AdHoc_priority,
+                      'AdHoc_day': element.AdHoc_day,
+                      'AdHoc_subject': element.AdHoc_subject,
+                      'AdHoc_message': element.AdHoc_message,
+                      '_id': element._id,
+                      'AdHoc_open': element.AdHoc_open,
+                      'AdHoc_reply': element.AdHoc_reply,
+                      'AdHoc_open_date': element.AdHoc_open_date,
+                      'AdHoc_mail_send': element.AdHoc_mail_send
+                    };
+                  } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_mail_send !== undefined) {
+                    new_communication = {
+                      'AdHoc_communicationname': element.AdHoc_communicationname,
+                      'AdHoc_trigger': element.AdHoc_trigger,
+                      'AdHoc_priority': element.AdHoc_priority,
+                      'AdHoc_day': element.AdHoc_day,
+                      'AdHoc_subject': element.AdHoc_subject,
+                      'AdHoc_message': element.AdHoc_message,
+                      '_id': element._id,
+                      'AdHoc_open': element.AdHoc_open,
+                      'AdHoc_reply': element.AdHoc_reply,
+                      'AdHoc_mail_send': element.AdHoc_mail_send
+                    };
+                  } else {
+                    new_communication = {
+                      'AdHoc_communicationname': element.AdHoc_communicationname,
+                      'AdHoc_trigger': element.AdHoc_trigger,
+                      'AdHoc_priority': element.AdHoc_priority,
+                      'AdHoc_day': element.AdHoc_day,
+                      'AdHoc_subject': element.AdHoc_subject,
+                      'AdHoc_message': element.AdHoc_message,
+                      '_id': element._id
+                    };
+                  }
+                  this.AdHocCommunication.setControl(index, this.fb.group({
+                    AdHoc_communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+                    AdHoc_trigger: ['', Validators.required],
+                    AdHoc_priority: ['', Validators.required],
+                    AdHoc_day: ['', Validators.required],
+                    AdHoc_subject: ['', [Validators.required, this.noWhitespaceValidator]],
+                    AdHoc_message: ['', [Validators.required, this.noWhitespaceValidator]]
+                  }));
+
+                  _Adhoc_communication_array.push(new_communication);
+                });
+                this.AdHocCommunicationData = _Adhoc_communication_array;
+              } else { }
+              this.add_new_communication();
+
+              if (this.is_Edit) {
+                this.form.controls['offerStatus'].setValue(res['offer'].status);
+                if (res['offer'].acceptedAt) {
+                  this.form.controls['acceptanceDate'].setValue(moment(new Date(res['offer'].acceptedAt)).format('DD/MM/YYYY'));
+                } else {
+                  this.form.controls['acceptanceDate'].setValue('Date of Offer Acceptance');
+                }// this.form.controls['acceptanceDate'].setValue(res['data'].acceptedAt);
+              }
+
+            }, 1000);
+
+          })
+        });
 
 
 
@@ -702,7 +900,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               const _communication_array = [];
               let new_communication;
               this.communicationData.forEach((element, index) => {
-                if (element.open !== undefined && element.reply !== undefined && element.reply_date !== undefined && element.open_date !== undefined) {
+                if (element.open !== undefined && element.reply !== undefined && element.reply_date !== undefined && element.open_date !== undefined && element.mail_send !== undefined) {
                   new_communication = {
                     'communicationname': element.communicationname,
                     'trigger': element.trigger,
@@ -714,9 +912,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     'open': element.open,
                     'reply': element.reply,
                     'open_date': element.open_date,
-                    'reply_date': element.reply_date
+                    'reply_date': element.reply_date,
+                    'mail_send': element.mail_send
                   };
-                } else if (element.open !== undefined && element.reply !== undefined && element.open_date !== undefined) {
+                } else if (element.open !== undefined && element.reply !== undefined && element.open_date !== undefined && element.mail_send !== undefined) {
 
                   new_communication = {
                     'communicationname': element.communicationname,
@@ -728,9 +927,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     '_id': element._id,
                     'open': element.open,
                     'reply': element.reply,
-                    'open_date': element.open_date
+                    'open_date': element.open_date,
+                    'mail_send': element.mail_send
                   };
-                } else if (element.open !== undefined && element.reply !== undefined) {
+                } else if (element.open !== undefined && element.reply !== undefined && element.mail_send !== undefined) {
                   new_communication = {
                     'communicationname': element.communicationname,
                     'trigger': element.trigger,
@@ -740,7 +940,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     'message': element.message,
                     '_id': element._id,
                     'open': element.open,
-                    'reply': element.reply
+                    'reply': element.reply,
+                    'mail_send': element.mail_send
                   };
                 } else {
                   new_communication = {
@@ -776,7 +977,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               const _Adhoc_communication_array = [];
               this.AdHocCommunicationData.forEach((element, index) => {
                 let new_communication;
-                if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_reply_date !== undefined && element.AdHoc_open_date !== undefined) {
+                if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_reply_date !== undefined && element.AdHoc_open_date !== undefined && element.AdHoc_mail_send !== undefined) {
                   new_communication = {
                     'AdHoc_communicationname': element.AdHoc_communicationname,
                     'AdHoc_trigger': element.AdHoc_trigger,
@@ -788,9 +989,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     'AdHoc_open': element.AdHoc_open,
                     'AdHoc_reply': element.AdHoc_reply,
                     'AdHoc_open_date': element.AdHoc_open_date,
-                    'AdHoc_reply_date': element.AdHoc_reply_date
+                    'AdHoc_reply_date': element.AdHoc_reply_date,
+                    'AdHoc_mail_send': element.AdHoc_mail_send
                   };
-                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_open_date !== undefined) {
+                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_open_date !== undefined && element.AdHoc_mail_send !== undefined) {
                   new_communication = {
                     'AdHoc_communicationname': element.AdHoc_communicationname,
                     'AdHoc_trigger': element.AdHoc_trigger,
@@ -801,9 +1003,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     '_id': element._id,
                     'AdHoc_open': element.AdHoc_open,
                     'AdHoc_reply': element.AdHoc_reply,
-                    'AdHoc_open_date': element.AdHoc_open_date
+                    'AdHoc_open_date': element.AdHoc_open_date,
+                    'AdHoc_mail_send': element.AdHoc_mail_send
                   };
-                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined) {
+                } else if (element.AdHoc_open !== undefined && element.AdHoc_reply !== undefined && element.AdHoc_mail_send !== undefined) {
                   new_communication = {
                     'AdHoc_communicationname': element.AdHoc_communicationname,
                     'AdHoc_trigger': element.AdHoc_trigger,
@@ -813,7 +1016,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     'AdHoc_message': element.AdHoc_message,
                     '_id': element._id,
                     'AdHoc_open': element.AdHoc_open,
-                    'AdHoc_reply': element.AdHoc_reply
+                    'AdHoc_reply': element.AdHoc_reply,
+                    'AdHoc_mail_send': element.AdHoc_mail_send
                   };
                 } else {
                   new_communication = {
@@ -946,6 +1150,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         // } else if (this.group_optoins.value === '') {
         //   this.getGroupDetails = false;
         // }
+        console.log('this.resData=>', this.resData);
+
         this.resData.customfeild.map(res => {
           if (res.value) {
             this.isCustomFieldView = true;
@@ -1061,6 +1267,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
     }
   }
+
+
 
   // get candidate details
   async getCandidateList() {
@@ -1274,6 +1482,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       // this.unset_GroupFormControl();s
       this.communicationData = null;
       this.unset_communication();
+      this.getGroupdays();
 
       // this.communicationFieldItems['controls'].forEach(element => {
       //   console.log('element=>', element);
@@ -1688,6 +1897,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.error = false;
     }
   }
+
   CheckAst(value) {
     this.isTouched(value);
     this.ast = false;
@@ -1803,7 +2013,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             open: element.open,
             reply: element.reply,
             open_date: element.open_date,
-            reply_date: element.reply_date
+            reply_date: element.reply_date,
+            mail_send: element.mail_send
           });
         });
         // this.setRequired();
@@ -1828,13 +2039,18 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           AdHoc_open: element.AdHoc_open,
           AdHoc_reply: element.AdHoc_reply,
           AdHoc_open_date: element.AdHoc_open_date,
-          AdHoc_reply_date: element.AdHoc_reply_date
+          AdHoc_reply_date: element.AdHoc_reply_date,
+          AdHoc_mail_send: element.AdHoc_mail_send
         });
       });
       // this.setRequired();
     } else {
       AdHOc_communication_array.push();
     }
+    console.log('communication_array=>', communication_array);
+
+    console.log('AdHOc_communication_array=>', AdHOc_communication_array);
+
     this.formData = new FormData();
     const unwantedFields = [
       'candidate',
@@ -1985,24 +2201,31 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // console.log('this.userDetail=>', this.userDetail);
 
-    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-    //   if (!this.is_View) {
-    //     this.offer = this.form.value;
-    //     this.isPopup = true;
-    //     if (this.istouchedArray.length > 0) {
-    //       console.log('AAAAAA=======>', this.offer);
-    //       let obj = {
-    //         offer: this.offer,
-    //         ispopup: true
-    //       }
-    //       this.commonService.setuserData(obj);
-    //       this.router.navigate([this.currentUrl]);
-    //       this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url })
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      if (!this.is_View) {
+        this.offer = this.form.value;
+        this.isPopup = true;
+        console.log('this.istouchedArray=>', this.istouchedArray);
+        if (this.offer.email != null || this.offer.candidate_name != null || this.offer.title != null
+          || this.offer.salarytype != null) {
+          // tslint:disable-next-line: max-line-length
+          if (this.offer.expirydate == null || this.offer.expirydate == '' || this.offer.joiningdate == null || this.offer.joiningdate == '') {
+            this.offer.expirydate = null;
+            this.offer.joiningdate = null;
+          }
+          console.log('AAAAAA=======>', this.offer);
+          const obj = {
+            offer: this.offer,
+            ispopup: true
+          };
+          this.commonService.setuserData(obj);
+          this.router.navigate([this.currentUrl]);
+          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url })
 
-    //     }
+        }
 
-    //   }
-    // }
+      }
+    }
     this.socketService.leaveGrp(this.grpId);
   }
 

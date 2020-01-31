@@ -57,7 +57,7 @@
             </span>
             <!-- has {{ data.status }} this offer for &nbsp; <bclass="username_a">
               {{ data.candidate.firstname }} {{ data.candidate.lastname }}</b> &nbsp; -->
-            {{moment(data.createdAt).calendar()}}
+            {{moment(data.createdAt)| date: 'dd/MM/yyyy': 'utc'}}
             <span class="span_right">{{moment(data.createdAt).fromNow()}}<small class="ar_down">
                 <!-- <svg version="1.1"
                   id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
