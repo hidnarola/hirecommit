@@ -26,7 +26,7 @@ export class CustomFieldAddViewComponent implements OnInit {
   show_spinner = false;
   userDetail: any;
   cancel_link = '/employer/custom_fields/list';
-  // currentUrl = '';
+  currentUrl = '';
   constructor(
     private service: CustomFieldService,
     private toastr: ToastrService,
@@ -36,7 +36,7 @@ export class CustomFieldAddViewComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private commonService: CommonService
   ) {
-    // this.currentUrl = this.router.url;
+    this.currentUrl = this.router.url;
     this.userDetail = this.commonService.getLoggedUserDetail();
   }
 
@@ -68,9 +68,9 @@ export class CustomFieldAddViewComponent implements OnInit {
     this.addCustomFeild = new FormGroup({
       key: new FormControl('', [Validators.required, this.noWhitespaceValidator])
     });
-    // this.commonService.getuserdata.subscribe(res => {
-    //   this.data.key = res.key;
-    // });
+    this.commonService.getuserdata.subscribe(res => {
+      this.data.key = res.key;
+    });
   }
 
   // Remove white spaces
@@ -145,19 +145,23 @@ export class CustomFieldAddViewComponent implements OnInit {
     }
   }
   ngOnDestroy(): void {
-    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-    //   if (!this.isView) {
-    //     this.cf = this.addCustomFeild.value;
-    //     Object.keys(this.addCustomFeild.controls).forEach((v, key) => {
-    //       if (this.addCustomFeild.controls[v].value) {
-    //         this.commonService.setuserData(this.data);
-    //         this.router.navigate([this.currentUrl]);
-    //         this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      if (!this.isView) {
+        this.cf = this.addCustomFeild.value;
+        // Object.keys(this.addCustomFeild.controls).forEach((v, key) => {
+        //   if (this.addCustomFeild.controls[v].value) {
 
-    //       }
-    //     });
-    //   }
+        //   }
+        // });
 
-    // }
+        if (this.cf.key) {
+          this.commonService.setuserData(this.data);
+          this.router.navigate([this.currentUrl]);
+          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+
+        }
+      }
+
+    }
   }
 }

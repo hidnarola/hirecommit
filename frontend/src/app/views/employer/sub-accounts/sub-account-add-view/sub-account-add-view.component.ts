@@ -32,7 +32,7 @@ export class SubAccountAddViewComponent implements OnInit {
   userDetail: any;
   show_spinner = false;
   employerID: any;
-  // currentUrl = '';
+  currentUrl = '';
   cancel_link = '/employer/sub_accounts/list';
   // cancel_link1 = '/admin/employers/approved_employer/'+ this.employerID +'/sub_accounts/list';
   constructor(
@@ -48,21 +48,22 @@ export class SubAccountAddViewComponent implements OnInit {
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
     this.employerID = this.route.snapshot.params['eid'];
+    this.currentUrl = this.router.url;
   }
 
   ngOnInit() {
-    // this.commonService.getuserdata.subscribe(res => {
-    //   this.detail.username = res.username;
-    //   this.detail.email = res.email;
-    //   this.detail.admin_rights = res.admin_rights;
-    // });
+    this.commonService.getuserdata.subscribe(res => {
+      this.detail.username = res.username;
+      this.detail.email = res.email;
+      this.detail.admin_rights = res.admin_rights;
+    });
 
     this.addAccount = new FormGroup({
       username: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       admin_rights: new FormControl(false)
     });
-    // this.currentUrl = this.router.url;
+
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
@@ -297,24 +298,28 @@ export class SubAccountAddViewComponent implements OnInit {
     });
   }
   ngOnDestroy(): void {
-    // if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-    //   if (!this.is_View) {
-    //     this.sub_account = this.addAccount.value;
-    //     Object.keys(this.addAccount.controls).forEach((v, key) => {
-    //       if (this.addAccount.controls[v].value) {
-    //         // this.detail = {
-    //         //   username: this.addAccount.controls.username.value,
-    //         //   email: this.addAccount.controls.email.value,
-    //         //   admin_rights: this.addAccount.controls.admin_rights.value
-    //         // };
-    //         this.commonService.setuserData(this.detail);
-    //         this.router.navigate([this.currentUrl]);
-    //         this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+    if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
+      if (!this.is_View) {
+        this.sub_account = this.addAccount.value;
+        Object.keys(this.addAccount.controls).forEach((v, key) => {
+          // if (this.addAccount.controls[v].value) {
+          // this.detail = {
+          //   username: this.addAccount.controls.username.value,
+          //   email: this.addAccount.controls.email.value,
+          //   admin_rights: this.addAccount.controls.admin_rights.value
+          // };
 
-    //       }
-    //     });
-    //   }
-    // }
+
+          // }
+        });
+        if (this.sub_account.username || this.sub_account.email || this.sub_account.admin_rights) {
+          this.commonService.setuserData(this.detail);
+          this.router.navigate([this.currentUrl]);
+          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+        }
+
+      }
+    }
 
   }
 
