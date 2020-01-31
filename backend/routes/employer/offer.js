@@ -2194,7 +2194,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var message = comm.message;
                         var email = resp.candidate.email
 
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        //  moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
@@ -2291,7 +2292,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
@@ -2376,7 +2378,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
@@ -2418,7 +2421,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
@@ -2463,8 +2467,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         offer_date = moment(offer_date);
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
 
                             var message = comm.AdHoc_message;
 
@@ -2551,7 +2555,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
@@ -2636,7 +2641,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
@@ -2678,7 +2684,8 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
