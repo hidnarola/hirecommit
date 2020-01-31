@@ -49,6 +49,21 @@ mail_helper.send = async (template_name, options, data) => {
     });
 };
 
+mail_helper.reply_mail_send = async (template_name, options, data) => {
+    var companyname;
+    var template_sender = transporter.templateSender(new EmailTemplate('emails/' + template_name), {
+        from: options.from
+    });
+    return template_sender({
+        to: options.to,
+        subject: options.subject,
+    }, data).then(function (info) {
+        return { "status": 1, "message": info };
+    }).catch(function (err) {
+        return { "status": 0, "error": err };
+    });
+};
+
 mail_helper.forwardRepliedMail = async (data, cb) => {
     const msg = {
         to: data.to,

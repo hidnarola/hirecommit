@@ -7,6 +7,7 @@ const path = require('path');
 const ObjectId = require('mongodb').ObjectID;
 const btoa = require('btoa');
 
+
 const _ = require('underscore');
 const request = require('request');
 const passwordValidator = require('password-validator');
@@ -16,6 +17,10 @@ const logger = config.logger;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const async = require('async');
+
+var MailParser = require("mailparser-mit").MailParser;
+
+
 const mail_helper = require('./../helpers/mail_helper');
 const Role = require('./../models/role');
 const User = require('./../models/user');
@@ -1429,45 +1434,53 @@ router.post('/match_old_password', async (req, res) => {
 
 router.post('/test_mail', async (req, res) => {
   try {
-    id = "123456";
     var message = "welcome";
-    var open_url = "https://hirecommit.com:3000/open_mail/" + `${id}`;
-    var trackid = "test001";
-    var obj = {
-      "trackid": trackid,
-      "message": message,
-      "open_url": open_url
-    }
+    var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e2ff578c040dfcd7bea0d78" });
 
-    // var reqBody = await common_helper.findOne(RepliedMail, { "_id": "5e218faff9951d4b99c5b98e" });
-    // console.log(' :  ==> ', reqBody);
-    // let mail_resp = await mail_helper.forwardRepliedMail({
-    //   // update_communication.created_by.email
-    //   to: req.body.email,
-    //   from: reqBody.data.message.from,
-    //   subject: "Offer",
-    //   content: reqBody.data.message.email,
-    //   filename: `${reqBody.data.offerid}.eml`,
-    //   // html: reqBody.data.message.email
-    //   html: reqBody.data.message.email
-    // }, (err, info) => {
-    //   if (err) {
-    //     console.log(error);
-    //   }
-    //   else {
-    //     console.log('Message forwarded: ' + info.response);
-    //   }
-    // });
-    // console.log(' : mail_resp ==> ', mail_resp);
-    let mail_resp = await test_mail_helper.send('d-850f0ff694ab4e85935c869be3a4170d', {
-      "to": req.body.email,
-      "reply_to": "vishalkanojiya9727@gmail.com",
-      "subject": "Offer",
-      "trackid": trackid
-    }, obj);
+    var reply_data = reqBody.data.message.email;
+    // var template = handlebars.compile(reply_data);
+    var subject = reqBody.data.message.subject;
+
+    mailparser.on("end", function (reply_data) {
+      reply_data;
+      // console.log(' : reply_data ==> ', reply_data);
+      let mail_resp = mail_helper.reply_mail_send("forword_email", {
+        "to": req.body.email,
+        "from": reply_data.from,
+        "subject": reply_data.subject
+      }, {
+        'html': reply_data.html
+      });
+    });
+
+    mailparser.write(reply_data);
+    mailparser.end();
+
+    // console.log(' : reply_data ==> ', reply_data);
+    // const msg = {
+    //   to: 'vishalkanojiya9727@gmail.com',
+    //   from: req.body.email,
+    //   subject: subject,
+    //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>',
+    //   alternatives: [
+    //     {
+    //       contentType: 'message/rfc822',
+    //       filename: "Candidate_Reply.eml",
+    //       content: reply_data,
+    //     }
+    //   ],
+    //   // attachments: [
+    //   //   {
+    //   //     content: reply_data,
+    //   //     filename: "Candidate_Reply.eml",
+    //   //     type: 'message/rfc822',
+    //   //     disposition: 'attachment'
+    //   //   },
+    //   // ],
+    // };
 
 
-    res.json({ "message": "success" })
+    res.status(200).send('success');
   } catch (error) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false })
   }
@@ -1475,7 +1488,7 @@ router.post('/test_mail', async (req, res) => {
 
 router.post('/email_opened', async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
     const reqBody = req.body[0];
     // console.log(' : reqBody.trackid && reqBody.trackid !== "" ==> ', reqBody.trackid, reqBody.trackid !== "");
     // console.log(' :  ==> ', (reqBody.trackid && reqBody.trackid !== ""));
@@ -1551,129 +1564,214 @@ router.post('/email_opened', async (req, res) => {
   }
 })
 
-// router.post('/get_email', async (req, res) => {
-//   try {
-//     const reqBody = req.body;
-//     // console.log(' : reqBody ==> ', reqBody);
-//     // var receive_id = reqBody.to;
-//     str = `${reqBody.to}`;
-//     result = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-//     var receive_id;
-//     if (result) {
-//       // console.log(' : result ==> ', result);
-//       var receive_id = result;
-//     } else {
-//       // console.log(' : result ==> ', 0);
-//       var receive_id = reqBody.to;
-//     }
-//     // console.log(' :receive_id  ==> ', receive_id);
-//     // console.log(' :  ==> receive_id.length', receive_id.length);
-//     // console.log(' :  ==> receive_id[0]', receive_id[0]);
-//     var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
-//     var length = id.length;
-//     if (length > 24) {
-//       var split_data = id.split("_");
-//       if (split_data.length == 3 && split_data[2] === "communication") {
-//         var offer_id = split_data[0];
-//         var communication_id = split_data[1];
-//         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
-//         var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
-//           $set: {
-//             "communication.$.reply": true,
-//             "communication.$.reply_date": new Date()
-//           }
-//         }).populate('created_by', { email: 1 }).lean();
+router.post('/get_email', async (req, res) => {
+  try {
+    const reqBody = req.body;
+    // var reply_data;
+    var reply_data = reqBody.email;
+    // console.log(' : reqBody ==> ', reqBody);
+    // var receive_id = reqBody.to;
+    str = `${reqBody.to}`;
+    result = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+    var receive_id;
+    if (result) {
+      var receive_id = result;
+    } else {
+      var receive_id = reqBody.to;
+    }
+    var id = receive_id.substring(0, receive_id.lastIndexOf("@"));
+    var length = id.length;
+    if (length > 24) {
+      var split_data = id.split("_");
+      if (split_data.length == 3 && split_data[2] === "communication") {
+        var offer_id = split_data[0];
+        var communication_id = split_data[1];
+        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
 
-//         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
-//         for (const emp of all_employer.data) {
-//           mail_helper.forwardRepliedMail({
-//             // update_communication.created_by.email
-//             to: emp.email,
-//             from: reqBody.from,
-//             subject: reqBody.subject,
-//             content: reqBody.email,
-//             filename: `${mail.data._id}.eml`,
-//             html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-//           }, (err, info) => {
-//             if (err) {
-//               console.log(error);
-//             }
-//             else {
-//               console.log('Message forwarded: ' + info.response);
-//             }
-//           });
-//         }
-//         res.status(200).send('success');
-//       }
+        var previous_status = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": false });
+        var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+        var previous_status2 = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.open": false });
 
-//       if (split_data.length == 3 && split_data[2] === "adhoc") {
-//         // console.log("adhoc");
-//         var offer_id = split_data[0];
-//         var adhoc_id = split_data[1];
-//         var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
+        if (previous_status2.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+            $set: {
+              "communication.$.reply": true,
+              "communication.$.reply_date": new Date(),
+              "communication.$.open": true,
+              "communication.$.open_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+            $set: {
+              "communication.$.reply": true,
+              "communication.$.reply_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status1.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "communication._id": communication_id }, {
+            $set: {
+              "communication.$.reply": true
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        }
 
-//         var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
-//           $set: {
-//             "AdHoc.$.AdHoc_reply": true,
-//             "AdHoc.$.AdHoc_reply_date": new Date()
-//           }
-//         }).populate('created_by', { email: 1 }).lean();
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
+        for (const emp of all_employer.data) {
+          // mail_helper.forwardRepliedMail({
+          //   // update_communication.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
 
-//         var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
-//         for (const emp of all_employer.data) {
-//           mail_helper.forwardRepliedMail({
-//             // update_communication.created_by.email
-//             to: emp.email,
-//             from: reqBody.from,
-//             subject: reqBody.subject,
-//             content: reqBody.email,
-//             filename: `${mail.data._id}.eml`,
-//             html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-//           }, (err, info) => {
-//             if (err) {
-//               console.log(error);
-//             }
-//             else {
-//               console.log('Message forwarded: ' + info.response);
-//             }
-//           });
-//         }
-//         res.status(200).send('success');
-//       }
-//     } else {
-//       var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-//       //  && offer_resp.data.reply === false
-//       if (offer_resp.status == 1) {
-//         var all_employer = await common_helper.find(User, { $or: [{ "_id": offer_resp.data.employer_id }, { "emp_id": offer_resp.data.employer_id }] });
-//         var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
-//         var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
-//         for (const emp of all_employer.data) {
-//           mail_helper.forwardRepliedMail({
-//             // offer.created_by.email
-//             to: emp.email,
-//             from: reqBody.from,
-//             subject: reqBody.subject,
-//             content: reqBody.email,
-//             filename: `${mail.data._id}.eml`,
-//             html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
-//           }, (err, info) => {
-//             if (err) {
-//               console.log(error);
-//             }
-//             else {
-//               console.log('Message forwarded: ' + info.response);
-//             }
-//           });
-//         }
-//         res.status(200).send('success');
-//       } else {
-//         console.log("Already replied..! Or offer was deleted..!");
-//       }
-//     }
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// })
+          var mailparser = new MailParser();
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
+          });
+
+          mailparser.write(reply_data);
+          mailparser.end();
+        }
+        res.status(200).send('success');
+      }
+
+      if (split_data.length == 3 && split_data[2] === "adhoc") {
+        // console.log("adhoc");
+        var offer_id = split_data[0];
+        var adhoc_id = split_data[1];
+        var mail = await common_helper.insert(RepliedMail, { "offerid": offer_id, "message": reqBody });
+
+        var previous_status = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_reply": false });
+        var previous_status1 = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_reply": true });
+        var previous_status2 = await common_helper.findOne(Offer, { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false });
+
+        if (previous_status2.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+            $set: {
+              "AdHoc.$.AdHoc_reply": true,
+              "AdHoc.$.AdHoc_reply_date": new Date(),
+              "AdHoc.$.AdHoc_open": true,
+              "AdHoc.$.AdHoc_open_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+            $set: {
+              "AdHoc.$.AdHoc_reply": true,
+              "AdHoc.$.AdHoc_reply_date": new Date()
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        } else if (previous_status1.status == 1) {
+          var update_communication = await Offer.findOneAndUpdate({ "_id": offer_id, "AdHoc._id": adhoc_id }, {
+            $set: {
+              "AdHoc.$.AdHoc_reply": true
+            }
+          }).populate('created_by', { email: 1 }).lean();
+        }
+
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": update_communication.employer_id }, { "emp_id": update_communication.employer_id }] });
+        for (const emp of all_employer.data) {
+          // mail_helper.forwardRepliedMail({
+          //   // update_communication.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
+
+          var mailparser = new MailParser();
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
+          });
+
+          mailparser.write(reply_data);
+          mailparser.end();
+        }
+        res.status(200).send('success');
+      }
+    } else {
+      var offer_resp = await common_helper.findOne(Offer, { "_id": id });
+      //  && offer_resp.data.reply === false
+      if (offer_resp.status == 1) {
+        var all_employer = await common_helper.find(User, { $or: [{ "_id": offer_resp.data.employer_id }, { "emp_id": offer_resp.data.employer_id }] });
+        var mail = await common_helper.insert(RepliedMail, { "offerid": id, "message": reqBody });
+        var offer = await Offer.findOneAndUpdate({ "_id": id }, { "reply": true, "reply_At": new Date() }).populate('created_by', { email: 1 }).lean();
+        for (const emp of all_employer.data) {
+
+
+          // console.log(' : reply_data ==> ', reqBody);
+          // mail_helper.forwardRepliedMail({
+          //   // offer.created_by.email
+          //   to: emp.email,
+          //   from: reqBody.from,
+          //   subject: reqBody.subject,
+          //   content: reqBody.email,
+          //   filename: `${mail.data._id}.eml`,
+          //   html: '<p>Here’s an attachment of replied mail of candidate for you!</p>'
+          // }, (err, info) => {
+          //   if (err) {
+          //     console.log(error);
+          //   }
+          //   else {
+          //     console.log('Message forwarded: ' + info.response);
+          //   }
+          // });
+          // console.log(' : reply_data ==> ', reply_data);
+          var mailparser = new MailParser();
+          mailparser.on("end", function (reply_data) {
+            let mail_resp = mail_helper.reply_mail_send("forword_email", {
+              "to": emp.email,
+              "from": reply_data.from,
+              "subject": reply_data.subject
+            }, {
+              'html': reply_data.html
+            });
+          });
+
+          mailparser.write(reply_data);
+          mailparser.end();
+        }
+        res.status(200).send('success');
+      } else {
+        console.log("Already replied..! Or offer was deleted..!");
+      }
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
 
 async function getCountry(req, res) {
   try {
@@ -1710,85 +1808,24 @@ router.get('/business_type/:country', async (req, res) => {
 router.get('/country', getCountry);
 router.get('/country/:id', getCountry);
 
-router.get('/open_mail/:id', async (req, res) => {
-  try {
-    console.log(' :  req ==> ', req.params.id);
-    var id = req.params.id;
-    if (id && id !== "") {
-      var length = id.length;
-      if (length > 24) {
-        console.log(' : communication ==> ', "communication");
-        var split_data = id.split("_");
-        if (split_data.length == 3 && split_data[2] === "communication") {
-          var offer_id = split_data[0];
-          var communication_id = split_data[1];
-
-          var previous_status = await common_helper.findOne(Offer,
-            { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
-          if (previous_status.status == 1) {
-            var update_offer_communication = await common_helper.update(Offer,
-              { "_id": offer_id, "communication._id": communication_id },
-              {
-                $set: {
-                  "communication.$.open": true,
-                  "communication.$.open_date": new Date()
-                }
-              })
-            console.log(' : success comm ==> ');
-          } else if (previous_status.status == 2) {
-            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
-          } else {
-            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
-          }
-        } else if (split_data.length == 3 && split_data[2] === "adhoc") {
-          var offer_id = split_data[0];
-          var adhoc_id = split_data[1];
-
-          var previous_status = await common_helper.findOne(Offer,
-            { "_id": offer_id, "AdHoc._id": adhoc_id, "AdHoc.AdHoc_open": false })
-          if (previous_status.status == 1) {
-            var update_offer_communication = await common_helper.update(Offer,
-              { "_id": offer_id, "AdHoc._id": adhoc_id },
-              {
-                $set: {
-                  "AdHoc.$.AdHoc_open": true,
-                  "AdHoc.$.AdHoc_open_date": new Date()
-                }
-              })
-            console.log('success  ==> success');
-          } else if (previous_status.status == 2) {
-            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "No data found" });
-          } else {
-            res.status(config.BAD_REQUEST).json({ "status": 2, "message": "Error occurred while updating data." });
-          }
-
-        }
-      } else {
-        console.log(' : offer ==> ', "offer");
-        var offer_resp = await common_helper.findOne(Offer, { "_id": id });
-        var obj = {
-          email_open: true,
-          open_At: new Date()
-        }
-        if (offer_resp.status == 1 && offer_resp.data.email_open === false && reqBody.event === 'open') {
-          var offer_update_resp = await common_helper.update(Offer, { "_id": open_id }, obj);
-          reqBody = [];
-        } else {
-          reqBody = [];
-          console.log('Offer is already opened..! Or offer is deleted..!');
-        }
-      }
-    } else {
-      console.log("No Track Id Found..!");
-    }
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-})
 
 router.get('/check_query', async (req, res) => {
   var obj = {};
-  var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
+  // var resp_data = await common_helper.update(Offer, { "_id": ObjectId("5df9dfd64c72a507902bb3e9") }, obj);
+  var offer_id = "5e329abd5683722f3027fabc";
+  // var AdHoc_id = "5e329e7c28182a20106d41e5";
+  var AdHoc_id = "5e329e7c28182a20106d41e6";
+  // var resp_data = await common_helper.findOne(Offer,
+  //   { "_id": offer_id, "communication._id": communication_id, "communication.open": false })
+  // var resp_data = await common_helper.findOne(Offer, { "_id": offer_id, "communication._id": communication_id, "communication.reply": true });
+  // var resp_data = await common_helper.findOne(Offer, {
+  //   "_id": offer_id, "AdHoc._id": AdHoc_id,
+  //   $or: [{ "AdHoc.AdHoc_open": false }, { "AdHoc.AdHoc_open": true }]
+  // })
+
+  var resp_data = await common_helper.findOne(Offer, {
+    "_id": offer_id, "AdHoc._id": AdHoc_id, "AdHoc.AdHoc_mail_send": { $exists: true }
+  })
 
   if (resp_data) {
     res.status(config.OK_STATUS).json(resp_data);
