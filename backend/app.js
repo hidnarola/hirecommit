@@ -44,9 +44,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'doc')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 app.use('/upload', express.static(path.join(__dirname, 'upload')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '../frontend/dist/index.html'));
+});
 app.use(expressValidator());
 var options = {
   swaggerOptions: {

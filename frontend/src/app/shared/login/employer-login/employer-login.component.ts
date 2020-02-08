@@ -49,7 +49,7 @@ export class EmployerLoginComponent implements OnInit {
 
   }
   checkMail() {
-    if (this.loginForm.value.email.length > 0) {
+    if (this.loginForm.value.email !== undefined && this.loginForm.value.email.length > 0) {
       // tslint:disable-next-line: max-line-length
       this.loginForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
     } else {
@@ -125,8 +125,7 @@ export class EmployerLoginComponent implements OnInit {
             }
           );
           this.reset();
-        }
-        else {
+        } else {
           this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
           this.reset();

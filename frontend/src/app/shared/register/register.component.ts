@@ -97,7 +97,7 @@ export class RegisterComponent implements OnInit {
     this.formData = new FormData();
 
     if (this.activatedRoute.snapshot.queryParams.email) {
-      let decode_email = atob(this.activatedRoute.snapshot.queryParams.email);
+      const decode_email = atob(this.activatedRoute.snapshot.queryParams.email);
       this.registerData.email = decode_email;
     }
   }
@@ -138,7 +138,7 @@ export class RegisterComponent implements OnInit {
     const adharcardTwelveDigit = /^\d{12}$/;
     const adharSixteenDigit = /^\d{16}$/;
     if (control.value && control.value !== '' && control.valid !== null) {
-      const isValid = (control.value.match(adharcardTwelveDigit) || control.value.match(adharSixteenDigit))
+      const isValid = (control.value.match(adharcardTwelveDigit) || control.value.match(adharSixteenDigit));
       return isValid ? null : { 'invalid': true };
     }
   }
@@ -146,7 +146,7 @@ export class RegisterComponent implements OnInit {
   checkPANCardNumber(control: FormControl) {
     const regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
     if (control.value && control.value !== '' && control.valid !== null) {
-      regpan.test(control.value)
+      regpan.test(control.value);
       const isValid = control.value.match(regpan);
       // valid pan card number
       return isValid ? null : { 'invalid': true };
@@ -156,7 +156,7 @@ export class RegisterComponent implements OnInit {
   checkDrivingLicense(control: FormControl) {
     const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{15,15}$/;
     if (control.value && control.value !== '' && control.valid !== null) {
-      pattern.test(control.value)
+      pattern.test(control.value);
       const isValid = control.value.match(pattern);
       // valid pan card number
       return isValid ? null : { 'invalid': true };
@@ -306,8 +306,7 @@ export class RegisterComponent implements OnInit {
         // this.registerForm.controls['email'].setErrors({ 'isExist': true });
         this.checkEmail();
         this.registerForm.updateValueAndValidity();
-      }
-      else {
+      } else {
         this.registerForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
       }
     }

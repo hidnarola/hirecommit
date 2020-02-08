@@ -587,7 +587,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
                 this.form.controls['notes'].setValue(res['offer'].notes);
 
-                //set group
+                // set group
                 // this.groupList();
                 this.service.get_groups().subscribe(resGrp => {
 
@@ -611,7 +611,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 this.form.controls['high_notreplied'].setValue(res[`offer`].high_notreplied);
                 this.form.controls['medium_unopened'].setValue(res[`offer`].medium_unopened);
                 this.form.controls['medium_notreplied'].setValue(res[`offer`].medium_notreplied);
-                //set communication
+                // set communication
 
                 if (res[`offer`]['communicationFieldItems'] && res[`offer`]['communicationFieldItems'].length > 0) {
                   this.communicationData = res[`offer`]['communicationFieldItems'];
@@ -622,7 +622,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                   this.isAdHoc_ButtonShow = false;
                   this.isSetCommunication = false;
                 }
-                //set adhoc
+                // set adhoc
                 if (res[`offer`]['AdHocCommunication'].length > 0) {
                   this.AdHocCommunicationData = res[`offer`]['AdHocCommunication'];
                   this.update_adhoc_communication(this.AdHocCommunicationData);
@@ -658,8 +658,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
                 if (res['offer'].salarytype === 'annual') {
                   document.getElementById('salaryduration').setAttribute('disabled', 'true');
-                }
-                else {
+                } else {
                   document.getElementById('salaryduration').setAttribute('disabled', 'false');
                   this.form.controls['salaryduration'].setValue(res['offer'].salaryduration);
                 }
@@ -681,8 +680,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                   this.form.controls['candidate_name'].setValue(res['offer'].candidate_name);
                   if (res['offer'].title) {
                     this.form.controls['title'].setValue(res['offer'].title);
-                  }
-                  else if (res['offer'].offerStatus.value === "Accepted" || this.d.isBefore(current_date, 'day')) {
+                  } else if (res['offer'].offerStatus.value === 'Accepted' || this.d.isBefore(current_date, 'day')) {
                     this.form.controls['title'].setValue(resp['offer'].title);
                   } else {
                     this.form.controls['title'].setValue(resp['offer'].title);
@@ -691,8 +689,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                   this.form.controls.salarytype.setValue(res['offer'].salarytype);
                   if (res['offer'].salarytype === 'annual') {
                     document.getElementById('salaryduration').setAttribute('disabled', 'true');
-                  }
-                  else {
+                  } else {
                     this.form.controls['salaryduration'].setValue(res['offer'].salaryduration);
                   }
                   this.form.controls['location'].setValue(res['offer'].location);
@@ -721,14 +718,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                   this.form.controls['medium_unopened'].setValue(res[`offer`].medium_unopened);
                   this.form.controls['medium_notreplied'].setValue(res[`offer`].medium_notreplied);
 
-                  //set group
+                  // set group
                   const groupById = this.group_optoins.find(x => x.value === res[`offer`].group);
 
                   if (groupById) {
                     this.form.controls.group.setValue(groupById.value);
                   }
 
-                  //set communication
+                  // set communication
 
                   if (res[`offer`]['communicationFieldItems'] && res[`offer`]['communicationFieldItems'].length > 0) {
                     this.communicationData = res[`offer`]['communicationFieldItems'];
@@ -739,7 +736,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     this.isAdHoc_ButtonShow = false;
                     this.isSetCommunication = false;
                   }
-                  //set adhoc
+                  // set adhoc
                   if (res[`offer`]['AdHocCommunication'].length > 0) {
                     this.AdHocCommunicationData = res[`offer`]['AdHocCommunication'];
                     this.update_adhoc_communication(this.AdHocCommunicationData);
@@ -774,7 +771,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                     err => {
                       console.log(err);
                     });
-                  //set custome fields
+                  // set custome fields
                   this.service.status(res[`offer`]['offerStatus'].value).subscribe(res1 => {
                     this.offerStatus = res1['status'];
                   });
@@ -798,10 +795,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                         this.form.controls['title'].setValue(res['offer'].title);
                       } else if (resp['offer'].title) {
                         this.form.controls['title'].setValue(resp['offer'].title);
-                      } else if (res['offer'].offerStatus.value === "Accepted" || this.d.isBefore(current_date, 'day')) {
+                      } else if (res['offer'].offerStatus.value === 'Accepted' || this.d.isBefore(current_date, 'day')) {
                         this.form.controls['title'].setValue(resp['offer'].title);
                       }
-                      //offer is accepted
+                      // offer is accepted
                       if (res[`offer`].offerStatus.value === 'Accepted') {
 
                         this.isAccepted = true;
@@ -825,17 +822,12 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
                         if (!(this.joining_Date.isBefore(current_date, 'day'))) {
                           this.isJoiningDate = true;
-                        }
-                        else {
+                        } else {
                           this.isJoiningDate = false;
 
                         }
                         this.updateValidation();
-                      }
-
-
-                      // offer is expired
-                      else if (this.d.isBefore(current_date, 'day')) {
+                      } else if (this.d.isBefore(current_date, 'day')) {
 
                         this.offerExpired = true;
                         // this.max_date = new Date(res[`data`].expirydate);
@@ -859,14 +851,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                         }
 
 
-                        document.getElementById('expirydate').removeAttribute('disabled')
+                        document.getElementById('expirydate').removeAttribute('disabled');
                         this.disabled = true;
                         // this.form.controls['offertype'].disable();
                         this.form.controls['notes'].disable();
                         document.getElementById('annual').setAttribute('disabled', 'true');
                         document.getElementById('hourly').setAttribute('disabled', 'true');
 
-                        //disabled summernote
+                        // disabled summernote
                         setTimeout(function () {
                           const len = document.getElementsByClassName('note-editable').length;
                           for (let p = 0; p < len; p++) {
@@ -1153,13 +1145,13 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 }, 300);
               } else if (resp[`offer`] && (this.response === '' || this.response === undefined)) {
                 if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-                  //edit offer
+                  // edit offer
                   if (this.is_Edit) {
                     setTimeout(() => {
                       const current_date = moment();
                       this.d = moment(new Date(resp[`offer`].expirydate));
                       this.joining_Date = moment(new Date(resp[`offer`].joiningdate));
-                      //offer is accepted
+                      // offer is accepted
                       if (resp[`offer`].status === 'Accepted') {
                         this.isAccepted = true;
                         this.max_date = new Date(resp[`offer`].expirydate);
@@ -1181,14 +1173,11 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
                         if (!(this.joining_Date.isBefore(current_date, 'day'))) {
                           this.isJoiningDate = true;
-                        }
-                        else {
+                        } else {
                           this.isJoiningDate = false;
                         }
                         this.updateValidation();
-                      }
-                      // offer is expired
-                      else if (this.d.isBefore(current_date, 'day')) {
+                      } else if (this.d.isBefore(current_date, 'day')) {
                         this.offerExpired = true;
                         // this.max_date = new Date(resp[`data`].expirydate);
                         this.isAccepted = true;
@@ -1211,14 +1200,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                         }
 
 
-                        document.getElementById('expirydate').removeAttribute('disabled')
+                        document.getElementById('expirydate').removeAttribute('disabled');
                         this.disabled = true;
                         // this.form.controls['offertype'].disable();
                         this.form.controls['notes'].disable();
                         document.getElementById('annual').setAttribute('disabled', 'true');
                         document.getElementById('hourly').setAttribute('disabled', 'true');
 
-                        //disabled summernote
+                        // disabled summernote
                         setTimeout(function () {
                           const len = document.getElementsByClassName('note-editable').length;
                           for (let p = 0; p < len; p++) {
@@ -1553,7 +1542,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
                 this.isSetCommunication = false;
               }
 
-              //disabled summernote
+              // disabled summernote
               setTimeout(function () {
                 // $(".note-editable").attr("contenteditable", "false")
                 const len = document.getElementsByClassName('note-editable').length;
@@ -1591,10 +1580,10 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               this.groupDetail(resp.groups);
 
             }
-            let obj = {
+            const obj = {
               'offer': resp['data'],
               'candidate': resp['candidate_data']
-            }
+            };
             pass(obj);
           }, err => {
             this.spinner.hide();
@@ -1630,7 +1619,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             if (res.value) {
               this.isCustomFieldView = true;
             }
-          })
+          });
           this.spinner.hide();
           this.is_View = true;
           this.resData = res[`data`][0];
@@ -1663,7 +1652,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
           }
 
 
-          //disabled summernote
+          // disabled summernote
           setTimeout(function () {
             const len = document.getElementsByClassName('note-editable').length;
             for (let p = 0; p < len; p++) {
@@ -2123,7 +2112,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  //unset communication
+  // unset communication
   unset_communication(data_index = null) {
 
     let index = 0;
@@ -2259,8 +2248,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.form.controls['salarybracket_from'].setErrors(null);
       this.form.controls['salarybracket_to'].setErrors(null);
       this.updateValidation();
-    }
-    else {
+    } else {
       // if (this.form.value.salarybracket == '') {
       // this.isSalaryBracket = true;
       // this.isSalaryFrom_To = false;
@@ -2318,7 +2306,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
   cancel() {
     if (this.userDetail.role === 'employer') {
-      this.offer = this.form.value
+      this.offer = this.form.value;
       if (this.is_Edit) {
         this.router.navigate([this.cancel_link]);
       }
@@ -2345,9 +2333,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         }
 
       }
-    }
-    else if (this.userDetail.role === 'sub-employer') {
-      this.offer = this.form.value
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.offer = this.form.value;
       if (this.is_Edit) {
         this.router.navigate([this.cancel_link1]);
       } if (this.is_Add) {
@@ -2511,8 +2498,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       this.form.controls['salarybracket_from'].setErrors(null);
       this.form.controls['salarybracket_to'].setErrors(null);
       this.updateValidation();
-    }
-    else if (this.form.value.salarybracket_from && this.form.value.salarybracket_to) {
+    } else if (this.form.value.salarybracket_from && this.form.value.salarybracket_to) {
       this.form.controls['salarybracket'].setErrors(null);
       this.updateValidation();
     }
@@ -2759,8 +2745,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             }
           }
 
-        }
-        else if (this.is_Add) {
+        } else if (this.is_Add) {
           if (this.istouchedArray.length > 0) {
             if (this.offer.expirydate == null || this.offer.expirydate === '' || this.offer.joiningdate == null
               || this.offer.joiningdate == '') {
