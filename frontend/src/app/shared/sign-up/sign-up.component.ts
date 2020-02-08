@@ -141,14 +141,11 @@ export class SignUpComponent implements OnInit {
           this.registerForm.updateValueAndValidity();
         });
         this.registerForm.updateValueAndValidity();
-      }
-      else {
+      } else {
         this.registerForm.controls['email'].setValidators([Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]);
       }
 
-    }
-
-    else if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid) {
+    } else if (this.registerForm.controls['email'].valid && this.registerForm.controls['password'].valid) {
 
       this.isFormSubmitted = false;
       this.step2 = true;
@@ -178,7 +175,7 @@ export class SignUpComponent implements OnInit {
   }
 
   checkEmail() {
-    if (this.registerForm.value.email.length > 0) {
+    if (this.registerForm.value.email !== undefined &&  this.registerForm.value.email.length > 0) {
       this.service.check_employer_email({ 'email': this.registerForm.value.email }).subscribe(res => {
       }, (err) => {
         this.registerForm.controls['email'].setErrors({ 'isExist': true });

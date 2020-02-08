@@ -47,7 +47,7 @@ export class GroupAddComponent implements OnInit {
     { label: 'After Expiry', value: 'afterExpiry' },
     { label: 'After Acceptance', value: 'afterAcceptance' }
 
-  ]
+  ];
   config: any = {
     height: '200px',
     uploadImagePath: '/api/upload',
@@ -245,7 +245,7 @@ export class GroupAddComponent implements OnInit {
         high_notreplied: this.addGroup.controls[`high_notreplied`].value,
         medium_unopened: this.addGroup.controls[`medium_unopened`].value,
         medium_notreplied: this.addGroup.controls[`medium_notreplied`].value,
-      }
+      };
       this.service.addGroup(obj).subscribe(res => {
         if (res['data']['status'] === 1) {
           this.toastr.success(res['message'], 'Succsess!', { timeOut: 3000 });
@@ -264,7 +264,7 @@ export class GroupAddComponent implements OnInit {
       this.show_spinner = false;
     }
   }
-  //remove zero
+  // remove zero
   removeZeroCommunication(index) {
     if (this.communicationForm.controls['communicationFieldItems'].value[index].day >= 0) {
       this.communicationForm.controls['communicationFieldItems'][`controls`][index].controls['day'].setValue(parseFloat(this.communicationForm.value[`communicationFieldItems`][index].day));
