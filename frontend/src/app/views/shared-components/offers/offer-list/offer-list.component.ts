@@ -139,7 +139,6 @@ export class OfferListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.profileData = resp;
         this.toastr.success('Your profile is approved by admin');
       }).catch(err => {
-        console.log('err ==> ', err.message);
       });
     });
 

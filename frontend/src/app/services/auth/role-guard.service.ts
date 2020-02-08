@@ -26,26 +26,40 @@ export class RoleGuardService implements CanActivate {
     this.isStaging = environment.staging;
     this.service.getunSavedData.subscribe(res => {
       this.fromPopup = true;
-      // console.log('res role guard=>', res);
-      console.log('this.redirect=>', this.redirect);
 
       if (res) {
+        console.log('in response=======>', res);
+
         if (this.redirect) {
           this.router.navigate([res.newurl]);
         }
+
         if (!this.redirect) {
           this.confirmationService.confirm({
             message: 'Are you sure you want to leave this page?',
             accept: () => {
-              this.router.navigate([res.newurl]);
-              this.redirect = true;
+
               this.removeData();
+              this.redirect = true;
+              // if ((res.url === '/employer/change-password' || res.newurl === '/employer/change-password') ||
+              //   (res.url === '/employer/profile' || res.newurl === '/employer/profile') ||
+              //   (res.url === '/sub-employer/change-password' || res.newurl === '/sub-employer/change-password')) {
+
+              //   this.router.navigate([res.newurl]);
+              // } else {
+
+              this.router.navigate([res.newurl]);
+              // }
+              // this.router.navigate([res.newurl]);
             }, reject: () => {
-              this.router.navigate([res.url]);
               this.redirect = false;
+              this.router.navigate([res.url]);
             }
           });
         }
+
+      } else if (!res) {
+        console.log('out of response=======>');
 
       }
       this.redirect = false;
@@ -53,6 +67,7 @@ export class RoleGuardService implements CanActivate {
   }
 
   removeData() {
+
     this.service.setuserData('');
   }
   canActivate(route: ActivatedRouteSnapshot): boolean {

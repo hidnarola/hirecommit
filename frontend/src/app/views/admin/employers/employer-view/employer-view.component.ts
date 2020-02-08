@@ -106,7 +106,6 @@ export class EmployerViewComponent implements OnInit {
       this.username = this.employer_detail.username;
       // this.name = this.username.split(' ');
       // console.log(this.name);
-      console.log('employer_detail', this.employer_detail.user_id);
 
       // console.log('this.employer', this.employer_detail);
 
@@ -139,7 +138,7 @@ export class EmployerViewComponent implements OnInit {
     this.submitted = true;
     this.show_spinner = true;
     if (valid) {
-     
+
       this.obj = {
         'user_id': id,
         'username': this.username,
@@ -149,7 +148,7 @@ export class EmployerViewComponent implements OnInit {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to update Employer Profile?',
         accept: () => {
-          
+
           this.service.update_employer(this.obj).subscribe(res => {
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.show_spinner = false;
@@ -185,19 +184,19 @@ export class EmployerViewComponent implements OnInit {
       'id': id
     };
     this.confirmationService.confirm({
-    
+
       message: 'Are you sure that you want to Approve this Employer?',
       accept: () => {
-      
+
         this.service.aprroved_employer(obj).subscribe(res => {
           this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
-          
+
           this.router.navigate([this.cancel_link1]);
         }, (err) => {
-            this.show_spinner = false;
+          this.show_spinner = false;
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
-      }, reject: () =>{
+      }, reject: () => {
         this.show_spinner = false;
         // document.getElementById('approve').removeAttribute('disabled');
       }
@@ -219,6 +218,7 @@ export class EmployerViewComponent implements OnInit {
       this.router.navigate(['/admin/employers/view']);
     }
   }
+
 
 
 }

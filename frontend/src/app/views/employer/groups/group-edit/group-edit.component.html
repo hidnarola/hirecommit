@@ -37,7 +37,8 @@
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Enter group name"
                                     autocomplete="name" formControlName="name" [(ngModel)]="groupData.name" id="name">
-                                <div class="cust_err_msg" *ngIf="!groupForm.controls['name'].valid && isFormSubmitted">
+                                <div class="cust_err_msg" *ngIf="!groupForm.controls['name'].valid && isFormSubmitted"
+                                    (keyup)="isTouched($event)">
                                     <span
                                         *ngIf="groupForm.controls['name'].errors['required'] ||  groupForm.controls['name'].errors['whitespace']"
                                         class="text-danger">
@@ -58,7 +59,7 @@
                             <div class="input-group col-md-2">
                                 <input type="number" min="0" class="form-control" autocomplete="high_unopened"
                                     formControlName="high_unopened" [(ngModel)]="groupData.high_unopened"
-                                    id="high_unopened" (blur)="removeZero_high_unopened()">
+                                    id="high_unopened" (blur)="removeZero_high_unopened()" (keyup)="isTouched($event)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -83,7 +84,8 @@
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="high_notreplied"
                                     formControlName="high_notreplied" [(ngModel)]="groupData.high_notreplied"
-                                    id="high_notreplied" (blur)="removeZero_high_notreplied()">
+                                    id="high_notreplied" (blur)="removeZero_high_notreplied()"
+                                    (keyup)="isTouched($event)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -109,7 +111,8 @@
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="medium_unopened"
                                     formControlName="medium_unopened" [(ngModel)]="groupData.medium_unopened"
-                                    id="medium_unopened" (blur)="removeZero_medium_unopened()">
+                                    id="medium_unopened" (blur)="removeZero_medium_unopened()"
+                                    (keyup)="isTouched($event)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -134,7 +137,8 @@
                             <div class="input-group col-md-2">
                                 <input type="number" class="form-control" autocomplete="medium_notreplied"
                                     formControlName="medium_notreplied" [(ngModel)]="groupData.medium_notreplied"
-                                    id="medium_notreplied" (blur)="removeZero_medium_notreplied()">
+                                    id="medium_notreplied" (blur)="removeZero_medium_notreplied()"
+                                    (keyup)="isTouched($event)">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Days</span>
                                 </div>
@@ -243,11 +247,12 @@
                                                         <input type="text" class="form-control" placeholder="Enter name"
                                                             formControlName="communicationname" id="communicationname"
                                                             [(ngModel)]="customfield.communicationname"
-                                                            (blur)="removeZeroCommunication(index)">
+                                                            (blur)="removeZeroCommunication(index)"
+                                                            (keyup)="isTouched($event)">
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
                                                             class="cust_err_msg">
                                                             <div class="text-danger"
-                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] 
+                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required']
                                                             || groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']">
                                                                 This field is required.
                                                             </div>
@@ -271,7 +276,8 @@
                                                         <p-dropdown [options]="Priority_Options"
                                                             [style]="{'width':'100%'}" formControlName="priority"
                                                             placeholder="Select Priority" id="priority" id="priority"
-                                                            [(ngModel)]="customfield.priority">
+                                                            [(ngModel)]="customfield.priority"
+                                                            (onChange)="isTouched($event)">
                                                         </p-dropdown>
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['priority'].errors"
                                                             class="cust_err_msg">
@@ -301,7 +307,8 @@
                                                         <p-dropdown [options]="Trigger_Option"
                                                             [style]="{'width':'100%'}" formControlName="trigger"
                                                             placeholder="Select Trigger" id="trigger" id="trigger"
-                                                            [(ngModel)]="customfield.trigger">
+                                                            [(ngModel)]="customfield.trigger"
+                                                            (onChange)="isTouched($event)">
                                                         </p-dropdown>
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['trigger'].errors"
                                                             class="cust_err_msg">
@@ -318,7 +325,8 @@
                                                         <input type="number" id="day" name="day" class="form-control"
                                                             placeholder="Enter Days" formControlName="day"
                                                             [(ngModel)]="customfield.day"
-                                                            (blur)="removeZeroCommunication(i)">
+                                                            (blur)="removeZeroCommunication(i)"
+                                                            (keyup)="isTouched($event)">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Day(s)</span>
                                                         </div>
@@ -344,7 +352,8 @@
                                                     <div class="input-group col-md-7">
                                                         <input type="text" id="subject" name="subject"
                                                             class="form-control" placeholder="Enter subject"
-                                                            formControlName="subject" [(ngModel)]="customfield.subject">
+                                                            formControlName="subject" [(ngModel)]="customfield.subject"
+                                                            (keyup)="isTouched($event)">
 
 
                                                     </div>
@@ -368,7 +377,8 @@
                                                             <div [ngxSummernote]="config" #editor
                                                                 [(summernoteModel)]="customfield.message" id="editor"
                                                                 formControlName="message"
-                                                                [(ngModel)]="customfield.message">
+                                                                [(ngModel)]="customfield.message"
+                                                                (keyup)="isTouched($event)">
                                                             </div>
                                                         </div>
                                                         <!-- [(ngModel)]="customfield.communicationname"> -->
@@ -422,7 +432,7 @@
                             <div class="form-group row" formGroupName="{{i}}" *ngFor="let customfield of communicationData; let i=index">
                                 <div class="col-md-12 mt-3">
                                     <div class="card communication-fills">
-                        
+
                                         <div class="card-header h5">Record - {{i+1}}
                                             <span class="input-group-text pull-right" *ngIf="i < 1" (click)="add_new_communication(i)"><i
                                                     class="icon-plus"></i></span>
@@ -442,7 +452,7 @@
                                                         <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors"
                                                             class="cust_err_msg">
                                                             <div class="text-danger"
-                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required'] 
+                                                                *ngIf="groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['required']
                                                                                     || groupForm.controls['communicationFieldItems'].controls[i].controls['communicationname'].errors['whitespace']">
                                                                 This field is required.
                                                             </div>
@@ -520,7 +530,7 @@
                                                     <ckeditor [editor]="Editor" formControlName="message" [(ngModel)]="customfield.message"
                                                         (ready)="onReady($event)">
                                                     </ckeditor>
-                        
+
                                                     <div *ngIf="isFormSubmitted && groupForm.controls['communicationFieldItems'].controls[i].controls['message'].errors"
                                                         class="cust_err_msg">
                                                         <div class="text-danger"
@@ -528,7 +538,7 @@
                                                             This field is required.
                                                         </div>
                                                     </div>
-                        
+
                                                 </div>
                                             </div>
                                         </div>
@@ -546,12 +556,9 @@
                         </p>
                         <button type="submit" class="btn btn-md btn-primary" [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button *ngIf="userDetail.role === 'employer'" type="reset" class="btn btn-md btn-danger"
-                            [routerLink]="cancel_link">
+                        <button type="button" class="btn btn-md btn-danger" (click)="cancel()">
                             Cancel</button>
-                        <button *ngIf="userDetail.role === 'sub-employer'" type="reset" class="btn btn-md btn-danger"
-                            [routerLink]="['/sub_employer/groups/list']">
-                            Cancel</button>
+
                     </div>
                 </form>
                 <!-- group form -->

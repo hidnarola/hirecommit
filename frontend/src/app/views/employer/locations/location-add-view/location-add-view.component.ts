@@ -14,12 +14,15 @@ import { ConfirmationService } from 'primeng/api';
 })
 export class LocationAddViewComponent implements OnInit {
   decyptCountry: any;
+  istouchedArray = [];
+
   cnt: any;
   Country: any = [];
   addLocation: FormGroup;
   submitted = false;
   location: any;
   locations: any;
+  isSubmit = false;
   id: any;
   location_popup: any;
   detail: any = [];
@@ -42,30 +45,58 @@ export class LocationAddViewComponent implements OnInit {
   ) {
     this.currentUrl = this.router.url;
     this.userDetail = this.commonService.getLoggedUserDetail();
+    this.forminit();
+    if (this.route.snapshot.data.title !== 'Add') {
+      this.route.params.subscribe((params: Params) => {
+        this.id = params['id'];
+        this.getDetail(this.id);
+        this.spinner.hide();
+      });
+      if (this.route.snapshot.data.title === 'Add') {
+        this.spinner.hide();
+      }
+      if (this.route.snapshot.data.title === 'Edit') {
+        this.is_Edit = true;
+
+      } else {
+        this.is_View = true;
+
+      }
+    } else {
+      this.spinner.hide();
+    }
+  }
+
+  isTouched(value) {
+    if (value) {
+      this.istouchedArray.push(value);
+    }
   }
 
   ngOnInit() {
     this.spinner.show();
     this.commonService.getuserdata.subscribe(res => {
-      this.detail.city = res.city;
-    });
-    this.addLocation = new FormGroup({
-      // country: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required, this.noWhitespaceValidator])
-    });
-    if (this.route.snapshot.data.title !== 'Add') {
-      this.route.params.subscribe((params: Params) => {
-        this.id = params['id'];
+      // const { city } = res;
+      this.forminit();
+      this.getDetail(this.id).then((resp: any) => {
+
+        if (res.city) {
+          this.spinner.hide();
+          if (this.is_Edit) {
+            this.detail = { ...resp, ...res };
+          } else {
+            this.detail = { ...res };
+          }
+        } else if (resp) {
+          this.spinner.hide();
+          this.detail = { ...resp };
+        } else if (!res.city && !resp) {
+          this.spinner.hide();
+          this.detail = '';
+        }
       });
-      this.getDetail(this.id);
-      if (this.route.snapshot.data.title === 'Edit') {
-        this.is_Edit = true;
-      } else {
-        this.is_View = true;
-      }
-    } else {
-      this.spinner.hide();
-    }
+
+    });
 
     // country
     // this.commonService.getprofileDetail.subscribe(async res => {
@@ -89,6 +120,12 @@ export class LocationAddViewComponent implements OnInit {
     // });
   }
 
+  forminit = () => {
+    this.addLocation = new FormGroup({
+      city: new FormControl('', [Validators.required, this.noWhitespaceValidator])
+    });
+  }
+
   // Remove white spaces
   noWhitespaceValidator(control: FormControl) {
     if (typeof (control.value || '') === 'string' || (control.value || '') instanceof String) {
@@ -100,17 +137,19 @@ export class LocationAddViewComponent implements OnInit {
 
 
   // issue
-  getDetail(id: string) {
+  async getDetail(id: string) {
     if (this.id) {
       this.panelTitle = 'Edit Location';
-
-      this.service.get_location(id).subscribe(res => {
-        this.detail = res['data']['data'];
-        this.spinner.hide();
-        // this.cnt = res['data']['data'].country;
-      }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-      });
+      return new Promise((pass, fail) => {
+        this.service.get_location(id).subscribe(res => {
+          this.detail = res['data']['data'];
+          this.spinner.hide();
+          pass(res['data']['data']);
+        }, (err) => {
+          fail(err);
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
+      })
     } else {
       this.detail = {
         _id: null,
@@ -126,6 +165,7 @@ export class LocationAddViewComponent implements OnInit {
   get f() { return this.addLocation.controls; }
 
   onSubmit(flag: boolean, id) {
+    this.isSubmit = true;
     this.submitted = true;
     this.show_spinner = true;
     if (this.id && flag) {
@@ -141,6 +181,7 @@ export class LocationAddViewComponent implements OnInit {
 
           this.service.edit_location(res_data).subscribe(res => {
             if (res['data']['status'] === 1) {
+              this.commonService.setuserData('');
               this.submitted = false;
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
               this.addLocation.reset();
@@ -165,6 +206,7 @@ export class LocationAddViewComponent implements OnInit {
         this.service.add(this.addLocation.value).subscribe(res => {
           this.location = res;
           if (res['data']['status'] === 1) {
+            this.commonService.setuserData('');
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             this.addLocation.reset();
@@ -184,21 +226,42 @@ export class LocationAddViewComponent implements OnInit {
       }
     }
   }
+
+  Cancel() {
+    this.isSubmit = true;
+    this.commonService.setuserData('');
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate([this.cancel_link]);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['/sub_employer/locations/list']);
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       if (!(this.is_View)) {
-        this.location_popup = this.addLocation.value;
-        // Object.keys(this.addLocation.controls).forEach((v, key) => {
-        //   // if (this.addLocation.controls[v].value) {
+        if (!this.isSubmit) {
+          this.detail = this.addLocation.value;
+          if (this.is_Edit) {
+            if (this.istouchedArray.length > 0) {
+              if (this.detail.city !== '' && this.detail.city !== undefined) {
+                this.commonService.setuserData(this.detail);
+                this.router.navigate([this.currentUrl]);
+                this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+              }
+            } else if (this.istouchedArray.length == 0) {
+              this.commonService.setuserData('');
+            }
+          } else {
+            if (this.detail.city !== '' && this.detail.city !== undefined) {
+              this.commonService.setuserData(this.detail);
+              this.router.navigate([this.currentUrl]);
+              this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+            }
+          }
 
-
-        //   // }
-        // });
-        if (this.location_popup.city) {
-          this.commonService.setuserData(this.detail);
-          this.router.navigate([this.currentUrl]);
-          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
         }
+
       }
 
     }

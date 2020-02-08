@@ -260,15 +260,7 @@
                                                     <label class="col-md-5 col-form-label"
                                                         for="trigger">Priority</label>
                                                     <div class="col-md-7">
-                                                        <!-- <select id="priority" name="select1" class="form-control"
-                                                            formControlName="priority"
-                                                            [(ngModel)]="customfield.priority">
-                                                            <option value="" selected="selected">Please select priority
-                                                            </option>
-                                                            <option value="High">High</option>
-                                                            <option value="Medium">Medium</option>
-                                                            <option value="Low">Low</option>
-                                                        </select> -->
+
                                                         <p-dropdown [options]="Priority_Options"
                                                             [style]="{'width':'100%'}" formControlName="priority"
                                                             placeholder="Select Priority" id="priority" id="priority"
@@ -288,17 +280,7 @@
                                                 <div class="col-md-6 row no-gutters">
                                                     <label class="col-md-5 col-form-label" for="trigger">Trigger</label>
                                                     <div class="col-md-7 no-gutters">
-                                                        <!-- <select id="trigger" name="select1" class="form-control"
-                                                            formControlName="trigger" [(ngModel)]="customfield.trigger">
-                                                            <option value="" selected="selected">Please select trigger
-                                                            </option>
-                                                            <option value="beforeJoining">Before Joining</option>
-                                                            <option value="afterJoining">After Joining</option>
-                                                            <option value="afterOffer">After Offer</option>
-                                                            <option value="beforeExpiry">Before Expiry</option>
-                                                            <option value="afterExpiry">After Expiry</option>
-                                                            <option value="afterAcceptance">After Acceptance</option>
-                                                        </select> -->
+
                                                         <p-dropdown [options]="Trigger_Option"
                                                             [style]="{'width':'100%'}" formControlName="trigger"
                                                             placeholder="Select Trigger" id="trigger" id="trigger"
@@ -448,12 +430,11 @@
                         </p>
                         <button type="submit" class="btn btn-md btn-primary" [disabled]="show_spinner">
                             Submit <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
-                        <button *ngIf="userDetail.role === 'employer'" type="reset" class="btn btn-md btn-danger"
-                            [routerLink]="cancel_link">
+                        <button type="button" class="btn btn-md btn-danger" (click)="Cancel()">
                             Cancel</button>
-                        <button *ngIf="userDetail.role === 'sub-employer'" type="reset" class="btn btn-md btn-danger"
+                        <!-- <button *ngIf="userDetail.role === 'sub-employer'" type="reset" class="btn btn-md btn-danger"
                             [routerLink]="['/sub_employer/groups/list']">
-                            Cancel</button>
+                            Cancel</button> -->
                     </div>
                 </form>
                 <!-- communication form -->

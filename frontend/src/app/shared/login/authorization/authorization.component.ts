@@ -20,7 +20,6 @@ export class AuthorizationComponent implements OnInit {
     this.candidateURL = environment.candidateURL;
     this.mainURL = environment.mainURL;
     this.activatedRoute.queryParams.subscribe((res) => {
-      console.log('res => ', res);
       localStorage.setItem('token', res['token']);
       localStorage.setItem('user', res['role']);
       if (environment.env === 'staging' || environment.env === 'prod') {

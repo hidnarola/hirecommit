@@ -27,7 +27,6 @@ export class AuthGuardService implements CanActivate {
       //   this.router.navigate(['/login']);
       //   return false;
       // }
-      console.log('true=======>');
 
       return true;
     } else if (!token || (tokenPayload.role !== expectedRole)) {
@@ -35,8 +34,6 @@ export class AuthGuardService implements CanActivate {
       if (expectedRole) {
 
       }
-      console.log('false=======>');
-
       this.router.navigate(['/login']);
       return false;
     }

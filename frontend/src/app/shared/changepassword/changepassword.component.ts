@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
@@ -10,16 +10,21 @@ import { ConfirmationService } from 'primeng/api';
   templateUrl: './changepassword.component.html',
   styleUrls: ['./changepassword.component.scss']
 })
-export class ChangepasswordComponent implements OnInit {
+export class ChangepasswordComponent implements OnInit, OnDestroy {
   form: FormGroup;
   submitform: FormGroup;
   public isFormSubmitted;
-  public formData: any;
+  istouchedArray = [];
+  public formData: any = {};
   token: any;
+  data: any;
   userDetail: any;
   show_spinner = false;
   _profile_data: any;
+  detail: any;
   isDisabled = false;
+  currentUrl = '';
+  isSubmit = false;
   constructor(
     private router: Router,
     public fb: FormBuilder,
@@ -29,6 +34,22 @@ export class ChangepasswordComponent implements OnInit {
     private confirmationService: ConfirmationService,
   ) {
     this.formData = {};
+    this.currentUrl = this.router.url;
+    this.forminit();
+    this.userDetail = this.commonService.getLoggedUserDetail();
+
+    this.commonService.profileData().then(res => {
+      this._profile_data = res[0];
+      if (this._profile_data.user_id.is_login_first === false && !(this.userDetail.role === 'candidate')) {
+        this.isDisabled = true;
+      } else {
+        this.isDisabled = false;
+      }
+    });
+
+  }
+
+  forminit = () => {
     this.form = this.fb.group({
       'oldpassword': new FormControl('',
         Validators.compose([
@@ -45,17 +66,6 @@ export class ChangepasswordComponent implements OnInit {
           Validators.pattern(/((?=.*\d)(?=.*[a-z]))/)])),
       'confirmnewpassword': new FormControl('', [Validators.required, this.noWhitespaceValidator])
     }, { validator: this.checkPasswords });
-    this.userDetail = this.commonService.getLoggedUserDetail();
-
-    this.commonService.profileData().then(res => {
-      this._profile_data = res[0];
-      if (this._profile_data.user_id.is_login_first === false && !(this.userDetail.role === 'candidate')) {
-        this.isDisabled = true;
-      } else {
-        this.isDisabled = false;
-      }
-    });
-
   }
 
   checkPassword() {
@@ -67,6 +77,8 @@ export class ChangepasswordComponent implements OnInit {
   }
 
   send() {
+    this.isSubmit = true;
+    this.commonService.setuserData('');
     if (this.userDetail.role === 'employer') {
       this.router.navigate(['/employer/offers/list']);
     } else if (this.userDetail.role === 'candidate') {
@@ -87,6 +99,15 @@ export class ChangepasswordComponent implements OnInit {
 
   ngOnInit() {
     this.token = localStorage.getItem('token');
+    this.commonService.getuserdata.subscribe(res => {
+
+      if (res !== '') {
+        this.formData = { ...res };
+      } else {
+        this.forminit();
+      }
+
+    });
   }
 
   // Remove white spaces
@@ -99,6 +120,7 @@ export class ChangepasswordComponent implements OnInit {
   }
 
   submit(valid) {
+    this.isSubmit = true;
     this.isFormSubmitted = true;
     if (valid) {
       this.show_spinner = true;
@@ -112,6 +134,7 @@ export class ChangepasswordComponent implements OnInit {
         accept: () => {
           this.service.change_password(this.submitform.value).subscribe(res => {
             this.isFormSubmitted = false;
+            this.commonService.setuserData('');
             if (res['status'] === 1) {
               this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
               if (this.userDetail.role === 'employer') {
@@ -148,4 +171,31 @@ export class ChangepasswordComponent implements OnInit {
     }
   }
 
+  isTouched(value) {
+    if (value) {
+      this.istouchedArray.push(value);
+    }
+  }
+  ngOnDestroy(): void {
+    if (!this.isSubmit) {
+      this.detail = this.form.value;
+      // if () {
+      if ((this.detail.oldpassword !== undefined && this.detail.oldpassword !== '') ||
+        (this.detail.newpassword !== undefined && this.detail.newpassword !== '') ||
+        (this.detail.confirmnewpassword !== undefined && this.detail.confirmnewpassword !== '')) {
+        this.commonService.setuserData(this.detail);
+        this.router.navigate([this.currentUrl]);
+        this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+      }
+      // else if (this.istouchedArray.length == 0) {
+      //   this.commonService.setuserData('');
+      // }
+      // }
+    }
+  }
 }
+
+
+
+
+

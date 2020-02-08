@@ -63,6 +63,7 @@
                                     <div class="form-row mb-3">
                                         <div class="col-md-6">
                                             <label>Business Type</label>
+
                                             <input type="text" [(ngModel)]="BusinessType" class="form-control"
                                                 disabled="true" formControlName="bussinesstype" name="bussinesstype">
                                         </div>
@@ -85,7 +86,7 @@
                                             <label>Contact Number</label>
                                             <div class="number-countrycode">
                                                 <input type="text" class="form-control countrycode-input" disabled=""
-                                                    value="{{CountryCode}}" formControlName="countrycode"
+                                                    [(ngModel)]="CountryCode" formControlName="countrycode"
                                                     name="countrycode">
                                                 <div class="countryno-input">
                                                     <input type="number" class="form-control"
@@ -291,9 +292,12 @@
                                     </div>
                                     <div class="form-row mb-3">
                                         <div class="col-md-12 text-right">
-                                            <button type="submit" class="btn btn-primary"
+                                            <!-- <button type="submit" class="btn btn-primary"
                                                 [disabled]="show_spinner">Submit <i *ngIf="show_spinner"
-                                                    class="fa fa-spinner fa-spin"></i></button>
+                                                    class="fa fa-spinner fa-spin"></i></button> -->
+                                            <button type="submit" class="btn btn-primary"
+                                                [disabled]="show_spinner">Submit
+                                                <i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
                                             <button type="button" class="btn btn-danger"
                                                 (click)='cancel1()'>Close</button>
                                         </div>
@@ -308,9 +312,9 @@
     </div>
     <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
     <!-- //sub-employer -->
-    <!-- 
+    <!--
     <div *ngIf="userDetail.role === 'sub-employer'" class="row profiledata-info">
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit(profileForm.valid)"> 
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit(profileForm.valid)">
         <div class="col-md-3 well">
             <div class="row">
                 <div class="card text-black col-sm-12">
@@ -337,13 +341,13 @@
                                                  <p-dropdown [options]="countryList" placeholder="Select Country"
                                                         formControlName="country" [(ngModel)]="profileForm.country"
                                                         id="country" (onChange)="getCode($event)" [required]>
-                                                    </p-dropdown> 
+                                                    </p-dropdown>
                                               <div class="error"
                                                         *ngIf="!profileForm.controls['country'].valid && isFormSubmitted">
                                                         <span
                                                             *ngIf="profileForm.controls['country'].errors['required']">This
                                                             field is required.</span>
-                                                    </div> 
+                                                    </div>
                                             </td>
                                         </tr>
 

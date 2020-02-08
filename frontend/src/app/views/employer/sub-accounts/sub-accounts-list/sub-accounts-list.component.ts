@@ -95,6 +95,7 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
                 }
 
               });
+
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
             }
           }, err => {
@@ -205,8 +206,6 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   delete(user_id) {
-    console.log('user_id=>', user_id);
-    
     this.confirmationService.confirm({
       message: 'Are you sure that you want to Delete this record?',
       accept: () => {
@@ -228,20 +227,20 @@ export class SubAccountsListComponent implements OnInit, AfterViewInit, OnDestro
         'id': id,
         'admin_rights': 'no'
       };
-      if(this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer'){
+      if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
         this.service.admin_rigth(this.obj).subscribe(res => {
           this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
         }, (err) => {
           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
         });
-      } else if(this.userDetail.role === 'admin') {
-         this.employer_admin_Service.admin_rights_SuperAdmin(this.obj).subscribe (res => {
-           this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
-         }, (err) => {
-           this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-         }); 
+      } else if (this.userDetail.role === 'admin') {
+        this.employer_admin_Service.admin_rights_SuperAdmin(this.obj).subscribe(res => {
+          this.toastr.success('Admin Rights Revoke.', 'Success!', { timeOut: 3000 });
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+        });
       }
-      
+
     } else if (e.checked === true) {
       this.obj = {
         'id': id,

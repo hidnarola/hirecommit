@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
 import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
-// import { ProfileComponent } from '../../shared/profile/profile.component';
+import { RoleGuardService } from '../../services/auth/role-guard.service';
 const routes: Routes = [
   {
     path: '',
@@ -22,9 +22,19 @@ const routes: Routes = [
       },
       {
         path: 'candidates',
+        canActivate: [RoleGuardService],
+        data: {
+          expectedRole: 'admin'
+        },
         loadChildren: () => import('../shared-components/candidates/candidate.module').then(m => m.CandidateModule)
       },
-      { path: 'change-password', component: ChangepasswordComponent },
+      {
+        path: 'change-password',
+        canActivate: [RoleGuardService],
+        data: {
+          expectedRole: 'admin'
+        }, component: ChangepasswordComponent
+      },
       // { path: 'profile', component: ProfileComponent },
     ]
   }

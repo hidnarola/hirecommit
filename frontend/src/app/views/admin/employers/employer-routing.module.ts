@@ -7,6 +7,7 @@ import { ReportHistoryComponent } from './report/report-history/report-history.c
 import { OfferAddViewComponent } from '../../shared-components/offers/offer-add-view/offer-add-view.component';
 import { SubAccountsListComponent } from '../../employer/sub-accounts/sub-accounts-list/sub-accounts-list.component';
 import { SubAccountAddViewComponent } from '../../employer/sub-accounts/sub-account-add-view/sub-account-add-view.component';
+import { RoleGuardService } from '../../../services/auth/role-guard.service'
 const routes: Routes = [
   {
     path: '',
@@ -21,65 +22,77 @@ const routes: Routes = [
       {
         path: 'approved_employer',
         component: EmployerListComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Approved Employer',
           type: 'approved'
-        },
+        }
       },
       {
         path: 'approved_employer/:id/sub_accounts/list',
         component: SubAccountsListComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Sub - Account List',
-          // type: 'approved'
-        },
+          type: 'approved'
+        }
+
       },
       {
         path: 'approved_employer/:eid/sub_accounts/view/:id',
         component: SubAccountAddViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Sub - Account View',
-          // type: 'approved'
-        },
+        }
       },
       {
         path: 'approved_employer/:eid/sub_accounts/edit/:id',
         component: SubAccountAddViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Sub - Account Edit',
-          // type: 'approved'
-        },
+        }
       },
 
       {
         path: 'approved_employer/report/:id/list',
         component: ReportComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Report',
-          // type: 'new'
         }
       },
       {
         path: 'approved_employer/report/:id/history/:id',
         component: ReportHistoryComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Offer History',
-          // type: 'new'
         }
       },
       {
         path: 'approved_employer/report/:report_id/view/:id',
         component: OfferAddViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Offer View',
-          // type: 'new'
         }
       },
 
       {
         path: 'approved_employer/add',
         component: EmployerViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Add Approved Employer',
           type: 'approved'
         }
@@ -87,7 +100,9 @@ const routes: Routes = [
       {
         path: 'approved_employer/view/:id',
         component: EmployerViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'View Approved Employer',
           type: 'approved'
         }
@@ -95,7 +110,9 @@ const routes: Routes = [
       {
         path: 'approved_employer/edit/:id',
         component: EmployerViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Edit Approved Employer',
           type: 'approved'
         }
@@ -103,15 +120,19 @@ const routes: Routes = [
       {
         path: 'new_employer',
         component: EmployerListComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'New Employer',
           type: 'new'
-        },
+        }
       },
       {
         path: 'new_employer/add',
         component: EmployerViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'Add New Employer',
           type: 'new'
         }
@@ -119,7 +140,9 @@ const routes: Routes = [
       {
         path: 'new_employer/view/:id',
         component: EmployerViewComponent,
+        canActivate: [RoleGuardService],
         data: {
+          expectedRole: 'admin',
           title: 'View New Employer',
           type: 'new'
         }

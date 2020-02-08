@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DefaultLayoutComponent } from '../../shared/containers';
 import { ProfileComponent } from '../../shared/profile/profile.component';
 import { ChangepasswordComponent } from '../../shared/changepassword/changepassword.component';
+import { RoleGuardService } from '../../services/auth/role-guard.service'
 const routes: Routes = [
   {
     path: '',
@@ -18,10 +19,27 @@ const routes: Routes = [
     children: [
       {
         path: 'offers',
+        canActivate: [RoleGuardService],
+        data: {
+          expectedRole: 'candidate',
+        },
         loadChildren: () => import('../shared-components/offers/offers.module').then(m => m.OffersModule)
       },
-      { path: 'profile', component: ProfileComponent },
-      { path: 'change-password', component: ChangepasswordComponent },
+      {
+        path: 'profile',
+        canActivate: [RoleGuardService],
+        data: {
+          expectedRole: 'candidate',
+        }, component: ProfileComponent
+      },
+      {
+        path: 'change-password',
+        canActivate: [RoleGuardService],
+        data: {
+          expectedRole: 'candidate',
+        },
+        component: ChangepasswordComponent
+      },
       {
         path: 'account_verification',
         loadChildren: () => import('../../shared/check-verification/check-verification.module').then(m => m.CheckVerificationModule)

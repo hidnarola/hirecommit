@@ -21,11 +21,13 @@ export class GroupEditComponent implements OnInit {
   @ViewChild('editor', { static: false }) summernote: ElementRef;
   public Editor = ClassicEditor;
   groupForm: FormGroup;
+  istouchedArray = [];
   communicationForm: FormGroup;
   isFormSubmitted = false;
   cancel_link = '/employer/groups/list';
   id: any;
   group: any;
+  isNavigate = false;
   groupData: any = [];
   communicationData: any = [];
   panelTitle = 'View Group';
@@ -84,16 +86,7 @@ export class GroupEditComponent implements OnInit {
     // show spinner
     this.spinner.show();
     // form controls
-    this.groupForm = this.fb.group({
-      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
-      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
-      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
-      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
-      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
-      // low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      // low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
-      communicationFieldItems: this.fb.array([])
-    });
+    this.forminit();
 
     // check for add or edit
     if (((this.route.snapshot.url[1] &&
@@ -107,6 +100,7 @@ export class GroupEditComponent implements OnInit {
       this.groupData = res['data']['data'][0];
       // hide spinner
       this.spinner.hide();
+
       if (res['communication']['data'] && res['communication']['data'].length > 0) {
         this.communicationData = res['communication']['data'][0]['communication'];
       }
@@ -137,7 +131,6 @@ export class GroupEditComponent implements OnInit {
         });
         this.communicationData = _array;
       } else {
-        console.log('no communicaiondata found => ');
         // if (this.Comm_Flag) {
 
         this.add_new_communication();
@@ -150,14 +143,89 @@ export class GroupEditComponent implements OnInit {
 
   }
 
+  forminit = () => {
+    this.groupForm = this.fb.group({
+      name: new FormControl('', [Validators.required, this.noWhitespaceValidator]),
+      high_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      high_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      medium_notreplied: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      medium_unopened: new FormControl('', [Validators.pattern(/^[0-9]\d*$/), Validators.required]),
+      // low_unopened: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      // low_notreplied: new FormControl('', [Validators.required, Validators.pattern(/^(3[01]|[12][0-9]|[1-9])$/)]),
+      communicationFieldItems: this.fb.array([])
+    });
+  }
+
   ngOnInit() {
     this.commonService.getuserdata.subscribe(res => {
-      this.groupData.name = res.name;
-      this.groupData.medium_notreplied = res.medium_notreplied;
-      this.groupData.medium_unopened = res.medium_unopened;
-      this.groupData.high_notreplied = res.high_notreplied;
-      this.groupData.high_unopened = res.high_unopened;
+      if (res) {
+        setTimeout(() => {
+          if ((res[`group`].name !== '' && res[`group`].name !== undefined) &&
+            (res[`group`].medium_notreplied !== '' && res[`group`].medium_notreplied !== undefined) &&
+            (res[`group`].medium_unopened !== '' && res[`group`].medium_notreplied !== undefined) &&
+            (res[`group`].high_notreplied !== '' && res[`group`].high_notreplied !== undefined) &&
+            (res[`group`].high_unopened !== '' && res[`group`].high_unopened !== undefined)) {
+            this.groupData.name = res[`group`].name;
+            this.groupData.medium_notreplied = res[`group`].medium_notreplied;
+            this.groupData.medium_unopened = res[`group`].medium_unopened;
+            this.groupData.high_notreplied = res[`group`].high_notreplied;
+            this.groupData.high_unopened = res[`group`].high_unopened;
+          }
+          if (res[`communication`]) {
+            if (res[`communication`].length > 0) {
+              this.communicationData = res[`communication`];
+              if (this.communicationData !== '' && this.communicationData) {
+                const _array = [];
+                this.communicationData.forEach((element, index) => {
+                  const new_communication = {
+                    'communicationname': element.communicationname,
+                    'trigger': element.trigger,
+                    'priority': element.priority,
+                    'day': element.day,
+                    'subject': element.subject,
+                    'message': element.message,
+                  };
+                  this.communicationFieldItems.setControl(index, this.fb.group({
+                    communicationname: ['', [Validators.required, this.noWhitespaceValidator]],
+                    trigger: ['', Validators.required],
+                    priority: ['', Validators.required],
+                    day: ['', [Validators.required, Validators.pattern(/^[0-9]\d*$/)]],
+                    subject: ['', [Validators.required, this.noWhitespaceValidator]],
+                    message: ['', [Validators.required, this.noWhitespaceValidator]]
+                  }));
+                  _array.push(new_communication);
+                });
+                this.communicationData = _array;
+              }
+            }
+          }
+          // else {
+          //   this.communicationData = '';
+          // }
+        }, 1000);
+      } else {
+        this.forminit();
+        // this.communicationData = '';
+        this.groupData = '';
+      }
+
+
     });
+  }
+
+  isTouched(value) {
+    if (value) {
+      this.istouchedArray.push(value);
+    }
+  }
+
+  cancel() {
+    this.commonService.setuserData('');
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate([this.cancel_link]);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['/sub_employer/groups/list']);
+    }
   }
 
   get f() { return this.groupForm.controls; }
@@ -189,7 +257,6 @@ export class GroupEditComponent implements OnInit {
   getCursor = (e) => {
     const selection = document.getSelection();
     this.cursorPos = selection.anchorOffset;
-    console.log('pos=>', e, this.cursorPos, this.summernote.nativeElement.selectionStart);
     // console.log('values=>', this.form.value);
     // console.log('this.form.controls[`AdHoc_message`].value=>',
     //   this.form.controls['AdHocCommunication'][`controls`][i][`controls`][`AdHoc_message`].value);
@@ -212,6 +279,7 @@ export class GroupEditComponent implements OnInit {
 
   // add new communication
   add_new_communication(data_index = null) {
+
     let index = 0;
     if (data_index == null) {
       if (this.communicationData && this.communicationData.length > 0) {
@@ -266,10 +334,7 @@ export class GroupEditComponent implements OnInit {
       }
     }
     this.communicationData = array;
-    if (this.communicationData.length === 0) {
-      console.log('Communication length=======>');
 
-    }
   }
 
   public onReady(editor) {
@@ -307,11 +372,11 @@ export class GroupEditComponent implements OnInit {
   }
 
   onSubmit(valid) {
+    this.isNavigate = true;
     this.isFormSubmitted = true;
     this.show_spinner = true;
     this.formData = new FormData();
     if (valid) {
-
       if (this.isEdit) {
         const communication_array = [];
         if (this.communicationData.length > 0) {
@@ -336,24 +401,21 @@ export class GroupEditComponent implements OnInit {
           high_notreplied: this.groupData['high_notreplied'],
           medium_unopened: this.groupData['medium_unopened'],
           medium_notreplied: this.groupData['medium_notreplied'],
-          // low_unopened: this.groupData['low_unopened'],
-          // low_notreplied: this.groupData['low_notreplied'],
           data: JSON.stringify(communication_array)
         };
-        console.log('obj=>', obj);
-
         for (const key in obj) {
           if (key) {
             const value = obj[key];
             this.formData.append(key, value);
           }
         }
-
         this.confirmationService.confirm({
           message: 'Are you sure that you want to Update this record?',
           accept: () => {
             this.service.edit_group(this.formData).subscribe(res => {
               if (res['data']['status'] === 1) {
+                this.commonService.setuserData('');
+
                 this.isFormSubmitted = false;
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 this.groupForm.reset();
@@ -389,15 +451,24 @@ export class GroupEditComponent implements OnInit {
 
   ngOnDestroy(): void {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
-
       this.group = this.groupForm.value;
-      Object.keys(this.groupForm.controls).forEach((v, key) => {
-        if (this.groupForm.controls[v].value) {
-          this.commonService.setuserData(this.groupForm.controls[v].value);
-          this.router.navigate([this.currentUrl]);
-          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+      if (this.istouchedArray.length > 0) {
+        if (this.group.name !== '') {
+          if (!this.isNavigate) {
+            const obj = {
+              group: this.group,
+              communication: this.communicationData,
+              ispopup: true
+            };
+            this.router.navigate([this.currentUrl]);
+            this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+            this.commonService.setuserData(obj);
+          }
+
         }
-      });
+      } else if (this.istouchedArray.length == 0) {
+        this.commonService.setuserData('');
+      }
     }
   }
 

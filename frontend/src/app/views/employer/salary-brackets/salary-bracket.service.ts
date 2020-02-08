@@ -11,9 +11,7 @@ export class SalaryBracketService {
     // private url = 'http://localhost:3000/employer';
     private url = env.environment.API_URL + 'employer';
 
-    constructor(private http: HttpClient, private route: Router) {
-        console.log(env.environment);
-    }
+    constructor(private http: HttpClient, private route: Router) {}
 
     view_salary_brcaket(params): Observable<any[]> {
         return this.http.post<any[]>(`${this.url}` + '/salary_bracket/get', { ...params });
@@ -33,7 +31,6 @@ export class SalaryBracketService {
     }
 
     edit_salary_bracket(data): Observable<any[]> {
-        console.log('service', data);
         return this.http.put<any[]>(`${this.url}` + '/salary_bracket', data);
     }
 

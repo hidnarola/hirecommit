@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { CustomFieldService } from '../custom-field.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,13 +12,14 @@ import { CommonService } from '../../../../services/common.service';
   templateUrl: './custom-field-add-view.component.html',
   styleUrls: ['./custom-field-add-view.component.scss']
 })
-export class CustomFieldAddViewComponent implements OnInit {
+export class CustomFieldAddViewComponent implements OnInit, OnDestroy {
 
   submitted = false;
   panelTitle = 'Add Custom Field';
   buttonTitle = 'Add';
   addCustomFeild: FormGroup;
   id: any;
+  istouchedArray = [];
   cf: any;
   data: any = {};
   isEdit = false;
@@ -47,13 +48,9 @@ export class CustomFieldAddViewComponent implements OnInit {
       this.route.params.subscribe((params: Params) => {
         this.id = params['id'];
       });
-      this.service.get_custom_field(this.id).subscribe(res => {
-        this.spinner.hide();
-        this.data = res['data'];
-      }, (err) => {
-        this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
-      });
 
+      // this.formInit();
+      // this.getCustomField();
       if (this.route.snapshot.data.title === 'Edit') {
         this.panelTitle = 'Edit Custom Field';
         this.isEdit = true;
@@ -65,11 +62,29 @@ export class CustomFieldAddViewComponent implements OnInit {
     } else {
       this.spinner.hide();
     }
+
+    this.commonService.getuserdata.subscribe(res => {
+      this.formInit();
+      this.getCustomField(this.id).then((resp: any) => {
+
+        if (res.key) {
+          if (this.isEdit) {
+            this.data = { ...resp, ...res };
+          } else {
+            this.data = { ...res };
+          }
+        } else if (resp) {
+          this.data = { ...resp };
+        } else if (!res.key && !resp) {
+          this.data = '';
+        }
+      });
+
+    });
+  }
+  formInit = () => {
     this.addCustomFeild = new FormGroup({
       key: new FormControl('', [Validators.required, this.noWhitespaceValidator])
-    });
-    this.commonService.getuserdata.subscribe(res => {
-      this.data.key = res.key;
     });
   }
 
@@ -79,6 +94,40 @@ export class CustomFieldAddViewComponent implements OnInit {
       const isWhitespace = (control.value || '').trim().length === 0;
       const isValid = !isWhitespace;
       return isValid ? null : { 'whitespace': true };
+    }
+  }
+
+  Cancel() {
+    this.submitted = true;
+    this.commonService.setuserData('');
+    if (this.userDetail.role === 'employer') {
+      this.router.navigate([this.cancel_link]);
+    } else if (this.userDetail.role === 'sub-employer') {
+      this.router.navigate(['/sub_employer/custom_fields/list']);
+    }
+  }
+
+  async getCustomField(id: string) {
+    if (this.id) {
+      id = this.id;
+      this.panelTitle = 'Edit Custom Field';
+      return new Promise((pass, fail) => {
+        this.service.get_custom_field(id).subscribe(res => {
+          this.spinner.hide();
+          this.data = res['data'];
+          pass(res[`data`]);
+        }, (err) => {
+          this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
+          fail(err);
+        });
+      });
+    } else {
+      this.data = {
+        _id: null,
+        key: null,
+        // country: null,
+      };
+      this.panelTitle = 'Add Custom Field';
     }
   }
 
@@ -99,7 +148,7 @@ export class CustomFieldAddViewComponent implements OnInit {
 
             this.service.edit_custom_field(obj).subscribe(res => {
               if (res['data'].status === 1) {
-
+                this.commonService.setuserData('');
                 this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
                 if (this.userDetail.role === 'employer') {
                   this.router.navigate([this.cancel_link]);
@@ -126,6 +175,7 @@ export class CustomFieldAddViewComponent implements OnInit {
         this.show_spinner = true;
         this.service.add_custom_field(this.addCustomFeild.value).subscribe(res => {
           if (res['data']['status'] === 1) {
+            this.commonService.setuserData('');
             this.submitted = false;
             this.toastr.success(res['message'], 'Success!', { timeOut: 3000 });
             if (this.userDetail.role === 'employer') {
@@ -144,22 +194,35 @@ export class CustomFieldAddViewComponent implements OnInit {
       }
     }
   }
+  isTouched(value) {
+    if (value) {
+      this.istouchedArray.push(value);
+    }
+  }
   ngOnDestroy(): void {
     if (this.userDetail.role === 'employer' || this.userDetail.role === 'sub-employer') {
       if (!this.isView) {
-        this.cf = this.addCustomFeild.value;
-        // Object.keys(this.addCustomFeild.controls).forEach((v, key) => {
-        //   if (this.addCustomFeild.controls[v].value) {
+        this.data = this.addCustomFeild.value;
+        if (this.isEdit) {
+          if (this.istouchedArray.length > 0) {
+            if (this.data.key) {
+              this.commonService.setuserData(this.data);
+              this.router.navigate([this.currentUrl]);
+              this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
 
-        //   }
-        // });
+            }
+          } else if (this.istouchedArray.length == 0) {
+            this.commonService.setuserData('');
+          }
+        } else {
+          if (this.data.key) {
+            this.commonService.setuserData(this.data);
+            this.router.navigate([this.currentUrl]);
+            this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
 
-        if (this.cf.key) {
-          this.commonService.setuserData(this.data);
-          this.router.navigate([this.currentUrl]);
-          this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
-
+          }
         }
+
       }
 
     }
