@@ -140,9 +140,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
   changepassword() {
     // console.log(this.userDetail.role);
-    if (this.userDetail.role === 'admin') {
-      this.router.navigate(['admin/change-password']);
-    } else if (this.userDetail.role === 'employer') {
+    // if (this.userDetail.role === 'admin') {
+    //   this.router.navigate(['admin/change-password']);
+    // } else
+    if (this.userDetail.role === 'employer') {
       this.router.navigate(['employer/change-password']);
     } else if (this.userDetail.role === 'candidate') {
       this.router.navigate(['candidate/change-password']);

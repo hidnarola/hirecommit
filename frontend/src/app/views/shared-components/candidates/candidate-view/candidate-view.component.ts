@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationService } from 'primeng/api';
 import { environment } from '../../../../../environments/environment';
-
+import { LightboxModule } from 'primeng/lightbox';
 @Component({
   selector: 'app-candidate-view',
   templateUrl: './candidate-view.component.html',
@@ -27,7 +27,8 @@ export class CandidateViewComponent implements OnInit {
   buttonValue: any;
   buttonValue1: any;
   documenttype: any;
-  documentImage=false;
+  documentImage = false;
+  docImages: any[];
   show_spinner = false;
   constructor(
     private router: Router,
@@ -48,6 +49,8 @@ export class CandidateViewComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
     });
+    this.docImages = [];
+
   }
 
   ngOnInit() {
@@ -58,6 +61,11 @@ export class CandidateViewComponent implements OnInit {
       this.country = this.candidate_detail['country'].country;
       if (this.candidate_detail['documentimage'].length > 0) {
         this.documentImage = true;
+
+        this.docImages.push({
+          source: `${this.image + this.candidate_detail['documentimage']}`, thumbnail: `${this.image + this.candidate_detail['documentimage']}`, title: 'Document'
+        });
+
 
       } else if (this.candidate_detail['documentimage'].length === 0) {
         this.documentImage = false;
@@ -73,6 +81,10 @@ export class CandidateViewComponent implements OnInit {
       console.log(err);
       this.toastr.error(err['error']['message'], 'Error!', { timeOut: 3000 });
     });
+  }
+  show() {
+    console.log('in on click=======>');
+
   }
 
   approve(id) {

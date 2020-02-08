@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   DocumentType: any;
   DocumentNumber: any;
   DrivingLicenseState: any;
-  DocumentImage: any;
+  DocumentImage: any[];
   id: any;
   emp_data: any;
   candidate_data: any;
@@ -50,6 +50,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   _profile_data: any;
   isProd: Boolean = false;
   isStaging: Boolean = false;
+  isDoc: Boolean = false;
   currentUrl = '';
   constructor(
     private service: CommonService,
@@ -75,7 +76,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
     this.employerForm();
     this.candidateForm();
-
+    this.DocumentImage = [];
   }
 
   employerForm = () => {
@@ -200,7 +201,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.DocumentType = resp['documenttype'];
         this.DocumentNumber = resp['documentNumber'] ? resp['documentNumber'] : '-';
         this.DrivingLicenseState = resp['drivingLicenseState'];
-        this.DocumentImage = resp['documentimage'][0];
+        console.log('resp[documentimage][0]=>', typeof resp['documentimage'][0]);
+
+        if (resp['documentimage'][0] === undefined || resp['documentimage'][0] === 'undefined') {
+          console.log('in false=======>');
+
+          this.isDoc = false;
+        } else if (resp['documentimage'][0] != undefined || resp['documentimage'][0] !== 'undefined') {
+          console.log('in true=======>');
+          this.isDoc = true;
+          this.DocumentImage.push({
+            source: `${this.image + resp['documentimage'][0]}`, thumbnail: `${this.image + resp['documentimage'][0]}`, title: 'Document'
+          });
+        }
+
+        // this.DocumentImage = ;
         this.Candidate_ContactNo = resp['contactno'];
         this.Candidate_CountryCode = resp['countrycode'];
         //     }
