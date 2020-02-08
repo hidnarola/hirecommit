@@ -39,7 +39,6 @@ export class EmployerLandingComponent implements OnInit {
     })
     this.service.employer_landing().subscribe(res => {
       this.spinner.hide();
-      console.log('res=>', res);
 
       this.header_bluepart = res[`data`].header_bluepart;
       this.structured_automated = res[`data`].structured_automated;
@@ -55,7 +54,6 @@ export class EmployerLandingComponent implements OnInit {
       this.advance_alerts = res[`data`].advance_alerts;
     }, (err) => {
       this.spinner.hide();
-      console.log('err=>', err);
 
     });
 

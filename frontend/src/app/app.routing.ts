@@ -51,10 +51,10 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./views/admin/admin.module').then(m => m.AdminModule),
-    canActivate: [RoleGuardService],
-    data: {
-      expectedRole: 'admin'
-    }
+    // canActivate: [RoleGuardService],
+    // data: {
+    //   expectedRole: 'admin'
+    // }
   },
   {
     path: 'employer',
@@ -64,18 +64,18 @@ export const routes: Routes = [
   {
     path: 'candidate',
     loadChildren: () => import('./views/candidate/candidate.module').then(m => m.CandidateModule),
-    canActivate: [RoleGuardService],
-    data: {
-      expectedRole: 'candidate'
-    }
+    // canActivate: [RoleGuardService],
+    // data: {
+    //   expectedRole: 'candidate'
+    // }
   },
   {
     path: 'sub_employer',
     loadChildren: () => import('./views/sub-employer/sub-employer.module').then(m => m.SubEmployerModule),
-    canActivate: [RoleGuardService],
-    data: {
-      expectedRole: 'sub-employer',
-    }
+    // canActivate: [RoleGuardService],
+    // data: {
+    //   expectedRole: 'sub-employer',
+    // }
   },
   { path: '**', component: P404Component },
 ];

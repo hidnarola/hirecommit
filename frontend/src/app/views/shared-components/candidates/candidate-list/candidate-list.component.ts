@@ -33,9 +33,6 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ) {
     this.userDetail = this.commonService.getLoggedUserDetail();
-    console.log('this.userDetail => ', this.userDetail);
-    console.log('admin- candidate: newcandidate - list component => ');
-    console.log('this.router => ', this.router.snapshot.data.type);
     if (this.router.snapshot.data.type === 'new') {
       this.candidate_type = 'New';
     }
@@ -76,7 +73,6 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
         // } else
         if (this.router.snapshot.data.type === 'approved' && this.userDetail.role === 'admin') {
           this.service.get_approved_candidate_admin(dataTablesParameters).subscribe(res => {
-            console.log('res of approved candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -87,7 +83,6 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
           });
         } else if (this.router.snapshot.data.type === 'new' && this.userDetail.role === 'admin') {
           this.service.get_new_candidate_admin(dataTablesParameters).subscribe(res => {
-            console.log('res of new candidates => ', res);
             if (res['status'] === 1) {
               this.candidates = res['user'];
               callback({ recordsTotal: res[`recordsTotal`], recordsFiltered: res[`recordsTotal`], data: [] });
@@ -148,7 +143,7 @@ export class CandidateListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.isApproved = false;
       }
     });
-    
+
   }
 
   onDelete(id) {

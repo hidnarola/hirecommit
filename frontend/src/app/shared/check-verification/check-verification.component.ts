@@ -25,7 +25,6 @@ export class CheckVerificationComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('this.userDetail=>', this.userDetail);
     // if (this.userDetail.role === 'employer') {
 
     //   this.empService.check_approved(this.userDetail.id).subscribe(res => {

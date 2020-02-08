@@ -32,8 +32,10 @@ export class CommonService {
   private firstLoginDetail = new BehaviorSubject(null);
   private unSavedData = new BehaviorSubject(this.data);
   private value_Popup = new BehaviorSubject(false);
+  private checkDestroy = new BehaviorSubject(false);
 
   private setuserdata = new BehaviorSubject(this.userformdata);
+
 
   getprofileDetail = this.profileDetail.asObservable();
   getChangedProfileDetail = this.changed_profile_detail.asObservable();
@@ -41,6 +43,7 @@ export class CommonService {
   getunSavedData = this.unSavedData.asObservable();
   getvalue = this.value_Popup.asObservable();
   getuserdata = this.setuserdata.asObservable();
+  GetDestroy = this.checkDestroy.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -51,6 +54,12 @@ export class CommonService {
   setuserData(data: any) {
     this.setuserdata.next(data);
   }
+
+  setdestroy(val: any) {
+    this.checkDestroy.next(val);
+  }
+
+
 
   employer_signup(data): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}` + 'employer_register', data);

@@ -193,7 +193,6 @@ export class SignUpComponent implements OnInit {
       }
       );
     }
-    console.log('=>', this.isExist);
     return this.isExist;
   }
   // }

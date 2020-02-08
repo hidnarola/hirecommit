@@ -90,7 +90,8 @@ const routes: Routes = [
         path: 'change-password',
         canActivate: [RoleGuardService],
         data: {
-          expectedRole: 'employer'
+          expectedRole: 'employer',
+          name: 'change-password'
         },
         component: ChangepasswordComponent
       },
@@ -98,7 +99,8 @@ const routes: Routes = [
         path: 'profile',
         canActivate: [RoleGuardService],
         data: {
-          expectedRole: 'employer'
+          expectedRole: 'employer',
+          name: 'profile'
         },
         component: ProfileComponent
       },

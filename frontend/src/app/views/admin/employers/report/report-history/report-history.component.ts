@@ -26,7 +26,6 @@ export class ReportHistoryComponent implements OnInit {
     private _location: Location
   ) {
     this.userDetail = this.commonservice.getLoggedUserDetail();
-    console.log('this.route.snapshot=>', this.route.snapshot);
 
     // this.route.params.subscribe((params: Params) => {
     //   this.id = params['id'];

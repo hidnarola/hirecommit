@@ -78,6 +78,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       this.commonService.getChangedProfileDetail.subscribe((resp) => {
         this.commonService.profileData().then(res => {
           profile = res;
+
           this._profile_data = profile;
           if (userType === 'candidate') {
             if (this._profile_data[0].user_id.email_verified) {

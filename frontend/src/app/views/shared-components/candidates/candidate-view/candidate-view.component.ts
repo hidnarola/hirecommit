@@ -53,19 +53,14 @@ export class CandidateViewComponent implements OnInit {
   ngOnInit() {
     this.service.get_candidate_Detail(this.id).subscribe(res => {
       this.candidate_detail = res['data'];
-      console.log('res detail', this.candidate_detail);
       this.email = this.candidate_detail['user_id']['email'];
       this.documenttype = this.candidate_detail['documenttype']['name'];
       this.country = this.candidate_detail['country'].country;
-      console.log('this.candidate_detail[`documentimage`].length=>', this.candidate_detail[`documentimage`].length);
       if (this.candidate_detail['documentimage'].length > 0) {
-        console.log('=======>');
         this.documentImage = true;
-        
+
       } else if (this.candidate_detail['documentimage'].length === 0) {
-        console.log('=======>');
         this.documentImage = false;
-        console.log('this.documentImage=>', this.documentImage);
       }
       // if (this.candidate_detail.user_id.isAllow === false) {
       //   this.buttonValue = 'Approve';

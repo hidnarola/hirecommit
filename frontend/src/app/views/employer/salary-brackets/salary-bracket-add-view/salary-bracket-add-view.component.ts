@@ -67,7 +67,6 @@ export class SalaryBracketAddViewComponent implements OnInit {
         if (_country) {
           this.decyptCountry = JSON.parse(_country);
           this.cnt1 = this.decyptCountry.country;
-          console.log('decyptCountry==>', this.decyptCountry.country);
         } else {
           console.log(' country data not found');
         }

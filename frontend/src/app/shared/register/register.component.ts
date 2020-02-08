@@ -155,7 +155,6 @@ export class RegisterComponent implements OnInit {
   }
   checkDrivingLicense(control: FormControl) {
     const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{15,15}$/;
-    console.log('control.value=>', control.value);
     if (control.value && control.value !== '' && control.valid !== null) {
       pattern.test(control.value);
       const isValid = control.value.match(pattern);
@@ -164,11 +163,14 @@ export class RegisterComponent implements OnInit {
     }
   }
   checkDocumentNumber(e) {
-    this.service.check_document_number({ 'documentNumber': e.target.value }).subscribe(res => {
-    }, (err) => {
-      this.registerForm.controls['documentNumber'].setErrors({ 'isExist': true });
-      this.registerForm.updateValueAndValidity();
-    });
+    if (e.target.value !== '') {
+      this.service.check_document_number({ 'documentNumber': e.target.value }).subscribe(res => {
+      }, (err) => {
+        this.registerForm.controls['documentNumber'].setErrors({ 'isExist': true });
+        this.registerForm.updateValueAndValidity();
+      });
+    }
+
   }
 
   DocumentType(e) {
