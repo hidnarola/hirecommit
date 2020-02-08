@@ -307,10 +307,10 @@ router.post("/", async (req, res) => {
 
                             if (interest_resp.data !== undefined && interest_resp.data.communication.length > 0) {
                                 for (const comm of interest_resp.data.communication) {
-                                    if (comm.trigger == "afterOffer" && comm.day == 0) {
+                                    if (comm.trigger == "afterOffer" && comm.day == 0 && comm.mail_send == false) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace(/\|\|offer_date\|\|/g, moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, interest_resp.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -337,12 +337,12 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.trigger == "beforeExpiry" && comm.day >= 0) {
+                                    } else if (comm.trigger == "beforeExpiry" && comm.day >= 0 && comm.mail_send == false) {
                                         var offer_date = moment(interest_resp.data.expirydate).startOf('day').subtract(comm.day, 'day');
                                         offer_date = moment(offer_date);
                                         if (moment(offer_date).startOf('day') <= current_date) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace(/\|\|offer_date\|\|/g, moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, interest_resp.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -369,10 +369,10 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
+                                    } else if (comm.trigger == "afterExpiry" && comm.day == 0 && comm.mail_send == false) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace(/\|\|offer_date\|\|/g, moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, interest_resp.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -405,10 +405,10 @@ router.post("/", async (req, res) => {
 
                             if (interest_resp.data.AdHoc !== undefined && interest_resp.data.AdHoc.length > 0) {
                                 for (const comm of interest_resp.data.AdHoc) {
-                                    if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
+                                    if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                         if (moment(interest_resp.data.createdAt).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace(/\|\|offer_date\|\|/g, moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, interest_resp.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -433,12 +433,12 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0) {
+                                    } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0 && comm.AdHoc_mail_send == false) {
                                         var offer_date = moment(interest_resp.data.expirydate).startOf('day').subtract(comm.AdHoc_day, 'day');
                                         offer_date = moment(offer_date);
                                         if (moment(offer_date).startOf('day') <= current_date) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace(/\|\|offer_date\|\|/g, moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, interest_resp.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -463,10 +463,10 @@ router.post("/", async (req, res) => {
                                                     })
                                             }
                                         }
-                                    } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
+                                    } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                         if (moment(interest_resp.data.expirydate).startOf('day').isSame(current_date)) {
                                             var message = comm.AdHoc_message;
-                                            message = message.replace('||offer_date||', moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", interest_resp.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                            message = message.replace(/\|\|offer_date\|\|/g, moment(interest_resp.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, interest_resp.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(interest_resp.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(interest_resp.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(interest_resp.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                             var obj = {
                                                 "message": message,
@@ -2194,13 +2194,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         var message = comm.message;
                         var email = resp.candidate.email
 
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        //  moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             // var mail_record = await common_helper.insert(MailRecord, { "tracker_id": resp._id + 'communication_afterOffer', "offer_id": resp._id })
                             // logger.trace("sending mail");
@@ -2256,7 +2257,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2291,13 +2292,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2340,7 +2342,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2376,13 +2378,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2418,13 +2421,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2463,15 +2467,15 @@ cron.schedule('00 00 * * *', async (req, res) => {
                         offer_date = moment(offer_date);
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
 
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
 
                             var obj = {
@@ -2516,7 +2520,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2551,13 +2555,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2600,7 +2605,7 @@ cron.schedule('00 00 * * *', async (req, res) => {
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2636,13 +2641,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -2678,13 +2684,14 @@ cron.schedule('00 00 * * *', async (req, res) => {
 
                         var message = comm.AdHoc_message;
                         var email = resp.candidate.email
-                        if (moment(current_date).isSame(offer_date) == true) {
+                        // moment(current_date).isSame(offer_date) == true
+                        if (moment(offer_date).startOf('day') <= moment(current_date)) {
                             var message = comm.AdHoc_message;
 
                             var candidate_name = await common_helper.findOne(CandidateDetail, { "user_id": resp.candidate._id })
                             var location = await common_helper.findOne(Location, { "_id": resp.location })
 
-                            message = message.replace('||offer_date||', moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", resp.title).replace("||location||", location.data.city).replace("||joining_date||", moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                            message = message.replace(/\|\|offer_date\|\|/g, moment(resp.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, resp.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(resp.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(resp.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(resp.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                             var obj = {
                                 "message": message,
@@ -3181,10 +3188,10 @@ router.put('/', async (req, res) => {
 
                     if (update_date.data !== undefined && update_date.data.communication.length > 0) {
                         for (const comm of update_date.data.communication) {
-                            if (comm.trigger == "afterOffer" && comm.day == 0) {
+                            if (comm.trigger == "afterOffer" && comm.day == 0 && comm.mail_send == false) {
                                 if (moment(update_date.data.createdAt).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace(/\|\|offer_date\|\|/g, moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, update_date.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3211,12 +3218,12 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.trigger == "beforeExpiry" && comm.day >= 0) {
+                            } else if (comm.trigger == "beforeExpiry" && comm.day >= 0 && comm.mail_send == false) {
                                 var offer_date = moment(update_date.data.expirydate).startOf('day').subtract(comm.day, 'day');
                                 offer_date = moment(offer_date);
                                 if (moment(offer_date).startOf('day') <= current_date) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace(/\|\|offer_date\|\|/g, moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, update_date.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3243,10 +3250,10 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.trigger == "afterExpiry" && comm.day == 0) {
+                            } else if (comm.trigger == "afterExpiry" && comm.day == 0 && comm.mail_send == false) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace(/\|\|offer_date\|\|/g, moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, update_date.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3279,10 +3286,10 @@ router.put('/', async (req, res) => {
 
                     if (update_date.data.AdHoc !== undefined && update_date.data.AdHoc.length > 0) {
                         for (const comm of update_date.data.AdHoc) {
-                            if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0) {
+                            if (comm.AdHoc_trigger == "afterOffer" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                 if (moment(update_date.data.createdAt).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace(/\|\|offer_date\|\|/g, moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, update_date.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3307,12 +3314,12 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0) {
+                            } else if (comm.AdHoc_trigger == "beforeExpiry" && comm.AdHoc_day >= 0 && comm.AdHoc_mail_send == false) {
                                 var offer_date = moment(update_date.data.expirydate).startOf('day').subtract(comm.AdHoc_day, 'day');
                                 offer_date = moment(offer_date);
                                 if (moment(offer_date).startOf('day') <= current_date) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace(/\|\|offer_date\|\|/g, moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, update_date.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,
@@ -3337,10 +3344,10 @@ router.put('/', async (req, res) => {
                                             })
                                     }
                                 }
-                            } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0) {
+                            } else if (comm.AdHoc_trigger == "afterExpiry" && comm.AdHoc_day == 0 && comm.AdHoc_mail_send == false) {
                                 if (moment(update_date.data.expirydate).startOf('day').isSame(current_date)) {
                                     var message = comm.AdHoc_message;
-                                    message = message.replace('||offer_date||', moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace("||candidate_name||", `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace("||title||", update_date.data.title).replace("||location||", location.data.city).replace("||joining_date||", moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace("||expiry_date||", moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace("||acceptance_date||", moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
+                                    message = message.replace(/\|\|offer_date\|\|/g, moment(update_date.data.createdAt).startOf('day').format('DD/MM/YYYY')).replace(/\|\|candidate_name\|\|/g, `${candidate_name.data.firstname + " " + candidate_name.data.lastname}`).replace(/\|\|title\|\|/g, update_date.data.title).replace(/\|\|location\|\|/g, location.data.city).replace(/\|\|joining_date\|\|/g, moment(update_date.data.joiningdate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|expiry_date\|\|/g, moment(update_date.data.expirydate).startOf('day').format('DD/MM/YYYY')).replace(/\|\|acceptance_date\|\|/g, moment(update_date.data.acceptedAt).startOf('day').format('DD/MM/YYYY'));
 
                                     var obj = {
                                         "message": message,

@@ -34,7 +34,7 @@ mail_helper.send = async (template_name, options, data) => {
     } else if (data.candidatename !== undefined && data.candidatename !== "") {
         companyname = data.candidatename;
     } else {
-        companyname = "Hire Commit";
+        companyname = "HireCommit";
     }
     var template_sender = transporter.templateSender(new EmailTemplate('emails/' + template_name), {
         from: companyname + " " + "<support@hirecommit.com>"

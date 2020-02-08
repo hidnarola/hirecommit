@@ -47,7 +47,7 @@ testmail_helper.send = async (template_id, options, data) => {
         },
         "reply_to": {
             "email": options.reply_to,
-            "name": "Hire Commit"
+            "name": "HireCommit"
         },
         "template_id": template_id
     };

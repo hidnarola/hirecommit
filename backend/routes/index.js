@@ -434,17 +434,22 @@ router.post('/check_document_size', async (req, res) => {
 
 router.post('/check_document_number', async (req, res) => {
   try {
+    // if (req.body.documentNumber !== "") {
     const RE = { $regex: new RegExp(`^${req.body.documentNumber}$`, 'gi') };
+
     var candidate_resp = await common_helper.find(Candidate_Detail,
       {
         "is_del": false,
         "documentNumber": RE
       });
+
+    // console.log(' : candidate_resp ==> ', candidate_resp);
     if (candidate_resp.status == 1 && candidate_resp.data.length > 0) {
       res.status(config.BAD_REQUEST).json({ "status": 0, "message": "This Document Number is Already Registered." });
     } else {
       res.status(config.OK_STATUS).json({ "status": 1, "message": "This is Valid Document Number." });
     }
+    // }
   } catch (err) {
     return res.status(config.BAD_REQUEST).json({ 'message': error.message, "success": false });
   }

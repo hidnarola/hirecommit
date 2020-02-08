@@ -24,7 +24,7 @@ new_mail_helper.send = async (template_id, options, data) => {
     if (data.companyname !== undefined && data.companyname !== "") {
         companyname = data.companyname;
     } else {
-        companyname = "Hire Commit";
+        companyname = "HireCommit";
     }
     const msg = {
         "customArgs": {
