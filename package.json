@@ -13,7 +13,7 @@
     "dev": "run-p start:dev serve",
     "finstall": "cd frontend && npm i",
     "binstall": "cd backend && npm i",
-    "postinstall": "run-p finstall binstall",
+    "postinstall": "run-s finstall binstall",
     "debug": "node ./bin/www",
     "test": "ng test",
     "lint": "ng lint",
@@ -32,6 +32,9 @@
   "dependencies": {
     "typescript": "3.4.5",
     "npm-run-all": "^4.1.5",
+	"@angular-devkit/build-angular": "^0.800.3",
+	"@angular/cli": "^8.0.3",
+    "@angular/compiler-cli": "^8.0.2",
     "@angular/animations": "^8.0.2",
     "@angular/cdk": "^8.2.3",
     "@angular/common": "^8.0.2",
@@ -55,8 +58,6 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.800.3",
-    "@angular/cli": "^8.0.3",
-    "@angular/compiler-cli": "^8.0.2",
     "@angular/language-service": "^8.0.2",
     "@types/datatables.net": "^1.10.17",
     "@types/jasmine": "^3.3.13",
