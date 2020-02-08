@@ -7,6 +7,7 @@ import { CandidateListComponent } from './candidate-list/candidate-list.componen
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { LightboxModule } from 'primeng/lightbox';
 @NgModule({
   declarations: [
     CandidateListComponent,
@@ -18,6 +19,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     ConfirmDialogModule,
     DataTablesModule,
     TooltipModule,
+    LightboxModule
   ], providers: [ConfirmationService]
 })
 export class CandidateModule { }

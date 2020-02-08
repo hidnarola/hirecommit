@@ -36,6 +36,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
   resData: any;
   isPopup = false;
   form: FormGroup;
+  isRelaeased: boolean = false;
   form_validation = false;
   offer_data: any = {};
   panelTitle = 'Add';
@@ -430,8 +431,9 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
     }
   }
   send() {
+    this.isSubmit = true;
+    this.isRelaeased = true;
     if (this.pastDetails.ReleasedOffer.data.length > 0) {
-      this.isSubmit = true;
       if (this.userDetail.role === 'employer') {
         this.modalService.dismissAll(this.content1);
         this.router.navigate(['/employer/offers/list']);
@@ -440,8 +442,8 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
         this.router.navigate(['/sub_employer/offers/list']);
       }
     } else {
-      this.isSubmit = true;
       this.modalService.dismissAll(this.content1);
+
     }
   }
 
@@ -559,7 +561,6 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
             }
             if (this.response) {
               if (this.is_Add) {
-
                 this.form.controls['email'].setValue(res['offer'].email);
                 this.form.controls['candidate_name'].setValue(res['offer'].candidate_name);
                 if (res['offer'].title) {
@@ -588,8 +589,21 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
 
                 // set group
                 // this.groupList();
-                this.groupByID = this.group_optoins;
-                const groupById = this.groupByID.find(x => x.value === res[`offer`].group);
+                this.service.get_groups().subscribe(resGrp => {
+
+                  if (resGrp[`data`].data) {
+                    resGrp[`data`].data.forEach(element => {
+                      this.group_optoins.push({ label: element.name, value: element._id });
+                    });
+                  }
+                });
+                console.log('this.group_optoins=>', this.group_optoins);
+                this.groupByID = res[`offer`].group;
+                console.log('this.groupByID=>', this.groupByID);
+
+                const groupById = this.group_optoins.find(x => x.value === this.groupByID);
+                console.log('groupById=>', groupById);
+
                 if (groupById) {
                   this.form.controls.group.setValue(groupById.value);
                 }
@@ -2296,30 +2310,7 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       if (this.is_Edit) {
         this.router.navigate([this.cancel_link]);
       }
-      //   if (this.offer.email != null || this.offer.candidate_name != null || this.offer.title != null
-      //     || this.offer.salarytype != null || this.offer.location != null || this.offer.salarytype != null || this.offer.salarybracket != null || this.offer.salarybracket_from != null || this.offer.salarybracket_to != null || this.offer.salaryduration != null || this.offer.offertype != null || this.offer.group != null) {
-      //     if (this.istouchedArray.length > 0) {
-      //       // tslint:disable-next-line: max-line-length
-      //       if (this.offer.expirydate == null || this.offer.expirydate === '' || this.offer.joiningdate == null || this.offer.joiningdate == '') {
-      //         this.offer.expirydate = null;
-      //         this.offer.joiningdate = null;
-      //       }
-      //       const obj = {
-      //         offer: this.offer,
-      //         ispopup: true
-      //       };
 
-      //       this.router.navigate([this.currentUrl]);
-      //       this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.cancel_link });
-      //       this.commonService.setuserData(obj);
-
-
-      //     } else if (this.istouchedArray.length == 0) {
-      //       this.commonService.setuserData('');
-      //     }
-      //   }
-
-      // }
       if (this.is_Add) {
         if (this.istouchedArray.length > 0) {
           if (this.offer.expirydate == null || this.offer.expirydate === '' || this.offer.joiningdate == null
@@ -2376,12 +2367,14 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
       } else if (this.userDetail.role === 'sub-employer') {
         this.router.navigate([this.cancel_link1]);
       }
-    } else if (this.userDetail.role === 'candidate') {
-      this.router.navigate(['/candidate/offers/list']);
-    } else if (this.userDetail.role === 'admin') {
-      const backID = this.route.snapshot.params.report_id;
-      this.router.navigate(['/admin/employers/approved_employer/report/' + backID + '/list']);
+      else if (this.userDetail.role === 'candidate') {
+        this.router.navigate(['/candidate/offers/list']);
+      } else if (this.userDetail.role === 'admin') {
+        const backID = this.route.snapshot.params.report_id;
+        this.router.navigate(['/admin/employers/approved_employer/report/' + backID + '/list']);
+      }
     }
+
   }
 
   noWhitespaceValidator(control: FormControl) {
@@ -2763,10 +2756,15 @@ export class OfferAddViewComponent implements OnInit, OnDestroy {
               offer: this.offer,
               ispopup: true
             };
+            if (!this.isRelaeased) {
+              this.router.navigate([this.currentUrl]);
+              this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
+              this.commonService.setuserData(obj);
+            } else {
+              this.commonService.setUnSavedData('');
+              this.commonService.setuserData('');
+            }
 
-            this.router.navigate([this.currentUrl]);
-            this.commonService.setUnSavedData({ value: true, url: this.currentUrl, newurl: this.router.url });
-            this.commonService.setuserData(obj);
 
           } else if (this.istouchedArray.length == 0) {
             this.commonService.setuserData('');

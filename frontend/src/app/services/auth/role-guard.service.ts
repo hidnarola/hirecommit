@@ -28,7 +28,6 @@ export class RoleGuardService implements CanActivate {
       this.fromPopup = true;
 
       if (res) {
-        console.log('in response=======>', res);
 
         if (this.redirect) {
           this.router.navigate([res.newurl]);
@@ -59,7 +58,6 @@ export class RoleGuardService implements CanActivate {
         }
 
       } else if (!res) {
-        console.log('out of response=======>');
 
       }
       this.redirect = false;

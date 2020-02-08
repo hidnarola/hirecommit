@@ -2,14 +2,14 @@
     <div class="row">
         <div class="col-sm-12 col-md-12">
             <div class="card">
-            <div class="card-header">
-                <strong style="font-size: 20px;">Candidate Detail</strong>
-            </div>
-                    <!-- <i class="icon-close" *ngIf="candidate_type === 'Approved'" style="float: right;"
+                <div class="card-header">
+                    <strong style="font-size: 20px;">Candidate Detail</strong>
+                </div>
+                <!-- <i class="icon-close" *ngIf="candidate_type === 'Approved'" style="float: right;"
                         [routerLink]="cancel_link2"></i>
                     <i class="icon-close" *ngIf="candidate_type === 'New'" style="float: right;"
                         [routerLink]="cancel_link1"></i> -->
-               
+
                 <div class="card-body">
                     <table class="table">
                         <tbody>
@@ -41,18 +41,23 @@
                                 <td class="lbl lbl_width">Driving License State</td>
                                 <td>{{candidate_detail.drivingLicenseState ? candidate_detail.drivingLicenseState : '-'}}
                                 </td>
-                            </tr>                          
-                         <tr >
+                            </tr>
+                            <tr>
                                 <td class="lbl lbl_width">Document Image</td>
-                                <td *ngIf="documentImage">
-                                    <img src="{{image + candidate_detail.documentimage}}"
-                                        style="width:70px; height: 50px;" />
+
+                                <td *ngIf="documentImage" class="thumbnail">
+
+
+                                    <p-lightbox [images]="docImages"></p-lightbox>
+
+                                    <!-- <img src="{{image + candidate_detail.documentimage}}"
+                                        style="width:70px; height: 50px;" (onClick)="show()" /> -->
                                 </td>
                                 <td *ngIf="!documentImage">
                                     -
                                 </td>
                             </tr>
-                            
+
                             <tr>
                                 <td class="lbl lbl_width">Date Of Register</td>
                                 <td>{{candidate_detail.createdAt | date: 'dd/MM/yyyy': 'utc'}}</td>
@@ -62,7 +67,8 @@
 
                     <div style="float: right;">
                         <button type="button" *ngIf="candidate_type === 'New'" class="btn btn-md btn-success"
-                            (click)="approve(candidate_detail.user_id)" id="approve" [disabled]="show_spinner">Approve<i *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
+                            (click)="approve(candidate_detail.user_id)" id="approve" [disabled]="show_spinner">Approve<i
+                                *ngIf="show_spinner" class="fa fa-spinner fa-spin"></i></button>
                         <!-- <button type="button" *ngIf="approval" class="btn btn-sm btn-danger"
                             (click)="unapprove()">Unapprove</button> -->
 

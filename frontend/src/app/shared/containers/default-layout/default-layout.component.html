@@ -20,7 +20,11 @@
           (click)="profile()" style="cursor: pointer;">
           <i class="icon-user"></i> Profile
         </a>
-        <a class="dropdown-item" (click)="changepassword()" *ngIf="_profile_data[0].user_id.email_verified"
+        <a class="dropdown-item" (click)="changepassword()"
+          *ngIf="userDetail.role != 'admin' && _profile_data[0].user_id.email_verified" style="cursor: pointer;">
+          <i class="fa fa-lock"></i> Change Password
+        </a>
+        <a class="dropdown-item" [routerLink]="['/admin/change-password']" *ngIf="userDetail.role == 'admin'"
           style="cursor: pointer;">
           <i class="fa fa-lock"></i> Change Password
         </a>

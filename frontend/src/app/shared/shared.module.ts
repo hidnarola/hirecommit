@@ -8,7 +8,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-
+import { LightboxModule } from 'primeng/lightbox';
 @NgModule({
   declarations: [ChangepasswordComponent, ProfileComponent],
   imports: [
@@ -16,7 +16,8 @@ import { ConfirmationService } from 'primeng/api';
     ReactiveFormsModule,
     FormsModule,
     DropdownModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    LightboxModule
   ], providers: [ConfirmationService]
 })
 export class SharedModule { }
